@@ -1,19 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="e05cf3a1-1ea8-4307-b3d4-ddb60efeef1b" name="Default Changelist" comment="test di salva">
-      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/cards/Cards.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/personalboard/PersonalBoard.java" afterDir="false" />
+    <list default="true" id="e05cf3a1-1ea8-4307-b3d4-ddb60efeef1b" name="Default Changelist" comment="uploading FaithMarker class and test">
+      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apiguardian_apiguardian_api_1_1_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_5_6_3.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_api_5_6_3.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_engine_5_6_3.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_params_5_6_3.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_platform_junit_platform_commons_1_6_3.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_platform_junit_platform_engine_1_6_3.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_opentest4j_opentest4j_1_2_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/AM3.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/exceptions/InvalidInputException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/Game.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/Player.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/Resources.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/cards/DevCard.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/personalboard/BlackCrossToken.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/personalboard/DevCardSlot.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/personalboard/Shelf.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/personalboard/SpecialShelf.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/personalboard/StrongBox.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/personalboard/WarehouseDepots.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/test/java/it/polimi/ingsw/model/PlayerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/ingswAM2021-Blasucci-Abatiello-Buono.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/ingswAM2021-Blasucci-Abatiello-Buono.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/cards/Cards.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/personalboard/FaithMarker.java" beforeDir="false" afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/personalboard/FaithMarker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/progetto_ingsoft/src/test/java/it/polimi/ingsw/AppTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/progetto_ingsoft/src/test/java/it/polimi/ingsw/AppTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="CodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
+  </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="JUnit5 Test Class" />
         <option value="Class" />
       </list>
     </option>
@@ -21,12 +56,13 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="MavenImportPreferences">
-    <option name="generalSettings">
-      <MavenGeneralSettings>
-        <option name="mavenHome" value="C:\Program Files\IntelliJ IDEA 2020.2.3\plugins\maven\lib\maven3" />
-      </MavenGeneralSettings>
-    </option>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
   </component>
   <component name="ProjectId" id="1q44WgMpwRJuG4yGnyLugt6IIPg" />
   <component name="ProjectViewState">
@@ -34,12 +70,128 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="Downloaded.Files.Path.Enabled" value="false" />
+    <property name="Repository.Attach.Annotations" value="false" />
+    <property name="Repository.Attach.JavaDocs" value="false" />
+    <property name="Repository.Attach.Sources" value="false" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit5" />
+    <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5" value="" />
+    <property name="last_directory_selection" value="$PROJECT_DIR$/progetto_ingsoft/src/main/java" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="vcs.Git" />
+    <property name="settings.editor.selected.configurable" value="preferences.toDoOptions" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="it.polimi.ingsw.model.personalboard" />
+      <recent name="src.main.java.it.polimi.ingsw.model" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="it.polimi.ingsw.model.personalboard" />
+      <recent name="it.polimi.ingsw.model" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="it.polimi.ingsw.model" />
+      <recent name="it.polimi.ingsw.model.personalboard" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JUnit.FaithMarkerTest.isVaticanZone">
+    <configuration name="FaithMarkerTest.activePopeSpace" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="AM3" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="it.polimi.ingsw.model.personalboard.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="it.polimi.ingsw.model.personalboard" />
+      <option name="MAIN_CLASS_NAME" value="it.polimi.ingsw.model.personalboard.FaithMarkerTest" />
+      <option name="METHOD_NAME" value="activePopeSpace" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FaithMarkerTest.getFaithPosition" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="AM3" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="it.polimi.ingsw.model.personalboard.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="it.polimi.ingsw.model.personalboard" />
+      <option name="MAIN_CLASS_NAME" value="it.polimi.ingsw.model.personalboard.FaithMarkerTest" />
+      <option name="METHOD_NAME" value="getFaithPosition" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FaithMarkerTest.isVaticanZone" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="AM3" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="it.polimi.ingsw.model.personalboard.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="it.polimi.ingsw.model.personalboard" />
+      <option name="MAIN_CLASS_NAME" value="it.polimi.ingsw.model.personalboard.FaithMarkerTest" />
+      <option name="METHOD_NAME" value="isVaticanZone" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FaithMarkerTest.updatePosition" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="AM3" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="it.polimi.ingsw.model.personalboard.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="it.polimi.ingsw.model.personalboard" />
+      <option name="MAIN_CLASS_NAME" value="it.polimi.ingsw.model.personalboard.FaithMarkerTest" />
+      <option name="METHOD_NAME" value="updatePosition" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PlayerTest.getFaithtrackpoints" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="AM3" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="it.polimi.ingsw.model.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="it.polimi.ingsw.model" />
+      <option name="MAIN_CLASS_NAME" value="it.polimi.ingsw.model.PlayerTest" />
+      <option name="METHOD_NAME" value="getFaithtrackpoints" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.FaithMarkerTest.isVaticanZone" />
+        <item itemvalue="JUnit.FaithMarkerTest.activePopeSpace" />
+        <item itemvalue="JUnit.PlayerTest.getFaithtrackpoints" />
+        <item itemvalue="JUnit.FaithMarkerTest.updatePosition" />
+        <item itemvalue="JUnit.FaithMarkerTest.getFaithPosition" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="Vcs.Log.Tabs.Properties">
@@ -47,7 +199,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="main" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
@@ -56,6 +220,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="test di salva" />
-    <option name="LAST_COMMIT_MESSAGE" value="test di salva" />
+    <MESSAGE value="model package" />
+    <MESSAGE value="uploading FaithMarker class and test" />
+    <option name="LAST_COMMIT_MESSAGE" value="uploading FaithMarker class and test" />
   </component>
 </project>

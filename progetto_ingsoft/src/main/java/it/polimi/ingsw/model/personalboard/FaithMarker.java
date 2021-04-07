@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.personalboard;
 
+import it.polimi.ingsw.exceptions.InvalidInputException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
 
@@ -21,18 +22,23 @@ public class FaithMarker {
         this.invaticanzone = false;
     }
 
-    /*
-        matching faithmarkerID with playerID
-         */
-    public int setFaithMarkerID(Player player) {
+    /**
+     * @param player is the owner of faith marker
+     * @return faith marker ID after having associated player ID
+     * @throws InvalidInputException
+     * */
+    public int setFaithMarkerID(Player player) throws InvalidInputException {
+        if(player==null)
+            throw new InvalidInputException();
         this.faithMarkerID = player.getPlayerID();
         return faithMarkerID;
     }
 
 
-    /*
-      setting which slot is in popespace & increasing points that will be added in the end of game
-      */
+    /**
+     * @return the current status of indicated Vatican zone after being activated.
+     * Furthermore set which slot is in pope space & increase points that will be added in the end of game
+     */
     public boolean activePopeSpace() {
         if(faithPosition==8 && Game.isVC1active()==true) {
             for(Player player: Game.getPlayers()) {
@@ -63,8 +69,8 @@ public class FaithMarker {
     }
 
 
-    /*
-    setting which slot is in vaticanzone
+    /**
+     * @return true if faith marker position is in vatican zone
      */
     public boolean isVaticanZone(){
         if ((getFaithPosition()>=5 && getFaithPosition()<=8) || (getFaithPosition()>=12 && getFaithPosition()<=16)|| (getFaithPosition()>=19 && getFaithPosition()<=24))
@@ -74,9 +80,9 @@ public class FaithMarker {
         return invaticanzone;
     }
 
-/*
-increasing points according to current faithposition
- */
+    /**
+     * @return points according to current faith position
+     */
     public int updatePoints(Player player){
         if (faithPosition==3)
             player.setPoints(1);
@@ -97,8 +103,8 @@ increasing points according to current faithposition
         return player.getPoints();
     }
 
-    /*
-    Flow faithMarker ahead of 1 position & checking if it will be in a popespace
+    /**
+     * @return following position & checking if it will be in a pope space or in a vatican zone
      */
     public int updatePosition(){
         faithPosition= faithPosition +1;
