@@ -4,29 +4,39 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class FaithMarkerTest {
 
+
+
     @Test
-    void getFaithPosition() {
+    void getFaithPositionAtCreation() {
 
         FaithMarker faithMarker=new FaithMarker();
         assertEquals(0,faithMarker.getFaithPosition());
 
     }
 
+    @Test
+    void getFaithPositionInGame() {
+
+        FaithMarker faithMarker=new FaithMarker();
+        faithMarker.updatePosition();
+        assertEquals(1,faithMarker.getFaithPosition());
+
+    }
+
 
     @Test
     void setFaithMarkerID() {
+        Player player=new Player(1);
+        assertEquals(player.getPlayerID(),player.getFaithMarker().setFaithMarkerID(player));
     }
 
     @Test
-    void activePopeSpace() {
-        Player p1 = new Player();
-        ArrayList<Integer> list=new ArrayList<Integer>();
+    void CheckDifferentActivePopeSpace() {
+        Player p1 = new Player(1);
 
         for(int i=0;i<8;i++)
             p1.getFaithMarker().updatePosition();
@@ -42,6 +52,24 @@ class FaithMarkerTest {
         assertFalse(Game.isVC3active());
 
     }
+    @Test
+    void activePopeSpaceWithDifferentPlayers(){
+
+        new Game();
+        for(Player p : Game.getPlayers())
+            Game.removePlayer(p);
+
+        Game.createNewPlayer(new Player(1));
+        Game.createNewPlayer(new Player(2));
+
+        for(int i=0;i<8;i++)
+            Game.getPlayers().get(0).getFaithMarker().updatePosition();
+
+        assertEquals(2,Game.getPlayers().get(0).getFaithtrackpoints());
+        assertEquals(0,Game.getPlayers().get(1).getFaithtrackpoints());
+
+    }
+
 
     @Test
     void isVaticanZone() {
@@ -55,14 +83,24 @@ class FaithMarkerTest {
 
     @Test
     void updatePoints() {
+        Game.createNewPlayer(new Player(1));
+        Game.createNewPlayer(new Player(2));
+
+        for(int i=0;i<8;i++)
+            Game.getPlayers().get(0).getFaithMarker().updatePosition();
+
+        assertEquals(2,Game.getPlayers().get(0).getFaithMarker().getPoints());
+
     }
 
     @Test
     void updatePosition() {
-        Player p1 = new Player();
+        Player p1 = new Player(1);
 
         for(int i=0;i<8;i++)
             p1.getFaithMarker().updatePosition();
-        assertEquals(8,p1.getFaithMarker());
+
+
+        assertEquals(8,p1.getFaithMarker().getFaithPosition());
     }
 }

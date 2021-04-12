@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.personalboard;
 
-import it.polimi.ingsw.exceptions.InvalidInputException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
 
@@ -9,6 +8,7 @@ public class FaithMarker {
     private int faithPosition;
     private int faithMarkerID;
     private boolean invaticanzone;
+    private int points;
 
 
 
@@ -25,11 +25,11 @@ public class FaithMarker {
     /**
      * @param player is the owner of faith marker
      * @return faith marker ID after having associated player ID
-     * @throws InvalidInputException
+     * @throws NullPointerException
      * */
-    public int setFaithMarkerID(Player player) throws InvalidInputException {
+    public int setFaithMarkerID(Player player) {
         if(player==null)
-            throw new InvalidInputException();
+            throw new NullPointerException("Insert a validate player");
         this.faithMarkerID = player.getPlayerID();
         return faithMarkerID;
     }
@@ -41,26 +41,18 @@ public class FaithMarker {
      */
     public boolean activePopeSpace() {
         if(faithPosition==8 && Game.isVC1active()==true) {
-            for(Player player: Game.getPlayers()) {
-                if (player.getFaithMarker().isVaticanZone())
-                    player.increaseFaithtrackPoints(2);
-            }
+
+            Game.getPlayers().stream().filter(player -> player.getFaithMarker().isVaticanZone()).forEach(player -> player.increaseFaithtrackPoints(2));
             Game.setVC1active(false);
             return Game.isVC1active();
         }
         else if(faithPosition==16 && Game.isVC2active()==true) {
-            for(Player player: Game.getPlayers()) {
-                if (player.getFaithMarker().isVaticanZone())
-                    player.increaseFaithtrackPoints(3);
-            }
+            Game.getPlayers().stream().filter(player -> player.getFaithMarker().isVaticanZone()).forEach(player -> player.increaseFaithtrackPoints(3));
             Game.setVC2active(false);
             return Game.isVC2active();
         }
         else if(faithPosition==24 && Game.isVC3active()==true) {
-            for(Player player: Game.getPlayers()) {
-                if (player.getFaithMarker().isVaticanZone())
-                    player.increaseFaithtrackPoints(4);
-            }
+            Game.getPlayers().stream().filter(player -> player.getFaithMarker().isVaticanZone()).forEach(player -> player.increaseFaithtrackPoints(4));
             Game.setVC3active(false);
             return Game.isVC3active();
         }
@@ -68,6 +60,10 @@ public class FaithMarker {
             return true;
     }
 
+    public boolean activePopeSpace2(){
+        Game.getPlayers().stream().filter(player -> player.getFaithMarker().isVaticanZone()).forEach(player -> player.increaseFaithtrackPoints(2));
+        return true;
+    }
 
     /**
      * @return true if faith marker position is in vatican zone
@@ -83,24 +79,31 @@ public class FaithMarker {
     /**
      * @return points according to current faith position
      */
-    public int updatePoints(Player player){
+    public int setPoints(){
         if (faithPosition==3)
-            player.setPoints(1);
+            points=1;
         else if(faithPosition==6)
-            player.setPoints(2);
+            points=2;
         else if(faithPosition==9)
-            player.setPoints(4);
+            points=4;
         else if(faithPosition==12)
-            player.setPoints(6);
+            points=6;
         else if(faithPosition==15)
-            player.setPoints(9);
+            points=9;
         else if(faithPosition==18)
-            player.setPoints(12);
+            points=12;
         else if(faithPosition==21)
-            player.setPoints(16);
-        else
-            player.setPoints(20);
-        return player.getPoints();
+            points=16;
+        else if(faithPosition==24)
+            points=20;
+        return points;
+    }
+
+    /**
+     * @return points of faith track
+     */
+    public int getPoints() {
+        return points;
     }
 
     /**
@@ -108,6 +111,7 @@ public class FaithMarker {
      */
     public int updatePosition(){
         faithPosition= faithPosition +1;
+        setPoints();
         isVaticanZone();
         activePopeSpace();
         return faithPosition;
