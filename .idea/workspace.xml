@@ -1,10 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="e05cf3a1-1ea8-4307-b3d4-ddb60efeef1b" name="Default Changelist" comment="test di salva">
-      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/cards/Cards.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/personalboard/PersonalBoard.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apiguardian_apiguardian_api_1_1_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_5_6_3.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_api_5_6_3.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_engine_5_6_3.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_params_5_6_3.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_platform_junit_platform_commons_1_6_3.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_platform_junit_platform_engine_1_6_3.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_opentest4j_opentest4j_1_2_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/AM3.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/Market/BlueMarble.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/Market/Container.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/Market/FullSupplyException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/Market/GreyMarble.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/Market/Market.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/Market/MarketMarble.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/Market/NotAcceptableSelectorException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/Market/PurpleMarble.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/Market/RedMarble.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/Market/Resource.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/Market/ResourceSupply.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/Market/WhiteMarble.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/Market/YellowMarble.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/Player.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/cards/LeadCard.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/personalboard/FaithMarker.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/test/java/it/polimi/ingsw/model/Market/BlueMarbleTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/test/java/it/polimi/ingsw/model/Market/ContainerTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/test/java/it/polimi/ingsw/model/Market/GreyMarbleTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/test/java/it/polimi/ingsw/model/Market/MarketTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/test/java/it/polimi/ingsw/model/Market/PurpleMarbleTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/test/java/it/polimi/ingsw/model/Market/RedMarbleTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/test/java/it/polimi/ingsw/model/Market/ResourceSupplyTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/test/java/it/polimi/ingsw/model/Market/WhiteMarbleTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/test/java/it/polimi/ingsw/model/Market/YellowMarbleTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/App.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/cards/Cards.java" beforeDir="false" afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/cards/Cards.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -14,6 +56,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Interface" />
+        <option value="Enum" />
+        <option value="JUnit5 Test Class" />
         <option value="Class" />
       </list>
     </option>
@@ -21,12 +66,13 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="MavenImportPreferences">
-    <option name="generalSettings">
-      <MavenGeneralSettings>
-        <option name="mavenHome" value="C:\Program Files\IntelliJ IDEA 2020.2.3\plugins\maven\lib\maven3" />
-      </MavenGeneralSettings>
-    </option>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
   </component>
   <component name="ProjectId" id="1q44WgMpwRJuG4yGnyLugt6IIPg" />
   <component name="ProjectViewState">
@@ -36,10 +82,142 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit5" />
+    <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5" value="" />
+    <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="vcs.Git" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="it.polimi.ingsw.model.Market" />
+      <recent name="it.polimi.ingsw.model.cards" />
+      <recent name="it.polimi.ingsw.model" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="it.polimi.ingsw.model.Market" />
+      <recent name="it.polimi.ingsw.model" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="it.polimi.ingsw.model.Market" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JUnit.RedMarbleTest">
+    <configuration name="MarketTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="AM3" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="it.polimi.ingsw.model.Market.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="ALTERNATIVE_JRE_PATH" value="15" />
+      <option name="PACKAGE_NAME" value="it.polimi.ingsw.model.Market" />
+      <option name="MAIN_CLASS_NAME" value="it.polimi.ingsw.model.Market.MarketTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MarketTest.insertExtMarbleInColumnTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="AM3" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="it.polimi.ingsw.model.Market.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="ALTERNATIVE_JRE_PATH" value="15" />
+      <option name="PACKAGE_NAME" value="it.polimi.ingsw.model.Market" />
+      <option name="MAIN_CLASS_NAME" value="it.polimi.ingsw.model.Market.MarketTest" />
+      <option name="METHOD_NAME" value="insertExtMarbleInColumnTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MarketTest.insertExtMarbleInLineTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="AM3" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="it.polimi.ingsw.model.Market.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="ALTERNATIVE_JRE_PATH" value="15" />
+      <option name="PACKAGE_NAME" value="it.polimi.ingsw.model.Market" />
+      <option name="MAIN_CLASS_NAME" value="it.polimi.ingsw.model.Market.MarketTest" />
+      <option name="METHOD_NAME" value="insertExtMarbleInLineTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MarketTest.takingAlineTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="AM3" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="it.polimi.ingsw.model.Market.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="ALTERNATIVE_JRE_PATH" value="15" />
+      <option name="PACKAGE_NAME" value="it.polimi.ingsw.model.Market" />
+      <option name="MAIN_CLASS_NAME" value="it.polimi.ingsw.model.Market.MarketTest" />
+      <option name="METHOD_NAME" value="takingAlineTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RedMarbleTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="AM3" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="it.polimi.ingsw.model.Market.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="ALTERNATIVE_JRE_PATH" value="15" />
+      <option name="PACKAGE_NAME" value="it.polimi.ingsw.model.Market" />
+      <option name="MAIN_CLASS_NAME" value="it.polimi.ingsw.model.Market.RedMarbleTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <module name="ingswAM2021-Blasucci-Abatiello-Buono" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="ALTERNATIVE_JRE_PATH" value="15" />
+      <option name="MAIN_CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.RedMarbleTest" />
+        <item itemvalue="JUnit.MarketTest" />
+        <item itemvalue="JUnit.MarketTest.insertExtMarbleInLineTest" />
+        <item itemvalue="JUnit.MarketTest.insertExtMarbleInColumnTest" />
+        <item itemvalue="JUnit.MarketTest.takingAlineTest" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="Vcs.Log.Tabs.Properties">
@@ -57,5 +235,15 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="test di salva" />
     <option name="LAST_COMMIT_MESSAGE" value="test di salva" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="it.polimi.ingsw.model.Market.EmptyContainerException" package="it.polimi.ingsw.model.Market" />
+          <option name="timeStamp" value="3" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
