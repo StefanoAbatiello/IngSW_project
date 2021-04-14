@@ -1,0 +1,16 @@
+-------------------------------------------------------------------------------
+Test set: it.polimi.ingsw.model.personalboard.ShelfTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 3, Skipped: 0, Time elapsed: 0.016 s <<< FAILURE! - in it.polimi.ingsw.model.personalboard.ShelfTest
+addResources  Time elapsed: 0 s  <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "String.equals(Object)" because the return value of "it.polimi.ingsw.model.Resources.getType()" is null
+	at it.polimi.ingsw.model.personalboard.ShelfTest.addResources(ShelfTest.java:28)
+
+isShelfAvailability  Time elapsed: 0 s  <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "String.equals(Object)" because the return value of "it.polimi.ingsw.model.Resources.getType()" is null
+	at it.polimi.ingsw.model.personalboard.ShelfTest.isShelfAvailability(ShelfTest.java:18)
+
+getSlots  Time elapsed: 0 s  <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "String.equals(Object)" because the return value of "it.polimi.ingsw.model.Resources.getType()" is null
+	at it.polimi.ingsw.model.personalboard.ShelfTest.getSlots(ShelfTest.java:40)
+
