@@ -1,19 +1,19 @@
 package it.polimi.ingsw.model.personalboard;
 
 import it.polimi.ingsw.exceptions.ResourceNotValidException;
-import it.polimi.ingsw.model.Resources;
+import it.polimi.ingsw.model.Resource;
 
 import java.util.ArrayList;
 
 public class Shelf {
-    private ArrayList<Resources> slots;
-    private Resources resourceType;
+    private ArrayList<Resource> slots;
+    private Resource resourceType;
     private boolean shelfAvailability ;
     private int maxSize;
 
     public Shelf(int maxSize) {
         this.maxSize = maxSize;
-        this.slots=new ArrayList<Resources>();
+        this.slots=new ArrayList<Resource>();
     }
 
     /**
@@ -31,7 +31,7 @@ public class Shelf {
      * @param resource is what we want add in shelf
      * @return slot after adding resource. Adding is allow only in case of shelf availability and compatibility with existing resources type.
      */
-    public ArrayList<Resources> addResources(Resources resource) throws ResourceNotValidException {
+    public ArrayList<Resource> addResources(Resource resource) throws ResourceNotValidException {
         if((isShelfAvailability())&&(resource==resourceType)&&(!slots.isEmpty())) {
             slots.add(resource);
         }
@@ -47,7 +47,7 @@ public class Shelf {
     /**
      * @return all resources contained in shelf
      */
-    public ArrayList<Resources> getSlots() {
+    public ArrayList<Resource> getSlots() {
         return slots;
     }
 

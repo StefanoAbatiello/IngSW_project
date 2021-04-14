@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model.personalboard;
 
 import it.polimi.ingsw.exceptions.ResourceNotValidException;
-import it.polimi.ingsw.model.Resources;
+import it.polimi.ingsw.model.Resource;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,8 +14,8 @@ class ShelfTest {
     void isShelfAvailability() throws ResourceNotValidException {
         Shelf shelf=new Shelf(3);
 
-        shelf.addResources(Resources.SHIELD);
-        shelf.addResources(Resources.SHIELD);
+        shelf.addResources(Resource.SHIELD);
+        shelf.addResources(Resource.SHIELD);
         assertTrue(shelf.isShelfAvailability());
     }
 
@@ -23,8 +23,8 @@ class ShelfTest {
     void addResources() throws ResourceNotValidException {
         Shelf shelf=new Shelf(3);
 
-        shelf.addResources(Resources.SHIELD);
-        shelf.addResources(Resources.SHIELD);
+        shelf.addResources(Resource.SHIELD);
+        shelf.addResources(Resource.SHIELD);
 
         assertEquals(2,shelf.getSlots().size());
 
@@ -34,11 +34,11 @@ class ShelfTest {
     void getSlots() throws ResourceNotValidException {
         Shelf shelf=new Shelf(3);
 
-        shelf.addResources(Resources.SHIELD);
-        shelf.addResources(Resources.SHIELD);
+        shelf.addResources(Resource.SHIELD);
+        shelf.addResources(Resource.SHIELD);
 
-        assertEquals(Resources.SHIELD,shelf.getSlots().get(0));
-        assertEquals(Resources.SHIELD,shelf.getSlots().get(1));
+        assertEquals(Resource.SHIELD,shelf.getSlots().get(0));
+        assertEquals(Resource.SHIELD,shelf.getSlots().get(1));
 
     }
 }

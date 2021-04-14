@@ -25,21 +25,21 @@ class PlayerTest {
     @Test
     void doBasicProduction() throws ResourceNotValidException {
         Player player=new Player(1);
-        player.getPersonalBoard().getWarehouseDepots().addinShelf(0,Resources.SERVANT);
-        player.getPersonalBoard().getStrongBox().addInStrongbox(Resources.SHIELD);
+        player.getPersonalBoard().getWarehouseDepots().addinShelf(0, Resource.SERVANT);
+        player.getPersonalBoard().getStrongBox().addInStrongbox(Resource.SHIELD);
         player.setPotentialresource("COIN");
 
-        assertEquals(Resources.COIN,player.doBasicProduction(Resources.SERVANT,Resources.SHIELD));
+        assertEquals(Resource.COIN,player.doBasicProduction(Resource.SERVANT, Resource.SHIELD));
     }
 
 
     @Test
     void doNotValidBasicProduction1() throws ResourceNotValidException {
         Player player=new Player(1);
-        player.getPersonalBoard().getWarehouseDepots().addinShelf(0,Resources.SERVANT);
-        player.getPersonalBoard().getStrongBox().addInStrongbox(Resources.SHIELD);
+        player.getPersonalBoard().getWarehouseDepots().addinShelf(0, Resource.SERVANT);
+        player.getPersonalBoard().getStrongBox().addInStrongbox(Resource.SHIELD);
         player.setPotentialresource("COIN");
-        player.doBasicProduction(Resources.STONE,Resources.SHIELD);
+        player.doBasicProduction(Resource.STONE, Resource.SHIELD);
 
         assertEquals(1,player.getCoderr());
     }
@@ -47,10 +47,10 @@ class PlayerTest {
     @Test
     void doNotValidBasicProduction2() throws ResourceNotValidException {
         Player player=new Player(1);
-        player.getPersonalBoard().getWarehouseDepots().addinShelf(0,Resources.SERVANT);
-        player.getPersonalBoard().getStrongBox().addInStrongbox(Resources.SHIELD);
+        player.getPersonalBoard().getWarehouseDepots().addinShelf(0, Resource.SERVANT);
+        player.getPersonalBoard().getStrongBox().addInStrongbox(Resource.SHIELD);
         player.setPotentialresource("COIN");
-        player.doBasicProduction(Resources.STONE,Resources.COIN);
+        player.doBasicProduction(Resource.STONE, Resource.COIN);
 
         assertEquals(2,player.getCoderr());
     }

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.cards;
 
-import it.polimi.ingsw.model.Market.Resource;
+import it.polimi.ingsw.model.Resource;
 
 public class LeadCard {
 

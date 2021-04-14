@@ -2,7 +2,6 @@ package it.polimi.ingsw.model;
 
 
 import it.polimi.ingsw.exceptions.ResourceNotValidException;
-import it.polimi.ingsw.model.Market.Resource;
 import it.polimi.ingsw.model.cards.LeadCard;
 import it.polimi.ingsw.model.personalboard.PersonalBoard;
 
@@ -60,7 +59,7 @@ public class Player {
         }
 
 
-        public Resources doBasicProduction (Resources r1, Resources r2){
+        public Resource doBasicProduction (Resource r1, Resource r2){
             try {
                 personalBoard.getStrongBox().getResource(r1);
             } catch (ResourceNotValidException e) {
@@ -80,8 +79,8 @@ public class Player {
                 }
 
             }
-            Resources resources = Enum.valueOf(Resources.class, potentialresource);
-            return resources;
+            Resource resource = Enum.valueOf(Resource.class, potentialresource);
+            return resource;
         }
 
         public int getCoderr () {

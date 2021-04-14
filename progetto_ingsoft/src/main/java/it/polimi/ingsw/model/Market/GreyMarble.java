@@ -1,11 +1,13 @@
 package it.polimi.ingsw.model.Market;
 
+import it.polimi.ingsw.exceptions.FullSupplyException;
 import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.Resource;
 import it.polimi.ingsw.model.personalboard.FaithMarker;
 
 public class GreyMarble implements MarketMarble {
 
-    final Resource resource=Resource.STONE;
+    final Resource resource= Resource.STONE;
     /**
      * this subclass override this method and put a stone in resourceSupply
      * @param faithMarker is a reference to the player's FaithMarker

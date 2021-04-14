@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model.personalboard;
 
 import it.polimi.ingsw.exceptions.ResourceNotValidException;
-import it.polimi.ingsw.model.Resources;
+import it.polimi.ingsw.model.Resource;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -12,29 +12,29 @@ class WarehouseDepotsTest {
     void addValidResourceInShelf() throws ResourceNotValidException {
         WarehouseDepots warehouseDepots = new WarehouseDepots();
 
-        assertFalse(warehouseDepots.addinShelf(0, Resources.COIN).getSlots().isEmpty());
+        assertFalse(warehouseDepots.addinShelf(0, Resource.COIN).getSlots().isEmpty());
     }
 
     @Test
     void addNotValidResourceInShelf() throws ResourceNotValidException {
         WarehouseDepots warehouseDepots = new WarehouseDepots();
-        warehouseDepots.addinShelf(0, Resources.COIN);
-        assertThrows(ResourceNotValidException.class, () -> warehouseDepots.addinShelf(0, Resources.SHIELD));
+        warehouseDepots.addinShelf(0, Resource.COIN);
+        assertThrows(ResourceNotValidException.class, () -> warehouseDepots.addinShelf(0, Resource.SHIELD));
     }
 
     @Test
     void getValidResource() throws ResourceNotValidException {
         WarehouseDepots warehouseDepots = new WarehouseDepots();
-        warehouseDepots.addinShelf(0, Resources.COIN);
+        warehouseDepots.addinShelf(0, Resource.COIN);
 
-        assertEquals(Resources.COIN, warehouseDepots.getResource(Resources.COIN));
+        assertEquals(Resource.COIN, warehouseDepots.getResource(Resource.COIN));
     }
 
     @Test
     void getNotValidResource() throws ResourceNotValidException {
         WarehouseDepots warehouseDepots = new WarehouseDepots();
-        warehouseDepots.addinShelf(0, Resources.COIN);
+        warehouseDepots.addinShelf(0, Resource.COIN);
 
-        assertThrows(ResourceNotValidException.class,()->warehouseDepots.getResource(Resources.SHIELD));
+        assertThrows(ResourceNotValidException.class,()->warehouseDepots.getResource(Resource.SHIELD));
     }
 }

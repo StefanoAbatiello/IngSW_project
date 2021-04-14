@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model.personalboard;
 
 import it.polimi.ingsw.exceptions.ResourceNotValidException;
-import it.polimi.ingsw.model.Resources;
+import it.polimi.ingsw.model.Resource;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -11,7 +11,7 @@ class StrongBoxTest {
     @Test
     void addResourceInStrongbox() {
         StrongBox strongBox=new StrongBox();
-        strongBox.addInStrongbox(Resources.COIN);
+        strongBox.addInStrongbox(Resource.COIN);
 
         assertEquals(1,strongBox.getStrongboxContent().size());
     }
@@ -19,8 +19,8 @@ class StrongBoxTest {
     @Test
     void getValidResource() throws ResourceNotValidException {
         StrongBox strongBox=new StrongBox();
-        strongBox.addInStrongbox(Resources.COIN);
-        strongBox.getResource(Resources.COIN);
+        strongBox.addInStrongbox(Resource.COIN);
+        strongBox.getResource(Resource.COIN);
 
         assertTrue(strongBox.getStrongboxContent().isEmpty());
     }
@@ -28,9 +28,9 @@ class StrongBoxTest {
     @Test
     void getNotValidResource() throws ResourceNotValidException {
         StrongBox strongBox = new StrongBox();
-        strongBox.addInStrongbox(Resources.COIN);
+        strongBox.addInStrongbox(Resource.COIN);
 
 
-        assertThrows(ResourceNotValidException.class,()->strongBox.getResource(Resources.SHIELD));
+        assertThrows(ResourceNotValidException.class,()->strongBox.getResource(Resource.SHIELD));
     }
 }

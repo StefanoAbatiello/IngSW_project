@@ -1,11 +1,10 @@
 package it.polimi.ingsw.model.Market;
 
+import it.polimi.ingsw.exceptions.FullSupplyException;
+import it.polimi.ingsw.exceptions.NotAcceptableSelectorException;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.personalboard.FaithMarker;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,7 +16,7 @@ class MarketTest {
     @Test
     void negativeSelectorTest(){
         Market market=new Market();
-        assertThrows(NotAcceptableSelectorException.class, ()->market.buyResources(-1,new Player(),new FaithMarker()));
+        assertThrows(NotAcceptableSelectorException.class, ()->market.buyResources(-1,new Player(0),new FaithMarker()));
     }
 
     /*
@@ -26,10 +25,10 @@ class MarketTest {
     @Test
     void notValidSelectorTest(){
         Market market=new Market();
-        assertThrows(NotAcceptableSelectorException.class, ()->market.buyResources(7,new Player(),new FaithMarker()));
+        assertThrows(NotAcceptableSelectorException.class, ()->market.buyResources(7,new Player(0),new FaithMarker()));
     }
 
-    @Test
+    /*@Test
     void buyinglineTest() throws FullSupplyException, NotAcceptableSelectorException {
         Market market=new Market();
         MarketMarble[][] marketTray= market.getMarketBoard();
@@ -37,7 +36,7 @@ class MarketTest {
         ArrayList <MarketMarble> line=new ArrayList<>();
         ArrayList<Resource> resources=new ArrayList<>();
         FaithMarker fp=new FaithMarker();
-        Player p=new Player();
+        Player p=new Player(0);
         int selector = 0;
         for(int i = 0; i < 4; i++){
             MarketMarble marble=marketTray[selector][i];
@@ -52,10 +51,10 @@ class MarketTest {
         }
 
         /*for(Container container : supply.containers)
-            container.takeResource();*/
+            container.takeResource();
        market.buyResources(selector, p,fp);
         assertEquals(Resource.valueOf(String.valueOf(resources)), supply.showSupply());
-    }
+    }*/
 
 /*    @Test
     void buyingcolumnTest() throws FullSupplyException, NotAcceptableSelectorException {
@@ -89,7 +88,7 @@ class MarketTest {
             for (int i = 1; i < 4; i++)
                 line[i - 1] = marketTray[selector][i];
             line[3] = extMarble;
-            market.buyResources(selector, new Player(), new FaithMarker());
+            market.buyResources(selector, new Player(0), new FaithMarker());
             for (int i = 0; i < 4; i++)
                 newLine[i] = marketTray[selector][i];
             assertArrayEquals(line, newLine);
@@ -107,7 +106,7 @@ class MarketTest {
         for(int i=1; i<3; i++)
             column[i-1]=marketTray[i][selector-3];
         column[2]=extMarble;
-        market.buyResources(selector,new Player(),new FaithMarker());
+        market.buyResources(selector,new Player(0),new FaithMarker());
         for(int i=0; i<3; i++)
             newColumn[i]=marketTray[i][selector-3];
         assertArrayEquals(column,newColumn);
