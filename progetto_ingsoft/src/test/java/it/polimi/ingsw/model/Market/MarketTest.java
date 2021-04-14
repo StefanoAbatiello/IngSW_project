@@ -29,22 +29,33 @@ class MarketTest {
         assertThrows(NotAcceptableSelectorException.class, ()->market.buyResources(7,new Player(),new FaithMarker()));
     }
 
-    /*@Test
+    @Test
     void buyinglineTest() throws FullSupplyException, NotAcceptableSelectorException {
         Market market=new Market();
         MarketMarble[][] marketTray= market.getMarketBoard();
         ResourceSupply supply=new ResourceSupply();
-        ArrayList<String> resources=new ArrayList<>();
+        ArrayList <MarketMarble> line=new ArrayList<>();
+        ArrayList<Resource> resources=new ArrayList<>();
         FaithMarker fp=new FaithMarker();
         Player p=new Player();
         int selector = 0;
-        for(int i = 0; i < 4; i++)
-            resources.add(marketTray[selector][i].resource.toString());
+        for(int i = 0; i < 4; i++){
+            MarketMarble marble=marketTray[selector][i];
+            if(marble.equals(new BlueMarble()))
+                resources.add(Resource.SHIELD);
+            else if(marble.equals(new GreyMarble()))
+                resources.add(Resource.STONE);
+            else if(marble.equals(new PurpleMarble()))
+                resources.add(Resource.SERVANT);
+            else if(marble.equals(new YellowMarble()))
+                resources.add(Resource.COIN);
+        }
+
         /*for(Container container : supply.containers)
-            container.takeResource();
+            container.takeResource();*/
        market.buyResources(selector, p,fp);
         assertEquals(Resource.valueOf(String.valueOf(resources)), supply.showSupply());
-    }*/
+    }
 
 /*    @Test
     void buyingcolumnTest() throws FullSupplyException, NotAcceptableSelectorException {

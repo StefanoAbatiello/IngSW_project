@@ -38,7 +38,7 @@ class ContainerTest {
     this Test is implemented to check if method takeResource empties container correctly
     */
     @Test
-    void emptyingTest() {
+    void emptyingTest() throws EmptyContainerException {
         Container container = new Container();
         container.fillContainer(Resource.SHIELD);
         container.takeResource();
@@ -49,17 +49,26 @@ class ContainerTest {
     this Test is implemented to check if method takeResource return Resource correctly
     */
     @Test
-    void takingResourceTest() {
+    void takingResourceTest() throws EmptyContainerException{
         Container container = new Container();
         container.fillContainer(Resource.SHIELD);
         assertEquals(Resource.SHIELD,container.takeResource());
     }
 
     /*
+    this Test is implemented to check if method takeResource throws the exception in case of an Empty container
+     */
+    @Test
+    void takingResourceFromEmptyContainerTest(){
+        Container container = new Container();
+        assertThrows(EmptyContainerException.class,()->container.takeResource());
+    }
+
+    /*
     this Test is implemented to check if iterating methods fillContainer and takeResource the attributes are modified correctly
     */
     @Test
-    void refillingContainerTest() {
+    void refillingContainerTest() throws EmptyContainerException{
         Container container = new Container();
         container.fillContainer(Resource.SHIELD);
         container.takeResource();
@@ -71,7 +80,7 @@ class ContainerTest {
    this Test is implemented to check if iterating methods fillContainer and takeResource the attributes are modified correctly
    */
     @Test
-    void reEmptyingContainerTest() {
+    void reEmptyingContainerTest() throws EmptyContainerException {
         Container container = new Container();
         container.fillContainer(Resource.SHIELD);
         container.takeResource();

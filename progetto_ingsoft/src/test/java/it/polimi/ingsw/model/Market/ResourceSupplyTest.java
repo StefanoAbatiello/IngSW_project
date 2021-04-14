@@ -53,7 +53,7 @@ class ResourceSupplyTest {
    this Test is implemented to check if this structure works correctly is case of multiple usages
     */
     @Test
-    void takingSomeResourceTest() throws FullSupplyException {
+    void takingSomeResourceTest() throws FullSupplyException, EmptyContainerException {
         ResourceSupply supply=new ResourceSupply();
         ResourceSupply.putResourceInContainer(Resource.COIN);
         ResourceSupply.putResourceInContainer(Resource.SERVANT);
