@@ -1,0 +1,8 @@
+-------------------------------------------------------------------------------
+Test set: it.polimi.ingsw.model.personalboard.FaithMarkerTest
+-------------------------------------------------------------------------------
+Tests run: 8, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.063 s <<< FAILURE! - in it.polimi.ingsw.model.personalboard.FaithMarkerTest
+activePopeSpaceWithDifferentPlayers  Time elapsed: 0.016 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <2> but was: <12>
+	at it.polimi.ingsw.model.personalboard.FaithMarkerTest.activePopeSpaceWithDifferentPlayers(FaithMarkerTest.java:64)
+
