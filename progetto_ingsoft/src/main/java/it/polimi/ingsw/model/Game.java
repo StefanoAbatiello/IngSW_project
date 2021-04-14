@@ -16,7 +16,7 @@ public class Game {
         setVC3active(true);
     }
 
-    public void createNewPlayer(Player player) {
+    public static void createNewPlayer(Player player) {
         players.add(player);
     }
 
@@ -48,6 +48,10 @@ public class Game {
         return players;
     }
 
+    public static ArrayList<Player> removePlayer(Player p) {
+            players.remove(p);
+        return players;
+    }
 
 
     public boolean canaddPlayer(){

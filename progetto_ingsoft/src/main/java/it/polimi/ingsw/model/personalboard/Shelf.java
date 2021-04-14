@@ -1,25 +1,26 @@
 package it.polimi.ingsw.model.personalboard;
 
+import it.polimi.ingsw.exceptions.ResourceNotValidException;
 import it.polimi.ingsw.model.Resources;
 
 import java.util.ArrayList;
 
 public class Shelf {
     private ArrayList<Resources> slots;
-    private String resourceType;
+    private Resources resourceType;
     private boolean shelfAvailability ;
     private int maxSize;
 
     public Shelf(int maxSize) {
         this.maxSize = maxSize;
-        this.resourceType=null;
+        this.slots=new ArrayList<Resources>();
     }
 
     /**
      * @return true if there is enough space in order to store resources in specialshelf
      */
     public boolean isShelfAvailability() {
-        if(slots.size()<maxSize)
+        if(slots.size()<=maxSize )
             shelfAvailability=true;
         else
             shelfAvailability=false;
@@ -30,17 +31,16 @@ public class Shelf {
      * @param resource is what we want add in shelf
      * @return slot after adding resource. Adding is allow only in case of shelf availability and compatibility with existing resources type.
      */
-    public ArrayList<Resources> addResources(Resources resource){
-        if((isShelfAvailability())&&(resource.getType().equals(resourceType))&&(slots.size()>0)) {
+    public ArrayList<Resources> addResources(Resources resource) throws ResourceNotValidException {
+        if((isShelfAvailability())&&(resource==resourceType)&&(!slots.isEmpty())) {
             slots.add(resource);
         }
-        else if(slots.size()==0){
-            resourceType=resource.getType();
+        else if(slots.isEmpty()){
+            resourceType=resource;
             slots.add(resource);
         }
-        else if(resource==null){
-            throw new NullPointerException("Inserire risorsa valida");
-        }
+        else
+            throw new ResourceNotValidException();
         return slots;
     }
 

@@ -1,12 +1,12 @@
 package it.polimi.ingsw.model.personalboard;
 
+import it.polimi.ingsw.exceptions.ResourceNotValidException;
 import it.polimi.ingsw.model.Resources;
 
-import java.util.ArrayList;
-
 public class WarehouseDepots {
-    private ArrayList<Resources> allResources;
+
     private Shelf shelves[]=new Shelf[3];
+
 
     public WarehouseDepots(){
         for(int i=0;i<shelves.length;i++)
@@ -16,21 +16,25 @@ public class WarehouseDepots {
     /**
      * @return shelf at floor i
      */
-    public Shelf chooseShelf(int i){
+    public Shelf addinShelf(int i,Resources resources) throws ResourceNotValidException {
+        shelves[i].addResources(resources);
         return shelves[i];
+
     }
 
     /**
      * @return all resources that are in Warehouse in every shelf
      */
-    public ArrayList<Resources> getAllResources() {
+    public Resources getResource(Resources resources) throws ResourceNotValidException {
         for(int i=0;i< shelves.length;i++){
-            allResources.addAll(shelves[i].getSlots());
-            if(shelves[i]==null) {
-                throw new NullPointerException("Do this operation after fill shelves");
+            for(Resources resources1:shelves[i].getSlots()){
+                if(resources==resources1){
+                    shelves[i].getSlots().remove(resources1);
+                    return resources;
+                }
             }
         }
-        return allResources;
+        throw new ResourceNotValidException();
     }
 
 }

@@ -8,8 +8,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FaithMarkerTest {
 
-
-
     @Test
     void getFaithPositionAtCreation() {
 
@@ -31,7 +29,7 @@ class FaithMarkerTest {
     @Test
     void setFaithMarkerID() {
         Player player=new Player(1);
-        assertEquals(player.getPlayerID(),player.getFaithMarker().setFaithMarkerID(player));
+        assertEquals(player.getPlayerID(),player.getPersonalBoard().getFaithMarker().setFaithMarkerID(player));
     }
 
     @Test
@@ -39,16 +37,16 @@ class FaithMarkerTest {
         Player p1 = new Player(1);
 
         for(int i=0;i<8;i++)
-            p1.getFaithMarker().updatePosition();
+            p1.getPersonalBoard().getFaithMarker().updatePosition();
 
         assertFalse(Game.isVC1active());
 
         for(int i=0;i<8;i++)
-            p1.getFaithMarker().updatePosition();
+            p1.getPersonalBoard().getFaithMarker().updatePosition();
         assertFalse(Game.isVC2active());
 
         for(int i=0;i<8;i++)
-            p1.getFaithMarker().updatePosition();
+            p1.getPersonalBoard().getFaithMarker().updatePosition();
         assertFalse(Game.isVC3active());
 
     }
@@ -63,7 +61,7 @@ class FaithMarkerTest {
         Game.createNewPlayer(new Player(2));
 
         for(int i=0;i<8;i++)
-            Game.getPlayers().get(0).getFaithMarker().updatePosition();
+            Game.getPlayers().get(0).getPersonalBoard().getFaithMarker().updatePosition();
 
         assertEquals(2,Game.getPlayers().get(0).getFaithtrackpoints());
         assertEquals(0,Game.getPlayers().get(1).getFaithtrackpoints());
@@ -87,9 +85,9 @@ class FaithMarkerTest {
         Game.createNewPlayer(new Player(2));
 
         for(int i=0;i<8;i++)
-            Game.getPlayers().get(0).getFaithMarker().updatePosition();
+            Game.getPlayers().get(0).getPersonalBoard().getFaithMarker().updatePosition();
 
-        assertEquals(2,Game.getPlayers().get(0).getFaithMarker().getPoints());
+        assertEquals(2,Game.getPlayers().get(0).getPersonalBoard().getFaithMarker().getPoints());
 
     }
 
@@ -98,9 +96,9 @@ class FaithMarkerTest {
         Player p1 = new Player(1);
 
         for(int i=0;i<8;i++)
-            p1.getFaithMarker().updatePosition();
+            p1.getPersonalBoard().getFaithMarker().updatePosition();
 
 
-        assertEquals(8,p1.getFaithMarker().getFaithPosition());
+        assertEquals(8,p1.getPersonalBoard().getFaithMarker().getFaithPosition());
     }
 }

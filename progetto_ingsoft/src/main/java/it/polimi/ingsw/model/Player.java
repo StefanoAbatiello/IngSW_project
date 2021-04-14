@@ -1,50 +1,90 @@
 package it.polimi.ingsw.model;
 
 
-import it.polimi.ingsw.model.personalboard.FaithMarker;
+import it.polimi.ingsw.exceptions.ResourceNotValidException;
+import it.polimi.ingsw.model.Market.Resource;
+import it.polimi.ingsw.model.cards.LeadCard;
+import it.polimi.ingsw.model.personalboard.PersonalBoard;
 
-import java.util.Random;
 
 public class Player {
     private int points;
     private int playerID;
-    private Random random;
-    private FaithMarker faithMarker;
+    private PersonalBoard personalBoard;
     private int faithtrackpoints;
+    private String potentialresource;
+    private int coderr;
 
-    public Player() {
-        this.points=0;
-        this.faithtrackpoints=0;
-        this.faithMarker = new FaithMarker();
-
+    public void setPotentialresource(String potentialresource) {
+        this.potentialresource = potentialresource;
     }
 
-    public int getPoints() {
-        return points;
+
+    public Resource[] WhiteMarbleAbility = new Resource[2];
+    private LeadCard[] cards;
+
+
+    public Player(int playerID) {
+        this.faithtrackpoints = 0;
+        this.playerID = playerID;
+        this.personalBoard = new PersonalBoard();
     }
 
-    public FaithMarker getFaithMarker() {
-        return faithMarker;
-    }
+        public boolean isWhiteMarbleAbility () {
+            return false;
+        }
 
-    public int setPlayerID() {
-        this.playerID= random.nextInt(3);
-        return playerID;
-    }
+        public LeadCard[] getLeadCards () {
+            return cards;
+        }
 
-    public int getPlayerID() {
-        return playerID;
-    }
+        public PersonalBoard getPersonalBoard() {
+            return personalBoard;
+        }
 
-    public void setPoints(int points) {
-        this.points = points;
-    }
+        public int getPlayerID () {
+            return playerID;
+        }
 
-    public void increaseFaithtrackPoints(int points) {
-        this.faithtrackpoints =this.faithtrackpoints + points;
-    }
+        public void setPoints ( int points){
+            this.points = points;
+        }
 
-    public int getFaithtrackpoints() {
-        return faithtrackpoints;
+        public int increaseFaithtrackPoints ( int points){
+            this.faithtrackpoints = this.faithtrackpoints + points;
+            return faithtrackpoints;
+        }
+
+        public int getFaithtrackpoints () {
+            return faithtrackpoints;
+        }
+
+
+        public Resources doBasicProduction (Resources r1, Resources r2){
+            try {
+                personalBoard.getStrongBox().getResource(r1);
+            } catch (ResourceNotValidException e) {
+                try {
+                    personalBoard.getWarehouseDepots().getResource(r1);
+                } catch (ResourceNotValidException e1) {
+                    coderr = 1;
+                }
+            }
+            try {
+                personalBoard.getStrongBox().getResource(r2);
+            } catch (ResourceNotValidException e) {
+                try {
+                    personalBoard.getWarehouseDepots().getResource(r2);
+                } catch (ResourceNotValidException resourceNotValidException) {
+                    coderr = 2;
+                }
+
+            }
+            Resources resources = Enum.valueOf(Resources.class, potentialresource);
+            return resources;
+        }
+
+        public int getCoderr () {
+            return coderr;
+        }
     }
-}

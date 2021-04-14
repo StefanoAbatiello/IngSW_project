@@ -7,6 +7,8 @@ public class DevCard {
 
     public DevCard() {
         Active=false;
+        DevCardLevel=1;
+        DevCardPoint=1;
     }
 
     public int getDevCardLevel() {
