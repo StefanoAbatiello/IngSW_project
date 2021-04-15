@@ -1,0 +1,577 @@
+[
+     {
+       "DEVCARD":{
+            "POINTS": 1,
+            "COLOR": "GREEN",
+            "LEVEL": 1,
+            "REQUIREMENTS":["SHIELD","SHIELD"],
+            "PRODIN":["COIN"],
+            "PRODOUT":[],
+            "FAITHPOINT": 1
+       }
+     },
+    {
+       "DEVCARD":
+       {
+            "POINTS": 1,
+            "COLOR": "PURPLE",
+            "LEVEL": 1,
+            "REQUIREMENTS":["SERVANT", "SERVANT"],
+            "PRODIN":["STONE"],
+            "PRODOUT":[],
+            "FAITHPOINT": 1
+       }
+    },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 1,
+        "COLOR": "BLUE",
+        "LEVEL": 1,
+        "REQUIREMENTS":["COIN", "COIN"],
+        "PRODIN":["SHIELD"],
+        "PRODOUT":[],
+        "FAITHPOINT": 1
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 1,
+        "COLOR": "YELLOW",
+        "LEVEL": 1,
+        "REQUIREMENTS":["SHIELD", "SHIELD"],
+        "PRODIN":["SERVANT"],
+        "PRODOUT":[],
+        "FAITHPOINT": 1
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 2,
+        "COLOR": "GREEN",
+        "LEVEL": 1,
+        "REQUIREMENTS":["SHIELD", "STONE","SERVANT"],
+        "PRODIN":["STONE"],
+        "PRODOUT":["SERVANT"],
+        "FAITHPOINT": 0
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 2,
+        "COLOR": "PURPLE",
+        "LEVEL": 1,
+        "REQUIREMENTS":["SHIELD","COIN", "SERVANT"],
+        "PRODIN":["COIN"],
+        "PRODOUT":["SHIELD"],
+        "FAITHPOINT": 0
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 2,
+        "COLOR": "BLUE",
+        "LEVEL": 1,
+        "REQUIREMENTS":["COIN", "STONE","SERVANT"],
+        "PRODIN":["SERVANT"],
+        "PRODOUT":["STONE"],
+        "FAITHPOINT": 0
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 2,
+        "COLOR": "YELLOW",
+        "LEVEL": 1,
+        "REQUIREMENTS":["SHIELD", "COIN","SERVANT"],
+        "PRODIN":["SHIELD"],
+        "PRODOUT":["COIN"],
+        "FAITHPOINT": 0
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 3,
+        "COLOR": "GREEN",
+        "LEVEL": 1,
+        "REQUIREMENTS":["SHIELD", "SHIELD","SHIELD"],
+        "PRODIN":["SERVANT", "SERVANT"],
+        "PRODOUT":["COIN","SHIELD", "STONE"],
+        "FAITHPOINT": 0
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 3,
+        "COLOR": "PURPLE",
+        "LEVEL": 1,
+        "REQUIREMENTS":["SERVANT", "SERVANT","SERVANT"],
+        "PRODIN":["COIN", "COIN"],
+        "PRODOUT":["SERVANT", "SHIELD","STONE"],
+        "FAITHPOINT": 0
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 3,
+        "COLOR": "BLUE",
+        "LEVEL": 1,
+        "REQUIREMENTS":["COIN", "COIN", "COIN"],
+        "PRODIN":["STONE", "STONE"],
+        "PRODOUT":[ "SHIELD", "COIN", "SERVANT"],
+        "FAITHPOINT": 0
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 3,
+        "COLOR": "YELLOW",
+        "LEVEL": 1,
+        "REQUIREMENTS":["STONE", "STONE", "STONE"],
+        "PRODIN":["SHIELD", "SHIELD"],
+        "PRODOUT":["COIN", "STONE","SERVANT"],
+        "FAITHPOINT": 0
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 4,
+        "COLOR": "GREEN",
+        "LEVEL": 1,
+        "REQUIREMENTS":["SHIELD", "SHIELD", "COIN", "COIN"],
+        "PRODIN":["STONE", "SERVANT"],
+        "PRODOUT":["COIN", "COIN"],
+        "FAITHPOINT": 1
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 4,
+        "COLOR": "PURPLE",
+        "LEVEL": 1,
+        "REQUIREMENTS":["SERVANT", "SERVANT", "STONE", "STONE"],
+        "PRODIN":["COIN", "SHIELD"],
+        "PRODOUT":["STONE", "STONE"],
+        "FAITHPOINT": 1
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 4,
+        "COLOR": "BLUE",
+        "LEVEL": 1,
+        "REQUIREMENTS":["COIN", "COIN", "SERVANT", "SERVANT"],
+        "PRODIN":["SHIELD", "STONE"],
+        "PRODOUT":["SERVANT", "SERVANT"],
+        "FAITHPOINT": 1
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 4,
+        "COLOR": "YELLOW",
+        "LEVEL": 1,
+        "REQUIREMENTS":["STONE", "STONE", "SHIELD", "SHIELD"],
+        "PRODIN":["COIN", "SERVANT"],
+        "PRODOUT":["SHIELD", "SHIELD"],
+        "FAITHPOINT": 1
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 5,
+        "COLOR": "GREEN",
+        "LEVEL": 2,
+        "REQUIREMENTS":["SHIELD", "SHIELD","SHIELD","SHIELD"],
+        "PRODIN":["STONE"],
+        "PRODOUT":[],
+        "FAITHPOINT": 2
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 5,
+        "COLOR": "PURPLE",
+        "LEVEL": 2,
+        "REQUIREMENTS":["SERVANT", "SERVANT","SERVANT", "SERVANT"],
+        "PRODIN":["COIN"],
+        "PRODOUT":[],
+        "FAITHPOINT": 2
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 5,
+        "COLOR": "BLUE",
+        "LEVEL": 2,
+        "REQUIREMENTS":["COIN", "COIN","COIN", "COIN"],
+        "PRODIN":["SERVANT"],
+        "PRODOUT":[],
+        "FAITHPOINT": 2
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 5,
+        "COLOR": "YELLOW",
+        "LEVEL": 2,
+        "REQUIREMENTS":["STONE", "STONE","STONE", "STONE"],
+        "PRODIN":["SHIELD"],
+        "PRODOUT":[],
+        "FAITHPOINT": 2
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 6,
+        "COLOR": "GREEN",
+        "LEVEL": 2,
+        "REQUIREMENTS":["SHIELD", "SHIELD","SHIELD", "SERVANT","SERVANT"],
+        "PRODIN":["SHIELD", "SERVANT"],
+        "PRODOUT":["STONE", "STONE", "STONE"],
+        "FAITHPOINT": 0
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 6,
+        "COLOR": "PURPLE",
+        "LEVEL": 2,
+        "REQUIREMENTS":["SERVANT", "SERVANT","SERVANT", "COIN","COIN"],
+        "PRODIN":["COIN","SERVANT"],
+        "PRODOUT":["SHIELD", "SHIELD","SHIELD"],
+        "FAITHPOINT": 0
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 6,
+        "COLOR": "BLUE",
+        "LEVEL": 2,
+        "REQUIREMENTS":["COIN", "COIN","COIN", "STONE","STONE"],
+        "PRODIN":["COIN","STONE"],
+        "PRODOUT":["SERVANT", "SERVANT","SERVANT"],
+        "FAITHPOINT": 0
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 6,
+        "COLOR": "YELLOW",
+        "LEVEL": 2,
+        "REQUIREMENTS":["STONE", "STONE","STONE", "SHIELD","SHIELD"],
+        "PRODIN":["STONE","SHIELD"],
+        "PRODOUT":["COIN", "COIN","COIN"],
+        "FAITHPOINT": 0
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 7,
+        "COLOR": "GREEN",
+        "LEVEL": 2,
+        "REQUIREMENTS":["SHIELD", "SHIELD","SHIELD", "SHIELD","SHIELD"],
+        "PRODIN":["COIN","COIN"],
+        "PRODOUT":["STONE", "STONE"],
+        "FAITHPOINT": 2
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 7,
+        "COLOR": "PURPLE",
+        "LEVEL": 2,
+        "REQUIREMENTS":["SERVANT", "SERVANT","SERVANT", "SERVANT","SERVANT"],
+        "PRODIN":["STONE","STONE"],
+        "PRODOUT":["COIN", "COIN"],
+        "FAITHPOINT": 2
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 7,
+        "COLOR": "BLUE",
+        "LEVEL": 2,
+        "REQUIREMENTS":["COIN", "COIN","COIN", "COIN","COIN"],
+        "PRODIN":["SERVANT","SERVANT"],
+        "PRODOUT":["SHIELD", "SHIELD"],
+        "FAITHPOINT": 2
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 7,
+        "COLOR": "YELLOW",
+        "LEVEL": 2,
+        "REQUIREMENTS":["STONE", "STONE","STONE", "STONE","STONE"],
+        "PRODIN":["SHIELD","SHIELD"],
+        "PRODOUT":["SERVANT", "SERVANT"],
+        "FAITHPOINT": 2
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 8,
+        "COLOR": "GREEN",
+        "LEVEL": 2,
+        "REQUIREMENTS":["SHIELD", "SHIELD","SHIELD", "COIN","COIN","COIN"],
+        "PRODIN":["COIN"],
+        "PRODOUT":["SHIELD", "SHIELD"],
+        "FAITHPOINT": 1
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 8,
+        "COLOR": "PURPLE",
+        "LEVEL": 2,
+        "REQUIREMENTS":["SERVANT", "SERVANT","SERVANT", "SHIELD","SHIELD","SHIELD"],
+        "PRODIN":["STONE"],
+        "PRODOUT":["SERVANT", "SERVANT"],
+        "FAITHPOINT": 1
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 8,
+        "COLOR": "BLUE",
+        "LEVEL": 2,
+        "REQUIREMENTS":["COIN", "COIN","COIN", "STONE","STONE","STONE"],
+        "PRODIN":["SERVANT"],
+        "PRODOUT":["STONE", "STONE"],
+        "FAITHPOINT": 1
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 8,
+        "COLOR": "YELLOW",
+        "LEVEL": 2,
+        "REQUIREMENTS":["STONE", "STONE","STONE", "SERVANT","SERVANT","SERVANT"],
+        "PRODIN":["SHIELD"],
+        "PRODOUT":["COIN", "COIN"],
+        "FAITHPOINT": 1
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 9,
+        "COLOR": "GREEN",
+        "LEVEL": 3,
+        "REQUIREMENTS":["SHIELD", "SHIELD","SHIELD", "SHIELD","SHIELD","SHIELD"],
+        "PRODIN":["COIN", "COIN"],
+        "PRODOUT":["STONE", "STONE","STONE"],
+        "FAITHPOINT": 2
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 9,
+        "COLOR": "PURPLE",
+        "LEVEL": 3,
+        "REQUIREMENTS":["SERVANT", "SERVANT","SERVANT", "SERVANT","SERVANT","SERVANT"],
+        "PRODIN":["STONE", "STONE"],
+        "PRODOUT":["COIN", "COIN","COIN"],
+        "FAITHPOINT": 2
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 9,
+        "COLOR": "BLUE",
+        "LEVEL": 3,
+        "REQUIREMENTS":["COIN", "COIN","COIN", "COIN","COIN","COIN"],
+        "PRODIN":["SERVANT", "SERVANT"],
+        "PRODOUT":["SHIELD", "SHIELD","SHIELD"],
+        "FAITHPOINT": 2
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 9,
+        "COLOR": "YELLOW",
+        "LEVEL": 3,
+        "REQUIREMENTS":["STONE", "STONE","STONE", "STONE","STONE","STONE"],
+        "PRODIN":["SHIELD", "SHIELD"],
+        "PRODOUT":["SERVANT", "SERVANT","SERVANT"],
+        "FAITHPOINT": 2
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 10,
+        "COLOR": "GREEN",
+        "LEVEL": 3,
+        "REQUIREMENTS":["SHIELD", "SHIELD","SHIELD", "SHIELD","SHIELD","SERVANT", "SERVANT"],
+        "PRODIN":["COIN", "SERVANT"],
+        "PRODOUT":["SHIELD", "SHIELD","STONE", "STONE"],
+        "FAITHPOINT": 1
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 10,
+        "COLOR": "PURPLE",
+        "LEVEL": 3,
+        "REQUIREMENTS":["SERVANT", "SERVANT","SERVANT", "SERVANT","SERVANT","COIN", "COIN"],
+        "PRODIN":["STONE", "SHIELD"],
+        "PRODOUT":["COIN", "COIN","SERVANT", "SERVANT"],
+        "FAITHPOINT": 1
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 10,
+        "COLOR": "BLUE",
+        "LEVEL": 3,
+        "REQUIREMENTS":["COIN", "COIN","COIN", "COIN","COIN","STONE", "STONE"],
+        "PRODIN":["COIN", "SHIELD"],
+        "PRODOUT":["SERVANT", "SERVANT","STONE", "STONE"],
+        "FAITHPOINT": 1
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 10,
+        "COLOR": "YELLOW",
+        "LEVEL": 3,
+        "REQUIREMENTS":["STONE", "STONE","STONE", "STONE","STONE","SERVANT", "SERVANT"],
+        "PRODIN":["STONE", "SERVANT"],
+        "PRODOUT":["COIN", "COIN","SHIELD", "SHIELD"],
+        "FAITHPOINT": 1
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 11,
+        "COLOR": "GREEN",
+        "LEVEL": 3,
+        "REQUIREMENTS":["SHIELD", "SHIELD","SHIELD", "SHIELD","SHIELD","SHIELD", "SHIELD"],
+        "PRODIN":["SERVANT"],
+        "PRODOUT":["COIN"],
+        "FAITHPOINT": 3
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 11,
+        "COLOR": "PURPLE",
+        "LEVEL": 3,
+        "REQUIREMENTS":["SERVANT", "SERVANT","SERVANT", "SERVANT","SERVANT","SERVANT", "SERVANT"],
+        "PRODIN":["COIN"],
+        "PRODOUT":["STONE"],
+        "FAITHPOINT": 3
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 11,
+        "COLOR": "BLUE",
+        "LEVEL": 3,
+        "REQUIREMENTS":["COIN", "COIN","COIN", "COIN","COIN","COIN", "COIN"],
+        "PRODIN":["STONE"],
+        "PRODOUT":["SHIELD"],
+        "FAITHPOINT": 3
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 11,
+        "COLOR": "YELLOW",
+        "LEVEL": 3,
+        "REQUIREMENTS":["STONE", "STONE","STONE", "STONE","STONE","STONE", "STONE"],
+        "PRODIN":["SHIELD"],
+        "PRODOUT":["SERVANT"],
+        "FAITHPOINT": 3
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 12,
+        "COLOR": "GREEN",
+        "LEVEL": 3,
+        "REQUIREMENTS":["SHIELD", "SHIELD","SHIELD", "SHIELD","COIN","COIN", "COIN", "COIN"],
+        "PRODIN":["STONE"],
+        "PRODOUT":["COIN", "COIN", "COIN", "SHIELD"],
+        "FAITHPOINT": 0
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 12,
+        "COLOR": "PURPLE",
+        "LEVEL": 3,
+        "REQUIREMENTS":["SERVANT", "SERVANT","SERVANT", "SERVANT","SHIELD","SHIELD", "SHIELD", "SHIELD"],
+        "PRODIN":["COIN"],
+        "PRODOUT":["STONE", "STONE", "STONE", "SERVANT"],
+        "FAITHPOINT": 0
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 12,
+        "COLOR": "BLUE",
+        "LEVEL": 3,
+        "REQUIREMENTS":["COIN", "COIN","COIN", "COIN","STONE","STONE", "STONE", "STONE"],
+        "PRODIN":["SERVANT"],
+        "PRODOUT":["COIN", "SHIELD", "SHIELD", "SHIELD"],
+        "FAITHPOINT": 0
+      }
+  },
+  {
+      "DEVCARD":
+      {
+        "POINTS": 12,
+        "COLOR": "YELLOW",
+        "LEVEL": 3,
+        "REQUIREMENTS":["STONE", "STONE","STONE", "STONE","SERVANT","SERVANT", "SERVANT", "SERVANT"],
+        "PRODIN":["SHIELD"],
+        "PRODOUT":["SERVANT", "SERVANT", "SERVANT", "STONE"],
+        "FAITHPOINT": 0
+      }
+    }
+]
