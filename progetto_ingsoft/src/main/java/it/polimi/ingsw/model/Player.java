@@ -5,6 +5,8 @@ import it.polimi.ingsw.exceptions.ResourceNotValidException;
 import it.polimi.ingsw.model.cards.LeadCard;
 import it.polimi.ingsw.model.personalboard.PersonalBoard;
 
+import java.util.ArrayList;
+
 
 public class Player {
     private int points;
@@ -12,13 +14,6 @@ public class Player {
     private PersonalBoard personalBoard;
     private int faithtrackpoints;
     private String potentialresource;
-    private int coderr;
-
-    public void setPotentialresource(String potentialresource) {
-        this.potentialresource = potentialresource;
-    }
-
-
     public Resource[] WhiteMarbleAbility = new Resource[2];
     private LeadCard[] cards;
 
@@ -60,30 +55,23 @@ public class Player {
 
 
         public Resource doBasicProduction (Resource r1, Resource r2){
-            try {
-                personalBoard.getStrongBox().getResource(r1);
-            } catch (ResourceNotValidException e) {
-                try {
-                    personalBoard.getWarehouseDepots().getResource(r1);
-                } catch (ResourceNotValidException e1) {
-                    coderr = 1;
-                }
-            }
-            try {
-                personalBoard.getStrongBox().getResource(r2);
-            } catch (ResourceNotValidException e) {
-                try {
-                    personalBoard.getWarehouseDepots().getResource(r2);
-                } catch (ResourceNotValidException resourceNotValidException) {
-                    coderr = 2;
-                }
+            ArrayList<Resource> resourceArrayList=new ArrayList<>();
+            resourceArrayList.add(r1);
+            resourceArrayList.add(r2);
 
+            if(getPersonalBoard().checkUseProd(resourceArrayList)){
+                try {
+                    getPersonalBoard().removeResources(resourceArrayList);
+                } catch (ResourceNotValidException e) {
+                    e.printStackTrace();
+                }
             }
             Resource resource = Enum.valueOf(Resource.class, potentialresource);
             return resource;
         }
 
-        public int getCoderr () {
-            return coderr;
+        public void setPotentialresource(String potentialresource) {
+            this.potentialresource = potentialresource;
         }
+
     }

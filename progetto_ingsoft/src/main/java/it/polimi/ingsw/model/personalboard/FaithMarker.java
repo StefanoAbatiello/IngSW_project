@@ -58,11 +58,6 @@ public class FaithMarker {
             return true;
     }
 
-    public boolean activePopeSpace2(){
-        Game.getPlayers().stream().filter(player -> player.getPersonalBoard().getFaithMarker().isVaticanZone()).forEach(player -> player.increaseFaithtrackPoints(2));
-        return true;
-    }
-
     /**
      * @return true if faith marker position is in vatican zone
      */

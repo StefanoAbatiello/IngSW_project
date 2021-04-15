@@ -30,13 +30,5 @@ public class StrongBox {
         return strongboxContent;
     }
 
-    public Resource getResource(Resource resource) throws ResourceNotValidException {
-        for(Resource resource1 :strongboxContent){
-            if(resource1 == resource){
-                strongboxContent.remove(resource1);
-                return resource;
-            }
-        }
-        throw new ResourceNotValidException();
-    }
+
 }

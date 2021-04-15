@@ -53,9 +53,7 @@ class FaithMarkerTest {
     @Test
     void activePopeSpaceWithDifferentPlayers(){
 
-        new Game();
-        for(Player p : Game.getPlayers())
-            Game.removePlayer(p);
+        Game.resetGame();
 
         Game.createNewPlayer(new Player(1));
         Game.createNewPlayer(new Player(2));
@@ -81,6 +79,7 @@ class FaithMarkerTest {
 
     @Test
     void updatePoints() {
+        Game.resetGame();
         Game.createNewPlayer(new Player(1));
         Game.createNewPlayer(new Player(2));
 

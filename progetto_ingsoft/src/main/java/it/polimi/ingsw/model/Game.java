@@ -48,16 +48,12 @@ public class Game {
         return players;
     }
 
-    public static ArrayList<Player> removePlayer(Player p) {
-            players.remove(p);
-        return players;
-    }
-
-
-    public boolean canaddPlayer(){
-        if (players.size()<4)
-            return true;
-        else
-            return false;
+    public static boolean resetGame(){
+        setVC1active(true);
+        setVC2active(true);
+        setVC3active(true);
+        for(Player player:players)
+            Game.getPlayers().remove(player);
+        return Game.getPlayers().isEmpty();
     }
 }

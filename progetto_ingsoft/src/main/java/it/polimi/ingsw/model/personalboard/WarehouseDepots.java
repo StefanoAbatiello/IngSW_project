@@ -3,6 +3,8 @@ package it.polimi.ingsw.model.personalboard;
 import it.polimi.ingsw.exceptions.ResourceNotValidException;
 import it.polimi.ingsw.model.Resource;
 
+import java.util.ArrayList;
+
 public class WarehouseDepots {
 
     private Shelf shelves[]=new Shelf[3];
@@ -23,13 +25,14 @@ public class WarehouseDepots {
     }
 
     /**
-     * @return all resources that are in Warehouse in every shelf
+     * return a specific resource and remove it from player's warehouse
      */
     public Resource getResource(Resource resource) throws ResourceNotValidException {
         for(int i=0;i< shelves.length;i++){
             for(Resource resource1 :shelves[i].getSlots()){
                 if(resource == resource1){
                     shelves[i].getSlots().remove(resource1);
+                    getAllResource().remove(resource);
                     return resource;
                 }
             }
@@ -37,4 +40,16 @@ public class WarehouseDepots {
         throw new ResourceNotValidException();
     }
 
+    /**
+     * @return all resources that are in Warehouse in every shelf
+     */
+    public ArrayList<Resource> getAllResource(){
+        ArrayList<Resource> allres=new ArrayList<>();
+        for(int i=0;i< shelves.length;i++) {
+            for (Resource resources1 : shelves[i].getSlots()) {
+                    allres.add(resources1);
+            }
+        }
+        return allres;
+    }
 }

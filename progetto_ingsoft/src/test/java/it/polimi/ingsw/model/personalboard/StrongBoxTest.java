@@ -20,7 +20,7 @@ class StrongBoxTest {
     void getValidResource() throws ResourceNotValidException {
         StrongBox strongBox=new StrongBox();
         strongBox.addInStrongbox(Resource.COIN);
-        strongBox.getResource(Resource.COIN);
+        strongBox.getStrongboxContent().remove(Resource.COIN);
 
         assertTrue(strongBox.getStrongboxContent().isEmpty());
     }
@@ -31,6 +31,6 @@ class StrongBoxTest {
         strongBox.addInStrongbox(Resource.COIN);
 
 
-        assertThrows(ResourceNotValidException.class,()->strongBox.getResource(Resource.SHIELD));
+        assertThrows(ResourceNotValidException.class,()->strongBox.getStrongboxContent().remove(Resource.SHIELD));
     }
 }
