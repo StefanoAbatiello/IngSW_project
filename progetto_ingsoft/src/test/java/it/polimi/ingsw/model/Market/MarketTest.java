@@ -1,11 +1,10 @@
 package it.polimi.ingsw.model.Market;
 
+import it.polimi.ingsw.exceptions.FullSupplyException;
+import it.polimi.ingsw.exceptions.NotAcceptableSelectorException;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.personalboard.FaithMarker;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,7 +16,7 @@ class MarketTest {
     @Test
     void negativeSelectorTest(){
         Market market=new Market();
-        assertThrows(NotAcceptableSelectorException.class, ()->market.buyResources(-1,new Player(),new FaithMarker()));
+        assertThrows(NotAcceptableSelectorException.class, ()->market.buyResources(-1,new Player(0),new FaithMarker()));
     }
 
     /*
@@ -26,7 +25,7 @@ class MarketTest {
     @Test
     void notValidSelectorTest(){
         Market market=new Market();
-        assertThrows(NotAcceptableSelectorException.class, ()->market.buyResources(7,new Player(),new FaithMarker()));
+        assertThrows(NotAcceptableSelectorException.class, ()->market.buyResources(7,new Player(0),new FaithMarker()));
     }
 
     /*@Test
@@ -34,12 +33,23 @@ class MarketTest {
         Market market=new Market();
         MarketMarble[][] marketTray= market.getMarketBoard();
         ResourceSupply supply=new ResourceSupply();
-        ArrayList<String> resources=new ArrayList<>();
+        ArrayList <MarketMarble> line=new ArrayList<>();
+        ArrayList<Resource> resources=new ArrayList<>();
         FaithMarker fp=new FaithMarker();
-        Player p=new Player();
+        Player p=new Player(0);
         int selector = 0;
-        for(int i = 0; i < 4; i++)
-            resources.add(marketTray[selector][i].resource.toString());
+        for(int i = 0; i < 4; i++){
+            MarketMarble marble=marketTray[selector][i];
+            if(marble.equals(new BlueMarble()))
+                resources.add(Resource.SHIELD);
+            else if(marble.equals(new GreyMarble()))
+                resources.add(Resource.STONE);
+            else if(marble.equals(new PurpleMarble()))
+                resources.add(Resource.SERVANT);
+            else if(marble.equals(new YellowMarble()))
+                resources.add(Resource.COIN);
+        }
+
         /*for(Container container : supply.containers)
             container.takeResource();
        market.buyResources(selector, p,fp);
@@ -78,7 +88,7 @@ class MarketTest {
             for (int i = 1; i < 4; i++)
                 line[i - 1] = marketTray[selector][i];
             line[3] = extMarble;
-            market.buyResources(selector, new Player(), new FaithMarker());
+            market.buyResources(selector, new Player(0), new FaithMarker());
             for (int i = 0; i < 4; i++)
                 newLine[i] = marketTray[selector][i];
             assertArrayEquals(line, newLine);
@@ -96,7 +106,7 @@ class MarketTest {
         for(int i=1; i<3; i++)
             column[i-1]=marketTray[i][selector-3];
         column[2]=extMarble;
-        market.buyResources(selector,new Player(),new FaithMarker());
+        market.buyResources(selector,new Player(0),new FaithMarker());
         for(int i=0; i<3; i++)
             newColumn[i]=marketTray[i][selector-3];
         assertArrayEquals(column,newColumn);

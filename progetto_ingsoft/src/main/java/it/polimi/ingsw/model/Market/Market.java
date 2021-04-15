@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.Market;
 
+import it.polimi.ingsw.exceptions.FullSupplyException;
+import it.polimi.ingsw.exceptions.NotAcceptableSelectorException;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.personalboard.FaithMarker;
 
@@ -72,7 +74,7 @@ public class Market {
      * @return a boolean to indicate if the purchase is done or not
      * @throws NotAcceptableSelectorException if
      */
-    public MarketMarble[][] buyResources(int selector, Player p, FaithMarker fm) throws NotAcceptableSelectorException, FullSupplyException {
+    public MarketMarble[][] buyResources(int selector, Player p, FaithMarker fm) throws FullSupplyException, NotAcceptableSelectorException {
         if(selector<0)
             throw new NotAcceptableSelectorException("Il selettore è negativo e quindi non valido");
         if(selector<=2) {

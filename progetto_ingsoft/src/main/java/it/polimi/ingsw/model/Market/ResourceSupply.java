@@ -1,5 +1,8 @@
 package it.polimi.ingsw.model.Market;
 
+import it.polimi.ingsw.exceptions.FullSupplyException;
+import it.polimi.ingsw.model.Resource;
+
 import java.util.ArrayList;
 
 public class ResourceSupply {

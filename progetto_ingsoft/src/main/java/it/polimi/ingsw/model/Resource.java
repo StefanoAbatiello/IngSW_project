@@ -1,5 +1,5 @@
 package it.polimi.ingsw.model;
 
-public enum Resources {
+public enum Resource {
     COIN,SERVANT,SHIELD,STONE
 }

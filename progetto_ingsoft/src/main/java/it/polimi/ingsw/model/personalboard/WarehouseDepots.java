@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model.personalboard;
 
 import it.polimi.ingsw.exceptions.ResourceNotValidException;
-import it.polimi.ingsw.model.Resources;
+import it.polimi.ingsw.model.Resource;
 
 public class WarehouseDepots {
 
@@ -16,8 +16,8 @@ public class WarehouseDepots {
     /**
      * @return shelf at floor i
      */
-    public Shelf addinShelf(int i,Resources resources) throws ResourceNotValidException {
-        shelves[i].addResources(resources);
+    public Shelf addinShelf(int i, Resource resource) throws ResourceNotValidException {
+        shelves[i].addResources(resource);
         return shelves[i];
 
     }
@@ -25,12 +25,12 @@ public class WarehouseDepots {
     /**
      * @return all resources that are in Warehouse in every shelf
      */
-    public Resources getResource(Resources resources) throws ResourceNotValidException {
+    public Resource getResource(Resource resource) throws ResourceNotValidException {
         for(int i=0;i< shelves.length;i++){
-            for(Resources resources1:shelves[i].getSlots()){
-                if(resources==resources1){
-                    shelves[i].getSlots().remove(resources1);
-                    return resources;
+            for(Resource resource1 :shelves[i].getSlots()){
+                if(resource == resource1){
+                    shelves[i].getSlots().remove(resource1);
+                    return resource;
                 }
             }
         }

@@ -1,5 +1,8 @@
 package it.polimi.ingsw.model.Market;
 
+import it.polimi.ingsw.exceptions.EmptyContainerException;
+import it.polimi.ingsw.exceptions.FullSupplyException;
+import it.polimi.ingsw.model.Resource;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -53,7 +56,7 @@ class ResourceSupplyTest {
    this Test is implemented to check if this structure works correctly is case of multiple usages
     */
     @Test
-    void takingSomeResourceTest() throws FullSupplyException {
+    void takingSomeResourceTest() throws FullSupplyException, EmptyContainerException {
         ResourceSupply supply=new ResourceSupply();
         ResourceSupply.putResourceInContainer(Resource.COIN);
         ResourceSupply.putResourceInContainer(Resource.SERVANT);

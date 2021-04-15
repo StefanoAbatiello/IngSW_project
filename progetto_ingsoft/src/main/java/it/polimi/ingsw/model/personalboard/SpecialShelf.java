@@ -1,16 +1,16 @@
 package it.polimi.ingsw.model.personalboard;
 
-import it.polimi.ingsw.model.Resources;
+import it.polimi.ingsw.model.Resource;
 
 import java.util.ArrayList;
 
 public class SpecialShelf {
-    private Resources resourceType;
-    private ArrayList<Resources> specialSlots;
+    private Resource resourceType;
+    private ArrayList<Resource> specialSlots;
     private boolean spShelfAvailability;
     private boolean spActive;
 
-    public SpecialShelf(Resources resourceType) {
+    public SpecialShelf(Resource resourceType) {
         this.resourceType=resourceType;
         spActive=true;
         specialSlots=new ArrayList<>();
@@ -34,12 +34,12 @@ public class SpecialShelf {
     }
 
     /**
-     * @param resources is the resource that will be added
+     * @param resource is the resource that will be added
      * @return new dispositon of special slots only in case of special shelf availability and compatibility with resource indicated in the card
      */
-    public ArrayList<Resources> addResources(Resources resources){
-        if(isSpShelfAvailability()&&resources==resourceType){
-            specialSlots.add(resources);
+    public ArrayList<Resource> addResources(Resource resource){
+        if(isSpShelfAvailability()&& resource ==resourceType){
+            specialSlots.add(resource);
         }
         return specialSlots;
     }
@@ -47,14 +47,14 @@ public class SpecialShelf {
     /**
      * @return the resource type indicated in the card
      */
-    public Resources getResourceType() {
+    public Resource getResourceType() {
         return resourceType;
     }
 
     /**
      * @return all resources contained in special shelves
      */
-    public ArrayList<Resources> getSpecialSlots() {
+    public ArrayList<Resource> getSpecialSlots() {
         return specialSlots;
     }
 }

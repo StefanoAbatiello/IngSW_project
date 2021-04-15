@@ -1,5 +1,8 @@
 package it.polimi.ingsw.model.Market;
 
+import it.polimi.ingsw.exceptions.EmptyContainerException;
+import it.polimi.ingsw.model.Resource;
+
 public class Container{
 
     /*
@@ -53,9 +56,12 @@ public class Container{
      * and the container has been emptied
      * @return the the Resource taken from the container
      */
-    public Resource takeResource() {
-            this.empty=true;
+    public Resource takeResource() throws EmptyContainerException {
+        if(this.empty==false) {
+            this.empty = true;
             return this.resource;
+        }
+        throw new EmptyContainerException("Il container è vuoto, non è possibile prendere alcuna risorsa");
     }
 
 }
