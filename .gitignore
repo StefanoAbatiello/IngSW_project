@@ -1,2 +1,5 @@
-/progetto_ingsoft/target/classes/it/polimi/ingsw/App.class
-/.idea/
+.idea/
+target/
+out/
+*.iml
+
