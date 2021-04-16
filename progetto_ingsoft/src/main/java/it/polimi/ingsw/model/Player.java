@@ -2,83 +2,46 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.cards.LeadCard;
 import it.polimi.ingsw.exceptions.ResourceNotValidException;
-import it.polimi.ingsw.model.cards.LeadCard;
 import it.polimi.ingsw.model.personalboard.PersonalBoard;
 
 import java.util.ArrayList;
 
 public class Player {
-//TODO fare lista con due elementi che sono le risosrse possibili delle abilità, anzichè utilizzare il boolean
     public boolean playerLeadsEmpty = true;
     private LeadCard[] leadCards=new LeadCard[4];
-    private boolean productionAbility= false;
-    private boolean discountAbility = false;
-    private boolean whiteMarbleAbility = false;
-    private boolean shelfAbility = false;
-
-    private int points;
+    private ArrayList<Resource> productionAbility= new ArrayList<>();
+    private ArrayList<Resource> discountAbility = new ArrayList<>();
+    private ArrayList<Resource> whiteMarbleAbility = new ArrayList<>();
+    private ArrayList<Resource> shelfAbility = new ArrayList<>();
+    private int points = 0;
     private int playerID;
-    private PersonalBoard personalBoard;
-    private int faithtrackpoints;
-    private String potentialresource;
-    public Resource[] WhiteMarbleAbility = new Resource[2];
+    private String potentialResource;
+    private PersonalBoard personalBoard = new PersonalBoard();
+    private int faithtrackPoints = 0;
     private LeadCard[] cards;
 
-    public boolean isProductionAbility() {
-        return productionAbility;
+
+    public Player(int playerID) {
+        this.playerID = playerID;
     }
 
-    public void setProductionAbility(boolean productionAbility) {
-        this.productionAbility = productionAbility;
+    public ArrayList<Resource> getShelfAbility(ArrayList<Resource> shelfAbility) {
+        return this.shelfAbility;
     }
-
-    public boolean isShelfAbility() {
-        return shelfAbility;
+    public ArrayList<Resource> getDiscountAbility(ArrayList<Resource> discountAbility) {
+       return this.discountAbility;
     }
-
-    public void setShelfAbility(boolean shelfAbility) {
-        this.shelfAbility = shelfAbility;
+    public ArrayList<Resource> getWhiteMarbleAbility(ArrayList<Resource> whiteMarbleAbility) {
+        return this.whiteMarbleAbility;
     }
-
-    public boolean isDiscountAbility() {
-        return discountAbility;
+    public ArrayList<Resource> getProductionAbility(ArrayList<Resource> whiteMarbleAbility) {
+        return this.whiteMarbleAbility;
     }
-
-    public void setDiscountAbility(boolean discountAbility) {
-        this.discountAbility = discountAbility;
-    }
-
-    public boolean isWhiteMarbleAbility() {
-        return whiteMarbleAbility;
-    }
-
-    public void setWhiteMarbleAbility(boolean whiteMarbleAbility) {
-        this.whiteMarbleAbility = whiteMarbleAbility;
-    }
-
     public boolean setPlayerLeads(LeadCard[] leadCards){
          this.leadCards=leadCards;
          return true;
     }
 
-
-    /**spcial prod è attiva?
-     * se è attiva vado a vedere le carte e prendo quella con prod
-     *
-     *
-     * PROD<>
-     * SHELf<>
-     * WHITE<SERVANT,COIN>
-     * DISCOUNT<>
-     */
-
-
-
-    public Player(int playerID) {
-        this.faithtrackpoints = 0;
-        this.playerID = playerID;
-        this.personalBoard = new PersonalBoard();
-    }
 
         public LeadCard[] getLeadCards () {
             return cards;
@@ -97,12 +60,12 @@ public class Player {
         }
 
         public int increaseFaithtrackPoints ( int points){
-            this.faithtrackpoints = this.faithtrackpoints + points;
-            return faithtrackpoints;
+            this.faithtrackPoints = this.faithtrackPoints + points;
+            return faithtrackPoints;
         }
 
-        public int getFaithtrackpoints () {
-            return faithtrackpoints;
+        public int getFaithtrackPoints() {
+            return faithtrackPoints;
         }
 
 
@@ -118,12 +81,12 @@ public class Player {
                     e.printStackTrace();
                 }
             }
-            return Enum.valueOf(Resource.class, potentialresource);
+            return Enum.valueOf(Resource.class, potentialResource);
 
         }
 
-        public void setPotentialresource(String potentialresource) {
-            this.potentialresource = potentialresource;
+        public void setPotentialresource(String potentialResource) {
+            this.potentialResource = potentialResource;
         }
 
     }
