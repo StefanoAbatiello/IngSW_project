@@ -13,9 +13,9 @@ public class DevCardSlot {
 
     public DevCardSlot() {
         this.slot = new ArrayList[3];
-        slot[0]=new ArrayList<DevCard>();
-        slot[1]=new ArrayList<DevCard>();
-        slot[2]=new ArrayList<DevCard>();
+        slot[0]=new ArrayList<>();
+        slot[1]=new ArrayList<>();
+        slot[2]=new ArrayList<>();
         ActiveCards=new ArrayList<>();
         VictoryPoints=0;
     }
@@ -41,14 +41,14 @@ public class DevCardSlot {
         }
         for(int row=0;row<3;row++){
                 if(!slot[slotID].isEmpty()){
-                    if(devCard.getDevCardLevel()==slot[slotID].get(row).getDevCardLevel()+1 && slot[slotID].get(row).isActive()) {
+                    if(devCard.getLevel()==slot[slotID].get(row).getLevel()+1 && slot[slotID].get(row).isActive()) {
                         slot[slotID].get(row).setActive(false);
                         slot[slotID].add(devCard);
                         slot[slotID].get(row + 1).setActive(true);
                         return slot;
                     }
                 }
-                else if (devCard.getDevCardLevel()==1&&slot[slotID].isEmpty()){
+                else if (devCard.getLevel()==1&&slot[slotID].isEmpty()){
                     slot[slotID].add(devCard);
                     slot[slotID].get(0).setActive(true);
                     return slot;
@@ -78,7 +78,7 @@ public class DevCardSlot {
     public int getVictoryPoints(){
         for (int i=0;i<=2;i++){
                 for(DevCard dev:slot[i])
-                       VictoryPoints = VictoryPoints + dev.getDevCardPoint();
+                       VictoryPoints = (int) (VictoryPoints + dev.getPoints());
         }
         return VictoryPoints;
     }
