@@ -9,8 +9,8 @@ class LeadAbilityDiscountTest {
 
     @Test
     void activateAbilityOn() {
-        Player p= new Player();
-        /**se giocatore ha falso, diventa vero, se ha vero rimane vero*/
+        Player p= new Player(2);
+        /*se giocatore ha falso, diventa vero, se ha vero rimane vero*/
     }
 
    /** @Test

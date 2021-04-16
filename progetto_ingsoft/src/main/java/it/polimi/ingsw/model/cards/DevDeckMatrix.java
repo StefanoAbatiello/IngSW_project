@@ -18,18 +18,18 @@ public class DevDeckMatrix {
      * This constructor creates a matrix and dispose the cards on the table, divided in little decks of 4 cards each, dived by color and level
      */
     public DevDeckMatrix (){
-
-        ArrayList<DevCard> greenCards = DevDeck.createLittleDecks("GREEN");
-        ArrayList<DevCard> yellowCards = DevDeck.createLittleDecks("YELLOW");
-        ArrayList<DevCard> purpleCards = DevDeck.createLittleDecks("PURPLE");
-        ArrayList<DevCard> blueCards = DevDeck.createLittleDecks("BLUE");
-        ArrayList<DevCard> devDeckInOrder = Stream.of(greenCards, yellowCards, purpleCards,blueCards).flatMap(Collection::stream).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);;
+        DevDeck deck = new DevDeck();
+        ArrayList<DevCard> greenCards = deck.createLittleDecks("GREEN");
+        ArrayList<DevCard> yellowCards = deck.createLittleDecks("YELLOW");
+        ArrayList<DevCard> purpleCards = deck.createLittleDecks("PURPLE");
+        ArrayList<DevCard> blueCards = deck.createLittleDecks("BLUE");
+        ArrayList<DevCard> devDeckInOrder = Stream.of(greenCards, yellowCards, purpleCards,blueCards).flatMap(Collection::stream).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
 
         for(DevCard card: devDeckInOrder){
             for(int i=0;i<4;i++){
                 for(int j=0;j<3;j++){
                     devDecksOnTable[i][j] = new LittleDevDeck();
-                    for(int numcards=0; numcards<3;numcards++)
+                    for(int numcards=0; numcards<4;numcards++)
                         devDecksOnTable[i][j].littleDevDeck.add(card);
                     Collections.shuffle(devDecksOnTable[i][j].littleDevDeck);
                 }
@@ -45,7 +45,8 @@ public class DevDeckMatrix {
         DevCard[][] cardsOnTable = new DevCard[4][3];
         for(int i=0;i<4;i++){
             for(int j=0; j<3;j++){
-                cardsOnTable[i][j]= devDecksOnTable[i][j].littleDevDeck.get(0);
+                if (!devDecksOnTable[i][j].littleDevDeck.isEmpty())
+                     cardsOnTable[i][j]= devDecksOnTable[i][j].littleDevDeck.get(0);
             }
         }
         return cardsOnTable;
@@ -67,12 +68,13 @@ public class DevDeckMatrix {
      *This method gives the possibility to get a card from the matrix
      * @param cardToBuy the dev card that who calls the method wants to buy
      * @return the dev card that the caller wants to buy, if the card is present
-     * @throws CardNotOnTableException
+     * @throws CardNotOnTableException the card wanted is not present on the game table
      */
     public static DevCard buyCard ( DevCard cardToBuy) throws CardNotOnTableException {
         for(int i=0;i<4;i++){
             for(int j=0; j<3;j++){
-                if((devDecksOnTable[i][j].littleDevDeck.get(0)).equals(cardToBuy)){
+                if(!devDecksOnTable[i][j].littleDevDeck.isEmpty())
+                  if((devDecksOnTable[i][j].littleDevDeck.get(0)).equals(cardToBuy)){
                     devDecksOnTable[i][j].littleDevDeck.remove(0);
                     return cardToBuy;
                 }

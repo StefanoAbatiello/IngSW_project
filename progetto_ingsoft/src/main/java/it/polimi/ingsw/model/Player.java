@@ -1,6 +1,11 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.cards.LeadCard;
+import it.polimi.ingsw.exceptions.ResourceNotValidException;
+import it.polimi.ingsw.model.cards.LeadCard;
+import it.polimi.ingsw.model.personalboard.PersonalBoard;
+
+import java.util.ArrayList;
 
 public class Player {
 //TODO fare lista con due elementi che sono le risosrse possibili delle abilità, anzichè utilizzare il boolean
@@ -11,12 +16,20 @@ public class Player {
     private boolean whiteMarbleAbility = false;
     private boolean shelfAbility = false;
 
+    private int points;
+    private int playerID;
+    private PersonalBoard personalBoard;
+    private int faithtrackpoints;
+    private String potentialresource;
+    public Resource[] WhiteMarbleAbility = new Resource[2];
+    private LeadCard[] cards;
+
     public boolean isProductionAbility() {
         return productionAbility;
     }
 
     public void setProductionAbility(boolean productionAbility) {
-        productionAbility = productionAbility;
+        this.productionAbility = productionAbility;
     }
 
     public boolean isShelfAbility() {
@@ -48,7 +61,7 @@ public class Player {
          return true;
     }
 
-}
+
     /**spcial prod è attiva?
      * se è attiva vado a vedere le carte e prendo quella con prod
      *
@@ -59,21 +72,6 @@ public class Player {
      * DISCOUNT<>
      */
 
-import it.polimi.ingsw.exceptions.ResourceNotValidException;
-import it.polimi.ingsw.model.cards.LeadCard;
-import it.polimi.ingsw.model.personalboard.PersonalBoard;
-
-import java.util.ArrayList;
-
-
-public class Player {
-    private int points;
-    private int playerID;
-    private PersonalBoard personalBoard;
-    private int faithtrackpoints;
-    private String potentialresource;
-    public Resource[] WhiteMarbleAbility = new Resource[2];
-    private LeadCard[] cards;
 
 
     public Player(int playerID) {
@@ -81,10 +79,6 @@ public class Player {
         this.playerID = playerID;
         this.personalBoard = new PersonalBoard();
     }
-
-        public boolean isWhiteMarbleAbility () {
-            return false;
-        }
 
         public LeadCard[] getLeadCards () {
             return cards;
@@ -124,8 +118,8 @@ public class Player {
                     e.printStackTrace();
                 }
             }
-            Resource resource = Enum.valueOf(Resource.class, potentialresource);
-            return resource;
+            return Enum.valueOf(Resource.class, potentialresource);
+
         }
 
         public void setPotentialresource(String potentialresource) {

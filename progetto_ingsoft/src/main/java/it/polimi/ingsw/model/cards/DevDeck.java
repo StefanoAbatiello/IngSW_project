@@ -11,10 +11,11 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class DevDeck{
+
     /**
      * This attribute is the array of development cards that form the development deck
      */
-    static ArrayList<DevCard> devCards = new ArrayList<>();
+    private final ArrayList<DevCard> devCards = new ArrayList<>();
 
     /**
      * This constructor uses a JSON file to create the deck of dev cards through the parsing methods
@@ -74,7 +75,7 @@ public class DevDeck{
         ArrayList<Resource> resourceList= new ArrayList<>();
         Iterator<String> iterator= jsonArray.iterator();
         while(iterator.hasNext()){
-            resourceList.add(Resource.valueOf(((String)iterator.next())));
+            resourceList.add(Resource.valueOf((iterator.next())));
         }
         return resourceList;
     }
@@ -84,12 +85,21 @@ public class DevDeck{
      * @param color represent the color of the cards desidered in the new little deck
      * @return an ArrayList of DevCard representing a little deck with all the cards of the same color and in order of level
      */
-    public static ArrayList<DevCard> createLittleDecks(String color){
+    public ArrayList<DevCard> createLittleDecks(String color){
         ArrayList<DevCard> littleDeck;
 
         littleDeck= devCards.stream().filter(x -> x.getColor().equals(color)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
         littleDeck.sort(Comparator.comparing(DevCard::getLevel));
         return littleDeck;
     }
+
+    /**
+     *
+     * @return current state of devCards
+     */
+    public ArrayList<DevCard> getDevCards() {
+        return devCards;
+    }
+
 
 }
