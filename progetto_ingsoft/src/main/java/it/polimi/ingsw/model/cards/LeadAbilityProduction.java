@@ -5,7 +5,7 @@ import it.polimi.ingsw.model.Resource;
 
 public class LeadAbilityProduction {
 
-    public boolean activateAbilityOn(Player p){
+    /*public boolean activateAbilityOn(Player p){
         if(!p.isProductionAbility()) {
             p.setProductionAbility(true);
             return true;

@@ -16,12 +16,12 @@ public class WhiteMarble implements MarketMarble {
      * @return true if the player has a whiteMarbleAbility active and the storage of the corrispondent resourse is done correctly, false in other case
      */
     //TODO gestione della scelta di quale risorsa prendere se può scegliere tra due
-    @Override
+
     public boolean changeMarble(FaithMarker faithMarker, Player player) throws FullSupplyException {
-        if (player.WhiteMarbleAbility.length!=0) {
+        /*if (player.WhiteMarbleAbility.length!=0) {
             ResourceSupply.putResourceInContainer(player.WhiteMarbleAbility[0]);
             return true;
-        }
+        }*/
         return false;
     }
 
