@@ -4,14 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e05cf3a1-1ea8-4307-b3d4-ddb60efeef1b" name="Default Changelist" comment="update Container class and test adding EmptyContainerException">
-      <change afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/Market/EmptyContainerException.java" afterDir="false" />
+    <list default="true" id="e05cf3a1-1ea8-4307-b3d4-ddb60efeef1b" name="Default Changelist" comment="Upload basic production and improving player's tests">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/Market/Container.java" beforeDir="false" afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/Market/Container.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/personalboard/PersonalBoard.java" beforeDir="false" afterPath="$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/personalboard/PersonalBoard.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/progetto_ingsoft/src/test/java/it/polimi/ingsw/model/Market/ContainerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/progetto_ingsoft/src/test/java/it/polimi/ingsw/model/Market/ContainerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/progetto_ingsoft/src/test/java/it/polimi/ingsw/model/Market/MarketTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/progetto_ingsoft/src/test/java/it/polimi/ingsw/model/Market/MarketTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/progetto_ingsoft/src/test/java/it/polimi/ingsw/model/Market/ResourceSupplyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/progetto_ingsoft/src/test/java/it/polimi/ingsw/model/Market/ResourceSupplyTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/progetto_ingsoft/src/test/java/it/polimi/ingsw/model/Market/BlueMarbleTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/progetto_ingsoft/src/test/java/it/polimi/ingsw/model/Market/BlueMarbleTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,6 +34,15 @@
       <filtered-out-file-type name="TAG" />
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/Player.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/personalboard/StrongBox.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/personalboard/WarehouseDepots.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/personalboard/PersonalBoard.java" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedIndex" value="1" />
   </component>
   <component name="ProjectId" id="1q44WgMpwRJuG4yGnyLugt6IIPg" />
   <component name="ProjectViewState">
@@ -73,7 +78,7 @@
       <recent name="it.polimi.ingsw.model.Market" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.ResourceSupplyTest">
+  <component name="RunManager" selected="JUnit.PlayerTest.getFaithtrackpoints">
     <configuration name="ContainerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="AM3" />
       <extension name="coverage">
@@ -110,20 +115,20 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="MarketTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="PlayerTest.getFaithtrackpoints" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="AM3" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="it.polimi.ingsw.model.Market.*" />
+          <option name="PATTERN" value="it.polimi.ingsw.model.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
       <option name="ALTERNATIVE_JRE_PATH" value="15" />
-      <option name="PACKAGE_NAME" value="it.polimi.ingsw.model.Market" />
-      <option name="MAIN_CLASS_NAME" value="it.polimi.ingsw.model.Market.MarketTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
+      <option name="PACKAGE_NAME" value="it.polimi.ingsw.model" />
+      <option name="MAIN_CLASS_NAME" value="it.polimi.ingsw.model.PlayerTest" />
+      <option name="METHOD_NAME" value="getFaithtrackpoints" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -177,11 +182,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.PlayerTest.getFaithtrackpoints" />
         <item itemvalue="JUnit.ResourceSupplyTest" />
         <item itemvalue="JUnit.ContainerTest" />
         <item itemvalue="JUnit.ContainerTest.takingResourceTest" />
         <item itemvalue="JUnit.RedMarbleTest" />
-        <item itemvalue="JUnit.MarketTest" />
       </list>
     </recent_temporary>
   </component>
@@ -202,7 +207,8 @@
     <MESSAGE value="test di salva" />
     <MESSAGE value="First version of Market and its management(marbles, Resource and ResourceSupply)" />
     <MESSAGE value="update Container class and test adding EmptyContainerException" />
-    <option name="LAST_COMMIT_MESSAGE" value="update Container class and test adding EmptyContainerException" />
+    <MESSAGE value="Upload basic production and improving player's tests" />
+    <option name="LAST_COMMIT_MESSAGE" value="Upload basic production and improving player's tests" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
