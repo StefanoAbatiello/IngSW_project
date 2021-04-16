@@ -61,8 +61,8 @@ class FaithMarkerTest {
         for(int i=0;i<8;i++)
             Game.getPlayers().get(0).getPersonalBoard().getFaithMarker().updatePosition();
 
-        assertEquals(2,Game.getPlayers().get(0).getFaithtrackPoints());
-        assertEquals(0,Game.getPlayers().get(1).getFaithtrackPoints());
+        assertEquals(2,Game.getPlayers().get(0).getFaithtrackpoints());
+        assertEquals(0,Game.getPlayers().get(1).getFaithtrackpoints());
 
     }
 
