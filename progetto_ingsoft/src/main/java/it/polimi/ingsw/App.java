@@ -12,7 +12,12 @@ public class App
 {
     public static void main( String[] args )
     {
-
+        //chiede al primo giocatore se vuole giocare da solo o con quanti altri
+        /*if(singlePlayerMode)
+            SinglePlayer.start();
+        else
+            //prende numero giocatori
+        new Game(int numOfPlayers)*/
         System.out.println("project");
     }
 }

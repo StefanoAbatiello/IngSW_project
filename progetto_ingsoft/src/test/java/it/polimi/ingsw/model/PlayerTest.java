@@ -3,8 +3,6 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.exceptions.ResourceNotValidException;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerTest {
@@ -16,7 +14,7 @@ class PlayerTest {
         for(int i=0;i<8;i++)
             Game.getPlayers().get(0).getPersonalBoard().getFaithMarker().updatePosition();
 
-        assertEquals(2,Game.getPlayers().get(0).getFaithtrackpoints());
+        assertEquals(2,Game.getPlayers().get(0).getFaithtrackPoints());
     }
 
     @Test
