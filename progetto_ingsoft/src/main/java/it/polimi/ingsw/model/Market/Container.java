@@ -2,8 +2,12 @@ package it.polimi.ingsw.model.Market;
 
 import it.polimi.ingsw.exceptions.EmptyContainerException;
 import it.polimi.ingsw.model.Resource;
+import it.polimi.ingsw.model.ResourceCreator;
 
-public class Container{
+import java.util.ArrayList;
+import java.util.Optional;
+
+public class Container {
 
     /*
       this String indicates which type of resource is stored in this container
@@ -24,19 +28,20 @@ public class Container{
         return this.empty;
     }
 
+
     /**
      * this constructor create an empty container initializing attributes
      */
     public Container() {
-        this.resource=null;
-        this.empty=true;
+        this.resource = null ;
+        this.empty = true;
     }
 
     /**
      * @return the actual Resource stored in container
      */
-    public Resource getResource() {
-        return resource;
+    public Resource viewResource() {
+        return this.resource;
     }
 
 

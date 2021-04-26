@@ -33,7 +33,7 @@ class ContainerTest {
     void fillContainerTest() {
         Container container = new Container();
         container.fillContainer(Resource.SHIELD);
-        assertEquals(Resource.SHIELD,container.getResource());
+        assertEquals(Resource.SHIELD,container.viewResource());
     }
 
     /*
@@ -63,7 +63,7 @@ class ContainerTest {
     @Test
     void takingResourceFromEmptyContainerTest(){
         Container container = new Container();
-        assertThrows(EmptyContainerException.class,()->container.takeResource());
+        assertThrows(EmptyContainerException.class, container::takeResource);
     }
 
     /*

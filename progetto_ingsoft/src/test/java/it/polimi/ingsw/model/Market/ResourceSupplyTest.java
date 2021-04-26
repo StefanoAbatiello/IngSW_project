@@ -49,7 +49,7 @@ class ResourceSupplyTest {
         resources.add(Resource.SERVANT);
         resources.add(Resource.SHIELD);
         resources.add(Resource.STONE);
-        assertEquals(resources,ResourceSupply.showSupply());
+        assertEquals(resources,supply.showSupply());
     }
 
     /*
@@ -67,7 +67,7 @@ class ResourceSupplyTest {
         resources.add(Resource.SERVANT);
         resources.add(Resource.SHIELD);
         resources.add(Resource.STONE);
-        assertEquals(resources,ResourceSupply.showSupply());
+        assertEquals(resources,supply.showSupply());
     }
 
 }

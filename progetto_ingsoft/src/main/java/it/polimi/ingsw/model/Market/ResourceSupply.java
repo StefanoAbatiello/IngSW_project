@@ -2,10 +2,11 @@ package it.polimi.ingsw.model.Market;
 
 import it.polimi.ingsw.exceptions.FullSupplyException;
 import it.polimi.ingsw.model.Resource;
+import it.polimi.ingsw.model.ResourceCreator;
 
 import java.util.ArrayList;
 
-public class ResourceSupply {
+public class ResourceSupply implements ResourceCreator {
 
     /*
     this is an array of containers,
@@ -41,14 +42,18 @@ public class ResourceSupply {
     /**
      * @return an Arraylist of the Resource stored in ResourceSupply
      */
-    public static ArrayList<Resource> showSupply() {
-        ArrayList<Resource> supply = new ArrayList<>();
-        for (Container container : containers) {
-            if (!container.isEmpty()) {
-                supply.add(container.getResource());
-            }
-        }
-        return supply;
+    public ArrayList<Resource> showSupply() {
+        return getResources();
     }
 
+    @Override
+    public ArrayList<Resource> getResources() {
+        ArrayList<Resource> resources = new ArrayList<>();
+        for (Container container : containers) {
+            if (!container.isEmpty()) {
+                resources.add(container.viewResource());
+            }
+        }
+        return resources;
+    }
 }
