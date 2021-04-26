@@ -47,7 +47,7 @@ public class PersonalBoard {
      */
     public boolean checkUseProd(ArrayList<Resource> resourceArrayList){
         boolean result = false;
-        List<Resource> personalResources = Stream.concat(getWarehouseDepots().getAllResource().stream(), getStrongBox().getStrongboxContent().stream())
+        List<Resource> personalResources = Stream.concat(getWarehouseDepots().getResources().stream(), getStrongBox().getStrongboxContent().stream())
                 .collect(Collectors.toList());
         for(Resource resource: resourceArrayList){
             if (personalResources.contains(resource)) {
@@ -70,11 +70,12 @@ public class PersonalBoard {
             if(strongBox.getStrongboxContent().contains(resources1)){
                 strongBox.getStrongboxContent().remove(resources1);
             }
-            else if(warehouseDepots.getAllResource().contains(resources1)){
+            else if(warehouseDepots.getResources().contains(resources1)){
                 warehouseDepots.getResource(resources1);
-                warehouseDepots.getAllResource().remove(resources1);
+                warehouseDepots.getResources().remove(resources1);
             }
-            throw new ResourceNotValidException();
+            else
+                throw new ResourceNotValidException();
         }
         return resources;
     }

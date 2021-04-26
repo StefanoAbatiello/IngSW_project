@@ -2,10 +2,11 @@ package it.polimi.ingsw.model.personalboard;
 
 import it.polimi.ingsw.exceptions.ResourceNotValidException;
 import it.polimi.ingsw.model.Resource;
+import it.polimi.ingsw.model.ResourceCreator;
 
 import java.util.ArrayList;
 
-public class Shelf {
+public class Shelf implements ResourceCreator {
     private ArrayList<Resource> slots;
     private Resource resourceType;
     private boolean shelfAvailability ;
@@ -47,7 +48,8 @@ public class Shelf {
     /**
      * @return all resources contained in shelf
      */
-    public ArrayList<Resource> getSlots() {
+    @Override
+    public ArrayList<Resource> getResources() {
         return slots;
     }
 

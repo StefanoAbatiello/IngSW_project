@@ -17,7 +17,7 @@ class StrongBoxTest {
     }
 
     @Test
-    void getValidResource() throws ResourceNotValidException {
+    void getValidResource() {
         StrongBox strongBox=new StrongBox();
         strongBox.addInStrongbox(Resource.COIN);
         strongBox.getStrongboxContent().remove(Resource.COIN);
@@ -26,11 +26,11 @@ class StrongBoxTest {
     }
 
     @Test
-    void getNotValidResource() throws ResourceNotValidException {
+    void getNotValidResource(){
         StrongBox strongBox = new StrongBox();
         strongBox.addInStrongbox(Resource.COIN);
+        strongBox.getStrongboxContent().remove(Resource.SHIELD);
 
-
-        assertThrows(ResourceNotValidException.class,()->strongBox.getStrongboxContent().remove(Resource.SHIELD));
+        assertEquals(1,strongBox.getStrongboxContent().size());
     }
 }

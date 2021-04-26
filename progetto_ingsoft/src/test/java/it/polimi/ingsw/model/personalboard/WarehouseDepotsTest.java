@@ -12,7 +12,7 @@ class WarehouseDepotsTest {
     void addValidResourceInShelf() throws ResourceNotValidException {
         WarehouseDepots warehouseDepots = new WarehouseDepots();
 
-        assertFalse(warehouseDepots.addinShelf(0, Resource.COIN).getSlots().isEmpty());
+        assertFalse(warehouseDepots.addinShelf(0, Resource.COIN).getResources().isEmpty());
     }
 
     @Test
