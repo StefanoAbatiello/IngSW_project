@@ -2,9 +2,10 @@ package it.polimi.ingsw.model.personalboard;
 
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.Points;
 
 
-public class FaithMarker {
+public class FaithMarker implements Points {
     private int faithPosition;
     private int faithMarkerID;
     private boolean invaticanzone;
@@ -33,30 +34,6 @@ public class FaithMarker {
     }
 
 
-    /**
-     * @return the current status of indicated Vatican zone after being activated.
-     * Furthermore set which slot is in pope space & increase points that will be added in the end of game
-     */
-    public boolean activePopeSpace() {
-        if(faithPosition==8 && Game.isVC1active()==true) {
-
-            Game.getPlayers().stream().filter(player -> player.getPersonalBoard().getFaithMarker().isVaticanZone()).forEach(player -> player.increaseFaithtrackPoints(2));
-            Game.setVC1active(false);
-            return Game.isVC1active();
-        }
-        else if(faithPosition==16 && Game.isVC2active()==true) {
-            Game.getPlayers().stream().filter(player -> player.getPersonalBoard().getFaithMarker().isVaticanZone()).forEach(player -> player.increaseFaithtrackPoints(3));
-            Game.setVC2active(false);
-            return Game.isVC2active();
-        }
-        else if(faithPosition==24 && Game.isVC3active()==true) {
-            Game.getPlayers().stream().filter(player -> player.getPersonalBoard().getFaithMarker().isVaticanZone()).forEach(player -> player.increaseFaithtrackPoints(4));
-            Game.setVC3active(false);
-            return Game.isVC3active();
-        }
-        else
-            return true;
-    }
 
     /**
      * @return true if faith marker position is in vatican zone
@@ -95,6 +72,7 @@ public class FaithMarker {
     /**
      * @return points of faith track
      */
+    @Override
     public int getPoints() {
         return points;
     }
@@ -106,7 +84,6 @@ public class FaithMarker {
         faithPosition= faithPosition +1;
         setPoints();
         isVaticanZone();
-        activePopeSpace();
         return faithPosition;
     }
 }

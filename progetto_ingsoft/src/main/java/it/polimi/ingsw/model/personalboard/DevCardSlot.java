@@ -1,14 +1,15 @@
 package it.polimi.ingsw.model.personalboard;
 
 import it.polimi.ingsw.exceptions.InvalidSlotException;
+import it.polimi.ingsw.model.Points;
 import it.polimi.ingsw.model.cards.DevCard;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class DevCardSlot {
-    private ArrayList<DevCard> slot[];
-    private ArrayList<DevCard> ActiveCards;
+public class DevCardSlot implements Points {
+    private final ArrayList<DevCard>[] slot;
+    private final ArrayList<DevCard> ActiveCards;
     private int VictoryPoints;
 
     public DevCardSlot() {
@@ -35,7 +36,7 @@ public class DevCardSlot {
      * @return slot after overlapped devcard, if it is possible
      * @throws InvalidSlotException if selected slot is not between 0 and 2
      */
-    public ArrayList<DevCard>[] overlap(DevCard devCard, int slotID) throws InvalidSlotException, NullPointerException {
+    public ArrayList<DevCard>[] overlap(DevCard devCard, int slotID) throws InvalidSlotException {
         if(slotID<0||slotID>2){
             throw new InvalidSlotException();
         }
@@ -75,13 +76,13 @@ public class DevCardSlot {
     /**
      * @return at the end of game points aggregated in all development cards
      */
-    public int getVictoryPoints(){
+    @Override
+    public int getPoints(){
         for (int i=0;i<=2;i++){
                 for(DevCard dev:slot[i])
                        VictoryPoints = (int) (VictoryPoints + dev.getPoints());
         }
         return VictoryPoints;
     }
-
 
 }

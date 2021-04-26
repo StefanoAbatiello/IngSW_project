@@ -2,10 +2,11 @@ package it.polimi.ingsw.model.personalboard;
 
 import it.polimi.ingsw.exceptions.ResourceNotValidException;
 import it.polimi.ingsw.model.Resource;
+import it.polimi.ingsw.model.ResourceCreator;
 
 import java.util.ArrayList;
 
-public class WarehouseDepots {
+public class WarehouseDepots implements ResourceCreator {
 
     private Shelf shelves[]=new Shelf[3];
 
@@ -29,10 +30,10 @@ public class WarehouseDepots {
      */
     public Resource getResource(Resource resource) throws ResourceNotValidException {
         for(int i=0;i< shelves.length;i++){
-            for(Resource resource1 :shelves[i].getSlots()){
+            for(Resource resource1 :shelves[i].getResources()){
                 if(resource == resource1){
-                    shelves[i].getSlots().remove(resource1);
-                    getAllResource().remove(resource);
+                    shelves[i].getResources().remove(resource1);
+                    getResources().remove(resource);
                     return resource;
                 }
             }
@@ -40,13 +41,14 @@ public class WarehouseDepots {
         throw new ResourceNotValidException();
     }
 
+    @Override
     /**
      * @return all resources that are in Warehouse in every shelf
      */
-    public ArrayList<Resource> getAllResource(){
+    public ArrayList<Resource> getResources(){
         ArrayList<Resource> allres=new ArrayList<>();
         for(int i=0;i< shelves.length;i++) {
-            for (Resource resources1 : shelves[i].getSlots()) {
+            for (Resource resources1 : shelves[i].getResources()) {
                     allres.add(resources1);
             }
         }

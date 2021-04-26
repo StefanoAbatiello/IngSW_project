@@ -26,7 +26,7 @@ class ShelfTest {
         shelf.addResources(Resource.SHIELD);
         shelf.addResources(Resource.SHIELD);
 
-        assertEquals(2,shelf.getSlots().size());
+        assertEquals(2,shelf.getResources().size());
 
     }
 
@@ -37,8 +37,8 @@ class ShelfTest {
         shelf.addResources(Resource.SHIELD);
         shelf.addResources(Resource.SHIELD);
 
-        assertEquals(Resource.SHIELD,shelf.getSlots().get(0));
-        assertEquals(Resource.SHIELD,shelf.getSlots().get(1));
+        assertEquals(Resource.SHIELD,shelf.getResources().get(0));
+        assertEquals(Resource.SHIELD,shelf.getResources().get(1));
 
     }
 }

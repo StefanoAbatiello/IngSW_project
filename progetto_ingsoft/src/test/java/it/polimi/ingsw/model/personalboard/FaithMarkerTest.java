@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.personalboard;
 
 import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.MultiPlayer;
 import it.polimi.ingsw.model.Player;
 import org.junit.jupiter.api.Test;
 
@@ -34,35 +35,40 @@ class FaithMarkerTest {
 
     @Test
     void CheckDifferentActivePopeSpace() {
-        Player p1 = new Player(1);
+        Game game=new MultiPlayer();
+        game.createNewPlayer(new Player(1));
 
         for(int i=0;i<8;i++)
-            p1.getPersonalBoard().getFaithMarker().updatePosition();
-
-        assertFalse(Game.isVC1active());
-
-        for(int i=0;i<8;i++)
-            p1.getPersonalBoard().getFaithMarker().updatePosition();
-        assertFalse(Game.isVC2active());
+            game.getPlayers().get(0).getPersonalBoard().getFaithMarker().updatePosition();
+        game.activePopeSpace(game.getPlayers().get(0));
+        assertFalse(game.isVC1active());
 
         for(int i=0;i<8;i++)
-            p1.getPersonalBoard().getFaithMarker().updatePosition();
-        assertFalse(Game.isVC3active());
+            game.getPlayers().get(0).getPersonalBoard().getFaithMarker().updatePosition();
+
+        game.activePopeSpace(game.getPlayers().get(0));
+        assertFalse(game.isVC2active());
+
+        for(int i=0;i<8;i++)
+            game.getPlayers().get(0).getPersonalBoard().getFaithMarker().updatePosition();
+        game.activePopeSpace(game.getPlayers().get(0));
+        assertFalse(game.isVC3active());
 
     }
     @Test
     void activePopeSpaceWithDifferentPlayers(){
 
-        Game.resetGame();
+        Game game=new MultiPlayer();
 
-        Game.createNewPlayer(new Player(1));
-        Game.createNewPlayer(new Player(2));
+        game.createNewPlayer(new Player(1));
+        game.createNewPlayer(new Player(2));
 
         for(int i=0;i<8;i++)
-            Game.getPlayers().get(0).getPersonalBoard().getFaithMarker().updatePosition();
+            game.getPlayers().get(0).getPersonalBoard().getFaithMarker().updatePosition();
 
-        assertEquals(2,Game.getPlayers().get(0).getFaithtrackPoints());
-        assertEquals(0,Game.getPlayers().get(1).getFaithtrackPoints());
+        game.activePopeSpace(game.getPlayers().get(0));
+        assertEquals(2,game.getPlayers().get(0).getFaithtrackPoints());
+        assertEquals(0,game.getPlayers().get(1).getFaithtrackPoints());
 
     }
 
@@ -79,14 +85,14 @@ class FaithMarkerTest {
 
     @Test
     void updatePoints() {
-        Game.resetGame();
-        Game.createNewPlayer(new Player(1));
-        Game.createNewPlayer(new Player(2));
+        Game game =new MultiPlayer();
+        game.createNewPlayer(new Player(1));
+        game.createNewPlayer(new Player(2));
 
         for(int i=0;i<8;i++)
-            Game.getPlayers().get(0).getPersonalBoard().getFaithMarker().updatePosition();
+            game.getPlayers().get(0).getPersonalBoard().getFaithMarker().updatePosition();
 
-        assertEquals(2,Game.getPlayers().get(0).getPersonalBoard().getFaithMarker().getPoints());
+        assertEquals(2,game.getPlayers().get(0).getPersonalBoard().getFaithMarker().getPoints());
 
     }
 

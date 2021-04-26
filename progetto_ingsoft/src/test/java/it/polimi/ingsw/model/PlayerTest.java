@@ -8,16 +8,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class PlayerTest {
 
     @Test
-    void getFaithtrackpoints() {
-        Game.resetGame();
-        Game.createNewPlayer(new Player(1));
-        for(int i=0;i<8;i++)
-            Game.getPlayers().get(0).getPersonalBoard().getFaithMarker().updatePosition();
-
-        assertEquals(2,Game.getPlayers().get(0).getFaithtrackPoints());
-    }
-
-    @Test
     void doBasicProduction() throws ResourceNotValidException {
         Player player=new Player(1);
         player.getPersonalBoard().getWarehouseDepots().addinShelf(0, Resource.SERVANT);

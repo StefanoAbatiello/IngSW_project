@@ -25,7 +25,7 @@ class DevCardSlotTest {
         DevCardSlot devCardSlot=new DevCardSlot();
         ArrayList<Resource> array= new ArrayList<>();
         array.add(Resource.STONE);
-        DevCard card = new DevCard(4,"PURPLE",4,array,array,array,3);
+        DevCard card = new DevCard(4,"PURPLE",1,array,array,array,3);
         devCardSlot.overlap(card,2);
 
         assertTrue(devCardSlot.getSlot()[2].get(0).isActive());
@@ -36,9 +36,9 @@ class DevCardSlotTest {
         DevCardSlot devCardSlot=new DevCardSlot();
         ArrayList<Resource> array= new ArrayList<>();
         array.add(Resource.STONE);
-        DevCard card = new DevCard(4,"PURPLE",4,array,array,array,3);
+        DevCard card = new DevCard(4,"PURPLE",1,array,array,array,3);
         devCardSlot.overlap(card,2);
-        assertEquals(1,devCardSlot.getVictoryPoints());
+        assertEquals(4,devCardSlot.getPoints());
     }
 
     @Test
@@ -46,7 +46,7 @@ class DevCardSlotTest {
         DevCardSlot devCardSlot=new DevCardSlot();
         ArrayList<Resource> array= new ArrayList<>();
         array.add(Resource.STONE);
-        DevCard card = new DevCard(4,"PURPLE",4,array,array,array,3);
+        DevCard card = new DevCard(4,"PURPLE",1,array,array,array,3);
         devCardSlot.overlap(card,2);
 
         assertEquals(1,devCardSlot.getActiveCards().size());
