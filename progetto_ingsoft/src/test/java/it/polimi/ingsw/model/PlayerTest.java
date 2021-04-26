@@ -9,12 +9,12 @@ class PlayerTest {
 
     @Test
     void getFaithtrackpoints() {
-        Game.resetGame();
-        Game.createNewPlayer(new Player(1));
+        MultiPlayer.resetGame();
+        MultiPlayer.createNewPlayer(new Player(1));
         for(int i=0;i<8;i++)
-            Game.getPlayers().get(0).getPersonalBoard().getFaithMarker().updatePosition();
+            MultiPlayer.getPlayers().get(0).getPersonalBoard().getFaithMarker().updatePosition();
 
-        assertEquals(2,Game.getPlayers().get(0).getFaithtrackPoints());
+        assertEquals(2, MultiPlayer.getPlayers().get(0).getFaithtrackPoints());
     }
 
     @Test

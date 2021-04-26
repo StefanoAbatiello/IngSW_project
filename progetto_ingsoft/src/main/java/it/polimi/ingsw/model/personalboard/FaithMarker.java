@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.personalboard;
 
-import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.MultiPlayer;
 import it.polimi.ingsw.model.Player;
 
 
@@ -38,21 +38,21 @@ public class FaithMarker {
      * Furthermore set which slot is in pope space & increase points that will be added in the end of game
      */
     public boolean activePopeSpace() {
-        if(faithPosition==8 && Game.isVC1active()==true) {
+        if(faithPosition==8 && MultiPlayer.isVC1active()==true) {
 
-            Game.getPlayers().stream().filter(player -> player.getPersonalBoard().getFaithMarker().isVaticanZone()).forEach(player -> player.increaseFaithtrackPoints(2));
-            Game.setVC1active(false);
-            return Game.isVC1active();
+            MultiPlayer.getPlayers().stream().filter(player -> player.getPersonalBoard().getFaithMarker().isVaticanZone()).forEach(player -> player.increaseFaithtrackPoints(2));
+            MultiPlayer.setVC1active(false);
+            return MultiPlayer.isVC1active();
         }
-        else if(faithPosition==16 && Game.isVC2active()==true) {
-            Game.getPlayers().stream().filter(player -> player.getPersonalBoard().getFaithMarker().isVaticanZone()).forEach(player -> player.increaseFaithtrackPoints(3));
-            Game.setVC2active(false);
-            return Game.isVC2active();
+        else if(faithPosition==16 && MultiPlayer.isVC2active()==true) {
+            MultiPlayer.getPlayers().stream().filter(player -> player.getPersonalBoard().getFaithMarker().isVaticanZone()).forEach(player -> player.increaseFaithtrackPoints(3));
+            MultiPlayer.setVC2active(false);
+            return MultiPlayer.isVC2active();
         }
-        else if(faithPosition==24 && Game.isVC3active()==true) {
-            Game.getPlayers().stream().filter(player -> player.getPersonalBoard().getFaithMarker().isVaticanZone()).forEach(player -> player.increaseFaithtrackPoints(4));
-            Game.setVC3active(false);
-            return Game.isVC3active();
+        else if(faithPosition==24 && MultiPlayer.isVC3active()==true) {
+            MultiPlayer.getPlayers().stream().filter(player -> player.getPersonalBoard().getFaithMarker().isVaticanZone()).forEach(player -> player.increaseFaithtrackPoints(4));
+            MultiPlayer.setVC3active(false);
+            return MultiPlayer.isVC3active();
         }
         else
             return true;

@@ -3,7 +3,7 @@ package it.polimi.ingsw.model;
 
 import java.util.ArrayList;
 
-public class Game {
+public class MultiPlayer {
     private static final  ArrayList<Player> players=new ArrayList<>();
 
     /**
@@ -15,7 +15,7 @@ public class Game {
     //private static int turnOwner;
 
 
-    public Game(int numOfPlayers) {
+    public MultiPlayer(int numOfPlayers) {
         VC1active=true;
         VC2active=true;
         VC3active=true;
@@ -26,15 +26,15 @@ public class Game {
     }
 
     public static void setVC1active(boolean VC1active) {
-        Game.VC1active = VC1active;
+        MultiPlayer.VC1active = VC1active;
     }
 
     public static void setVC2active(boolean VC2active) {
-        Game.VC2active = VC2active;
+        MultiPlayer.VC2active = VC2active;
     }
 
     public static void setVC3active(boolean VC3active) {
-        Game.VC3active = VC3active;
+        MultiPlayer.VC3active = VC3active;
     }
 
     public static boolean isVC1active() {
@@ -82,8 +82,8 @@ public class Game {
         setVC2active(true);
         setVC3active(true);
         for(Player player:players)
-            Game.getPlayers().remove(player);
-        return Game.getPlayers().isEmpty();
+            MultiPlayer.getPlayers().remove(player);
+        return MultiPlayer.getPlayers().isEmpty();
     }
 
 

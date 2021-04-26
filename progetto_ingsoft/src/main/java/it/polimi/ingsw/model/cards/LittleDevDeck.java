@@ -9,5 +9,8 @@ public class LittleDevDeck {
      */
     protected ArrayList<DevCard> littleDevDeck = new ArrayList<>();
 
+    public ArrayList<DevCard> getLittleDevDeck() {
+        return littleDevDeck;
+    }
 
 }

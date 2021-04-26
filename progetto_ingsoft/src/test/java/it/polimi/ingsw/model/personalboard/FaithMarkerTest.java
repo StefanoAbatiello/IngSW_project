@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.personalboard;
 
-import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.MultiPlayer;
 import it.polimi.ingsw.model.Player;
 import org.junit.jupiter.api.Test;
 
@@ -39,30 +39,30 @@ class FaithMarkerTest {
         for(int i=0;i<8;i++)
             p1.getPersonalBoard().getFaithMarker().updatePosition();
 
-        assertFalse(Game.isVC1active());
+        assertFalse(MultiPlayer.isVC1active());
 
         for(int i=0;i<8;i++)
             p1.getPersonalBoard().getFaithMarker().updatePosition();
-        assertFalse(Game.isVC2active());
+        assertFalse(MultiPlayer.isVC2active());
 
         for(int i=0;i<8;i++)
             p1.getPersonalBoard().getFaithMarker().updatePosition();
-        assertFalse(Game.isVC3active());
+        assertFalse(MultiPlayer.isVC3active());
 
     }
     @Test
     void activePopeSpaceWithDifferentPlayers(){
 
-        Game.resetGame();
+        MultiPlayer.resetGame();
 
-        Game.createNewPlayer(new Player(1));
-        Game.createNewPlayer(new Player(2));
+        MultiPlayer.createNewPlayer(new Player(1));
+        MultiPlayer.createNewPlayer(new Player(2));
 
         for(int i=0;i<8;i++)
-            Game.getPlayers().get(0).getPersonalBoard().getFaithMarker().updatePosition();
+            MultiPlayer.getPlayers().get(0).getPersonalBoard().getFaithMarker().updatePosition();
 
-        assertEquals(2,Game.getPlayers().get(0).getFaithtrackPoints());
-        assertEquals(0,Game.getPlayers().get(1).getFaithtrackPoints());
+        assertEquals(2, MultiPlayer.getPlayers().get(0).getFaithtrackPoints());
+        assertEquals(0, MultiPlayer.getPlayers().get(1).getFaithtrackPoints());
 
     }
 
@@ -79,14 +79,14 @@ class FaithMarkerTest {
 
     @Test
     void updatePoints() {
-        Game.resetGame();
-        Game.createNewPlayer(new Player(1));
-        Game.createNewPlayer(new Player(2));
+        MultiPlayer.resetGame();
+        MultiPlayer.createNewPlayer(new Player(1));
+        MultiPlayer.createNewPlayer(new Player(2));
 
         for(int i=0;i<8;i++)
-            Game.getPlayers().get(0).getPersonalBoard().getFaithMarker().updatePosition();
+            MultiPlayer.getPlayers().get(0).getPersonalBoard().getFaithMarker().updatePosition();
 
-        assertEquals(2,Game.getPlayers().get(0).getPersonalBoard().getFaithMarker().getPoints());
+        assertEquals(2, MultiPlayer.getPlayers().get(0).getPersonalBoard().getFaithMarker().getPoints());
 
     }
 

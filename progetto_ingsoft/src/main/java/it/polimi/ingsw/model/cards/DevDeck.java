@@ -23,7 +23,7 @@ public class DevDeck{
     public DevDeck() {
         JSONParser jsonP = new JSONParser();
 
-        try(FileReader reader = new FileReader("/Users/camillablasucci/IdeaProjects/ingswAM2021-Blasucci-Abatiello-Buono/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/cards/DEVCARDS.json")){
+        try(FileReader reader = new FileReader("src/main/java/it/polimi/ingsw/model/cards/DEVCARDS.json")){
             //Read JSON File
             Object obj = jsonP.parse(reader);
             JSONArray devCardList = (JSONArray) obj;
