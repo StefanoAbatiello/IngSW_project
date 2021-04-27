@@ -1,11 +1,6 @@
 package it.polimi.ingsw.model.Market;
 
-import it.polimi.ingsw.exceptions.EmptyContainerException;
 import it.polimi.ingsw.model.Resource;
-import it.polimi.ingsw.model.ResourceCreator;
-
-import java.util.ArrayList;
-import java.util.Optional;
 
 public class Container {
 
@@ -20,15 +15,6 @@ public class Container {
      */
     private boolean empty;
 
-
-    /**
-     * @return return the actual value of the attribute Empty
-     */
-    public boolean isEmpty(){
-        return this.empty;
-    }
-
-
     /**
      * this constructor create an empty container initializing attributes
      */
@@ -38,12 +24,11 @@ public class Container {
     }
 
     /**
-     * @return the actual Resource stored in container
+     * @return return the actual value of the attribute Empty
      */
-    public Resource viewResource() {
-        return this.resource;
+    public boolean isEmpty(){
+        return this.empty;
     }
-
 
     /**
      * this method put a new Resource in container modifying attributes
@@ -61,12 +46,9 @@ public class Container {
      * and the container has been emptied
      * @return the the Resource taken from the container
      */
-    public Resource takeResource() throws EmptyContainerException {
-        if(this.empty==false) {
+    public Resource takeResource() {
             this.empty = true;
             return this.resource;
-        }
-        throw new EmptyContainerException("Il container è vuoto, non è possibile prendere alcuna risorsa");
     }
 
 }

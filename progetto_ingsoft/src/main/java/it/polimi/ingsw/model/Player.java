@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.Market.ResourceSupply;
 import it.polimi.ingsw.model.cards.LeadCard;
 import it.polimi.ingsw.exceptions.ResourceNotValidException;
 import it.polimi.ingsw.model.personalboard.PersonalBoard;
@@ -19,7 +20,7 @@ public class Player {
     private PersonalBoard personalBoard = new PersonalBoard();
     private int faithtrackPoints = 0;
     private LeadCard[] cards;
-
+    private ResourceSupply resourceSupply = new ResourceSupply();
 
     public Player(int playerID) {
         this.playerID = playerID;
@@ -89,4 +90,7 @@ public class Player {
             this.potentialResource = potentialResource;
         }
 
+    public ResourceSupply getResourceSupply() {
+        return resourceSupply;
     }
+}

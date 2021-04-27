@@ -9,10 +9,10 @@ import java.util.ArrayList;
 public class ResourceSupply implements ResourceCreator {
 
     /*
-    this is an array of containers,
-    one for each resource taken from the market
-    */
-    static final Container[] containers = new Container[4];
+        this is an array of containers,
+        one for each resource taken from the market
+        */
+    final Container[] containers = new Container[4];
 
     /**
      * this constructor method creates containers
@@ -23,13 +23,19 @@ public class ResourceSupply implements ResourceCreator {
     }
 
     /**
+     * @return ResourceSupply structure
+     */
+    public Container[] getContainers() {
+        return containers;
+    }
+
+    /**
      * this method search for an empty container
      * and when finds it try to store the Resource calling Container's method
-     *
      * @param resource is the Resource to store in container
      * @return a boolean to indicate if storing has been done or not
      */
-    public static Resource putResourceInContainer(Resource resource) throws FullSupplyException {
+    public Resource putResourceInContainer(Resource resource) throws FullSupplyException {
         for (Container container : containers) {
             if (container.isEmpty()) {
                 container.fillContainer(resource);
@@ -40,18 +46,14 @@ public class ResourceSupply implements ResourceCreator {
     }
 
     /**
-     * @return an Arraylist of the Resource stored in ResourceSupply
+     * @return an ArrayList of the Resources stored in ResourceSupply
      */
-    public ArrayList<Resource> showSupply() {
-        return getResources();
-    }
-
     @Override
     public ArrayList<Resource> getResources() {
         ArrayList<Resource> resources = new ArrayList<>();
         for (Container container : containers) {
             if (!container.isEmpty()) {
-                resources.add(container.viewResource());
+                resources.add(container.takeResource());
             }
         }
         return resources;

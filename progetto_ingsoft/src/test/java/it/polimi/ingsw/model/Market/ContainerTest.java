@@ -33,7 +33,7 @@ class ContainerTest {
     void fillContainerTest() {
         Container container = new Container();
         container.fillContainer(Resource.SHIELD);
-        assertEquals(Resource.SHIELD,container.viewResource());
+        assertEquals(Resource.SHIELD,container.takeResource());
     }
 
     /*
@@ -58,15 +58,6 @@ class ContainerTest {
     }
 
     /*
-    this Test is implemented to check if method takeResource throws the exception in case of an Empty container
-     */
-    @Test
-    void takingResourceFromEmptyContainerTest(){
-        Container container = new Container();
-        assertThrows(EmptyContainerException.class, container::takeResource);
-    }
-
-    /*
     this Test is implemented to check if iterating methods fillContainer and takeResource the attributes are modified correctly
     */
     @Test
@@ -82,7 +73,7 @@ class ContainerTest {
    this Test is implemented to check if iterating methods fillContainer and takeResource the attributes are modified correctly
    */
     @Test
-    void reEmptyingContainerTest() throws EmptyContainerException {
+    void reEmptyingContainerTest() {
         Container container = new Container();
         container.fillContainer(Resource.SHIELD);
         container.takeResource();
@@ -91,13 +82,4 @@ class ContainerTest {
         assertTrue(container.isEmpty());
     }
 
-    /*
-    this Test is implemented to check if method takeResource return a null pointer in case of an Empty container
-    */
-    /*@Test
-    void takeNotExistingResourceTest() {
-        Container container = new Container();
-        assertThrows(EmptyContainerException.class, container::takeResource );
-    }
-    */
 }

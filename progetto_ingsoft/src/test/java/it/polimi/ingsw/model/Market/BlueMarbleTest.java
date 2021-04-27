@@ -3,12 +3,9 @@ package it.polimi.ingsw.model.Market;
 import it.polimi.ingsw.exceptions.FullSupplyException;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Resource;
-import it.polimi.ingsw.model.personalboard.FaithMarker;
-import org.junit.jupiter.api.Test;
-
 import java.util.ArrayList;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 class BlueMarbleTest {
 
@@ -18,11 +15,11 @@ class BlueMarbleTest {
     @Test
     void changeMarbleTest() throws FullSupplyException {
         BlueMarble marble=new BlueMarble();
-        ResourceSupply supply=new ResourceSupply();
-        marble.changeMarble(new FaithMarker(),new Player(0));
+        Player p=new Player(0);
+        marble.changeMarble(p);
         ArrayList<Resource> resources=new ArrayList<>();
-        resources.add(marble.resource);
-        assertEquals(resources,supply.showSupply());
+        resources.add(Resource.SHIELD);
+        assertEquals(resources,p.getResourceSupply().getResources());
     }
 
 }

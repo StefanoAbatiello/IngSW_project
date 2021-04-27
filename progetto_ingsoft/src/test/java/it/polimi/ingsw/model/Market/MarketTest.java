@@ -3,9 +3,9 @@ package it.polimi.ingsw.model.Market;
 import it.polimi.ingsw.exceptions.FullSupplyException;
 import it.polimi.ingsw.exceptions.NotAcceptableSelectorException;
 import it.polimi.ingsw.model.Player;
-import it.polimi.ingsw.model.personalboard.FaithMarker;
+import it.polimi.ingsw.model.Resource;
+import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class MarketTest {
@@ -16,7 +16,7 @@ class MarketTest {
     @Test
     void negativeSelectorTest(){
         Market market=new Market();
-        assertThrows(NotAcceptableSelectorException.class, ()->market.buyResources(-1,new Player(0),new FaithMarker()));
+        assertThrows(NotAcceptableSelectorException.class, ()->market.buyResources(-1,new Player(0)));
     }
 
     /*
@@ -25,88 +25,94 @@ class MarketTest {
     @Test
     void notValidSelectorTest(){
         Market market=new Market();
-        assertThrows(NotAcceptableSelectorException.class, ()->market.buyResources(7,new Player(0),new FaithMarker()));
+        assertThrows(NotAcceptableSelectorException.class, ()->market.buyResources(7,new Player(0)));
     }
 
-    /*@Test
-    void buyinglineTest() throws FullSupplyException, NotAcceptableSelectorException {
-        Market market=new Market();
-        MarketMarble[][] marketTray= market.getMarketBoard();
-        ResourceSupply supply=new ResourceSupply();
-        ArrayList <MarketMarble> line=new ArrayList<>();
-        ArrayList<Resource> resources=new ArrayList<>();
-        FaithMarker fp=new FaithMarker();
-        Player p=new Player(0);
+    /*
+    this Test verifies if selecting a row(0<=selector<=2) the resources put in ResourceSupply are the expected ones
+     */
+    @Test
+    void buyingRowTest() throws FullSupplyException, NotAcceptableSelectorException {
+        Market market = new Market();
+        MarketMarble[][] marketTray = market.getMarketBoard();
+        ArrayList<Resource> resources = new ArrayList<>();
+        Player p = new Player(0);
         int selector = 0;
-        for(int i = 0; i < 4; i++){
-            MarketMarble marble=marketTray[selector][i];
-            if(marble.equals(new BlueMarble()))
+        for (int i=0; i<4; i++) {
+            MarketMarble marble = marketTray[selector][i];
+            if (marble.getColor().equals("BLUE"))
                 resources.add(Resource.SHIELD);
-            else if(marble.equals(new GreyMarble()))
+            else if (marble.getColor().equals("GREY"))
                 resources.add(Resource.STONE);
-            else if(marble.equals(new PurpleMarble()))
+            else if (marble.getColor().equals("PURPLE"))
                 resources.add(Resource.SERVANT);
-            else if(marble.equals(new YellowMarble()))
+            else if (marble.getColor().equals("YELLOW"))
                 resources.add(Resource.COIN);
         }
+        market.buyResources(selector, p);
+        assertEquals(resources, p.getResourceSupply().getResources());
+    }
 
-        /*for(Container container : supply.containers)
-            container.takeResource();
-       market.buyResources(selector, p,fp);
-        assertEquals(Resource.valueOf(String.valueOf(resources)), supply.showSupply());
-    }*/
-
-/*    @Test
-    void buyingcolumnTest() throws FullSupplyException, NotAcceptableSelectorException {
-        Market market=new Market();
-        MarketMarble[][] marketTray= market.getMarketBoard();
-        ResourceSupply supply=new ResourceSupply();
-        ArrayList <Resource> resources=new ArrayList <>();
-        FaithMarker fp=new FaithMarker();
-        Player p=new Player();
-        int selector = ;
-        for(int i = 0; i < 4; i++){
-            Resource res=marketTray[selector][i].changeMarble(fp, p);
-            if(res!=Resource.NONE)
-                resources.add(res);
-        }
-        for(Container container : supply.containers)
-            container.takeResource();
-        market.buyResources(selector, p,fp);
-        assertEquals(resources, supply.showSupply());
-    }*/
-
+    /*
+   this Test verifies if selecting a column(3<=selector<=6) the resources put in ResourceSupply are the expected ones
+    */
     @Test
-    void insertExtMarbleInLineTest()throws FullSupplyException, NotAcceptableSelectorException{
+    void buyingColumnTest() throws FullSupplyException, NotAcceptableSelectorException {
+        Market market = new Market();
+        MarketMarble[][] marketTray = market.getMarketBoard();
+        ArrayList<Resource> resources = new ArrayList<>();
+        Player p = new Player(0);
+        int selector = 4;
+        for (int i=0; i<3; i++) {
+            MarketMarble marble = marketTray[i][selector-3];
+            if (marble.getColor().equals("BLUE"))
+                resources.add(Resource.SHIELD);
+            else if (marble.getColor().equals("GREY"))
+                resources.add(Resource.STONE);
+            else if (marble.getColor().equals("PURPLE"))
+                resources.add(Resource.SERVANT);
+            else if (marble.getColor().equals("YELLOW"))
+                resources.add(Resource.COIN);
+        }
+        market.buyResources(selector, p);
+        assertEquals(resources, p.getResourceSupply().getResources());
+    }
+
+    /*
+   this Test verifies if selecting a row(0<selector<=2) the marketTray is modified correctly
+    */
+    @Test
+    void insertExtMarbleInRowTest()throws FullSupplyException, NotAcceptableSelectorException{
         Market market=new Market();
         MarketMarble[][] marketTray= market.getMarketBoard();
         MarketMarble extMarble= market.getExtMarble();
-        ResourceSupply supply=new ResourceSupply();
         int selector = 2;
         MarketMarble[] line= new MarketMarble[4];
         MarketMarble[] newLine= new MarketMarble[4];
             for (int i = 1; i < 4; i++)
                 line[i - 1] = marketTray[selector][i];
             line[3] = extMarble;
-            market.buyResources(selector, new Player(0), new FaithMarker());
+            market.buyResources(selector, new Player(0));
             for (int i = 0; i < 4; i++)
                 newLine[i] = marketTray[selector][i];
             assertArrayEquals(line, newLine);
     }
 
+    /*
+   this Test verifies if selecting a column(3<=selector<=6) the marketTray is modified correctly
+    */
     @Test
     void insertExtMarbleInColumnTest()throws FullSupplyException, NotAcceptableSelectorException{
         Market market=new Market();
         MarketMarble[][] marketTray= market.getMarketBoard();
         MarketMarble extMarble= market.getExtMarble();
-        ResourceSupply supply=new ResourceSupply();
         int selector = 6;
         MarketMarble[] column= new MarketMarble[3];
         MarketMarble[] newColumn= new MarketMarble[3];
         for(int i=1; i<3; i++)
             column[i-1]=marketTray[i][selector-3];
         column[2]=extMarble;
-        market.buyResources(selector,new Player(0),new FaithMarker());
+        market.buyResources(selector,new Player(0));
         for(int i=0; i<3; i++)
             newColumn[i]=marketTray[i][selector-3];
         assertArrayEquals(column,newColumn);
