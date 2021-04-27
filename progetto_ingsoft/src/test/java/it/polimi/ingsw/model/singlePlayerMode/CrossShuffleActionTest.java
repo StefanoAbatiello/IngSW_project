@@ -2,24 +2,22 @@ package it.polimi.ingsw.model.singlePlayerMode;
 
 import it.polimi.ingsw.model.SinglePlayer;
 import it.polimi.ingsw.model.personalboard.BlackCrossToken;
-import org.junit.jupiter.api.Test;
-
 import java.util.ArrayList;
-
+import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CrossShuffleActionTest {
 
     /*
-   this test is implemented to check if token effect works correctly
+   this test is implemented to check if token effect modifies BlackCrossPosition correctly
     */
     @Test
     void UpdatingBlackCrossTest(){
+        SinglePlayer sP=new SinglePlayer();
         CrossShuffleAction action=new CrossShuffleAction();
-        new BlackCrossToken();
         for(int i=0;i<5;i++)
-            action.applyEffect();
-        assertEquals(BlackCrossToken.getCrossPosition()+1, action.applyEffect());
+            action.applyEffect(sP.getTokensStack());
+        assertEquals(BlackCrossToken.getCrossPosition()+1, action.applyEffect(sP.getTokensStack()));
     }
 
     /*
@@ -27,17 +25,19 @@ class CrossShuffleActionTest {
      */
     @Test
     void ShufflingTest() {
-        SinglePlayer.getTokensStack().add(new CrossShuffleAction());
-        SinglePlayer.getTokensStack().add(new DoubleCrossAction());
-        SinglePlayer.getTokensStack().add(new DoubleCrossAction());
-        SinglePlayer.getTokensStack().add(new DiscardDevCardAction("YELLOW"));
-        SinglePlayer.getTokensStack().add(new DiscardDevCardAction("GREEN"));
-        SinglePlayer.getTokensStack().add(new DiscardDevCardAction("PURPLE"));
-        SinglePlayer.getTokensStack().add(new DiscardDevCardAction("BLUE"));
-        ArrayList<ActionToken> list1 = new ArrayList<>(SinglePlayer.getTokensStack());
+        SinglePlayer sP = new SinglePlayer();
+        sP.getTokensStack().clear();
+        sP.getTokensStack().add(new CrossShuffleAction());
+        sP.getTokensStack().add(new DoubleCrossAction());
+        sP.getTokensStack().add(new DoubleCrossAction());
+        sP.getTokensStack().add(new DiscardDevCardAction("YELLOW"));
+        sP.getTokensStack().add(new DiscardDevCardAction("GREEN"));
+        sP.getTokensStack().add(new DiscardDevCardAction("PURPLE"));
+        sP.getTokensStack().add(new DiscardDevCardAction("BLUE"));
+        ArrayList<ActionToken> list1 = new ArrayList<>(sP.getTokensStack());
         list1.add(list1.remove(0));
-        SinglePlayer.getTokensStack().get(0).applyEffect();
-        assertNotEquals(list1, SinglePlayer.getTokensStack());
+        sP.draw();
+        assertNotEquals(list1, sP.getTokensStack());
 
     }
 

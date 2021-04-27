@@ -6,13 +6,11 @@ import it.polimi.ingsw.model.singlePlayerMode.*;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class SinglePlayer {
+public class SinglePlayer{
 
-    private static ArrayList<ActionToken> tokensStack =new ArrayList<>();
-    BlackCrossToken blackCross=new BlackCrossToken();
-    DevDeckMatrix devDeckMatrix = new DevDeckMatrix();
+    private final ArrayList<ActionToken> tokensStack =new ArrayList<>();
 
-    public static ArrayList<ActionToken> getTokensStack() {
+    public  ArrayList<ActionToken> getTokensStack() {
         return tokensStack;
     }
 
@@ -25,6 +23,8 @@ public class SinglePlayer {
         tokensStack.add(new DiscardDevCardAction("PURPLE"));
         tokensStack.add(new DiscardDevCardAction("BLUE"));
         Collections.shuffle(tokensStack);
+        new DevDeckMatrix();
+        new BlackCrossToken();
     }
 
     /**
@@ -47,20 +47,19 @@ public class SinglePlayer {
         return BlackCrossToken.getCrossPosition() >= 24;
     }
 
-    public static ArrayList<ActionToken> draw(){
-        ActionToken token= tokensStack.remove(0);
+    /**
+     * @return tokensStack after activation of first token's effect and reorganization of the stack
+     */
+    public ArrayList<ActionToken> draw(){
+        ActionToken token = tokensStack.remove(0);
         tokensStack.add(token);
-        token.applyEffect();
-        return tokensStack;
-    }
-
-    public static ArrayList<ActionToken> getTokenStack() {
+        token.applyEffect(tokensStack);
         return tokensStack;
     }
 
     /**
      * @param color indicates the color of the card that lorenzo is trying to discard from DevDeckMatrix
-     * @return 0 if removing a card the are other cards with same color, otherwise -1
+     * @return 0 if removing a card there are other cards with same color, otherwise -1, or -2 if the card removal failed
      */
     public static int removeTokenCard(String color)  {
         for(int i=0;i<4;i++){
@@ -76,7 +75,7 @@ public class SinglePlayer {
                 }
             }
         }
-        return -1;
+        return -2;
     }
 
 }

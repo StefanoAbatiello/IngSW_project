@@ -1,8 +1,8 @@
 package it.polimi.ingsw.model.singlePlayerMode;
 
+import it.polimi.ingsw.model.SinglePlayer;
 import it.polimi.ingsw.model.personalboard.BlackCrossToken;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class DoubleCrossActionTest {
@@ -12,10 +12,10 @@ class DoubleCrossActionTest {
       */
     @Test
     void UpdatingBlackCrossTest() {
+        SinglePlayer sP = new SinglePlayer();
         DoubleCrossAction action=new DoubleCrossAction();
-        new BlackCrossToken();
         for(int i=0;i<5;i++)
-            action.applyEffect();
-        assertEquals(BlackCrossToken.getCrossPosition()+2,action.applyEffect());
+            action.applyEffect(sP.getTokensStack());
+        assertEquals(BlackCrossToken.getCrossPosition()+2,action.applyEffect(sP.getTokensStack()));
     }
 }
