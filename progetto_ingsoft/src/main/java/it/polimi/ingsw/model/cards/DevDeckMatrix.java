@@ -25,16 +25,17 @@ public class DevDeckMatrix {
         ArrayList<DevCard> blueCards = deck.createLittleDecks("BLUE");
         ArrayList<DevCard> devDeckInOrder = Stream.of(greenCards, yellowCards, purpleCards,blueCards).flatMap(Collection::stream).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
 
-        for(DevCard card: devDeckInOrder){
+        int k=0;
+        do{
             for(int i=0;i<4;i++){
                 for(int j=0;j<3;j++){
                     devDecksOnTable[i][j] = new LittleDevDeck();
-                    for(int numcards=0; numcards<4;numcards++)
-                        devDecksOnTable[i][j].littleDevDeck.add(card);
+                    for(int numcards=0; numcards<4;numcards++,k++)
+                        devDecksOnTable[i][j].littleDevDeck.add(devDeckInOrder.get(k));
                     Collections.shuffle(devDecksOnTable[i][j].littleDevDeck);
                 }
             }
-        }
+        }while(k<devDeckInOrder.size());
     }
 
     /**
@@ -60,8 +61,6 @@ public class DevDeckMatrix {
        return devDecksOnTable;
     }
 
-
-    //TODO creo mazzo quando faccio order? mazzo deve essere static, anche i mini array
     //TODO gestisco eccezione
 
     /**
@@ -82,8 +81,5 @@ public class DevDeckMatrix {
         }
         throw new CardNotOnTableException("Error: card not found on table");
     }
-
-
-
 
 }
