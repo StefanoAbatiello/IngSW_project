@@ -1,7 +1,10 @@
 package it.polimi.ingsw.model.cards;
 
+import it.polimi.ingsw.exceptions.ResourceNotValidException;
+import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Resource;
 import it.polimi.ingsw.model.cards.Cards;
+import it.polimi.ingsw.model.personalboard.StrongBox;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -144,13 +147,12 @@ public class DevCard implements Cards{
         return this;
     }
 
-    // public Player getOwner() {
-    //    return owner;
-    //}
-
-    //public void setOwner(Player owner) {
-    //    this.owner = owner;
-    //}
+    public StrongBox useProduction(Player player) throws ResourceNotValidException {
+            player.getPersonalBoard().removeResources(getProdIn());
+        for(Resource resource: getProdOut())
+            player.getPersonalBoard().getStrongBox().addInStrongbox(resource);
+        return player.getPersonalBoard().getStrongBox();
+    }
 
 }
 

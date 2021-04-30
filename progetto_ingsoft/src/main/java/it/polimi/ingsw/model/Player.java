@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.AbilityAlreadySetException;
+import it.polimi.ingsw.exceptions.ActionAlreadySet;
 import it.polimi.ingsw.exceptions.WrongAbilityInCardException;
 import it.polimi.ingsw.model.Market.ResourceSupply;
 import it.polimi.ingsw.model.cards.*;
@@ -24,6 +25,7 @@ public class Player implements Points{
     private LeadAbility ability1;
     private LeadAbility ability2;
     private ResourceSupply resourceSupply = new ResourceSupply();
+    private Action action;
 
 
     public Player(int playerID) {
@@ -50,6 +52,18 @@ public class Player implements Points{
             throw new AbilityAlreadySetException("ability slots already set");
     }
 
+    public boolean setAction(Action newAction) throws ActionAlreadySet{
+        Optional<Action> playerAction= Optional.ofNullable(action);
+        if(!playerAction.isPresent()) {
+            this.action = newAction;
+            return true;
+        }else
+            throw new ActionAlreadySet("This player has already a major action set");
+    }
+
+    public Action getAction(){
+        return this.action;
+    }
 
     public boolean activateAbility1() throws AlreadyActivatedException {
         return ability1.setActive(true);

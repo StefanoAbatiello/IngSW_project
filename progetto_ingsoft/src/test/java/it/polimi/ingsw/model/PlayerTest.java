@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.AbilityAlreadySetException;
+import it.polimi.ingsw.exceptions.ActionAlreadySet;
 import it.polimi.ingsw.exceptions.ResourceNotValidException;
 import it.polimi.ingsw.exceptions.WrongAbilityInCardException;
 import it.polimi.ingsw.model.cards.LeadAbility;
@@ -71,6 +72,20 @@ class PlayerTest {
     @Test
     void set2Abilities() {
 
+    }
+
+    @Test
+    void checkSetAction() throws ActionAlreadySet {
+        Player player= new Player(3);
+        player.setAction(Action.ACTIVATEPRODUCTION);
+        assertEquals(Action.ACTIVATEPRODUCTION,player.getAction());
+    }
+
+    @Test
+    void checkExceptionSetAction() throws ActionAlreadySet {
+        Player player= new Player(3);
+        player.setAction(Action.ACTIVATEPRODUCTION);
+        assertThrows(ActionAlreadySet.class,()->player.setAction(Action.BUYCARD));
     }
 
 }
