@@ -17,17 +17,16 @@ import java.util.*;
 //TODO tipologia di requirement delle lead dipende dall'abilità della carta
 public class LeadDeck {
 
-    private static ArrayList<LeadCard> leadDeck;
-    static ArrayList<DevCard> devDeck = new ArrayList<>();
+    private final ArrayList<LeadCard> leadDeck = new ArrayList<>();
 
     public LeadDeck() {
         JSONParser jsonP = new JSONParser();
 
-       /* try(FileReader reader = new FileReader("/Users/camillablasucci/IdeaProjects/ingswAM2021-Blasucci-Abatiello-Buono/progetto_ingsoft/src/main/java/it/polimi/ingsw/model/cards/LEADCARDS.json")){
+        try(FileReader reader = new FileReader("Deliverables/LEADCARDS")){
             //Read JSON File
             Object obj = jsonP.parse(reader);
             JSONArray leadCardList = (JSONArray) obj;
-            //Iterate over devCard array
+            //Iterate over leadCard array
             leadCardList.forEach(card-> parseLeadCard((JSONObject) card));
         }
         catch (FileNotFoundException e) {
@@ -38,64 +37,99 @@ public class LeadDeck {
             e.printStackTrace();
         }
     }
+    //TODO posso mettere due hashmap opzionali per i requirements
+
     private void parseLeadCard(JSONObject card) {
-        JSONObject devCardObj = (JSONObject) card.get("LEADCARD");
-        //get devCard info to create the card
-        /*JSONArray jsonProdIn = (JSONArray) devCardObj.get("PRODIN");
-        ArrayList<Resource> prodIn = fromJSONArrayToResourceList(jsonProdIn);
-        JSONArray jsonProdOut = (JSONArray) devCardObj.get("PRODOUT");
-        ArrayList<Resource> prodOut = fromJSONArrayToResourceList(jsonProdOut);
-        JSONArray jsonRequirements = (JSONArray) devCardObj.get("REQUIREMENTS");
-        ArrayList<Resource> requirements = fromJSONArrayToResourceList(jsonRequirements);
+        JSONObject leadCardObj = (JSONObject) card.get("LEADCARD");
+        //get leadCard info to create the card
+        //Integer integerPoints = (Integer) devCardObj.get("POINTS");
+        //int points= integerPoints.intValue();
 
-        DevCard newDevCard= new DevCard((long) devCardObj.get("POINTS"),
-                (String) devCardObj.get("COLOR"),
-                (long) devCardObj.get("LEVEL"),
-                requirements,
-                prodIn,
-                prodOut,(boolean) devCardObj.get("FAITHPOINT")
-        );
-        devDeck.add(newDevCard);*/
 
-    }
-
-    private ArrayList<Resource> fromJSONArrayToResourceList(JSONArray jsonArray){
-
-        ArrayList<Resource> resourceList= new ArrayList<>();
-        Iterator<String> iterator= jsonArray.iterator();
-        while(iterator.hasNext()){
-            resourceList.add(Resource.valueOf(((String)iterator.next())));
+        JSONObject jCardReq = (JSONObject) leadCardObj.get("CARDREQ");
+        JSONObject jResourceReq = (JSONObject) leadCardObj.get("RESOURCEREQ");
+        LeadCard newCard;
+        if(jCardReq.isEmpty()){
+            HashMap<Integer, Resource> requirements = fromJSONObjToResHash(jResourceReq);
+            newCard= new LeadCard((int)(long)leadCardObj.get("POINTS"),
+                    (String) leadCardObj.get("ABILITY"),
+                    Resource.valueOf((String)leadCardObj.get("RESOURCE")), requirements, new HashMap<Integer, ArrayList<String>>());
+        }else{
+            HashMap<Integer,ArrayList<String>> requirements = fromJSONObjToCardHash(jCardReq);
+            newCard= new LeadCard( (int)(long) leadCardObj.get("POINTS"),
+                    (String) leadCardObj.get("ABILITY"),
+                    Resource.valueOf((String)leadCardObj.get("RESOURCE")), new HashMap<Integer, Resource>(), requirements);
         }
-        return resourceList;
+        leadDeck.add(newCard);
+
     }
 
-//TODO vedere metodi in comune tra due carte e implementare interfaccia o classe astratta
-   public ArrayList<LeadCard> shuffleCards(){
+    /**
+     *
+     * @param jsonObj
+     * @return
+     */
+    private HashMap<Integer, Resource> fromJSONObjToResHash(JSONObject jsonObj){
+        HashMap<Integer,Resource> requirements = new HashMap<>();
+        requirements.put((int)(long)jsonObj.get("NUM"), Resource.valueOf((String)jsonObj.get("KIND")));
+
+        return requirements;
+    }
+
+    /**
+     *
+     * @param jsonObj
+     * @return
+     */
+    private HashMap<Integer,ArrayList<String>> fromJSONObjToCardHash(JSONObject jsonObj){
+        HashMap<Integer,ArrayList<String>> requirements = new HashMap<>();
+        int level = (int)(long)jsonObj.get("LEVEL");
+        JSONArray jColor = (JSONArray) jsonObj.get("COLOR");
+        ArrayList<String> color = new ArrayList<>();
+        Iterator<String> iterator= jColor.iterator();
+        while(iterator.hasNext()){
+            color.add(iterator.next());
+        }
+        requirements.put(level, color);
+        return requirements;
+    }
+
+    public ArrayList<LeadCard> getLeadDeck(){
+
+        return  this.leadDeck;
+    }
+    /**
+     * This method shuffles the lead deck
+     * @return the lead deck shuffled
+     */
+    public ArrayList<LeadCard> shuffle(){
 
         Collections.shuffle(this.leadDeck);
 
         return  this.leadDeck;
-   }
+    }
 
-  public boolean giveCardsToPlayer(Player player) throws playerLeadsNotEmptyException{
-       if(player.playerLeadsEmpty){
-           LeadCard[] playerLeads= new LeadCard[4];
-           for(int i=0;i<3;i++){
-               playerLeads[i]=leadDeck.get(0);
-               leadDeck.remove(0);
-           }
-           player.setPlayerLeads(playerLeads);
-       }else
-           throw new playerLeadsNotEmptyException("Error: playerLeads already full");
-       return true;
-  }
+    /**
+     * This method gives the player the four leader card from which they have to choose their two lead cards
+     * @param player the player that receives the cards
+     * @return true if the player's lead card array has been fulfill without problems
+     * @throws playerLeadsNotEmptyException if the player already has the cards in their array
+     */
+//TODO set abilities
+    public boolean giveToPlayer(Player player) throws playerLeadsNotEmptyException{
+        if(player.getLeadCards().isEmpty()){
+            ArrayList<LeadCard> playerLeads= new ArrayList<>();
+            for(int i=0;i<3;i++){
+                playerLeads.add(leadDeck.get(0));
+                leadDeck.remove(0);
+            }
+            player.setPlayerLeads(playerLeads);
+        }else
+            throw new playerLeadsNotEmptyException("Error: playerLeads already full");
+        return true;
+    }
 
 
-/**setplayerLeads prende array e lo mette al giocatore
- * public LeadCard[] setPlayerLeads(LeadCard[] playerLeads){
- *  return playerLeads;
- * }
- * */
 }
 
 

@@ -13,12 +13,12 @@ public class DevDeckMatrix {
      * This attribute represents the matrix of dev cards on the table
      */
     private static final LittleDevDeck[][] devDecksOnTable = new LittleDevDeck[4][3];
-
+    protected static DevDeck deck;
     /**
      * This constructor creates a matrix and dispose the cards on the table, divided in little decks of 4 cards each, dived by color and level
      */
     public DevDeckMatrix (){
-        DevDeck deck = new DevDeck();
+        deck = new DevDeck();
         ArrayList<DevCard> greenCards = deck.createLittleDecks("GREEN");
         ArrayList<DevCard> yellowCards = deck.createLittleDecks("YELLOW");
         ArrayList<DevCard> purpleCards = deck.createLittleDecks("PURPLE");
@@ -47,7 +47,7 @@ public class DevDeckMatrix {
         for(int i=0;i<4;i++){
             for(int j=0; j<3;j++){
                 if (!devDecksOnTable[i][j].littleDevDeck.isEmpty())
-                     cardsOnTable[i][j]= devDecksOnTable[i][j].littleDevDeck.get(0);
+                    cardsOnTable[i][j]= devDecksOnTable[i][j].littleDevDeck.get(0);
             }
         }
         return cardsOnTable;
@@ -58,9 +58,11 @@ public class DevDeckMatrix {
      * @return the dev cards matrix on the game table
      */
     public static LittleDevDeck[][] getDevMatrix(){
-       return devDecksOnTable;
+        return devDecksOnTable;
     }
 
+
+    //TODO creo mazzo quando faccio order? mazzo deve essere static, anche i mini array
     //TODO gestisco eccezione
 
     /**
@@ -73,13 +75,16 @@ public class DevDeckMatrix {
         for(int i=0;i<4;i++){
             for(int j=0; j<3;j++){
                 if(!devDecksOnTable[i][j].littleDevDeck.isEmpty())
-                  if((devDecksOnTable[i][j].littleDevDeck.get(0)).equals(cardToBuy)){
-                    devDecksOnTable[i][j].littleDevDeck.remove(0);
-                    return cardToBuy;
-                }
+                    if((devDecksOnTable[i][j].littleDevDeck.get(0)).equals(cardToBuy)){
+                        devDecksOnTable[i][j].littleDevDeck.remove(0);
+                        return cardToBuy;
+                    }
             }
         }
         throw new CardNotOnTableException("Error: card not found on table");
     }
 
+
+
 }
+

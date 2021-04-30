@@ -1,0 +1,155 @@
+[
+  {
+    "LEADCARD":{
+      "POINTS": 2,
+      "ABILITY": "DISCOUNT",
+      "RESOURCE": "SERVANT",
+      "RESOURCEREQ":{},
+      "CARDREQ": {"LEVEL": 1, "COLOR":["YELLOW","GREEN"]}
+    }
+  },
+  {
+    "LEADCARD":{
+      "POINTS": 2,
+      "ABILITY": "DISCOUNT",
+      "RESOURCE": "SHIELD",
+      "RESOURCEREQ":{},
+      "CARDREQ": { "LEVEL": 1, "COLOR":["BLUE","PURPLE"]}
+    }
+  },
+  {
+    "LEADCARD":{
+      "POINTS": 2,
+      "ABILITY": "DISCOUNT",
+      "RESOURCE": "STONE",
+      "RESOURCEREQ":{},
+      "CARDREQ": {"LEVEL": 1, "COLOR":["PURPLE","GREEN"]}
+
+    }
+  },
+  {
+    "LEADCARD":{
+      "POINTS": 2,
+      "ABILITY": "DISCOUNT",
+      "RESOURCE": "COIN",
+      "RESOURCEREQ":{},
+      "CARDREQ": { "LEVEL": 1, "COLOR":["YELLOW","PURPLE"]}
+
+    }
+  },
+  {
+    "LEADCARD":{
+      "POINTS": 3,
+      "ABILITY": "SHELF",
+      "RESOURCE": "STONE",
+      "RESOURCEREQ": {"NUM": 5, "KIND":"COIN"},
+      "CARDREQ": {}
+    }
+  },
+  {
+    "LEADCARD":{
+      "POINTS": 3,
+      "ABILITY": "SHELF",
+      "RESOURCE": "SERVANT",
+      "RESOURCEREQ": {"NUM": 5, "KIND":"STONE"},
+      "CARDREQ": {}
+    }
+  },
+  {
+    "LEADCARD":{
+      "POINTS": 3,
+      "ABILITY": "SHELF",
+      "RESOURCE": "SHIELD",
+      "RESOURCEREQ": {"NUM": 5, "KIND":"SERVANT"},
+      "CARDREQ": {}
+    }
+  },
+  {
+    "LEADCARD":{
+      "POINTS": 3,
+      "ABILITY": "DISCOUNT",
+      "RESOURCE": "COIN",
+      "RESOURCEREQ": {"NUM": 5, "KIND":"SHIELD"},
+      "CARDREQ": {}
+    }
+  },
+  {
+    "LEADCARD":{
+      "POINTS": 5,
+      "ABILITY": "WHITEMARBLE",
+      "RESOURCE": "SERVANT",
+      "RESOURCEREQ":{},
+      "CARDREQ": {"LEVEL": 1, "COLOR":["YELLOW","YELLOW","BLUE"]}
+    }
+  },
+  {
+    "LEADCARD":{
+      "POINTS": 5,
+      "ABILITY": "WHITEMARBLE",
+      "RESOURCE": "SHIELD",
+      "RESOURCEREQ":{},
+      "CARDREQ":
+      {"LEVEL": 1, "COLOR":["GREEN","GREEN","PURPLE"]}
+
+    }
+  },
+  {
+    "LEADCARD":{
+      "POINTS": 5,
+      "ABILITY": "WHITEMARBLE",
+      "RESOURCE": "STONE",
+      "RESOURCEREQ":{},
+      "CARDREQ":
+      {"LEVEL": 1, "COLOR":["YELLOW","BLUE","BLUE"]}
+    }
+  },
+  {
+    "LEADCARD":{
+      "POINTS": 5,
+      "ABILITY": "WHITEMARBLE",
+      "RESOURCE": "COIN",
+      "RESOURCEREQ":{},
+      "CARDREQ":
+      {"LEVEL": 1, "COLOR":["PURPLE","PURPLE","GREEN"]}
+    }
+  },
+  {
+    "LEADCARD":{
+      "POINTS": 4,
+      "ABILITY": "PRODUCTION",
+      "RESOURCE": "SHIELD",
+      "RESOURCEREQ":{},
+      "CARDREQ": {"LEVEL": 2, "COLOR":["YELLOW"]}
+    }
+  },
+  {
+    "LEADCARD":{
+      "POINTS": 4,
+      "ABILITY": "PRODUCTION",
+      "RESOURCE": "SERVANT",
+      "RESOURCEREQ":{},
+      "CARDREQ": {"LEVEL": 2, "COLOR":["BLUE"]}
+
+    }
+  },
+  {
+    "LEADCARD":{
+      "POINTS": 4,
+      "ABILITY": "PRODUCTION",
+      "RESOURCE": "STONE",
+      "RESOURCEREQ":{},
+      "CARDREQ": {"LEVEL": 2, "COLOR":["PURPLE"]}
+
+    }
+  },
+  {
+    "LEADCARD":{
+      "POINTS": 4,
+      "ABILITY": "PRODUCTION",
+      "RESOURCE": "COIN",
+      "RESOURCEREQ":{},
+      "CARDREQ": {"LEVEL": 2, "COLOR":["GREEN"]}
+
+    }
+  }
+]

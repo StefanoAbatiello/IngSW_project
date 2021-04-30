@@ -19,6 +19,39 @@ class DevDeckMatrixTest {
     }
 
     @Test
+    void SameColorInALine(){
+        new DevDeckMatrix();
+        int i=0;
+        for(int j=0; j<3;j++)
+            for(int k=0; k<4;k++)
+                assertEquals("GREEN", DevDeckMatrix.getDevMatrix()[i][j].littleDevDeck.get(k).getColor());
+    }
+
+    @Test
+    void sameColorInALine(){
+        new DevDeckMatrix();
+        int i=2;
+        for(int j=0; j<3;j++)
+            for(int k=0; k<4;k++)
+                assertEquals("PURPLE", DevDeckMatrix.getDevMatrix()[i][j].littleDevDeck.get(k).getColor());
+    }
+
+    @Test
+    void allDifferentCards() {
+        new DevDeckMatrix();
+        ArrayList<DevCard> check= new ArrayList<>();
+
+        for(int i=0;i<4;i++){
+            for(int j=0; j<3;j++){
+                for(int k=0;k<4;k++)
+                    check.add(DevDeckMatrix.getDevMatrix()[i][j].littleDevDeck.get(k));
+            }
+        }
+        for(DevCard card: DevDeckMatrix.deck.getDevCards())
+            assertTrue(check.contains(card));
+    }
+
+    @Test
     void getNumberOfCardsIn1Slot() {
         new DevDeckMatrix();
         assertEquals(4,DevDeckMatrix.getDevMatrix()[0][0].littleDevDeck.size());
@@ -29,7 +62,7 @@ class DevDeckMatrixTest {
     void getUpperWhenLittleIsEmpty() throws CardNotOnTableException {
         new DevDeckMatrix();
         for(int i =0; i<4;i++)
-        DevDeckMatrix.buyCard(DevDeckMatrix.getDevMatrix()[0][0].littleDevDeck.get(0));
+            DevDeckMatrix.buyCard(DevDeckMatrix.getDevMatrix()[0][0].littleDevDeck.get(0));
 
         DevCard[][] upperCards= DevDeckMatrix.getUpperDevCardsOnTable();
         assertNull(upperCards[0][0]);
@@ -43,13 +76,12 @@ class DevDeckMatrixTest {
     }
 
     @Test
-    void buyCardException() throws CardNotOnTableException {
+    void buyCardException() {
         new DevDeckMatrix();
         ArrayList<Resource> array= new ArrayList<>();
         array.add(Resource.STONE);
         DevCard card = new DevCard(4,"PURPLE",4,array,array,array,3);
         assertThrows(CardNotOnTableException.class, ()->DevDeckMatrix.buyCard(card) );
-        //TODO lancia l'eccezione se non c'è carta
     }
 
 }

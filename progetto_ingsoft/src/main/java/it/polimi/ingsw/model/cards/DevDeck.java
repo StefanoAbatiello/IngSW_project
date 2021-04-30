@@ -23,7 +23,7 @@ public class DevDeck{
     public DevDeck() {
         JSONParser jsonP = new JSONParser();
 
-        try(FileReader reader = new FileReader("src/main/java/it/polimi/ingsw/model/cards/DEVCARDS.json")){
+        try(FileReader reader = new FileReader("Deliverables/DEVCARDS.json")){
             //Read JSON File
             Object obj = jsonP.parse(reader);
             JSONArray devCardList = (JSONArray) obj;
@@ -55,12 +55,12 @@ public class DevDeck{
         ArrayList<Resource> requirements = fromJSONArrayToResourceList(jsonRequirements);
 
         DevCard newDevCard= new DevCard((long) devCardObj.get("POINTS"),
-                                (String) devCardObj.get("COLOR"),
-                                (long) devCardObj.get("LEVEL"),
-                                requirements,
-                                prodIn,
-                                prodOut,(long) devCardObj.get("FAITHPOINT")
-                                );
+                (String) devCardObj.get("COLOR"),
+                (long) devCardObj.get("LEVEL"),
+                requirements,
+                prodIn,
+                prodOut,(long) devCardObj.get("FAITHPOINT")
+        );
         devCards.add(newDevCard);
 
     }
@@ -70,6 +70,7 @@ public class DevDeck{
      * @param jsonArray represents an array of object in JSON
      * @return ArrayList<Resource> used to create different attributes of a development card
      */
+    //TODO @Override
     private ArrayList<Resource> fromJSONArrayToResourceList(JSONArray jsonArray){
 
         ArrayList<Resource> resourceList= new ArrayList<>();
@@ -100,6 +101,7 @@ public class DevDeck{
     public ArrayList<DevCard> getDevCards() {
         return devCards;
     }
+
 
 
 }

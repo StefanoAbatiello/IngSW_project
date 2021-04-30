@@ -79,6 +79,8 @@ public class MultiPlayer implements Game {
      * @return the current status of indicated Vatican zone after being activated.
      * Furthermore set which slot is in pope space & increase points that will be added in the end of game
      */
+
+    //TODO check faithtrackpoints updater in player
     public boolean activePopeSpace(Player playerInput) {
         if(playerInput.getPersonalBoard().getFaithMarker().getFaithPosition()==8 && isVC1active()) {
 

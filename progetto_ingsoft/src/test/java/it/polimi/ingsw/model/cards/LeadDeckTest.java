@@ -1,43 +1,91 @@
 package it.polimi.ingsw.model.cards;
 
 import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.Resource;
+import it.polimi.ingsw.model.cards.cardExceptions.NoSuchRequirementException;
+import it.polimi.ingsw.model.cards.cardExceptions.playerLeadsNotEmptyException;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class LeadDeckTest {
 
-    /*@Test
-    void shuffleCards() {
-        /**entrata e uscita stessa misura, ma ordine cose interne diverso
+    @Test
+    void createDeck(){
+        LeadDeck deck = new LeadDeck();
+        ArrayList<String> color=new ArrayList<>();
+        color.add("YELLOW");
+        color.add("GREEN");
+        HashMap<Integer, ArrayList<String>> cardsReq= new HashMap<>();
+        cardsReq.put(1,color);
+        LeadCard card= new LeadCard(2,"DISCOUNT", Resource.SERVANT,new HashMap<Integer, Resource>(), cardsReq);
+        LeadCard wantedCard= deck.getLeadDeck().get(0);
+        assertEquals(card.getPoints(), wantedCard.getPoints());
+        assertEquals(card.getAbility(), wantedCard.getAbility());
+        assertEquals(card.getResource(), wantedCard.getResource());
+        //since the empty Hashmap creates some problems in the getResource, it will be tested in other tests in the single card
+        assertEquals(card.getDevCardRequired(), wantedCard.getDevCardRequired());
     }
 
     @Test
-    void giveCardsToPlayer() {
-        LeadDeck leadDeck= new LeadDeck("cards");
-        leadDeck.shuffleCards();
-        Player p= new Player();
-        LeadCard[] leadCards = new LeadCard[4];
-            for(int i=0;i<3;i++)
-                leadCards[i]=leadDeck.get(i);
-            assertEquals(leadCards,leadDeck.giveCardsToPlayer(p, leadDeck));
-        }
-        /**in entrata 4 carte, se giocatore ha array con stesse 4 carte, funziona, ritorna true
+    void shuffle() {
+        LeadDeck deck = new LeadDeck();
+        ArrayList<LeadCard> newDeck= deck.shuffle();
+        assertEquals(deck.getLeadDeck().size(), newDeck.size());
+        for(LeadCard card: deck.getLeadDeck())
+            assertTrue (newDeck.contains(card));
+        //TODO ordine diverso
     }
-
 
     @Test
-    void giveCardsToPlayersAllDifferent() {
-        Player p1= new Player();
-        Player p2= new Player();
-        leadDeck.giveCardsToPlayer(p1);
-        leadDeck.giveCardsToPlayer(p2);
-        for(LeadCard leadCard: p1.leadCards)
-
-        assertNotEquals(p1.);
-        }
-
-        /**le carte dei giocatori devono essere diverse
+    void giveToPlayer() throws playerLeadsNotEmptyException {
+        LeadDeck deck= new LeadDeck();
+        deck.shuffle();
+        Player p= new Player(4);
+        ArrayList<LeadCard> leadCards = new ArrayList<>();
+        for(int i=0;i<3;i++)
+            leadCards.add(deck.getLeadDeck().get(i));
+        deck.giveToPlayer(p);
+        ArrayList<LeadCard> playerLeads = p.getLeadCards();
+        assertEquals(leadCards,playerLeads);
     }
-}/**array giocatore pieno*/
+        /*in entrata 4 carte, se giocatore ha array con stesse 4 carte, funziona, ritorna true
+    }*/
+
+    @Test
+    void cannotGiveToPlayerExc() throws playerLeadsNotEmptyException {
+        LeadDeck deck= new LeadDeck();
+        deck.shuffle();
+        Player p= new Player(4);
+        ArrayList<LeadCard> leadCards = new ArrayList<>();
+        for(int i=0;i<3;i++)
+            leadCards.add(deck.getLeadDeck().get(i));
+        deck.giveToPlayer(p);
+        assertThrows(playerLeadsNotEmptyException.class,()->deck.giveToPlayer(p));
+    }
+
+    @Test
+    void giveCardsToPlayersAllDifferent() throws playerLeadsNotEmptyException {
+        LeadDeck deck= new LeadDeck();
+        Player p1= new Player(2);
+        Player p2= new Player(4);
+        ArrayList<LeadCard> leadCards1 = new ArrayList<>();
+        for(int i=0;i<3;i++)
+            leadCards1.add(deck.getLeadDeck().get(i));
+        deck.giveToPlayer(p1);
+        ArrayList<LeadCard> leadCards2 = new ArrayList<>();
+        for(int i=0;i<3;i++)
+            leadCards2.add(deck.getLeadDeck().get(i));
+        deck.giveToPlayer(p2);
+        ArrayList<LeadCard> p1Leads = p1.getLeadCards();
+        assertEquals(leadCards1,p1Leads);
+        ArrayList<LeadCard> p2Leads = p2.getLeadCards();
+        assertEquals(leadCards2,p2Leads);
+        for(LeadCard card: p1Leads)
+            assertFalse(p2Leads.contains(card));
+    }
+
 }

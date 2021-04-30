@@ -1,13 +1,13 @@
 package it.polimi.ingsw.model.cards;
 
-//import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Resource;
+import it.polimi.ingsw.model.cards.Cards;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class DevCard  {
+public class DevCard implements Cards{
 
     /**
      * This attribute represents the points given by the card to the player
@@ -135,6 +135,15 @@ public class DevCard  {
         this.active = active;
     }
 
+    /**
+     *
+     * @return the devCard
+     */
+    @Override
+    public Cards getCard() {
+        return this;
+    }
+
     // public Player getOwner() {
     //    return owner;
     //}
@@ -143,7 +152,6 @@ public class DevCard  {
     //    this.owner = owner;
     //}
 
-    }
-
+}
 
 
