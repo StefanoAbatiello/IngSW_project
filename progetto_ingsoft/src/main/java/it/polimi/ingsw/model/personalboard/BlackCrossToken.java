@@ -19,7 +19,7 @@ public class BlackCrossToken {
      * @return cross position after the updating
      */
     public static int updateBlackCross(int pos){
-            crossPosition+=pos;
+        crossPosition+=pos;
         return crossPosition;
     }
 

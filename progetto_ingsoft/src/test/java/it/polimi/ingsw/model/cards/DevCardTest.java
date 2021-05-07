@@ -13,7 +13,7 @@ class DevCardTest {
 
     @Test
     void useProductionExceptionTest() throws ResourceNotValidException {
-        Player player = new Player(4);
+        Player player = new Player("4");
         ArrayList<Resource> testArray1 = new ArrayList<>();
         ArrayList<Resource> testArray2 = new ArrayList<>();
 
@@ -31,7 +31,7 @@ class DevCardTest {
 
     @Test
     void useProductionWorkingRight() throws ResourceNotValidException {
-        Player player = new Player(4);
+        Player player = new Player("4");
         ArrayList<Resource> testArray2 = new ArrayList<>();
         ArrayList<Resource> testArray3 = new ArrayList<>();
 

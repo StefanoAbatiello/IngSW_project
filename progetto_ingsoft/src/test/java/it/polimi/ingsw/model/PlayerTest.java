@@ -11,49 +11,42 @@ import it.polimi.ingsw.model.cards.cardExceptions.CardChosenNotValidException;
 import it.polimi.ingsw.model.cards.cardExceptions.playerLeadsNotEmptyException;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerTest {
 
     @Test
     void doBasicProduction() throws ResourceNotValidException {
-        Player player=new Player(1);
+        Player player=new Player("Pippo");
+        ArrayList<Resource> prodInput=new ArrayList<>();
+        prodInput.add(Resource.SERVANT);
+        prodInput.add(Resource.SHIELD);
         player.getPersonalBoard().getWarehouseDepots().addinShelf(0, Resource.SERVANT);
         player.getPersonalBoard().getStrongBox().addInStrongbox(Resource.SHIELD);
-        player.setPotentialResource("COIN");
-
-        assertEquals(Resource.COIN,player.doBasicProduction(Resource.SERVANT, Resource.SHIELD));
+        assertEquals(Resource.COIN,player.doBasicProduction(prodInput,Resource.COIN));
     }
 
 
     @Test
     void doNotValidBasicProduction1() throws ResourceNotValidException {
-        Player player=new Player(1);
+        Player player=new Player("Paki");
+        ArrayList<Resource> prodInput=new ArrayList<>();
+        prodInput.add(Resource.SERVANT);
+        prodInput.add(Resource.SHIELD);
         player.getPersonalBoard().getWarehouseDepots().addinShelf(0, Resource.SERVANT);
-        player.getPersonalBoard().getStrongBox().addInStrongbox(Resource.SHIELD);
-        player.setPotentialResource("COIN");
-        player.doBasicProduction(Resource.STONE, Resource.SHIELD);
 
-        //assertEquals(1,player.getCoderr());
+        assertThrows(ResourceNotValidException.class,()-> player.doBasicProduction(prodInput,Resource.COIN));
     }
 
-    @Test
-    void doNotValidBasicProduction2() throws ResourceNotValidException {
-        Player player=new Player(1);
-        player.getPersonalBoard().getWarehouseDepots().addinShelf(0, Resource.SERVANT);
-        player.getPersonalBoard().getStrongBox().addInStrongbox(Resource.SHIELD);
-        player.setPotentialResource("COIN");
-        player.doBasicProduction(Resource.STONE, Resource.COIN);
-
-        //assertEquals(2,player.getCoderr());
-    }
 
     //TODO divide the test in different tries
     @Test
     void choose2leadsWorks() throws WrongAbilityInCardException, CardChosenNotValidException, AbilityAlreadySetException, playerLeadsNotEmptyException {
 
         LeadDeck deck= new LeadDeck();
-        Player player = new Player(2);
+        Player player = new Player("Ciccio");
         deck.giveToPlayer(player);
 
         LeadAbility ability1= player.getLeadCards().get(0).getAbilityFromCard();
@@ -76,14 +69,14 @@ class PlayerTest {
 
     @Test
     void checkSetAction() throws ActionAlreadySet {
-        Player player= new Player(3);
+        Player player= new Player("Jenny");
         player.setAction(Action.ACTIVATEPRODUCTION);
         assertEquals(Action.ACTIVATEPRODUCTION,player.getAction());
     }
 
     @Test
     void checkExceptionSetAction() throws ActionAlreadySet {
-        Player player= new Player(3);
+        Player player= new Player("USER");
         player.setAction(Action.ACTIVATEPRODUCTION);
         assertThrows(ActionAlreadySet.class,()->player.setAction(Action.BUYCARD));
     }

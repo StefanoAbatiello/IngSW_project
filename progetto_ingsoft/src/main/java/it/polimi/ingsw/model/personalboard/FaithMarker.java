@@ -7,7 +7,6 @@ import it.polimi.ingsw.model.Points;
 
 public class FaithMarker implements Points {
     private int faithPosition;
-    private int faithMarkerID;
     private boolean invaticanzone;
     private int points;
 
@@ -22,18 +21,6 @@ public class FaithMarker implements Points {
         this.faithPosition = 0;
         this.invaticanzone = false;
     }
-
-    /**
-     * @param player is the owner of faith marker
-     * @return faith marker ID after having associated player ID
-     * */
-    public int setFaithMarkerID(Player player) {
-
-        this.faithMarkerID = player.getPlayerID();
-        return faithMarkerID;
-    }
-
-
 
     /**
      * @return true if faith marker position is in vatican zone

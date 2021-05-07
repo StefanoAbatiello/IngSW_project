@@ -15,7 +15,7 @@ class GreyMarbleTest {
     @Test
     void changeMarbleTest() throws FullSupplyException {
         GreyMarble marble=new GreyMarble();
-        Player p=new Player(0);
+        Player p=new Player("0");
         marble.changeMarble(p);
         ArrayList<Resource> resources=new ArrayList<>();
         resources.add(Resource.STONE);

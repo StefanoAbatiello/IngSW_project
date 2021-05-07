@@ -17,20 +17,17 @@ import java.util.Optional;
 public class Player implements Points{
     //TODO controllo commenti
     private int points;
-    private int playerID;
-    private PersonalBoard personalBoard;
+    private final PersonalBoard personalBoard;
     private int faithtrackPoints;
-    private String potentialResource;
     private ArrayList<LeadCard> leadCards=new ArrayList<>();
     private LeadAbility ability1;
     private LeadAbility ability2;
-    private ResourceSupply resourceSupply = new ResourceSupply();
+    private final ResourceSupply resourceSupply = new ResourceSupply();
     private Action action;
 
 
-    public Player(int playerID) {
+    public Player(String username) {
         this.points = 0;
-        this.playerID = playerID;
         this.personalBoard = new PersonalBoard();//mettere faithtrackPoints a zero quando si costruisce board
         this.faithtrackPoints = 0;
 
@@ -98,10 +95,6 @@ public class Player implements Points{
         return this.points;
     }
 
-    public int getPlayerID () {
-        return playerID;
-    }
-
     public PersonalBoard getPersonalBoard() {
         return personalBoard;
     }
@@ -115,10 +108,7 @@ public class Player implements Points{
         return this.faithtrackPoints;
     }
 
-    //TODO use Resource instead of String
-    public void setPotentialResource(String potentialResource) {
-        this.potentialResource = potentialResource;
-    }
+
 
     public String getPotentialResource(String potentialResource) {
         return potentialResource;
@@ -149,19 +139,9 @@ public class Player implements Points{
 
 //TODO ragionare su abilità e pattern
 
-    public Resource doBasicProduction (Resource r1, Resource r2){
-        ArrayList<Resource> resourceArrayList=new ArrayList<>();
-        resourceArrayList.add(r1);
-        resourceArrayList.add(r2);
-
-        if(getPersonalBoard().checkUseProd(resourceArrayList)){
-            try {
-                getPersonalBoard().removeResources(resourceArrayList);
-            } catch (ResourceNotValidException e) {
-                e.printStackTrace();
-            }
-        }
-        return Enum.valueOf(Resource.class, potentialResource);
+    public Resource doBasicProduction (ArrayList<Resource> resources,Resource potentialResource) throws ResourceNotValidException {
+        getPersonalBoard().removeResources(resources);
+        return potentialResource;
     }
 
 

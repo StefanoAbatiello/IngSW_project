@@ -12,7 +12,7 @@ class RedMarbleTest {
     @Test
     void changeMarbleTest() throws FullSupplyException {
         RedMarble marble=new RedMarble();
-        assertTrue(marble.changeMarble(new Player(0)));
+        assertTrue(marble.changeMarble(new Player("0")));
     }
 
 }

@@ -3,7 +3,10 @@ package it.polimi.ingsw.model.personalboard;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.MultiPlayer;
 import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.cards.cardExceptions.playerLeadsNotEmptyException;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,48 +30,50 @@ class FaithMarkerTest {
     }
 
 
-    @Test
-    void setFaithMarkerID() {
-        Player player=new Player(1);
-        assertEquals(player.getPlayerID(),player.getPersonalBoard().getFaithMarker().setFaithMarkerID(player));
-    }
+
 
     @Test
-    void CheckDifferentActivePopeSpace() {
-        Game game=new MultiPlayer();
-        game.createNewPlayer(new Player(1));
+    void CheckDifferentActivePopeSpace() throws playerLeadsNotEmptyException {
+        ArrayList<String> user= new ArrayList<>();
+        user.add("a");
+        user.add("b");
+        user.add("c");
+        user.add("d");
+        MultiPlayer game=new MultiPlayer(user);
 
         for(int i=0;i<8;i++)
-            game.getPlayers().get(0).getPersonalBoard().getFaithMarker().updatePosition();
-        game.activePopeSpace(game.getPlayers().get(0));
+            game.getPlayers()[0].getPersonalBoard().getFaithMarker().updatePosition();
+        game.activePopeSpace(game.getPlayers()[0]);
         assertFalse(game.isVC1active());
 
         for(int i=0;i<8;i++)
-            game.getPlayers().get(0).getPersonalBoard().getFaithMarker().updatePosition();
+            game.getPlayers()[0].getPersonalBoard().getFaithMarker().updatePosition();
 
-        game.activePopeSpace(game.getPlayers().get(0));
+        game.activePopeSpace(game.getPlayers()[0]);
         assertFalse(game.isVC2active());
 
         for(int i=0;i<8;i++)
-            game.getPlayers().get(0).getPersonalBoard().getFaithMarker().updatePosition();
-        game.activePopeSpace(game.getPlayers().get(0));
+            game.getPlayers()[0].getPersonalBoard().getFaithMarker().updatePosition();
+        game.activePopeSpace(game.getPlayers()[0]);
         assertFalse(game.isVC3active());
 
     }
     @Test
-    void activePopeSpaceWithDifferentPlayers(){
+    void activePopeSpaceWithDifferentPlayers() throws playerLeadsNotEmptyException {
 
-        Game game=new MultiPlayer();
-
-        game.createNewPlayer(new Player(1));
-        game.createNewPlayer(new Player(2));
+        ArrayList<String> user= new ArrayList<>();
+        user.add("a");
+        user.add("b");
+        user.add("c");
+        user.add("d");
+        MultiPlayer game=new MultiPlayer(user);
 
         for(int i=0;i<8;i++)
-            game.getPlayers().get(0).getPersonalBoard().getFaithMarker().updatePosition();
+            game.getPlayers()[0].getPersonalBoard().getFaithMarker().updatePosition();
 
-        game.activePopeSpace(game.getPlayers().get(0));
-        assertEquals(2,game.getPlayers().get(0).getFaithtrackPoints());
-        assertEquals(0,game.getPlayers().get(1).getFaithtrackPoints());
+        game.activePopeSpace(game.getPlayers()[0]);
+        assertEquals(2,game.getPlayers()[0].getFaithtrackPoints());
+        assertEquals(0,game.getPlayers()[1].getFaithtrackPoints());
 
     }
 
@@ -84,21 +89,24 @@ class FaithMarkerTest {
     }
 
     @Test
-    void updatePoints() {
-        Game game =new MultiPlayer();
-        game.createNewPlayer(new Player(1));
-        game.createNewPlayer(new Player(2));
+    void updatePoints() throws playerLeadsNotEmptyException {
+        ArrayList<String> user= new ArrayList<>();
+        user.add("a");
+        user.add("b");
+        user.add("c");
+        user.add("d");
+        MultiPlayer game=new MultiPlayer(user);
 
         for(int i=0;i<8;i++)
-            game.getPlayers().get(0).getPersonalBoard().getFaithMarker().updatePosition();
+            game.getPlayers()[0].getPersonalBoard().getFaithMarker().updatePosition();
 
-        assertEquals(2,game.getPlayers().get(0).getPersonalBoard().getFaithMarker().getPoints());
+        assertEquals(2,game.getPlayers()[0].getPersonalBoard().getFaithMarker().getPoints());
 
     }
 
     @Test
     void updatePosition() {
-        Player p1 = new Player(1);
+        Player p1 = new Player("1");
 
         for(int i=0;i<8;i++)
             p1.getPersonalBoard().getFaithMarker().updatePosition();

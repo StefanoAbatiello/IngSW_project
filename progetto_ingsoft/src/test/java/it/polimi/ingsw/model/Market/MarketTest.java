@@ -16,7 +16,7 @@ class MarketTest {
     @Test
     void negativeSelectorTest(){
         Market market=new Market();
-        assertThrows(NotAcceptableSelectorException.class, ()->market.buyResources(-1,new Player(0)));
+        assertThrows(NotAcceptableSelectorException.class, ()->market.buyResources(-1,new Player("0")));
     }
 
     /*
@@ -25,7 +25,7 @@ class MarketTest {
     @Test
     void notValidSelectorTest(){
         Market market=new Market();
-        assertThrows(NotAcceptableSelectorException.class, ()->market.buyResources(7,new Player(0)));
+        assertThrows(NotAcceptableSelectorException.class, ()->market.buyResources(7,new Player("0")));
     }
 
     /*
@@ -36,7 +36,7 @@ class MarketTest {
         Market market = new Market();
         MarketMarble[][] marketTray = market.getMarketBoard();
         ArrayList<Resource> resources = new ArrayList<>();
-        Player p = new Player(0);
+        Player p = new Player("0");
         int selector = 0;
         for (int i=0; i<4; i++) {
             MarketMarble marble = marketTray[selector][i];
@@ -61,7 +61,7 @@ class MarketTest {
         Market market = new Market();
         MarketMarble[][] marketTray = market.getMarketBoard();
         ArrayList<Resource> resources = new ArrayList<>();
-        Player p = new Player(0);
+        Player p = new Player("0");
         int selector = 4;
         for (int i=0; i<3; i++) {
             MarketMarble marble = marketTray[i][selector-3];
@@ -92,7 +92,7 @@ class MarketTest {
             for (int i = 1; i < 4; i++)
                 line[i - 1] = marketTray[selector][i];
             line[3] = extMarble;
-            market.buyResources(selector, new Player(0));
+            market.buyResources(selector, new Player("0"));
             for (int i = 0; i < 4; i++)
                 newLine[i] = marketTray[selector][i];
             assertArrayEquals(line, newLine);
@@ -112,7 +112,7 @@ class MarketTest {
         for(int i=1; i<3; i++)
             column[i-1]=marketTray[i][selector-3];
         column[2]=extMarble;
-        market.buyResources(selector,new Player(0));
+        market.buyResources(selector,new Player("0"));
         for(int i=0; i<3; i++)
             newColumn[i]=marketTray[i][selector-3];
         assertArrayEquals(column,newColumn);

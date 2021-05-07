@@ -65,7 +65,7 @@ public class Market {
      * @return a boolean to indicate if the purchase is done or not
      * @throws NotAcceptableSelectorException if the selector received is negative or greater than 6
      */
-    public MarketMarble[][] buyResources(int selector, Player p) throws FullSupplyException, NotAcceptableSelectorException {
+    public  MarketMarble[][] buyResources(int selector, Player p) throws FullSupplyException, NotAcceptableSelectorException {
         if(selector<0)
             throw new NotAcceptableSelectorException("Selector is negative, so isn't acceptable");
         if(selector<=2) {

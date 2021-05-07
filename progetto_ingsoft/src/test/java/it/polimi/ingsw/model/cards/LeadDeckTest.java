@@ -44,7 +44,7 @@ class LeadDeckTest {
     void giveToPlayer() throws playerLeadsNotEmptyException {
         LeadDeck deck= new LeadDeck();
         deck.shuffle();
-        Player p= new Player(4);
+        Player p= new Player("4");
         ArrayList<LeadCard> leadCards = new ArrayList<>();
         for(int i=0;i<3;i++)
             leadCards.add(deck.getLeadDeck().get(i));
@@ -59,7 +59,7 @@ class LeadDeckTest {
     void cannotGiveToPlayerExc() throws playerLeadsNotEmptyException {
         LeadDeck deck= new LeadDeck();
         deck.shuffle();
-        Player p= new Player(4);
+        Player p= new Player("4");
         ArrayList<LeadCard> leadCards = new ArrayList<>();
         for(int i=0;i<3;i++)
             leadCards.add(deck.getLeadDeck().get(i));
@@ -70,8 +70,8 @@ class LeadDeckTest {
     @Test
     void giveCardsToPlayersAllDifferent() throws playerLeadsNotEmptyException {
         LeadDeck deck= new LeadDeck();
-        Player p1= new Player(2);
-        Player p2= new Player(4);
+        Player p1= new Player("2");
+        Player p2= new Player("4");
         ArrayList<LeadCard> leadCards1 = new ArrayList<>();
         for(int i=0;i<3;i++)
             leadCards1.add(deck.getLeadDeck().get(i));

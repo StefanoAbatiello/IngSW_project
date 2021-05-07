@@ -1,20 +1,26 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.Market.Market;
 import it.polimi.ingsw.model.cards.*;
+import it.polimi.ingsw.model.cards.cardExceptions.playerLeadsNotEmptyException;
 import it.polimi.ingsw.model.personalboard.*;
 import it.polimi.ingsw.model.singlePlayerMode.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
-public class SinglePlayer{
+public class SinglePlayer extends Game{
 
     private final ArrayList<ActionToken> tokensStack =new ArrayList<>();
+    private Market market;
+    private Player player;
 
     public  ArrayList<ActionToken> getTokensStack() {
         return tokensStack;
     }
 
-    public SinglePlayer() {
+    public SinglePlayer(String username) throws playerLeadsNotEmptyException {
+        this.player=new Player(username);
         tokensStack.add(new CrossShuffleAction());
         tokensStack.add(new DoubleCrossAction());
         tokensStack.add(new DoubleCrossAction());
@@ -25,6 +31,9 @@ public class SinglePlayer{
         Collections.shuffle(tokensStack);
         new DevDeckMatrix();
         new BlackCrossToken();
+        this.market=new Market();
+        new LeadDeck().giveToPlayer(player);
+
     }
 
     /**
@@ -78,4 +87,58 @@ public class SinglePlayer{
         return -2;
     }
 
+    @Override
+    public boolean setVC1active(boolean VC1active) {
+        return false;
+    }
+
+    @Override
+    public boolean setVC2active(boolean VC2active) {
+        return false;
+    }
+
+    @Override
+    public boolean setVC3active(boolean VC3active) {
+        return false;
+    }
+
+    @Override
+    public boolean isVC1active() {
+        return false;
+    }
+
+    @Override
+    public boolean isVC2active() {
+        return false;
+    }
+
+    @Override
+    public boolean isVC3active() {
+        return false;
+    }
+
+    @Override
+    public boolean activePopeSpace(Player player) {
+        if((player.getPersonalBoard().getFaithMarker().getFaithPosition()==8 || BlackCrossToken.getCrossPosition()==8) && isVC1active()) {
+
+            if(player.getPersonalBoard().getFaithMarker().isVaticanZone())
+                player.increaseFaithtrackPoints(2);
+            setVC1active(false);
+            return isVC1active();
+        }
+        else if((player.getPersonalBoard().getFaithMarker().getFaithPosition()==16 || BlackCrossToken.getCrossPosition()==16) && isVC2active()) {
+            if(player.getPersonalBoard().getFaithMarker().isVaticanZone())
+                player.increaseFaithtrackPoints(3);
+            setVC2active(false);
+            return isVC2active();
+        }
+        else if((player.getPersonalBoard().getFaithMarker().getFaithPosition()==24 || BlackCrossToken.getCrossPosition()==24) && isVC3active()) {
+            if(player.getPersonalBoard().getFaithMarker().isVaticanZone())
+                player.increaseFaithtrackPoints(4);
+            setVC3active(false);
+            return isVC3active();
+        }
+        else
+            return true;
+        }
 }

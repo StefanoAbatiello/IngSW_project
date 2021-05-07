@@ -4,6 +4,8 @@ import it.polimi.ingsw.model.SinglePlayer;
 import it.polimi.ingsw.model.cards.DevCard;
 import it.polimi.ingsw.model.cards.DevDeckMatrix;
 import java.util.ArrayList;
+
+import it.polimi.ingsw.model.cards.cardExceptions.playerLeadsNotEmptyException;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,9 +15,9 @@ class DiscardDevCardActionTest {
     this Test is implemented to check if the token's effect of removing a card works correctly
      */
     @Test
-    void applyEffect() {
+    void applyEffect() throws playerLeadsNotEmptyException {
         int i=1;
-        SinglePlayer sP = new SinglePlayer();
+        SinglePlayer sP = new SinglePlayer("USER");
         ArrayList<DevCard> devDeck = DevDeckMatrix.getDevMatrix()[i][0].getLittleDevDeck();
         String color = devDeck.get(0).getColor();
         DiscardDevCardAction token = new DiscardDevCardAction(color);

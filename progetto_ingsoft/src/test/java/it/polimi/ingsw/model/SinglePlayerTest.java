@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.cards.*;
+import it.polimi.ingsw.model.cards.cardExceptions.playerLeadsNotEmptyException;
 import it.polimi.ingsw.model.singlePlayerMode.*;
 import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
@@ -12,8 +13,8 @@ class SinglePlayerTest {
     this Test is implemented to check if the method return the correct value in case of an empty line in DevDeckMatrix
      */
     @Test
-    void checkEmptyLineInMatrixTest() {
-        new SinglePlayer();
+    void checkEmptyLineInMatrixTest() throws playerLeadsNotEmptyException {
+        new SinglePlayer("USER");
         int i=0, j=0;
         String color = DevDeckMatrix.getDevMatrix()[i][j].getLittleDevDeck().get(0).getColor();
         for(int k = 0; k <12; k++) {
@@ -26,8 +27,8 @@ class SinglePlayerTest {
     this Test is implemented to check if the method return the correct value if there other cards of a specified color
      */
     @Test
-    void checkLinesInMatrixTest() {
-        new SinglePlayer();
+    void checkLinesInMatrixTest() throws playerLeadsNotEmptyException {
+        new SinglePlayer("USER");
         for (int i=0; i<5; i++)
             SinglePlayer.removeTokenCard("BLUE");
         assertFalse(SinglePlayer.checkEmptyLineInMatrix());
@@ -50,8 +51,8 @@ class SinglePlayerTest {
     this test is implemented to check if the scrolling of TokensStack works correctly
      */
     @Test
-    void drawTest(){
-        SinglePlayer sP = new SinglePlayer();
+    void drawTest() throws playerLeadsNotEmptyException {
+        SinglePlayer sP = new SinglePlayer("USER");
         sP.getTokensStack().clear();
         sP.getTokensStack().add(new DoubleCrossAction());
         sP.getTokensStack().add(new DoubleCrossAction());
@@ -72,8 +73,8 @@ class SinglePlayerTest {
     this Test is implemented to check if the card is removed correctly
      */
     @Test
-    void removeTokenCardTest() {
-        new SinglePlayer();
+    void removeTokenCardTest() throws playerLeadsNotEmptyException {
+        new SinglePlayer("USER");
         int i=0, j=0;
         ArrayList<DevCard> list = new ArrayList<>(DevDeckMatrix.getDevMatrix()[i][j].getLittleDevDeck());
         String color = list.remove(0).getColor();

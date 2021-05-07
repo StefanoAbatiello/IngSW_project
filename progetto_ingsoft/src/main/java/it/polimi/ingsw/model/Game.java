@@ -2,15 +2,40 @@ package it.polimi.ingsw.model;
 
 import java.util.ArrayList;
 
-public interface Game {
-    boolean setVC1active(boolean VC1active);
-    boolean setVC2active(boolean VC2active);
-    boolean setVC3active(boolean VC3active);
-    boolean isVC1active();
-    boolean isVC2active();
-    boolean isVC3active();
-    ArrayList<Player> getPlayers();
-    boolean activePopeSpace(Player player);
-    void createNewPlayer(Player player);
+public abstract class  Game {
+    /**
+     * This attribute represent the first vatican zone and its state
+     */
+    private boolean VC1active;
+    private boolean VC2active;
+    private boolean VC3active;
 
+    public boolean setVC1active(boolean VC1active) {
+        this.VC1active = VC1active;
+        return VC1active;
+    }
+
+    public boolean setVC2active(boolean VC2active) {
+        this.VC2active = VC2active;
+        return VC2active;
+    }
+
+    public boolean setVC3active(boolean VC3active) {
+        this.VC3active = VC3active;
+        return VC3active;
+    }
+
+    public boolean isVC1active() {
+        return VC1active;
+    }
+
+    public boolean isVC2active() {
+        return VC2active;
+    }
+
+    public boolean isVC3active() {
+        return VC3active;
+    }
+
+    abstract boolean activePopeSpace(Player player);
 }
