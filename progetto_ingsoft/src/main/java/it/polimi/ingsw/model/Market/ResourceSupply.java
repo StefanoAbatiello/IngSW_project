@@ -59,9 +59,5 @@ public class ResourceSupply implements ResourceCreator {
         return resources;
     }
 
-  //TODO implementation
-    @Override
-    public Resource getResource() {
-        return null;
-    }
+
 }

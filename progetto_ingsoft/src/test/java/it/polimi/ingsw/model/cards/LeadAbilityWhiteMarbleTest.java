@@ -7,56 +7,57 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class LeadAbilityDiscountTest {
+class LeadAbilityWhiteMarbleTest {
 
     @Test
     void activeAbility1() throws InvalidActiveParameterException {
         Player p= new Player("pincopallo");
-        LeadAbility disAb= new LeadAbilityDiscount(Resource.STONE);
+        LeadAbility whiteAb= new LeadAbilityWhiteMarble(Resource.STONE);
         ArrayList<String> color=new ArrayList<>();
         color.add("YELLOW");
         color.add("GREEN");
         HashMap<Integer, ArrayList<String>> cardsReq= new HashMap<>();
         cardsReq.put(1,color);
-        LeadCard card= new LeadCard(2,disAb,new HashMap<Integer, Resource>(),cardsReq);
+        LeadCard card= new LeadCard(2,whiteAb,new HashMap<Integer, Resource>(),cardsReq);
         p.activateAbility(card);
-        assertTrue(p.getDiscountAbility().contains(Resource.STONE));
-        assertTrue(p.getDiscountAbility().size()==1);
+        assertTrue(p.getWhiteMarbleAbility().contains(Resource.STONE));
+        assertTrue(p.getWhiteMarbleAbility().size()==1);
     }
     @Test
     void activeAbility2TimesSameCard() throws InvalidActiveParameterException {
         Player p= new Player("pincopallo");
-        LeadAbility disAb= new LeadAbilityDiscount(Resource.STONE);
+        LeadAbility whiteAb= new LeadAbilityWhiteMarble(Resource.STONE);
         ArrayList<String> color=new ArrayList<>();
         color.add("YELLOW");
         color.add("GREEN");
         HashMap<Integer, ArrayList<String>> cardsReq= new HashMap<>();
         cardsReq.put(1,color);
-        LeadCard card= new LeadCard(2,disAb,new HashMap<Integer, Resource>(),cardsReq);
+        LeadCard card= new LeadCard(2,whiteAb,new HashMap<Integer, Resource>(),cardsReq);
         p.activateAbility(card);
         p.activateAbility(card);
-        assertTrue(p.getDiscountAbility().contains(Resource.STONE));
-        assertFalse(p.getDiscountAbility().size()==2);
+        assertTrue(p.getWhiteMarbleAbility().contains(Resource.STONE));
+        assertFalse(p.getWhiteMarbleAbility().size()==2);
     }
     @Test
     void activeAbility2Times() throws InvalidActiveParameterException {
         Player p= new Player("pincopallo");
-        LeadAbility disAb= new LeadAbilityDiscount(Resource.STONE);
+        LeadAbility whiteAb= new LeadAbilityWhiteMarble(Resource.STONE);
         ArrayList<String> color=new ArrayList<>();
         color.add("YELLOW");
         color.add("GREEN");
-        LeadAbility leadAbility= new LeadAbilityDiscount(Resource.SERVANT);
+        LeadAbility leadAbility= new LeadAbilityWhiteMarble(Resource.SERVANT);
         HashMap<Integer, ArrayList<String>> cardsReq= new HashMap<>();
         cardsReq.put(1,color);
-        LeadCard card1= new LeadCard(2,disAb,new HashMap<Integer, Resource>(),cardsReq);
+        LeadCard card1= new LeadCard(2,whiteAb,new HashMap<Integer, Resource>(),cardsReq);
         LeadCard card2= new LeadCard(2,leadAbility,new HashMap<Integer, Resource>(),cardsReq);
         p.activateAbility(card1);
         p.activateAbility(card2);
-        assertTrue(p.getDiscountAbility().contains(Resource.STONE));
-        assertTrue(p.getDiscountAbility().contains(Resource.SERVANT));
-        assertTrue(p.getDiscountAbility().size()==2);
+        assertTrue(p.getWhiteMarbleAbility().contains(Resource.STONE));
+        assertTrue(p.getWhiteMarbleAbility().contains(Resource.SERVANT));
+        assertTrue(p.getWhiteMarbleAbility().size()==2);
     }
 }

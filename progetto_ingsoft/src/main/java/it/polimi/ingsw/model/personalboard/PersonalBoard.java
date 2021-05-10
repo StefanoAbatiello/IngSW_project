@@ -5,14 +5,16 @@ import it.polimi.ingsw.model.Resource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class PersonalBoard {
-    private FaithMarker faithMarker;
-    private WarehouseDepots warehouseDepots;
-    private StrongBox strongBox;
-    private DevCardSlot devCardSlot;
+    private final FaithMarker faithMarker;
+    private final WarehouseDepots warehouseDepots;
+    private final StrongBox strongBox;
+    private final DevCardSlot devCardSlot;
+    private ArrayList<Optional<SpecialShelf>> specialShelves;
 
     /**
      * create personal board with its component
@@ -22,9 +24,12 @@ public class PersonalBoard {
         warehouseDepots=new WarehouseDepots();
         strongBox=new StrongBox();
         devCardSlot=new DevCardSlot();
+        specialShelves = new ArrayList<>();
     }
 
-
+    public ArrayList<Optional<SpecialShelf>> getSpecialShelves() {
+        return specialShelves;
+    }
     public FaithMarker getFaithMarker() {
         return faithMarker;
     }
@@ -63,7 +68,7 @@ public class PersonalBoard {
     /**
      * @param resources are that to delete
      * @return all resources to delete
-     * @throws ResourceNotValidException if one resources is not contained in warehouse or in strognbox
+     * @throws ResourceNotValidException if one resources is not contained in warehouse or in strongbox
      */
     public ArrayList<Resource> removeResources(ArrayList<Resource> resources) throws ResourceNotValidException {
         for(Resource resources1:resources){

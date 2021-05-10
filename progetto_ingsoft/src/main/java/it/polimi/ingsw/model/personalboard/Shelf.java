@@ -53,10 +53,4 @@ public class Shelf implements ResourceCreator {
         return slots;
     }
 
-    //TODO implement method
-    @Override
-    public Resource getResource() {
-        return null;
-    }
-
 }

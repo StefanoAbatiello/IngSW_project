@@ -1,0 +1,29 @@
+package it.polimi.ingsw.model.cards;
+
+import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.Resource;
+import it.polimi.ingsw.model.cards.cardExceptions.InvalidActiveParameterException;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class LeadAbilityShelfTest {
+
+    @Test
+    void activeAbility1() throws InvalidActiveParameterException {
+        Player p= new Player("pippo");
+        LeadAbility shelfAb= new LeadAbilityShelf(Resource.STONE);
+        ArrayList<String> color=new ArrayList<>();
+        color.add("YELLOW");
+        color.add("GREEN");
+        HashMap<Integer, ArrayList<String>> cardsReq= new HashMap<>();
+        cardsReq.put(1,color);
+        LeadCard card= new LeadCard(2,shelfAb,new HashMap<Integer, Resource>(),cardsReq);
+        p.activateAbility(card);
+        assertEquals(Resource.STONE, p.getPersonalBoard().getSpecialShelves().get(0).get().getResourceType());
+
+    }
+}

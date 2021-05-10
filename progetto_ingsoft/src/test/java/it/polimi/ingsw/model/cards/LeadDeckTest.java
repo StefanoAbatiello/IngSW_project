@@ -19,13 +19,14 @@ class LeadDeckTest {
         ArrayList<String> color=new ArrayList<>();
         color.add("YELLOW");
         color.add("GREEN");
+        LeadAbility leadAbility= new LeadAbilityDiscount(Resource.SERVANT);
         HashMap<Integer, ArrayList<String>> cardsReq= new HashMap<>();
         cardsReq.put(1,color);
-        LeadCard card= new LeadCard(2,"DISCOUNT", Resource.SERVANT,new HashMap<Integer, Resource>(), cardsReq);
+        LeadCard card= new LeadCard(2,leadAbility,new HashMap<Integer, Resource>(), cardsReq);
         LeadCard wantedCard= deck.getLeadDeck().get(0);
         assertEquals(card.getPoints(), wantedCard.getPoints());
-        assertEquals(card.getAbility(), wantedCard.getAbility());
-        assertEquals(card.getResource(), wantedCard.getResource());
+        assertEquals(card.getAbility().getClass(), wantedCard.getAbility().getClass());
+        assertEquals(card.getAbility().getAbilityResource(), wantedCard.getAbility().getAbilityResource());
         //since the empty Hashmap creates some problems in the getResource, it will be tested in other tests in the single card
         assertEquals(card.getDevCardRequired(), wantedCard.getDevCardRequired());
     }

@@ -9,20 +9,18 @@ import it.polimi.ingsw.model.cards.cardExceptions.NoSuchRequirementException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class LeadCard  implements Cards, Points, ResourceCreator {
+public class LeadCard  implements Cards, Points,ResourceCreator {
     private final int points;
-    private final String ability;
-    private final Resource resource;
+    private final LeadAbility ability;
     private final HashMap<Integer,Resource> resourceRequired;
     private final HashMap<Integer,ArrayList<String>> devCardRequired;
     private boolean active = false;
     private boolean inGame = false;
 
 
-    public LeadCard(int points, String ability, Resource resource, HashMap<Integer,Resource> resourceRequired, HashMap<Integer,ArrayList<String>> devCardRequired) {
+    public LeadCard(int points, LeadAbility ability, HashMap<Integer,Resource> resourceRequired, HashMap<Integer,ArrayList<String>> devCardRequired) {
         this.points = points;
         this.ability = ability;
-        this.resource = resource;
         this.resourceRequired = resourceRequired;
         this.devCardRequired = devCardRequired;
 
@@ -32,7 +30,7 @@ public class LeadCard  implements Cards, Points, ResourceCreator {
     public int getPoints(){
         return points;
     }
-    public String getAbility() {
+    public LeadAbility getAbility() {
         return ability;
     }
 
@@ -46,11 +44,6 @@ public class LeadCard  implements Cards, Points, ResourceCreator {
         for(int i=0; i<key; i++)
             resReq.add(resourceRequired.get(key));
         return resReq;
-    }
-
-    @Override
-    public Resource getResource() {
-        return resource;
     }
 
     public HashMap<Integer,ArrayList<String>> getDevCardRequired() {
@@ -68,34 +61,11 @@ public class LeadCard  implements Cards, Points, ResourceCreator {
         this.active = true;
     }
 
-    public boolean isInGame() {
-        return inGame;
-    }
-
-    public void setInGame(boolean inGame){
-        this.inGame = inGame;
-    }
 
     @Override
     public Cards getCard() {
         return this;
     }
 
-    //TODO tests
-    public LeadAbility getAbilityFromCard() throws WrongAbilityInCardException {
-        switch (this.getAbility()) {
-            case "WHITEMARBLE":
-                return new LeadAbilityWhiteMarble();
-            case "PRODUCTION":
-                return new LeadAbilityProduction();
-            case "SHELF":
-                return new LeadAbilityShelf();
-            case "DISCOUNT":
-                return new LeadAbilityDiscount();
-
-        }
-        //TODO stop the game? error in the card construction
-        throw new WrongAbilityInCardException("Error in the card construction");
-    }
 
 }

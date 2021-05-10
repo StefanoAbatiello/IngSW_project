@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.cards;
 
+import it.polimi.ingsw.exceptions.WrongAbilityInCardException;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Resource;
 
@@ -27,7 +28,14 @@ public class LeadDeck {
             Object obj = jsonP.parse(reader);
             JSONArray leadCardList = (JSONArray) obj;
             //Iterate over leadCard array
-            leadCardList.forEach(card-> parseLeadCard((JSONObject) card));
+            leadCardList.forEach(card-> {
+                try {
+                    parseLeadCard((JSONObject) card);
+                } catch (WrongAbilityInCardException e) {
+                    //TODO handle exception
+                    e.printStackTrace();
+                }
+            });
         }
         catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -39,7 +47,7 @@ public class LeadDeck {
     }
     //TODO posso mettere due hashmap opzionali per i requirements
 
-    private void parseLeadCard(JSONObject card) {
+    private void parseLeadCard(JSONObject card) throws WrongAbilityInCardException {
         JSONObject leadCardObj = (JSONObject) card.get("LEADCARD");
         //get leadCard info to create the card
         //Integer integerPoints = (Integer) devCardObj.get("POINTS");
@@ -48,20 +56,35 @@ public class LeadDeck {
 
         JSONObject jCardReq = (JSONObject) leadCardObj.get("CARDREQ");
         JSONObject jResourceReq = (JSONObject) leadCardObj.get("RESOURCEREQ");
+        Resource abilityResource= Resource.valueOf((String)leadCardObj.get("RESOURCE"));
         LeadCard newCard;
         if(jCardReq.isEmpty()){
             HashMap<Integer, Resource> requirements = fromJSONObjToResHash(jResourceReq);
             newCard= new LeadCard((int)(long)leadCardObj.get("POINTS"),
-                    (String) leadCardObj.get("ABILITY"),
-                    Resource.valueOf((String)leadCardObj.get("RESOURCE")), requirements, new HashMap<Integer, ArrayList<String>>());
+                    createAbility((String) leadCardObj.get("ABILITY"),abilityResource), requirements, new HashMap<Integer, ArrayList<String>>());
         }else{
             HashMap<Integer,ArrayList<String>> requirements = fromJSONObjToCardHash(jCardReq);
             newCard= new LeadCard( (int)(long) leadCardObj.get("POINTS"),
-                    (String) leadCardObj.get("ABILITY"),
-                    Resource.valueOf((String)leadCardObj.get("RESOURCE")), new HashMap<Integer, Resource>(), requirements);
+                    createAbility((String) leadCardObj.get("ABILITY"),abilityResource), new HashMap<Integer, Resource>(), requirements);
         }
         leadDeck.add(newCard);
 
+    }
+
+    private LeadAbility createAbility(String string, Resource resource) throws WrongAbilityInCardException {
+        switch (string) {
+            case "WHITEMARBLE":
+                return new LeadAbilityWhiteMarble(resource);
+            case "PRODUCTION":
+                return new LeadAbilityProduction(resource);
+            case "SHELF":
+                return new LeadAbilityShelf(resource);
+            case "DISCOUNT":
+                return new LeadAbilityDiscount(resource);
+
+        }
+        //TODO stop the game? error in the card construction
+        throw new WrongAbilityInCardException("Error in the card construction");
     }
 
     /**

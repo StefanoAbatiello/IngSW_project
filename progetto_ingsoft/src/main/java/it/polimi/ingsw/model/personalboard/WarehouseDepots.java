@@ -55,9 +55,4 @@ public class WarehouseDepots implements ResourceCreator {
         return allres;
     }
 
-    //TODO implement method
-    @Override
-    public Resource getResource() {
-        return null;
-    }
 }

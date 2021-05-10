@@ -25,9 +25,8 @@ public class WhiteMarble implements MarketMarble {
     //TODO gestione della scelta di quale risorsa prendere se può scegliere tra due
 
     public boolean changeMarble(Player player) throws FullSupplyException {
-        /*if (player.WhiteMarbleAbility.length!=0) {
-            ResourceSupply.putResourceInContainer(player.WhiteMarbleAbility[0]);
-            return true;
+        /*if (!player.whiteMarbleAbility.isEmpty()) {
+            return ;
         }*/
         return false;
     }

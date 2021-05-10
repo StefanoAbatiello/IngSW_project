@@ -9,28 +9,13 @@ import it.polimi.ingsw.model.cards.cardExceptions.AlreadyActivatedException;
  */
 public abstract class LeadAbility {
 
-    private Resource abilityResource;
-    private boolean active;
+    protected Resource abilityResource;
 
-
-    public abstract boolean useAbility(Player p);
-
-    public boolean getActive(){
-        return active;
+    public LeadAbility(Resource resource){
+        this.abilityResource=resource;
     }
+    public abstract boolean activeAbility(Player p);
 
-    public boolean setActive(boolean active) throws AlreadyActivatedException {
-        if(!this.active) {
-            this.active = active;
-            return active;
-        }else
-            throw new AlreadyActivatedException("This ability is already active");
-    }
-
-    public Resource setAbilityResource(Resource resource){
-        abilityResource=resource;
-        return abilityResource;
-    }
 
     public Resource getAbilityResource(){
         return abilityResource;

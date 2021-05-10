@@ -5,10 +5,16 @@ import it.polimi.ingsw.model.Resource;
 
 public class LeadAbilityDiscount extends LeadAbility{
 
+    public LeadAbilityDiscount(Resource resource){
+       super(resource);
+   }
     @Override
-    public boolean useAbility(Player p) {
-
-        return true;
+    public boolean activeAbility(Player p) {
+        if(!(p.getDiscountAbility().contains(this.abilityResource))) {
+            p.getDiscountAbility().add(this.abilityResource);
+            return true;
+        }else
+            return false;
 
     }
 

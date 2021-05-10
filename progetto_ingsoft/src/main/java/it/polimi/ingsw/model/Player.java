@@ -9,6 +9,7 @@ import it.polimi.ingsw.exceptions.ResourceNotValidException;
 import it.polimi.ingsw.model.cards.LeadCard;
 import it.polimi.ingsw.model.cards.cardExceptions.AlreadyActivatedException;
 import it.polimi.ingsw.model.cards.cardExceptions.CardChosenNotValidException;
+import it.polimi.ingsw.model.cards.cardExceptions.InvalidActiveParameterException;
 import it.polimi.ingsw.model.personalboard.PersonalBoard;
 
 import java.util.ArrayList;
@@ -20,8 +21,12 @@ public class Player implements Points{
     private final PersonalBoard personalBoard;
     private int faithtrackPoints;
     private ArrayList<LeadCard> leadCards=new ArrayList<>();
-    private LeadAbility ability1;
-    private LeadAbility ability2;
+
+
+
+    private final ArrayList<Resource> productionAbility=new ArrayList<>();
+    private final ArrayList<Resource> discountAbility=new ArrayList<>();
+    private final ArrayList<Resource> whiteMarbleAbility=new ArrayList<>();
     private final ResourceSupply resourceSupply = new ResourceSupply();
     private Action action;
 
@@ -36,17 +41,25 @@ public class Player implements Points{
 
     //TODO penso metodi in game che chiamano strategy,penso a costruttore di ability
 
-    private boolean setAbility (LeadAbility leadAbility) throws AbilityAlreadySetException {
-        Optional<LeadAbility> firstAbility = Optional.ofNullable(ability1);
-        Optional<LeadAbility> secondAbility = Optional.ofNullable(ability2);
-        if(!firstAbility.isPresent()) {
-            this.ability1 = leadAbility;
-            return true;
-        } else if(!secondAbility.isPresent()) {
-            this.ability2 = leadAbility;
-            return true;
-        }else
-            throw new AbilityAlreadySetException("ability slots already set");
+    public ArrayList<Resource> getProductionAbility() {
+        return productionAbility;
+    }
+
+    public ArrayList<Resource> getDiscountAbility() {
+        return discountAbility;
+    }
+
+    public ArrayList<Resource> getWhiteMarbleAbility() {
+        return whiteMarbleAbility;
+    }
+
+    public boolean activateAbility(LeadCard card) throws InvalidActiveParameterException {
+       if(!card.isActive()) {
+           card.getAbility().activeAbility(this);
+           card.setActive(true);
+           return card.isActive();
+       }else
+           return false;
     }
 
     public boolean setAction(Action newAction) throws ActionAlreadySet{
@@ -60,29 +73,6 @@ public class Player implements Points{
 
     public Action getAction(){
         return this.action;
-    }
-
-    public boolean activateAbility1() throws AlreadyActivatedException {
-        return ability1.setActive(true);
-    }
-    public boolean activateAbility2() throws AlreadyActivatedException {
-        return ability2.setActive(true);
-    }
-
-    public boolean useAbility1(){
-        return ability1.useAbility(this);
-    }
-
-    public boolean useAbility2(){
-        return ability2.useAbility(this);
-    }
-
-    public LeadAbility getAbility1(){
-        return ability1;
-    }
-
-    public LeadAbility getAbility2(){
-        return ability2;
     }
 
 
@@ -123,14 +113,10 @@ public class Player implements Points{
     }
 
     //TODO test
-    public boolean choose2LeadsAndSetAbilities(LeadCard card1, LeadCard card2) throws CardChosenNotValidException, WrongAbilityInCardException, AbilityAlreadySetException {//communication with the player
+    public boolean choose2Leads(LeadCard card1, LeadCard card2) throws CardChosenNotValidException, WrongAbilityInCardException, AbilityAlreadySetException {//communication with the player
         if(leadCards.contains(card1) && leadCards.contains(card2)) {//controller? controllo anche che due carte sono differenti
             leadCards.removeIf(card -> !card.equals(card1) && !card.equals(card2));
-            setAbility(getLeadCards().get(0).getAbilityFromCard());
-            ability1.setAbilityResource(getLeadCards().get(0).getResource());
-            setAbility(getLeadCards().get(1).getAbilityFromCard());
-            ability2.setAbilityResource(getLeadCards().get(1).getResource());
-            return true;
+             return true;
         }
         else
             throw new CardChosenNotValidException("One or both card chosen are not present in the player's leadCards available");

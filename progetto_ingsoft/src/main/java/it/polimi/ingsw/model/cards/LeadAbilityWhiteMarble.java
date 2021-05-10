@@ -5,14 +5,16 @@ import it.polimi.ingsw.model.Resource;
 
 public class LeadAbilityWhiteMarble extends LeadAbility {
 
-    @Override
-    public boolean useAbility(Player p) {
+    public LeadAbilityWhiteMarble(Resource resource){
+        super(resource);
+    }
+    public boolean activeAbility(Player p) {
+        if(!(p.getWhiteMarbleAbility().contains(this.abilityResource))) {
+            p.getWhiteMarbleAbility().add(this.abilityResource);
+            return true;
+        }else
+            return false;
 
-        return true;
     }
 
-    /*public void useAbility(Resource leadCardRes){
-        Container container= new Container();
-       container.putResourceInContainer(leadCardRes);
-    }*/
 }
