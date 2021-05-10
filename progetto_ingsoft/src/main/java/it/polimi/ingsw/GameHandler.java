@@ -1,5 +1,4 @@
 package it.polimi.ingsw;
 
-public class Server {
-
+public class GameHandler {
 }

@@ -6,11 +6,12 @@ import it.polimi.ingsw.model.cards.DevDeckMatrix;
 import it.polimi.ingsw.model.cards.LeadDeck;
 import it.polimi.ingsw.model.cards.cardExceptions.playerLeadsNotEmptyException;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class MultiPlayer extends Game {
-    private final Player[] players=new Player[4];
+    private final Player[] players;
 
     private Market market;
     //TODO controlla eccezione se deve essere gestit dentro il model
@@ -20,11 +21,12 @@ public class MultiPlayer extends Game {
      * @param username is the players' list of the game
      * @throws playerLeadsNotEmptyException when a player receive a fifth lead card
      */
-    public MultiPlayer(ArrayList<String> username) throws playerLeadsNotEmptyException {
+    public MultiPlayer(ArrayList<String> username, int numPlayer) throws playerLeadsNotEmptyException {
         setVC1active(true);
         setVC2active(true);
         setVC3active(true);
         int i=0;
+        players= new Player[numPlayer];
         for(String user:username) {
             players[i] = new Player(user);
             i++;

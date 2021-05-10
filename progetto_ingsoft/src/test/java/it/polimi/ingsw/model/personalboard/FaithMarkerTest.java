@@ -39,7 +39,7 @@ class FaithMarkerTest {
         user.add("b");
         user.add("c");
         user.add("d");
-        MultiPlayer game=new MultiPlayer(user);
+        MultiPlayer game=new MultiPlayer(user,4);
 
         for(int i=0;i<8;i++)
             game.getPlayers()[0].getPersonalBoard().getFaithMarker().updatePosition();
@@ -66,7 +66,7 @@ class FaithMarkerTest {
         user.add("b");
         user.add("c");
         user.add("d");
-        MultiPlayer game=new MultiPlayer(user);
+        MultiPlayer game=new MultiPlayer(user,4);
 
         for(int i=0;i<8;i++)
             game.getPlayers()[0].getPersonalBoard().getFaithMarker().updatePosition();
@@ -95,7 +95,7 @@ class FaithMarkerTest {
         user.add("b");
         user.add("c");
         user.add("d");
-        MultiPlayer game=new MultiPlayer(user);
+        MultiPlayer game=new MultiPlayer (user,4);
 
         for(int i=0;i<8;i++)
             game.getPlayers()[0].getPersonalBoard().getFaithMarker().updatePosition();
