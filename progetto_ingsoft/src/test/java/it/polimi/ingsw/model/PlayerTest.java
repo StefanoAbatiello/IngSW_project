@@ -37,29 +37,37 @@ class PlayerTest {
         prodInput.add(Resource.SERVANT);
         prodInput.add(Resource.SHIELD);
         player.getPersonalBoard().getWarehouseDepots().addinShelf(0, Resource.SERVANT);
-
         assertThrows(ResourceNotValidException.class,()-> player.doBasicProduction(prodInput,Resource.COIN));
     }
 
-
-    //TODO divide the test in different tries
     @Test
-    void choose2leadsWorks() throws WrongAbilityInCardException, CardChosenNotValidException, AbilityAlreadySetException, playerLeadsNotEmptyException {
-
+    void firstLeadCardChosen() throws WrongAbilityInCardException, CardChosenNotValidException, AbilityAlreadySetException, playerLeadsNotEmptyException {
         LeadDeck deck= new LeadDeck();
         Player player = new Player("Ciccio");
         deck.giveToPlayer(player);
         ArrayList<LeadCard> oldPlayerCards= player.getLeadCards();
-
         player.choose2Leads(player.getLeadCards().get(0), player.getLeadCards().get(1));
-
-        assertEquals(oldPlayerCards.get(0),player.getLeadCards().get(0));
-        assertEquals(oldPlayerCards.get(1),player.getLeadCards().get(1));
-
-        assertTrue(player.getLeadCards().size()==2);
-
     }
 
+    @Test
+    void secondLeadCardChosen() throws WrongAbilityInCardException, CardChosenNotValidException, AbilityAlreadySetException, playerLeadsNotEmptyException {
+        LeadDeck deck= new LeadDeck();
+        Player player = new Player("Ciccio");
+        deck.giveToPlayer(player);
+        ArrayList<LeadCard> oldPlayerCards= player.getLeadCards();
+        player.choose2Leads(player.getLeadCards().get(0), player.getLeadCards().get(1));
+        assertEquals(oldPlayerCards.get(1),player.getLeadCards().get(1));
+    }
+
+    @Test
+    void numberOfLeadCardChosen() throws WrongAbilityInCardException, CardChosenNotValidException, AbilityAlreadySetException, playerLeadsNotEmptyException {
+        LeadDeck deck= new LeadDeck();
+        Player player = new Player("Ciccio");
+        deck.giveToPlayer(player);
+        ArrayList<LeadCard> oldPlayerCards= player.getLeadCards();
+        player.choose2Leads(player.getLeadCards().get(0), player.getLeadCards().get(1));
+        assertTrue(player.getLeadCards().size()==2);
+    }
 
     @Test
     void checkSetAction() throws ActionAlreadySet {

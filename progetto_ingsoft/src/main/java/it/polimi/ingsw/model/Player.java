@@ -112,7 +112,6 @@ public class Player implements Points{
         this.leadCards= leadCards;
     }
 
-    //TODO test
     public boolean choose2Leads(LeadCard card1, LeadCard card2) throws CardChosenNotValidException, WrongAbilityInCardException, AbilityAlreadySetException {//communication with the player
         if(leadCards.contains(card1) && leadCards.contains(card2)) {//controller? controllo anche che due carte sono differenti
             leadCards.removeIf(card -> !card.equals(card1) && !card.equals(card2));
