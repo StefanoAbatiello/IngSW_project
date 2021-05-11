@@ -4,22 +4,37 @@ package it.polimi.ingsw;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class MainServer {
     private final ConnectionServer connectionServer;
-
+//TODO sistemare nomi hashmap
     //this map identifies a client from their id;
-    private final Map<Integer, Client> clientFromId;
+    private final Map<Integer, VirtualClient> clientFromId;
     private final Map<Integer,String> nameFromId;
-    private final Map<Integer,Integer> fromClientIDToGameID;
+    private final Map<String,Integer> IDfromName;
+    private final Map<Integer,Lobby> fromClientIDToLobby;
+
+    public Map<Integer, VirtualClient> getClientFromId() {
+        return clientFromId;
+    }
+
+    public Map<String, Integer> getIDfromName() {
+        return IDfromName;
+    }
+
+    public Map<Integer, Lobby> getFromClientIDToLobby() {
+        return fromClientIDToLobby;
+    }
+
+
+
 
     public MainServer(int port) {
         this.connectionServer= new ConnectionServer(port,this);
-        this.fromClientIDToGameID = new HashMap<>();
+        this.fromClientIDToLobby = new HashMap<>();
         this.clientFromId=new HashMap<>();
         this.nameFromId = new HashMap<>();
+        this.IDfromName= new HashMap<>();
     }
 
     public static void main(String[] args) {
@@ -43,6 +58,10 @@ public class MainServer {
         return connectionServer;
     }
 
+    public Map<Integer, String> getNameFromId() {
+        return nameFromId;
+    }
+
     public void quitActiveConnections(){
         Scanner scanner=new Scanner(System.in);
         while (true){
@@ -58,5 +77,5 @@ public class MainServer {
         return clientFromId.get(id).getGameHandler();
    }
 
-
+///TODO gestione id e metodi lobby
 }

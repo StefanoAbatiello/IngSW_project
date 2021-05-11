@@ -35,7 +35,7 @@ public class ConnectionServer {
     public void acceptConnections(ServerSocket serverSocket){
         while (active){
             try{
-                ClientHandler clientHandler=new ClientHandler(serverSocket.accept());
+                ClientHandler clientHandler=new ClientHandler(serverSocket.accept(), server);
                 executorService.submit(clientHandler);
             }
             catch (IOException e){

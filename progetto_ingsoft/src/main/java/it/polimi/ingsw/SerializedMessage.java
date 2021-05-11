@@ -1,4 +1,9 @@
 package it.polimi.ingsw;
 
-public class SerializedMessage {
+import java.io.Serializable;
+
+public interface SerializedMessage extends Serializable {
+
+
+
 }
