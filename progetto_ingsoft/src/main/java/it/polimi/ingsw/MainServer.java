@@ -13,6 +13,7 @@ public class MainServer {
     private final Map<Integer,String> nameFromId;
     private final Map<String,Integer> IDfromName;
     private final Map<Integer,Lobby> fromClientIDToLobby;
+    private int nextLobbyId;
 
     public Map<Integer, VirtualClient> getClientFromId() {
         return clientFromId;
@@ -26,7 +27,11 @@ public class MainServer {
         return fromClientIDToLobby;
     }
 
-
+    public int generateLobbyId(){
+        int actualLobbyId=nextLobbyId;
+        nextLobbyId++;
+        return actualLobbyId;
+    }
 
 
     public MainServer(int port) {
@@ -35,6 +40,7 @@ public class MainServer {
         this.clientFromId=new HashMap<>();
         this.nameFromId = new HashMap<>();
         this.IDfromName= new HashMap<>();
+        nextLobbyId = 0;
     }
 
     public static void main(String[] args) {

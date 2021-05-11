@@ -1,9 +1,8 @@
 package it.polimi.ingsw;
 
-import com.sun.security.ntlm.Server;
-
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.sql.SQLOutput;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -35,7 +34,9 @@ public class ConnectionServer {
     public void acceptConnections(ServerSocket serverSocket){
         while (active){
             try{
-                ClientHandler clientHandler=new ClientHandler(serverSocket.accept(), server);
+                Socket socket= serverSocket.accept();
+                System.out.println("sono nel try");
+                ClientHandler clientHandler=new ClientHandler(socket, server);
                 executorService.submit(clientHandler);
             }
             catch (IOException e){

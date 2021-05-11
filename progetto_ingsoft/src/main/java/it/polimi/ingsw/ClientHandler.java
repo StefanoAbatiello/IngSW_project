@@ -2,26 +2,42 @@ package it.polimi.ingsw;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 class ClientHandler implements Runnable {
     private Socket socket;
     private MainServer server;
-    private ObjectInputStream inputStream;
-    private ObjectOutputStream outputStream;
-    private int ClientID;
+    private ObjectInputStream inputStreamObj;
+    private ObjectOutputStream outputStreamObj;
+    private int clientID;
     private boolean active;
+
+    public InputStream getInputStream() {
+        return inputStreamObj;
+    }
+
+    public OutputStream getOutputStreamObj() {
+        return outputStreamObj;
+    }
+
 
 
     public ClientHandler(Socket socket, MainServer server) {
+        System.out.println("sto creando il CH");
+
         this.socket = socket;
         this.server = server;
+        System.out.println("socket");
         try {
-            inputStream = new ObjectInputStream(socket.getInputStream());
-            outputStream = new ObjectOutputStream(socket.getOutputStream());
+            InputStream input =socket.getInputStream();
+            inputStreamObj = new ObjectInputStream(input) ;
+            OutputStream output= socket.getOutputStream();
+            outputStreamObj = new ObjectOutputStream(output);
+            System.out.println("ho creato gli stream");
             active = true;
         } catch (IOException e) {
-            System.err.println("Error during client creation");
+            System.err.println("Error during socket creation");
         }
     }
 
@@ -34,8 +50,8 @@ class ClientHandler implements Runnable {
         try {
             while (isActive()) {
 
-                SerializedMessage input = (SerializedMessage) inputStream.readObject();
-                actionHandler((GameMessage) input);
+                SerializedMessage input = (SerializedMessage) inputStreamObj.readObject();
+                actionHandler(input);
             }
         }
         //TODO tolgo client dal server e nel caso di partita in atto, lo tolgo
@@ -44,27 +60,49 @@ class ClientHandler implements Runnable {
         }
     }
 
-    private void actionHandler(PreGameMessage input) {
+    private void actionHandler(SerializedMessage input) {
         if(input instanceof NickNameAction){
-            if(checkNickName((NickNameAction) input)>=0)
-                checkFirstPlayer();
+            clientID =checkNickName((NickNameAction) input);
+            if(clientID >=0) {
+                if (checkFirstPlayer(clientID))
+                    send(new RequestNumOfPlayers("You are the host of a new lobby."
+                            +" Choose how many players you want to challenge [0 to 3]"));
+            }
+        }
+        if(input instanceof NumOfPlayersAction){
+            int num=((NumOfPlayersAction)input).getPlayersNum();
+            if(num<0 || num >3)
+                send(new RequestNumOfPlayers("Number of Player not valid."
+                        +" Please type a valid number [0 to 3]"));
+            else
+                new Lobby(server.generateLobbyId(), num, server);
+
         }
 
-    }
-    private void actionHandler(GameMessage input) {
-
 
     }
 
-    private void checkFirstPlayer() {
+    private boolean checkFirstPlayer(int id) {
+        if(server.getFromClientIDToLobby().containsKey(id))
+            return false;
+        ArrayList<Lobby> lobbies= (ArrayList<Lobby>) server.getFromClientIDToLobby().values().stream().distinct().collect(Collectors.toList());
+        for(Lobby lobby:lobbies) {
+            if (!lobby.isLobbyFull()) {
+                lobby.insertPlayer(id);
+                return false;
+            }
+        }
+        return true;
     }
 
     //TODO gestione disconnessione
 
     private int checkNickName(NickNameAction message) {
         int ID;
+        System.out.println("sei dentro checknickname"+message.getNickname());
         for (String name : server.getNameFromId().values()) {
-            if (message.getNickname() == name) {
+            System.out.println(name);
+            if (message.getNickname().equals(name)) {
                 ID = server.getIDfromName().get(name);
                 if (server.getFromClientIDToLobby().containsKey(ID)) ;
                     Lobby lobby = server.getFromClientIDToLobby().get(ID);
@@ -99,5 +137,15 @@ class ClientHandler implements Runnable {
 
         return ID;
     }
+
+    public void send(SerializedMessage message){
+        try {
+            outputStreamObj.writeObject(message);
+            outputStreamObj.flush();
+        } catch (IOException e) {
+            e.printStackTrace();//TODO sistemare eccezioni
+        }
     }
+
+}
 
