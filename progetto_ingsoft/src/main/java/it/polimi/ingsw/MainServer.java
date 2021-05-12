@@ -7,24 +7,25 @@ import java.util.Scanner;
 
 public class MainServer {
     private final ConnectionServer connectionServer;
-//TODO sistemare nomi hashmap
+
     //this map identifies a client from their id;
     private final Map<Integer, VirtualClient> clientFromId;
     private final Map<Integer,String> nameFromId;
-    private final Map<String,Integer> IDfromName;
-    private final Map<Integer,Lobby> fromClientIDToLobby;
+    private final Map<String,Integer> IDFromName;
+    private final Map<Integer,Lobby> LobbyFromClientID;
     private int nextLobbyId;
 
     public Map<Integer, VirtualClient> getClientFromId() {
         return clientFromId;
     }
 
-    public Map<String, Integer> getIDfromName() {
-        return IDfromName;
+    public Map<String, Integer> getIDFromName() {
+        return IDFromName;
     }
 
-    public Map<Integer, Lobby> getFromClientIDToLobby() {
-        return fromClientIDToLobby;
+
+    public Map<Integer, Lobby> getLobbyFromClientID() {
+        return LobbyFromClientID;
     }
 
     public int generateLobbyId(){
@@ -33,13 +34,12 @@ public class MainServer {
         return actualLobbyId;
     }
 
-
     public MainServer(int port) {
         this.connectionServer= new ConnectionServer(port,this);
-        this.fromClientIDToLobby = new HashMap<>();
+        this.LobbyFromClientID = new HashMap<>();
         this.clientFromId=new HashMap<>();
         this.nameFromId = new HashMap<>();
-        this.IDfromName= new HashMap<>();
+        this.IDFromName = new HashMap<>();
         nextLobbyId = 0;
     }
 

@@ -6,6 +6,7 @@ public class VirtualClient {
     private Socket socket;
     private int id;
     private String nickName;
+    private Lobby lobby;
 
     public VirtualClient(int id, String name, Socket socket) {
         this.socket=socket;
@@ -17,4 +18,7 @@ public class VirtualClient {
         return new GameHandler();
     }
 
+    public void giveLobby(Lobby lobby) {
+        this.lobby=lobby;
+    }
 }
