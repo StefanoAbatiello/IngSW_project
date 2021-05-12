@@ -50,7 +50,7 @@ public class ConnectionServer implements Runnable{
     public void run() {
         try {
             ServerSocket serverSocket=new ServerSocket(port);
-            System.out.println("Socket Server started. Listening on port"+port+". Type \"quit\" to exit" );
+            System.out.println("Socket Server started. Listening on port "+port+". Type \"quit\" to exit" );
             acceptConnections(serverSocket);
         } catch (IOException e) {
             System.err.println("Error during server socket creation");

@@ -7,7 +7,8 @@ public class NickNameAction extends PreGameMessage{
         nickname=inputLine;
     }
 
-    public String getNickname(){
+    public String getMessage(){
         return this.nickname;
     }
+
 }
