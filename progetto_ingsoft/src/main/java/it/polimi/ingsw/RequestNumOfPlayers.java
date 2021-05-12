@@ -5,4 +5,8 @@ public class RequestNumOfPlayers implements SerializedMessage{
     public RequestNumOfPlayers(String s){
         message=s;
     }
+
+    public String getMessage() {
+        return message;
+    }
 }

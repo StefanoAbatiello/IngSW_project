@@ -25,15 +25,14 @@ class ClientHandler implements Runnable {
 
     public ClientHandler(Socket socket, MainServer server) {
         System.out.println("sto creando il CH");
-
         this.socket = socket;
         this.server = server;
         System.out.println("socket");
         try {
-            InputStream input =socket.getInputStream();
-            inputStreamObj = new ObjectInputStream(input) ;
             OutputStream output= socket.getOutputStream();
             outputStreamObj = new ObjectOutputStream(output);
+            InputStream input =socket.getInputStream();
+            inputStreamObj = new ObjectInputStream(input) ;
             System.out.println("ho creato gli stream");
             active = true;
         } catch (IOException e) {
@@ -49,7 +48,6 @@ class ClientHandler implements Runnable {
     public void run() {
         try {
             while (isActive()) {
-
                 SerializedMessage input = (SerializedMessage) inputStreamObj.readObject();
                 actionHandler(input);
             }
@@ -69,17 +67,15 @@ class ClientHandler implements Runnable {
                             +" Choose how many players you want to challenge [0 to 3]"));
             }
         }
-        if(input instanceof NumOfPlayersAction){
+        else if(input instanceof NumOfPlayersAction){
             int num=((NumOfPlayersAction)input).getPlayersNum();
             if(num<0 || num >3)
                 send(new RequestNumOfPlayers("Number of Player not valid."
                         +" Please type a valid number [0 to 3]"));
             else
                 new Lobby(server.generateLobbyId(), num, server);
-
+                //TODO dopo la creazione della lobby il giocatore deve essere inserito
         }
-
-
     }
 
     private boolean checkFirstPlayer(int id) {
@@ -111,6 +107,7 @@ class ClientHandler implements Runnable {
                             return -1;
                         //TODO domando client se vuole entrare in partita in corso
                         reconnectClient(ID,name);
+                        server.getClientFromId().get(ID).giveLobby(lobby);
                         lobby.sendAll(name + DefaultMessages.reconnession);
                     }else
                         reconnectClient(ID,name);
@@ -126,15 +123,14 @@ class ClientHandler implements Runnable {
         int ID= server.getNameFromId().size() +1;
         server.getNameFromId().put(ID,name);
         server.getIDfromName().put(name,ID);
-        VirtualClient newClient = new VirtualClient(ID, name, this.socket);
+        VirtualClient newClient = new VirtualClient(ID, name, this.socket, this);
         server.getClientFromId().put(ID,newClient);
         return ID;
     }
 
     private int reconnectClient(int ID, String name) {
-        VirtualClient newClient = new VirtualClient(ID, name, this.socket);
+        VirtualClient newClient = new VirtualClient(ID, name, this.socket, this);
         server.getClientFromId().put(ID,newClient);
-
         return ID;
     }
 

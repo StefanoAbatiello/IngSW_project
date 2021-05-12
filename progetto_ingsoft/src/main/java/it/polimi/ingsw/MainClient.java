@@ -34,12 +34,26 @@ public class MainClient {
 
         Scanner stdin = new Scanner(System.in);
         try {
+            String inputLine;
             while (true) {
-                String inputLine = stdin.nextLine();
+                inputLine = stdin.nextLine();
                 socketOut.writeObject(new NickNameAction(inputLine));
                 socketOut.flush();
+                break;
+                }
+            while(true){
+                inputLine = stdin.nextLine();
+                SerializedMessage message= (SerializedMessage) socketIn.readObject();
+                if(message instanceof RequestNumOfPlayers) {
+                    System.out.println(((RequestNumOfPlayers) message).getMessage());
+                    socketOut.writeObject(new NumOfPlayersAction(stdin.nextInt()));
+                    socketOut.flush();
+                }
+                else if(message instanceof GameMessage)
+                    System.out.println(((GameMessage)message).getMessage());
+
             }
-        } catch(NoSuchElementException e) {
+        } catch(NoSuchElementException | ClassNotFoundException e) {
             System.out.println("Connection closed");
         } finally {
             stdin.close();

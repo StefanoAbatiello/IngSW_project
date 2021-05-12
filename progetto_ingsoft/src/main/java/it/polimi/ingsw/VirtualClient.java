@@ -6,15 +6,25 @@ public class VirtualClient {
     private Socket socket;
     private int id;
     private String nickName;
+    private Lobby lobby;
+    private ClientHandler clientHandler;
 
-    public VirtualClient(int id, String name, Socket socket) {
+    public VirtualClient(int id, String name, Socket socket, ClientHandler clientHandler) {
         this.socket=socket;
         this.id=id;
         nickName=name;
+        this.clientHandler=clientHandler;
     }
 
-    public GameHandler getGameHandler() {
-        return new GameHandler();
+    public int getID() {
+        return id;
     }
 
+    public void giveLobby(Lobby lobby) {
+        this.lobby=lobby;
+    }
+
+    public ClientHandler getClientHandler() {
+        return clientHandler;
+    }
 }

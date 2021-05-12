@@ -3,10 +3,9 @@ package it.polimi.ingsw;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 
 public class MainServer {
-    private final ConnectionServer connectionServer;
+    private static ConnectionServer connectionServer;
 //TODO sistemare nomi hashmap
     //this map identifies a client from their id;
     private final Map<Integer, VirtualClient> clientFromId;
@@ -14,6 +13,7 @@ public class MainServer {
     private final Map<String,Integer> IDfromName;
     private final Map<Integer,Lobby> fromClientIDToLobby;
     private int nextLobbyId;
+    private static ServerInput keyboardReader;
 
     public Map<Integer, VirtualClient> getClientFromId() {
         return clientFromId;
@@ -33,7 +33,6 @@ public class MainServer {
         return actualLobbyId;
     }
 
-
     public MainServer(int port) {
         this.connectionServer= new ConnectionServer(port,this);
         this.fromClientIDToLobby = new HashMap<>();
@@ -41,6 +40,7 @@ public class MainServer {
         this.nameFromId = new HashMap<>();
         this.IDfromName= new HashMap<>();
         nextLobbyId = 0;
+        keyboardReader =new ServerInput();
     }
 
     public static void main(String[] args) {
@@ -52,15 +52,18 @@ public class MainServer {
             System.exit(0);
         }
         System.err.println("Creating socket server");
-        MainServer mainServer=new MainServer(portNumber);
+        new MainServer(portNumber);
         /*ExecutorService executorService= Executors.newCachedThreadPool();
         executorService.submit(mainServer.connectionServer);
          */
-        mainServer.getConnectionServer().startServer();
+        Thread connectionServerThread = new Thread(connectionServer);
+        connectionServerThread.start();
+        Thread keyboardReaderThread = new Thread(keyboardReader);
+        keyboardReaderThread.start();
     }
 
     //TODO controlla se getconn ha bisogno di sinc
-    public ConnectionServer getConnectionServer() {
+    public static ConnectionServer getConnectionServer() {
         return connectionServer;
     }
 
@@ -68,20 +71,12 @@ public class MainServer {
         return nameFromId;
     }
 
-    public void quitActiveConnections(){
-        Scanner scanner=new Scanner(System.in);
-        while (true){
-            if(scanner.next().equalsIgnoreCase("quit")){
-                getConnectionServer().setActive(false);
-                System.exit(0);
-                break;
-            }
-        }
-    }
-
+/*
    public GameHandler getGameByClientID(int id){
-        return clientFromId.get(id).getGameHandler();
+        return clientFromId.get(id).getID();
    }
+
+ */
 
 ///TODO gestione id e metodi lobby
 }

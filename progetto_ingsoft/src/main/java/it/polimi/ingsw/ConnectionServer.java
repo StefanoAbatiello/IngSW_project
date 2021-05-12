@@ -10,7 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //è il socket server
-public class ConnectionServer {
+public class ConnectionServer implements Runnable{
         private final int port;
         private final ExecutorService executorService;
     //volatile for thread safe
@@ -47,7 +47,7 @@ public class ConnectionServer {
     }
 
     //TODO classe di tutte le costanti
-    public void startServer() {
+    public void run() {
         try {
             ServerSocket serverSocket=new ServerSocket(port);
             System.out.println("Socket Server started. Listening on port"+port+". Type \"quit\" to exit" );
