@@ -1,13 +1,10 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.SQLOutput;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //è il socket server
 public class ConnectionServer implements Runnable{
@@ -35,14 +32,13 @@ public class ConnectionServer implements Runnable{
         while (active){
             try{
                 Socket socket= serverSocket.accept();
-                System.out.println("sono nel try");
+                System.out.println("sto accettando la connessione di un client");
                 ClientHandler clientHandler=new ClientHandler(socket, server);
                 executorService.submit(clientHandler);
             }
             catch (IOException e){
                 System.out.println("Error:"+ e.getMessage());
             }
-
         }
     }
 

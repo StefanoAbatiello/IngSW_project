@@ -1,4 +1,6 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.server;
+
+import it.polimi.ingsw.messages.*;
 
 import java.io.*;
 import java.net.Socket;
@@ -20,8 +22,6 @@ class ClientHandler implements Runnable {
     public OutputStream getOutputStreamObj() {
         return outputStreamObj;
     }
-
-
 
     public ClientHandler(Socket socket, MainServer server) {
         System.out.println("sto creando il CH");
@@ -50,8 +50,8 @@ class ClientHandler implements Runnable {
             do{
                send(new NickNameAction("Please choose a nickname"));
                input = (SerializedMessage) inputStreamObj.readObject();
+               actionHandler(input);
             }while(isActive() && !(input instanceof NickNameAction));
-
             while (isActive()) {
                  input = (SerializedMessage) inputStreamObj.readObject();
                 actionHandler(input);
@@ -63,7 +63,7 @@ class ClientHandler implements Runnable {
         }
     }
 
-    private void actionHandler(SerializedMessage input) {
+    private synchronized void actionHandler(SerializedMessage input) {
         if (input instanceof NickNameAction) {
             clientID = checkNickName((NickNameAction) input);
             //TODO altri casi di ritorno clientID non validi
@@ -78,15 +78,15 @@ class ClientHandler implements Runnable {
             int num = ((NumOfPlayersAction) input).getPlayersNum();
             System.out.println("ho ricevuto: " +num);
             if (num < 0 || num > 3)
-                send(new RequestNumOfPlayers("Number of Player not valid." + " Please type a valid number [0 to 3]"));
+                send(new RequestNumOfPlayers("Number of Player not valid. Please type a valid number [0 to 3]"));
             else {
-                Lobby lobby = new Lobby(clientID, server.generateLobbyId(), num, server);
+                Lobby lobby = new Lobby(clientID, server.generateLobbyId(), num+1, server);
                 //TODO controllo valido clientID
-                System.out.println("sono prima di insert");
+                System.out.println("Lobby di" + num + "giocatori creata con id: " + lobby.getLobbyID() + "." +
+                        "inserisco l'host");
                 lobby.insertPlayer(clientID);
-                System.out.println("ho fatto insert");
-                send(new LobbyCreatedMessage("Lobby created. Wait for the other players to join!"));
-                System.out.println("New lobby created, lobby ID: " + lobby.getLobbyID());
+                System.out.println("host inserito");
+                send(new LobbyMessage("Lobby created. Wait for the other players to join!"));
             }
         }
     }
@@ -101,11 +101,12 @@ class ClientHandler implements Runnable {
         for(Lobby lobby:lobbies) {
             if (!lobby.isLobbyFull()) {
                 System.out.println("c'è una lobby libera");
+                lobby.sendAll((SerializedMessage) new LobbyMessage(server.getNameFromId().get(id)+" is entered in the lobby"));
                 lobby.insertPlayer(id);
                 return false;
             }
         }
-        System.out.println("tutte le lobby sono piene, nuova lobby");
+        System.out.println("tutte le lobby sono piene, creo una nuova lobby");
         return true;
     }
 
@@ -118,19 +119,20 @@ class ClientHandler implements Runnable {
             System.out.println(name);
             if (message.getMessage().equals(name)) {
                 ID = server.getIDFromName().get(name);
-                System.out.println("hai trovato nome uguale, prendi ID di quello già presente");
+                System.out.println("nickname già scelto dall'utente: "+ID);
                 if(server.getClientFromId().containsKey(ID)) {
-                    System.out.println("quello già presente è collegato, cambia nome");
+                    System.out.println("l'utente " + ID + "è online. Il nuovo utente deve cambiare nickname");
                     return -1;
                 }else if (server.getLobbyFromClientID().containsKey(ID)) {
-                    System.out.println("quello già presente non è collegato, ma esiste partita in cui giocava");
+                    System.out.println("l'utente" + ID + "non è collegato, ma esiste partita in cui giocava");
                     Lobby lobby = server.getLobbyFromClientID().get(ID);
                     if (lobby.getStateOfGame() == GameState.WAITING || lobby.getStateOfGame() == GameState.ONGOING) {
                         System.out.println("la partita è in corso, il giocatore può essere ricollegato");
                         //TODO domando client se vuole entrare in partita in corso
                         reconnectClient(ID, name);
+                        lobby.insertPlayer(ID);
                         //TODO ricorda modifica lista virtual client in lobby quando disconnessione, gestisco poi riconessione e aggiunta
-                        lobby.sendAll(name + new ReconnessionMessage(" is back in the game"));
+                        lobby.sendAll((SerializedMessage) new LobbyMessage(name + " is back in the game"));
                     } else
                         reconnectClient(ID, name);
                     return ID;
@@ -142,14 +144,13 @@ class ClientHandler implements Runnable {
         }
         ID = connectClient(message.getMessage());
         return ID;
-
 }
 
     private int connectClient(String name) {
         int ID= server.getNameFromId().size() +1;
         server.getNameFromId().put(ID,name);
         server.getIDFromName().put(name,ID);
-        VirtualClient newClient = new VirtualClient(ID, name, this.socket);
+        VirtualClient newClient = new VirtualClient(ID, name, this.socket, this);
         server.getClientFromId().put(ID,newClient);
         return ID;
     }

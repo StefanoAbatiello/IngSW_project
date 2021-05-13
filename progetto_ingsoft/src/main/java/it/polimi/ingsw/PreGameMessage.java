@@ -1,4 +1,6 @@
 package it.polimi.ingsw;
 
-public class PreGameMessage implements SerializedMessage{
+import it.polimi.ingsw.messages.SerializedMessage;
+
+public class PreGameMessage implements SerializedMessage {
 }

@@ -1,5 +1,7 @@
 package it.polimi.ingsw;
 
+import it.polimi.ingsw.messages.*;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -17,41 +19,39 @@ public class MainClient {
     }
 
     public static void main(String[] args) {
-        MainClient client = new MainClient("127.0.0.1", 1337);
+        MainClient2 client = new MainClient2("127.0.0.1", 1337);
         try {
             client.startClient();
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
     }
+
     public void startClient() throws IOException {
         Socket socket = new Socket(ip, port);
         System.out.println("Connection established");
         ObjectInputStream socketIn = new ObjectInputStream(socket.getInputStream());
         ObjectOutputStream socketOut = new ObjectOutputStream(socket.getOutputStream());
-
         Scanner stdin = new Scanner(System.in);
         SerializedMessage input;
-        while (true){
-            try {
+        try {
+            while (true) {
                 input = (SerializedMessage) socketIn.readObject();
                 actionHandler(input, socketIn, socketOut);
-            } catch (ClassNotFoundException | NoSuchElementException e ) {
-                e.printStackTrace();
-                System.out.println("Connection closed");
             }
-
-            finally {
-                stdin.close();
-                socketIn.close();
-                socketOut.close();
-                socket.close();
+        } catch (ClassNotFoundException | NoSuchElementException e) {
+            e.printStackTrace();
+            System.out.println("Connection closed");
+        } finally {
+            stdin.close();
+            socketIn.close();
+            socketOut.close();
+            socket.close();
         }
-    }}
+    }
 
-    private void actionHandler(SerializedMessage input,ObjectInputStream socketIn, ObjectOutputStream socketOut) {
+    private void actionHandler(SerializedMessage input, ObjectInputStream socketIn, ObjectOutputStream socketOut) {
         Scanner stdin = new Scanner(System.in);
-
         if (input instanceof NickNameAction) {
             System.out.println(((NickNameAction) input).getMessage());
             try {
@@ -62,27 +62,23 @@ public class MainClient {
                 System.out.println("Connection closed");
             }
         }
-            if (input instanceof RequestNumOfPlayers) {
-                System.out.println(((RequestNumOfPlayers) input).getMessage());
-                String inputLine = stdin.next();
+        if (input instanceof RequestNumOfPlayers) {
+            System.out.println(((RequestNumOfPlayers) input).getMessage());
+            String inputLine = stdin.next();
+            try {
                 try {
-                    try {
-                        socketOut.writeObject(new NumOfPlayersAction(Integer.parseInt(inputLine)));
-                    } catch (NumberFormatException e) {
-                        socketOut.writeObject(new NumOfPlayersAction(6));
-
-                    }
+                    socketOut.writeObject(new NumOfPlayersAction(Integer.parseInt(inputLine)));
                     socketOut.flush();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (NumberFormatException e) {
+                    socketOut.writeObject(new NumOfPlayersAction(6));
+                    socketOut.flush();
                 }
-            }
-            if (input instanceof LobbyCreatedMessage) {
-                System.out.println(((LobbyCreatedMessage) input).getMessage());
-
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
+        if (input instanceof LobbyMessage) {
+            System.out.println(((LobbyMessage) input).getMessage());
+        }
     }
-
-
-
+}

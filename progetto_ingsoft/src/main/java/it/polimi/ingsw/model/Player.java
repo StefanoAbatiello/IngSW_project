@@ -19,25 +19,22 @@ public class Player implements Points{
     //TODO controllo commenti
     private int points;
     private final PersonalBoard personalBoard;
-    private int faithtrackPoints;
+    private int faithtrackPoints=0;
     private ArrayList<LeadCard> leadCards=new ArrayList<>();
-
-
-
     private final ArrayList<Resource> productionAbility=new ArrayList<>();
     private final ArrayList<Resource> discountAbility=new ArrayList<>();
     private final ArrayList<Resource> whiteMarbleAbility=new ArrayList<>();
     private final ResourceSupply resourceSupply = new ResourceSupply();
     private Action action;
-
+    private final String name;
 
     public Player(String username) {
+        name=username;
         this.points = 0;
+        System.out.println("creo la personalboard di "+ username);
         this.personalBoard = new PersonalBoard();//mettere faithtrackPoints a zero quando si costruisce board
-        this.faithtrackPoints = 0;
-
+        System.out.println("personalBoard creata");
     }
-
 
     //TODO penso metodi in game che chiamano strategy,penso a costruttore di ability
 

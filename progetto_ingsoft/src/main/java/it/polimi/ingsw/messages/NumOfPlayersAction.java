@@ -1,4 +1,6 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.messages;
+
+import it.polimi.ingsw.messages.SerializedMessage;
 
 public class NumOfPlayersAction implements SerializedMessage {
 

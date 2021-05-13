@@ -1,4 +1,4 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.server;
 
 
 import java.util.HashMap;
@@ -6,12 +6,11 @@ import java.util.Map;
 
 public class MainServer {
     private static ConnectionServer connectionServer;
-//TODO sistemare nomi hashmap
     //this map identifies a client from their id;
     private final Map<Integer, VirtualClient> clientFromId;
     private final Map<Integer,String> nameFromId;
     private final Map<String,Integer> IDFromName;
-    private final Map<Integer,Lobby> LobbyFromClientID;
+    private final Map<Integer, Lobby> LobbyFromClientID;
     private int nextLobbyId;
     private static ServerInput keyboardReader;
 
@@ -23,6 +22,9 @@ public class MainServer {
         return IDFromName;
     }
 
+    public Map<Integer, String> getNameFromId() {
+        return nameFromId;
+    }
 
     public Map<Integer, Lobby> getLobbyFromClientID() {
         return LobbyFromClientID;
@@ -36,7 +38,7 @@ public class MainServer {
 
 
     public MainServer(int port) {
-        this.connectionServer= new ConnectionServer(port,this);
+        this.connectionServer = new ConnectionServer(port,this);
         this.LobbyFromClientID = new HashMap<>();
         this.clientFromId=new HashMap<>();
         this.nameFromId = new HashMap<>();
@@ -47,7 +49,7 @@ public class MainServer {
 
     public static void main(String[] args) {
         System.out.println("I'm the Server, welcome!");
-        String hostname=args[0];
+        //String hostname=args[0];
         int portNumber = Integer.parseInt(args[1]);
         if(portNumber<0||(portNumber>0 && portNumber<1024)){
             System.err.println("Port number not valid, restart the program");
@@ -68,17 +70,6 @@ public class MainServer {
     public static ConnectionServer getConnectionServer() {
         return connectionServer;
     }
-
-    public Map<Integer, String> getNameFromId() {
-        return nameFromId;
-    }
-
-/*
-   public GameHandler getGameByClientID(int id){
-        return clientFromId.get(id).getID();
-   }
-
- */
 
 ///TODO gestione id e metodi lobby
 }

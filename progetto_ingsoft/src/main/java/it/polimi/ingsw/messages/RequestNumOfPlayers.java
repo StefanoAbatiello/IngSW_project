@@ -1,11 +1,11 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.messages;
 
-public class RequestNumOfPlayers implements SerializedMessage{
-    public String getMessage() {
-        return message;
-    }
+import it.polimi.ingsw.messages.SerializedMessage;
+
+public class RequestNumOfPlayers implements SerializedMessage {
 
     private String message;
+
     public RequestNumOfPlayers(String s){
         message=s;
     }

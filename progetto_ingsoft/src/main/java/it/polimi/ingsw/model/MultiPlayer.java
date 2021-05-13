@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class MultiPlayer extends Game {
-    private final Player[] players;
+    private Player[] players;
 
     private Market market;
     //TODO controlla eccezione se deve essere gestit dentro il model
@@ -27,14 +27,22 @@ public class MultiPlayer extends Game {
         setVC3active(true);
         int i=0;
         players= new Player[numPlayer];
+        System.out.println("mi salvo la lista di giocatori");
         for(String user:username) {
-            players[i] = new Player(user);
+            System.out.println("creo il giocatore " + user);
+            this.players[i] = new Player(user);
+            System.out.println(user + "creato");
             i++;
         }
+        System.out.println("lista di giocatori salvata, creo le devCards");
         new DevDeckMatrix();
+        System.out.println("devCards create, creo il market");
         this.market=new Market();
+        System.out.println("market creato, creo le leadCards");
+        LeadDeck deck=new LeadDeck();
+        System.out.println("distribuisco le leadCards");
         for(Player player:players){
-            new LeadDeck().giveToPlayer(player);
+            deck.giveToPlayer(player);
         }
     }
 

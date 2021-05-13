@@ -1,4 +1,7 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.server;
+
+import it.polimi.ingsw.server.ClientHandler;
+import it.polimi.ingsw.server.Lobby;
 
 import java.net.Socket;
 

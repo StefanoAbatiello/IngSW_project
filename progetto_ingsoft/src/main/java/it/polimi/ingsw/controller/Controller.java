@@ -1,9 +1,11 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.GameState;
-import it.polimi.ingsw.Lobby;
-import it.polimi.ingsw.MainServer;
-import it.polimi.ingsw.VirtualClient;
+import it.polimi.ingsw.server.GameState;
+import it.polimi.ingsw.messages.LobbyMessage;
+import it.polimi.ingsw.messages.SerializedMessage;
+import it.polimi.ingsw.server.Lobby;
+import it.polimi.ingsw.server.MainServer;
+import it.polimi.ingsw.server.VirtualClient;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.MultiPlayer;
 import it.polimi.ingsw.model.SinglePlayer;
@@ -23,13 +25,15 @@ public class Controller {
     }
 
     public void startGame() {
-        lobby.sendAll("The game is starting");
+        lobby.sendAll((SerializedMessage) new LobbyMessage("The game is starting..."));
         lobby.setStateOfGame(GameState.ONGOING);
         int id;
-        if(lobby.getNumPlayer()==0) {
+        if(lobby.getPlayers().size()==1) {
             id = lobby.getPlayers().get(0).getID();
             try {
+                System.out.println("creo partita singlePlayer");
                 game = new SinglePlayer(server.getNameFromId().get(id));
+                System.out.println("partita singlePlayer creata");
             } catch (playerLeadsNotEmptyException e) {
                 e.printStackTrace();
             }
@@ -40,8 +44,12 @@ public class Controller {
                 id = player.getID();
                 playersName.add(server.getNameFromId().get(id));
             }
+            for (String name:playersName)
+                System.out.println(name);
             try {
-                game=new MultiPlayer(playersName, lobby.getNumPlayer());
+                System.out.println("creo partita multiPlayer");
+                game=new MultiPlayer(playersName, lobby.getPlayers().size());
+                System.out.println("partita multiPlayer creata");
             } catch (playerLeadsNotEmptyException e) {
                 e.printStackTrace();
             }
