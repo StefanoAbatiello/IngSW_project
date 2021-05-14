@@ -5,6 +5,8 @@ import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.messages.LobbyMessage;
 import it.polimi.ingsw.messages.SerializedMessage;
 import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.Resource;
+
 import java.util.ArrayList;
 
 public class Lobby {
@@ -72,5 +74,33 @@ public class Lobby {
         actualPlayers.remove(player);
         seatsAvailable++;
         return actualPlayers;
+    }
+
+//TODO nel clientHandler stampo "azione giocatore n:" e il risultato di tale azione
+    public ActionAnswer actionHandler(GameMessage input){
+        //TODO ragiono su inizializzazione
+        ActionAnswer result=null;
+        //TODO ragiono su oggetti che passa il client
+        Object gameObj;
+        if(input instanceof BuyCardAction) {
+            gameObj = ((BuyCardAction) input).getCard();
+            if (controller.checkBuy((String) gameObj)) {
+                result = new ActionAnswer("carta" + gameObj + "comprata");
+            }
+        }
+        if(input instanceof MarketAction){
+            gameObj= ((MarketAction)input).getCoordinate();
+            if (controller.checkMarket((int) gameObj)) {
+                result = new ActionAnswer("mercato cambiato con successo (da coordinata: " + gameObj + " )");
+            }
+        }
+        if(input instanceof ProductionAction){
+            gameObj= ((ProductionAction)input).getProductions();
+            if (controller.checkProduction((ArrayList<Resource>) gameObj)) {
+                result = new ActionAnswer("produzioni attivate, risorse pagate: " + gameObj);
+            }
+        }
+
+    return result;
     }
 }
