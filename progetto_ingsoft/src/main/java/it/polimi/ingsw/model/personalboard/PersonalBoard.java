@@ -20,15 +20,15 @@ public class PersonalBoard {
      * create personal board with its component
      */
     public PersonalBoard(){
-        System.out.println("creo il faithmarker");
+        //System.out.println("creo il faithmarker"); [Debug]
         faithMarker=new FaithMarker();
-        System.out.println("faithmarker creato, creo warehousedepots");
+        //System.out.println("faithmarker creato, creo warehousedepots");[Debug]
         warehouseDepots=new WarehouseDepots();
-        System.out.println("warehousedepots creata, creo strongbox");
+        //System.out.println("warehousedepots creata, creo strongbox");[Debug]
         strongBox=new StrongBox();
-        System.out.println("strongbox creata, creo devslot");
+        //System.out.println("strongbox creata, creo devslot");[Debug]
         devCardSlot=new DevCardSlot();
-        System.out.println("devslot creati, creo specialshelf");
+        //System.out.println("devslot creati, creo specialshelf");[Debug]
         specialShelves = new ArrayList<>();
     }
 

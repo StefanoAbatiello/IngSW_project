@@ -31,9 +31,9 @@ public class Player implements Points{
     public Player(String username) {
         name=username;
         this.points = 0;
-        System.out.println("creo la personalboard di "+ username);
-        this.personalBoard = new PersonalBoard();//mettere faithtrackPoints a zero quando si costruisce board
-        System.out.println("personalBoard creata");
+        //System.out.println("creo la personalboard di "+ username); [Debug]
+        this.personalBoard = new PersonalBoard();
+        //System.out.println("personalBoard creata"); [Debug]
     }
 
     //TODO penso metodi in game che chiamano strategy,penso a costruttore di ability

@@ -67,4 +67,10 @@ public class Lobby {
     public ArrayList<VirtualClient> getPlayers() {
         return actualPlayers;
     }
+
+    public ArrayList<VirtualClient> removePlayer(VirtualClient player) {
+        actualPlayers.remove(player);
+        seatsAvailable++;
+        return actualPlayers;
+    }
 }

@@ -1,8 +1,7 @@
 package it.polimi.ingsw.server;
 
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class MainServer {
     private static ConnectionServer connectionServer;
@@ -10,7 +9,7 @@ public class MainServer {
     private final Map<Integer, VirtualClient> clientFromId;
     private final Map<Integer,String> nameFromId;
     private final Map<String,Integer> IDFromName;
-    private final Map<Integer, Lobby> LobbyFromClientID;
+    private final Map<Integer, Lobby> lobbyFromClientID;
     private int nextLobbyId;
     private static ServerInput keyboardReader;
 
@@ -27,7 +26,7 @@ public class MainServer {
     }
 
     public Map<Integer, Lobby> getLobbyFromClientID() {
-        return LobbyFromClientID;
+        return lobbyFromClientID;
     }
 
     public int generateLobbyId(){
@@ -38,8 +37,8 @@ public class MainServer {
 
 
     public MainServer(int port) {
-        this.connectionServer = new ConnectionServer(port,this);
-        this.LobbyFromClientID = new HashMap<>();
+        connectionServer = new ConnectionServer(port,this);
+        this.lobbyFromClientID = new HashMap<>();
         this.clientFromId=new HashMap<>();
         this.nameFromId = new HashMap<>();
         this.IDFromName = new HashMap<>();
@@ -60,15 +59,24 @@ public class MainServer {
         /*ExecutorService executorService= Executors.newCachedThreadPool();
         executorService.submit(mainServer.connectionServer);
          */
-        Thread connectionServerThread = new Thread(connectionServer);
-        connectionServerThread.start();
-        Thread keyboardReaderThread = new Thread(keyboardReader);
-        keyboardReaderThread.start();
+        new Thread(connectionServer).start();
+        new Thread(keyboardReader).start();
     }
 
     //TODO controlla se getconn ha bisogno di sinc
     public static ConnectionServer getConnectionServer() {
         return connectionServer;
+    }
+
+    public void disconnectClient(int clientId) {
+        ClientHandler clientHandler = getClientFromId().get(clientId).getClientHandler();
+        ConnectionServer.removePingObserver(clientHandler.getPingObserver());
+        if(lobbyFromClientID.containsKey(clientId))
+            lobbyFromClientID.get(clientId).removePlayer(clientFromId.remove(clientId));
+        clientFromId.remove(clientId);
+        clientHandler.setActive(false);
+        String name = nameFromId.get(clientId);
+        System.out.println(name + " is disconnected");
     }
 
 ///TODO gestione id e metodi lobby

@@ -7,19 +7,33 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-class ClientHandler implements Runnable {
+public class ClientHandler implements Runnable {
     private Socket socket;
     private MainServer server;
     private ObjectInputStream inputStreamObj;
     private ObjectOutputStream outputStreamObj;
     private int clientID;
     private boolean active;
+    private PingObserver pingObserver;
 
-    public InputStream getInputStream() {
+    public MainServer getServer() {
+        return server;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ObjectInputStream getInputStream() {
         return inputStreamObj;
     }
 
-    public OutputStream getOutputStreamObj() {
+    public ObjectOutputStream getOutputStreamObj() {
         return outputStreamObj;
     }
 
@@ -54,8 +68,12 @@ class ClientHandler implements Runnable {
             }while(isActive() && !(input instanceof NickNameAction));
             while (isActive()) {
                  input = (SerializedMessage) inputStreamObj.readObject();
-                actionHandler(input);
+                 if(!pingHandler(input))
+                    actionHandler(input);
             }
+            outputStreamObj.close();
+            inputStreamObj.close();
+            socket.close();
         }
         //TODO tolgo client dal server e nel caso di partita in atto, lo tolgo
         catch (IOException | ClassNotFoundException e) {
@@ -63,10 +81,23 @@ class ClientHandler implements Runnable {
         }
     }
 
+    private boolean pingHandler(SerializedMessage input) {
+        if(input instanceof PongMessage) {
+            pingObserver.setResponse(true);
+            return true;
+        }
+        return false;
+    }
+
     private synchronized void actionHandler(SerializedMessage input) {
         if (input instanceof NickNameAction) {
             clientID = checkNickName((NickNameAction) input);
             //TODO altri casi di ritorno clientID non validi
+            System.out.println("sto creando il pingObserver");
+            pingObserver = new PingObserver(this);
+            System.out.println("sto salvando il pingObserver");
+            MainServer.getConnectionServer().addPingObserver(pingObserver);
+            System.out.println("ho salvato il pingObserver");
             if (clientID >= 0) {
                 if (checkFirstPlayer(clientID))
                     send(new RequestNumOfPlayers("You are the host of a new lobby."
@@ -102,7 +133,7 @@ class ClientHandler implements Runnable {
             if (!lobby.isLobbyFull()) {
                 System.out.println("c'è una lobby libera");
                 lobby.sendAll((SerializedMessage) new LobbyMessage(server.getNameFromId().get(id)+" is entered in the lobby"));
-                lobby.insertPlayer(id);
+                lobby.insertPlayer(id);//TODO aggiungo nuovo client nella mappa ID-lobby
                 return false;
             }
         }
@@ -114,7 +145,7 @@ class ClientHandler implements Runnable {
 
     private int checkNickName(NickNameAction message) {
         int ID;
-        System.out.println("sei dentro checknickname con: " +message.getMessage());
+        System.out.println("sei dentro checknickname con: " + message.getMessage());
         for (String name : server.getNameFromId().values()) {
             System.out.println(name);
             if (message.getMessage().equals(name)) {
@@ -170,5 +201,16 @@ class ClientHandler implements Runnable {
         }
     }
 
+    public Socket getSocket() {
+        return this.socket;
+    }
+
+    public int getClientId() {
+        return clientID;
+    }
+
+    public PingObserver getPingObserver() {
+        return pingObserver;
+    }
 }
 

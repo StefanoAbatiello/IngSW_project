@@ -19,7 +19,7 @@ public class MainClient {
     }
 
     public static void main(String[] args) {
-        MainClient2 client = new MainClient2("127.0.0.1", 1337);
+        MainClient client = new MainClient("127.0.0.1", 1337);
         try {
             client.startClient();
         } catch (IOException e) {
@@ -62,14 +62,14 @@ public class MainClient {
                 System.out.println("Connection closed");
             }
         }
-        if (input instanceof RequestNumOfPlayers) {
+        else if (input instanceof RequestNumOfPlayers) {
             System.out.println(((RequestNumOfPlayers) input).getMessage());
             String inputLine = stdin.next();
             try {
                 try {
                     socketOut.writeObject(new NumOfPlayersAction(Integer.parseInt(inputLine)));
                     socketOut.flush();
-                } catch (NumberFormatException e) {
+                } catch (NumberFormatException e) {//TODO spostare parseInt sul server
                     socketOut.writeObject(new NumOfPlayersAction(6));
                     socketOut.flush();
                 }
@@ -77,8 +77,18 @@ public class MainClient {
                 e.printStackTrace();
             }
         }
-        if (input instanceof LobbyMessage) {
+        else if (input instanceof LobbyMessage) {
             System.out.println(((LobbyMessage) input).getMessage());
+        }
+        else if(input instanceof PingMessage) {
+            System.out.println("ho ricevuto il ping");
+            try {
+                socketOut.writeObject(new PongMessage());
+                socketOut.flush();
+                System.out.println("ho inviato il pong");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

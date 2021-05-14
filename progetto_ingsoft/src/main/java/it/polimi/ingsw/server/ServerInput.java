@@ -4,6 +4,8 @@ import it.polimi.ingsw.server.MainServer;
 
 import java.util.Scanner;
 
+import static java.lang.Thread.sleep;
+
 public class ServerInput implements Runnable {
 
     @Override
@@ -13,7 +15,12 @@ public class ServerInput implements Runnable {
         while (true){
             if(scanner.next().equalsIgnoreCase("quit")){
                 MainServer.getConnectionServer().setActive(false);
-                //MainServer.closingAdvise();
+                /*try {
+                    sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }*/
+                System.out.println("sto chiudendo");
                 System.exit(0);
                 break;
             }
