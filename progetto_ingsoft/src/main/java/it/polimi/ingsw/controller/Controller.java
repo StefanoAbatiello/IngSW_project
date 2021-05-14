@@ -1,5 +1,6 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.model.Resource;
 import it.polimi.ingsw.server.GameState;
 import it.polimi.ingsw.messages.LobbyMessage;
 import it.polimi.ingsw.messages.SerializedMessage;
@@ -54,5 +55,18 @@ public class Controller {
                 e.printStackTrace();
             }
         }
+    }
+
+    //TODO methods actions
+    public boolean checkBuy(String card){
+        return true;
+    }
+
+    public boolean checkMarket(int gameObj) {
+        return true;
+    }
+
+    public boolean checkProduction(ArrayList<Resource> gameObj) {
+        return true;
     }
 }
