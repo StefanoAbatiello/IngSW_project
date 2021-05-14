@@ -1,5 +1,8 @@
 package it.polimi.ingsw;
 
+import it.polimi.ingsw.messages.PongMessage;
+
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
@@ -7,15 +10,17 @@ import static java.lang.Thread.sleep;
 
 public class PongObserver implements Runnable{
 
+    private ObjectOutputStream socketOut;
     private boolean pingReceived;
     private boolean started;
     private int maxTimeoutNumber = 3;
     private int counterTimeout;
-    private MainClient2 client;
+    private MainClient client;
     private ObjectOutputStream pongOutStreamObj;
     private ObjectInputStream pingInStreamObj;
 
-    public PongObserver(MainClient2 client) {
+    public PongObserver(MainClient client, ObjectOutputStream socketOut) {
+        this.socketOut=socketOut;
         this.started = false;
         this.counterTimeout = 0;
         this.client = client;
@@ -32,15 +37,21 @@ public class PongObserver implements Runnable{
         started = true;
         while (true) {
             try {
-                sleep(30000);
-                System.out.println("pongObserver a rapporto");
+                //System.out.println("pongObserver a rapporto");[Debug]
                 while (counterTimeout < maxTimeoutNumber) {
-                    if (pingReceived) {
+                    if (!pingReceived) {
                         counterTimeout = counterTimeout + 1;
-                        System.out.println("ping non ricevuto " + counterTimeout + " volta/e");
+                        //System.out.println("ping non ricevuto " + counterTimeout + " volta/e");[Debug]
                         sleep(2000);
                     } else {
-                        System.out.println("ping ricevuto");
+                        try {
+                            //System.out.println("ho ricevuto il ping");[Debug]
+                            socketOut.writeObject(new PongMessage());
+                            //System.out.println("ho inviato il pong");[Debug]
+                            socketOut.flush();
+                        } catch (IOException e) {
+                            client.disconnect();
+                        }
                         counterTimeout = 0;
                         pingReceived = false;
                         break;
@@ -50,6 +61,7 @@ public class PongObserver implements Runnable{
                     client.disconnect();
                     break;
                 }
+                sleep(30000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

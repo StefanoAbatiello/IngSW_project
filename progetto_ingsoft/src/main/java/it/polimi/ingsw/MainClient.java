@@ -12,6 +12,19 @@ import java.util.Scanner;
 public class MainClient {
     private String ip;
     private int port;
+    private PongObserver pongObserver;
+    private ObjectInputStream socketIn;
+    private ObjectOutputStream socketOut;
+    private Socket socket;
+    private static ClientInput keyboardReader;
+
+    public ObjectInputStream getSocketIn() {
+        return socketIn;
+    }
+
+    public ObjectOutputStream getSocketOut() {
+        return socketOut;
+    }
 
     public MainClient(String ip, int port) {
         this.ip = ip;
@@ -28,11 +41,13 @@ public class MainClient {
     }
 
     public void startClient() throws IOException {
-        Socket socket = new Socket(ip, port);
+        socket = new Socket(ip, port);
         System.out.println("Connection established");
-        ObjectInputStream socketIn = new ObjectInputStream(socket.getInputStream());
-        ObjectOutputStream socketOut = new ObjectOutputStream(socket.getOutputStream());
-        Scanner stdin = new Scanner(System.in);
+        socketIn = new ObjectInputStream(socket.getInputStream());
+        socketOut = new ObjectOutputStream(socket.getOutputStream());
+        keyboardReader=new ClientInput(this, socketOut);
+        new Thread(keyboardReader).start();
+        pongObserver = new PongObserver(this, socketOut);
         SerializedMessage input;
         try {
             while (true) {
@@ -40,55 +55,43 @@ public class MainClient {
                 actionHandler(input, socketIn, socketOut);
             }
         } catch (ClassNotFoundException | NoSuchElementException e) {
-            e.printStackTrace();
             System.out.println("Connection closed");
+            disconnect();
         } finally {
-            stdin.close();
-            socketIn.close();
-            socketOut.close();
-            socket.close();
+            disconnect();
         }
     }
 
     private void actionHandler(SerializedMessage input, ObjectInputStream socketIn, ObjectOutputStream socketOut) {
-        Scanner stdin = new Scanner(System.in);
         if (input instanceof NickNameAction) {
             System.out.println(((NickNameAction) input).getMessage());
-            try {
-                String inputLine = stdin.nextLine();
-                socketOut.writeObject(new NickNameAction(inputLine));
-                socketOut.flush();
-            } catch (java.io.IOException e) {
-                System.out.println("Connection closed");
-            }
+            System.out.println("Type \"Nickname: [your nickname]\"");
         }
-        else if (input instanceof RequestNumOfPlayers) {
+        if (input instanceof RequestNumOfPlayers) {
             System.out.println(((RequestNumOfPlayers) input).getMessage());
-            String inputLine = stdin.next();
-            try {
-                try {
-                    socketOut.writeObject(new NumOfPlayersAction(Integer.parseInt(inputLine)));
-                    socketOut.flush();
-                } catch (NumberFormatException e) {//TODO spostare parseInt sul server
-                    socketOut.writeObject(new NumOfPlayersAction(6));
-                    socketOut.flush();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            System.out.println("Type \"PlayersNumber: [num of player]\"");
         }
-        else if (input instanceof LobbyMessage) {
+        if (input instanceof LobbyMessage) {
             System.out.println(((LobbyMessage) input).getMessage());
         }
-        else if(input instanceof PingMessage) {
-            System.out.println("ho ricevuto il ping");
-            try {
-                socketOut.writeObject(new PongMessage());
-                socketOut.flush();
-                System.out.println("ho inviato il pong");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if(input instanceof PingMessage) {
+            if(!pongObserver.isStarted()) {
+                System.out.println("era il primo ping, faccio partire il pongObserver");
+                new Thread(pongObserver).start();
+                System.out.println("pongObserver partito");
+            } else
+                pongObserver.setResponse(true);
+        }
+    }
+
+    public void disconnect() {
+        System.out.println("sto chiudendo il socket");
+        try {
+            socketIn.close();
+            socketOut.close();
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

@@ -164,6 +164,7 @@ public class ClientHandler implements Runnable {
                         lobby.insertPlayer(ID);
                         //TODO ricorda modifica lista virtual client in lobby quando disconnessione, gestisco poi riconessione e aggiunta
                         lobby.sendAll((SerializedMessage) new LobbyMessage(name + " is back in the game"));
+                        return ID;
                     } else
                         reconnectClient(ID, name);
                     return ID;

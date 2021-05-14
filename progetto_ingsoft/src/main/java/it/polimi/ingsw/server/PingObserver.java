@@ -33,19 +33,20 @@ public class PingObserver implements Runnable {
         public boolean waitResponse () {
             try {
                 while (counterTimeout < maxTimeoutNumber) {
-                    sleep(10000);
+                    sleep(4000);
                     if (pongReceived) {
                         counterTimeout = 0;
                         break;
-                    }
-                    counterTimeout = counterTimeout + 1;
-                    System.out.println("pong non ricevuto " + counterTimeout + " volta/e");
-                    try {
-                        sendPing();
-                    } catch (IOException e) {
-                        System.out.println("il socket è stato chiuso per qualche motivo. chiudo il CH");
-                        clientHandler.getServer().disconnectClient(clientHandler.getClientId());
-                        break;
+                    } else {
+                        counterTimeout = counterTimeout + 1;
+                        System.out.println("pong non ricevuto " + counterTimeout + " volta/e dal client: " + clientHandler.getClientId());
+                        try {
+                            sendPing();
+                        } catch (IOException e) {
+                            System.out.println("il socket è stato chiuso per qualche motivo. chiudo il CH");
+                            clientHandler.getServer().disconnectClient(clientHandler.getClientId());
+                            break;
+                        }
                     }
                 }
             }catch(InterruptedException e){
@@ -65,7 +66,7 @@ public class PingObserver implements Runnable {
                 clientHandler.getServer().disconnectClient(clientHandler.getClientId());
             }
             else
-                System.out.println("pong ricevuto");
+                System.out.println("pong del client "+clientHandler.getClientId()+" ricevuto ");
             pongReceived=false;
         } catch (IOException e) {
             System.out.println("il socket è stato chiuso per qualche motivo. chiudo il CH");
