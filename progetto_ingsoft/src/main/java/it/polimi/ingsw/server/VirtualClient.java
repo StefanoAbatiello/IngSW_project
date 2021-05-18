@@ -11,6 +11,7 @@ public class VirtualClient {
     private String nickName;
     private Lobby lobby;
     private ClientHandler clientHandler;
+    private boolean myTurn=false;
 
     public VirtualClient(int id, String name, Socket socket, ClientHandler clientHandler) {
         this.socket=socket;
@@ -29,5 +30,9 @@ public class VirtualClient {
 
     public ClientHandler getClientHandler() {
         return clientHandler;
+    }
+
+    public boolean isMyTurn() {
+        return myTurn;
     }
 }

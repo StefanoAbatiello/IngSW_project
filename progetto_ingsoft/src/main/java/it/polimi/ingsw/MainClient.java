@@ -65,11 +65,11 @@ public class MainClient {
     private void actionHandler(SerializedMessage input, ObjectInputStream socketIn, ObjectOutputStream socketOut) {
         if (input instanceof NickNameAction) {
             System.out.println(((NickNameAction) input).getMessage());
-            System.out.println("Type \"Nickname: [your nickname]\"");
+            System.out.println("Type \"Nickname:[your nickname]\"");
         }
         if (input instanceof RequestNumOfPlayers) {
             System.out.println(((RequestNumOfPlayers) input).getMessage());
-            System.out.println("Type \"PlayersNumber: [num of player]\"");
+            System.out.println("Type \"PlayersNumber:[num of player]\"");
         }
         if (input instanceof LobbyMessage) {
             System.out.println(((LobbyMessage) input).getMessage());

@@ -12,7 +12,19 @@ import java.util.Collections;
 public class SinglePlayer extends Game{
 
     private final ArrayList<ActionToken> tokensStack =new ArrayList<>();
+
+    public Market getMarket() {
+        return market;
+    }
+
     private Market market;
+
+    public Player[] getPlayers() {
+        Player[] player=new Player[1];
+        player[1]=this.player;
+        return player;
+    }
+
     private Player player;
 
     public  ArrayList<ActionToken> getTokensStack() {

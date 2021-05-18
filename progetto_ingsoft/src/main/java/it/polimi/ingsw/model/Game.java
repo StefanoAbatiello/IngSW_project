@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.Market.Market;
+
 import java.util.ArrayList;
 
 public abstract class  Game {
@@ -38,4 +40,8 @@ public abstract class  Game {
     }
 
     abstract boolean activePopeSpace(Player player);
+
+    public abstract Market getMarket();
+
+    public abstract Player[] getPlayers();
 }

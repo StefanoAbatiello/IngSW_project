@@ -98,4 +98,7 @@ public class MultiPlayer extends Game {
     }
 
 
+    public Market getMarket() {
+        return market;
+    }
 }

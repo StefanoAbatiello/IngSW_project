@@ -56,7 +56,12 @@ public class ClientInput implements Runnable{
                 System.out.println("Connection closed");
                 client.disconnect();
             }
-        } else
+        } else if(input.startsWith("InitialResource:")){
+                String resource= input.replace("InitialResource:","");
+                System.out.println("In which shelf do you want to put your Resource? [0 to 2]");
+                System.out.println("Type: \"SelectShelf:[Shelf Number]");
+                //String string = scanner.nextLine();
+        }
             System.out.println("Input not valid, type again");
     }
 }

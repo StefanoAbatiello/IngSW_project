@@ -15,7 +15,7 @@ public class Lobby {
     private ArrayList<VirtualClient> actualPlayers;
     private GameState stateOfGame;
     private final Controller controller;
-    private Game game;
+    private VirtualView virtualVew;
 
     public Lobby(int clientID, int lobbyID, int seatsAvailable, MainServer server){
         this.lobbyID=lobbyID;
@@ -60,7 +60,7 @@ public class Lobby {
             if(isLobbyFull()) {
                 System.out.println("numero di giocatori raggiunto, inizia la partita!!!");
                 sendAll((SerializedMessage) new LobbyMessage("number of players reached, the game can start!!!"));
-                controller.startGame();
+                virtualVew=controller.startGame();
             }
             return actualPlayers;
     }
@@ -76,30 +76,31 @@ public class Lobby {
     }
 
 //TODO nel clientHandler stampo "azione giocatore n:" e il risultato di tale azione
-    public ActionAnswer actionHandler(GameMessage input){
-        //TODO ragiono su inizializzazione
-        ActionAnswer result=null;
-        //TODO ragiono su oggetti che passa il client
-        Object gameObj;
-        if(input instanceof BuyCardAction) {
-            gameObj = ((BuyCardAction) input).getCard();
-            if (controller.checkBuy((String) gameObj)) {
-                result = new ActionAnswer("carta" + gameObj + "comprata");
+    public ActionAnswer actionHandler(GameMessage input, int id) {
+        if (server.getClientFromId().get(id).isMyTurn()) {//TODO ragiono su inizializzazione
+            ActionAnswer result = null;
+            //TODO ragiono su oggetti che passa il client
+            Object gameObj;
+            if (input instanceof BuyCardAction) {
+                gameObj = ((BuyCardAction) input).getCard();
+                if (controller.checkBuy((String) gameObj)) {
+                    result = new ActionAnswer("carta" + gameObj + "comprata");
+                }
             }
-        }
-        if(input instanceof MarketAction){
-            gameObj= ((MarketAction)input).getCoordinate();
-            if (controller.checkMarket((int) gameObj)) {
-                result = new ActionAnswer("mercato cambiato con successo (da coordinata: " + gameObj + " )");
+            if (input instanceof MarketAction) {
+                gameObj = ((MarketAction) input).getCoordinate();
+                if (controller.checkMarket((int) gameObj)) {
+                    result = new ActionAnswer("mercato cambiato con successo (da coordinata: " + gameObj + " )");
+                }
             }
-        }
-        if(input instanceof ProductionAction){
-            gameObj= ((ProductionAction)input).getProductions();
-            if (controller.checkProduction((ArrayList<Resource>) gameObj)) {
-                result = new ActionAnswer("produzioni attivate, risorse pagate: " + gameObj);
+            if (input instanceof ProductionAction) {
+                gameObj = ((ProductionAction) input).getProductions();
+                if (controller.checkProduction((ArrayList<Resource>) gameObj)) {
+                    result = new ActionAnswer("produzioni attivate, risorse pagate: " + gameObj);
+                }
             }
+            return result;
         }
-
-    return result;
+        return null;
     }
 }

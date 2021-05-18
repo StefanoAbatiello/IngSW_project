@@ -1,15 +1,9 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.model.Resource;
-import it.polimi.ingsw.server.GameState;
+import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.server.*;
 import it.polimi.ingsw.messages.LobbyMessage;
 import it.polimi.ingsw.messages.SerializedMessage;
-import it.polimi.ingsw.server.Lobby;
-import it.polimi.ingsw.server.MainServer;
-import it.polimi.ingsw.server.VirtualClient;
-import it.polimi.ingsw.model.Game;
-import it.polimi.ingsw.model.MultiPlayer;
-import it.polimi.ingsw.model.SinglePlayer;
 import it.polimi.ingsw.model.cards.cardExceptions.playerLeadsNotEmptyException;
 
 import java.util.ArrayList;
@@ -19,13 +13,14 @@ public class Controller {
     private MainServer server;
     private final Lobby lobby;
     private Game game;
+    private VirtualClient actualPlayerTurn;
 
     public Controller(Lobby lobby, MainServer server) {
         this.lobby=lobby;
         this.server=server;
     }
 
-    public void startGame() {
+    public VirtualView startGame() {
         lobby.sendAll((SerializedMessage) new LobbyMessage("The game is starting..."));
         lobby.setStateOfGame(GameState.ONGOING);
         int id;
@@ -51,10 +46,29 @@ public class Controller {
                 System.out.println("creo partita multiPlayer");
                 game=new MultiPlayer(playersName, lobby.getPlayers().size());
                 System.out.println("partita multiPlayer creata");
-            } catch (playerLeadsNotEmptyException e) {
+           } catch (playerLeadsNotEmptyException e) {
                 e.printStackTrace();
             }
         }
+        actualPlayerTurn=lobby.getPlayers().get(0);
+        lobby.sendAll(new LobbyMessage("is the turn of "+server.getNameFromId().get(actualPlayerTurn.getID())));
+        return createVirtualView();
+    }
+
+    //TODO
+    private VirtualView createVirtualView() {
+        String[][] virtualMarket=game.getMarket().viewMarketBoard();
+        int[][] virtualDevCards=new int[4][3];
+        int k=0;
+        for(int i=0;i<4;i++)
+            for(int j=0;j<3;j++) {
+                virtualDevCards[i][j] = k;
+                k++;
+            }
+        ArrayList<Integer> virtualFaithPos=new ArrayList<>();
+        for(Player player:game.getPlayers())
+            virtualFaithPos.add(player.getPersonalBoard().getFaithMarker().getFaithPosition());
+        return new VirtualView(virtualMarket,virtualDevCards,virtualFaithPos);
     }
 
     //TODO methods actions

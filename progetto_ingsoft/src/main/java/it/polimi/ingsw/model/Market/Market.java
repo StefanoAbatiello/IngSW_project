@@ -45,6 +45,15 @@ public class Market {
         }
     }
 
+    public String[][] viewMarketBoard(){
+        String[][] market=new String[4][3];
+        for(int i=0;i<4;i++)
+            for(int j=0; j<3; j++){
+                market[i][j]=marketTray[i][j].getColor();
+            }
+        return market;
+    }
+
     /**
      * @return the actual composition of marketTray
      */
