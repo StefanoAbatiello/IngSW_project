@@ -47,7 +47,7 @@ class DevDeckMatrixTest {
                     check.add(DevDeckMatrix.getDevMatrix()[i][j].littleDevDeck.get(k));
             }
         }
-        for(DevCard card: DevDeckMatrix.deck.getDevCards())
+        for(DevCard card: DevDeckMatrix.getDeck().getDevCards())
             assertTrue(check.contains(card));
     }
 
@@ -80,7 +80,7 @@ class DevDeckMatrixTest {
         new DevDeckMatrix();
         ArrayList<Resource> array= new ArrayList<>();
         array.add(Resource.STONE);
-        DevCard card = new DevCard(4,"PURPLE",4,array,array,array,3);
+        DevCard card = new DevCard(2,4,"PURPLE",4,array,array,array,3);
         assertThrows(CardNotOnTableException.class, ()->DevDeckMatrix.buyCard(card) );
     }
 

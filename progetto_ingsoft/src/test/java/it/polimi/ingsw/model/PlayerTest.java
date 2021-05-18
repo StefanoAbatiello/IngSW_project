@@ -1,11 +1,9 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.AbilityAlreadySetException;
-import it.polimi.ingsw.exceptions.ActionAlreadySet;
+import it.polimi.ingsw.exceptions.ActionAlreadySetException;
 import it.polimi.ingsw.exceptions.ResourceNotValidException;
 import it.polimi.ingsw.exceptions.WrongAbilityInCardException;
-import it.polimi.ingsw.model.cards.LeadAbility;
-import it.polimi.ingsw.model.cards.LeadAbilityWhiteMarble;
 import it.polimi.ingsw.model.cards.LeadCard;
 import it.polimi.ingsw.model.cards.LeadDeck;
 import it.polimi.ingsw.model.cards.cardExceptions.CardChosenNotValidException;
@@ -25,7 +23,7 @@ class PlayerTest {
         prodInput.add(Resource.SERVANT);
         prodInput.add(Resource.SHIELD);
         player.getPersonalBoard().getWarehouseDepots().addinShelf(0, Resource.SERVANT);
-        player.getPersonalBoard().getStrongBox().addInStrongbox(Resource.SHIELD);
+        player.getPersonalBoard().getStrongBox().addInStrongbox(prodInput);
         assertEquals(Resource.COIN,player.doBasicProduction(prodInput,Resource.COIN));
     }
 
@@ -70,17 +68,17 @@ class PlayerTest {
     }
 
     @Test
-    void checkSetAction() throws ActionAlreadySet {
+    void checkSetAction() throws ActionAlreadySetException {
         Player player= new Player("Jenny");
         player.setAction(Action.ACTIVATEPRODUCTION);
         assertEquals(Action.ACTIVATEPRODUCTION,player.getAction());
     }
 
     @Test
-    void checkExceptionSetAction() throws ActionAlreadySet {
+    void checkExceptionSetAction() throws ActionAlreadySetException {
         Player player= new Player("USER");
         player.setAction(Action.ACTIVATEPRODUCTION);
-        assertThrows(ActionAlreadySet.class,()->player.setAction(Action.BUYCARD));
+        assertThrows(ActionAlreadySetException.class,()->player.setAction(Action.BUYCARD));
     }
 
 }

@@ -1,19 +1,16 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.AbilityAlreadySetException;
-import it.polimi.ingsw.exceptions.ActionAlreadySet;
+import it.polimi.ingsw.exceptions.ActionAlreadySetException;
 import it.polimi.ingsw.exceptions.WrongAbilityInCardException;
 import it.polimi.ingsw.model.Market.ResourceSupply;
-import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.exceptions.ResourceNotValidException;
 import it.polimi.ingsw.model.cards.LeadCard;
-import it.polimi.ingsw.model.cards.cardExceptions.AlreadyActivatedException;
 import it.polimi.ingsw.model.cards.cardExceptions.CardChosenNotValidException;
 import it.polimi.ingsw.model.cards.cardExceptions.InvalidActiveParameterException;
 import it.polimi.ingsw.model.personalboard.PersonalBoard;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 public class Player implements Points{
     //TODO controllo commenti
@@ -59,13 +56,9 @@ public class Player implements Points{
            return false;
     }
 
-    public boolean setAction(Action newAction) throws ActionAlreadySet{
-        Optional<Action> playerAction= Optional.ofNullable(action);
-        if(!playerAction.isPresent()) {
+    public boolean setAction(Action newAction) throws ActionAlreadySetException {
             this.action = newAction;
             return true;
-        }else
-            throw new ActionAlreadySet("This player has already a major action set");
     }
 
     public Action getAction(){

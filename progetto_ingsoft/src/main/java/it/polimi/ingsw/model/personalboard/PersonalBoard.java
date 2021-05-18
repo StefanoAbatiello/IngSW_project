@@ -62,7 +62,7 @@ public class PersonalBoard {
         for(Resource resource: resourceArrayList){
             if (personalResources.contains(resource)) {
                 result = true;
-                personalResources.remove(personalResources.indexOf(resource));
+                personalResources.remove(resource);
             }
             else
                 return result;
@@ -84,8 +84,6 @@ public class PersonalBoard {
                 warehouseDepots.getResource(resources1);
                 warehouseDepots.getResources().remove(resources1);
             }
-            else
-                throw new ResourceNotValidException();
         }
         return resources;
     }

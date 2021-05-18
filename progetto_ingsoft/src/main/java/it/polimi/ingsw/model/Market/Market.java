@@ -65,20 +65,16 @@ public class Market {
      * @return a boolean to indicate if the purchase is done or not
      * @throws NotAcceptableSelectorException if the selector received is negative or greater than 6
      */
-    public  MarketMarble[][] buyResources(int selector, Player p) throws FullSupplyException, NotAcceptableSelectorException {
-        if(selector<0)
-            throw new NotAcceptableSelectorException("Selector is negative, so isn't acceptable");
+    public  MarketMarble[][] buyResources(int selector, Player p) throws FullSupplyException {
         if(selector<=2) {
             for (int i = 0; i < 4; i++)
                 marketTray[selector][i].changeMarble(p);
-            return insertExtMarble(selector);
         }
-        if(selector<=6) {
+        else {
             for (int i = 0; i < 3; i++)
                     marketTray[i][selector-3].changeMarble(p);
-            return insertExtMarble(selector);
         }
-        throw new NotAcceptableSelectorException("Selector is greater than 6, so isn't acceptable");
+        return insertExtMarble(selector);
     }
 
     /**
