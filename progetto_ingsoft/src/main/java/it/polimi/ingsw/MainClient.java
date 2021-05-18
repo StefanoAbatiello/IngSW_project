@@ -66,22 +66,25 @@ public class MainClient {
         if (input instanceof NickNameAction) {
             System.out.println(((NickNameAction) input).getMessage());
             System.out.println("Type \"Nickname:[your nickname]\"");
-        }
-        if (input instanceof RequestNumOfPlayers) {
+        } else if (input instanceof RequestNumOfPlayers) {
             System.out.println(((RequestNumOfPlayers) input).getMessage());
             System.out.println("Type \"PlayersNumber:[num of player]\"");
-        }
-        if (input instanceof LobbyMessage) {
+        } else if (input instanceof LobbyMessage) {
             System.out.println(((LobbyMessage) input).getMessage());
-        }
-        if(input instanceof PingMessage) {
+        } else if(input instanceof PingMessage) {
             if(!pongObserver.isStarted()) {
                 System.out.println("era il primo ping, faccio partire il pongObserver");
                 new Thread(pongObserver).start();
                 System.out.println("pongObserver partito");
             } else
                 pongObserver.setResponse(true);
-        }
+        } /*else if(input instanceof GetInitialResource){
+            System.out.println(input.getMessage());
+            System.out.println("Type \"InitialResource:[COIN/SERVANT/SHIELD/STONE] in shelf:[shef number]\"");
+        } else if(input instanceof ChoseLeadCards){
+            System.out.println(input.getMessage());
+            System.out,println("Type \"ChosenLeads:[first LeadId],[second LeadId]\"");
+        }*/
     }
 
     public void disconnect() {

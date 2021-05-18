@@ -1,11 +1,14 @@
 package it.polimi.ingsw;
 
+import it.polimi.ingsw.messages.ChosenLeadMessage;
+import it.polimi.ingsw.messages.InitialResourceMessage;
 import it.polimi.ingsw.messages.NickNameAction;
 import it.polimi.ingsw.messages.NumOfPlayersAction;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ClientInput implements Runnable{
@@ -56,12 +59,66 @@ public class ClientInput implements Runnable{
                 System.out.println("Connection closed");
                 client.disconnect();
             }
-        } else if(input.startsWith("InitialResource:")){
-                String resource= input.replace("InitialResource:","");
-                System.out.println("In which shelf do you want to put your Resource? [0 to 2]");
-                System.out.println("Type: \"SelectShelf:[Shelf Number]");
-                //String string = scanner.nextLine();
+        } else if(input.startsWith("InitialResource:") && input.contains(" IN SHELF:")){
+            input= input.replace("InitialResource:","").toUpperCase();
+            String resource= "";
+            if(input.contains("SHIELD")){
+                input=input.replace("SHIELD","");
+                resource="SHIELD";
+            } else if(input.contains("COIN")){
+                input=input.replace("COIN","");
+                resource="COIN";
+            } else if(input.contains("SERVANT")){
+                input=input.replace("SERVANT","");
+                resource="SERVANT";
+            } else if(input.contains("STONE")){
+                input=input.replace("STONE","");
+                resource="STONE";
+            }
+            input = input.replace(" IN SHELF:", "");
+            int shelfNum = Integer.parseInt(input);
+            try {
+                socketOut.writeObject(new InitialResourceMessage(resource, shelfNum));
+                socketOut.flush();
+            } catch (IOException e) {
+                System.out.println("Connection closed");
+                client.disconnect();
+            }
+        } else if(input.startsWith("ChosenLeads:")){
+            ArrayList<Integer> chosenId = new ArrayList<>();
+            if(input.contains("0")){
+                chosenId.add(0);
+            }if(input.contains("1")){
+                chosenId.add(1);
+            }if(input.contains("2")){
+                chosenId.add(2);
+            }if(input.contains("3")){
+                chosenId.add(3);
+            }
+            if(chosenId.size()==2) {
+                try {
+                    socketOut.writeObject(new ChosenLeadMessage(chosenId));
+                    socketOut.flush();
+                } catch (IOException e) {
+                    System.out.println("Connection closed");
+                    client.disconnect();
+                }
+            }else
+                System.out.println("Number of card chosen not correct. Please type again "
+                        + "\"ChosenLeads:[first LeadId],[second LeadId]\"");
+        } else if(input.equals("Show Actions")){
+            System.out.println("Type one of this command:");
+            System.out.println("1) Buy a development card: "
+                    + "\"BuyDevCard:[CardId - 0 to 48]\"");
+            System.out.println("2) Take resources from market: "
+                    + "\"BuyResources:[MarketTray's index - 0 to 6]\"");
+            System.out.println("3) Do development production: "
+                    + "\"\"");
+
         }
+
+
+        else
             System.out.println("Input not valid, type again");
     }
 }
