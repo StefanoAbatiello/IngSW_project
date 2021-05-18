@@ -6,6 +6,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
+import it.polimi.ingsw.server.ConsoleColors;
 
 public class ClientHandler implements Runnable {
     private Socket socket;
@@ -100,10 +101,10 @@ public class ClientHandler implements Runnable {
             System.out.println("ho salvato il pingObserver");
             if (clientID >= 0) {
                 if (checkFirstPlayer(clientID))
-                    send(new RequestNumOfPlayers("You are the host of a new lobby."
-                            + " Choose how many players you want to challenge [0 to 3]"));
+                    send(new RequestNumOfPlayers(ConsoleColors.YELLOW_BACKGROUND_BRIGHT + ConsoleColors.BLUE_BOLD +"YOU ARE THE HOST OF A NEW LOBBY"
+                            + " CHOOSE HOW MANY PLAYERS YOU WANT TO CHALLENGE [0 to 3]"+ConsoleColors.RESET));
             }else
-                send(new NickNameAction("Nickname already taken." + " Please choose another one:"));
+                send(new NickNameAction(ConsoleColors.RED_UNDERLINED +"Nickname already taken." + " Please choose another one:" + ConsoleColors.RESET));
         }
         if (input instanceof NumOfPlayersAction) {
             int num = ((NumOfPlayersAction) input).getPlayersNum();

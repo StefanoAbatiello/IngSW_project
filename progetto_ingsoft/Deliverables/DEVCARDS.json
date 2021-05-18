@@ -1,6 +1,7 @@
 [
   {
     "DEVCARD":{
+      "ID": 1,
       "POINTS": 1,
       "COLOR": "GREEN",
       "LEVEL": 1,
@@ -13,6 +14,7 @@
   {
     "DEVCARD":
     {
+      "ID": 2,
       "POINTS": 1,
       "COLOR": "PURPLE",
       "LEVEL": 1,
@@ -25,6 +27,7 @@
   {
     "DEVCARD":
     {
+      "ID": 3,
       "POINTS": 1,
       "COLOR": "BLUE",
       "LEVEL": 1,
@@ -37,6 +40,7 @@
   {
     "DEVCARD":
     {
+      "ID": 4,
       "POINTS": 1,
       "COLOR": "YELLOW",
       "LEVEL": 1,
@@ -49,6 +53,7 @@
   {
     "DEVCARD":
     {
+      "ID": 5,
       "POINTS": 2,
       "COLOR": "GREEN",
       "LEVEL": 1,
@@ -61,6 +66,7 @@
   {
     "DEVCARD":
     {
+      "ID": 6,
       "POINTS": 2,
       "COLOR": "PURPLE",
       "LEVEL": 1,
@@ -73,6 +79,7 @@
   {
     "DEVCARD":
     {
+      "ID": 7,
       "POINTS": 2,
       "COLOR": "BLUE",
       "LEVEL": 1,
@@ -85,6 +92,7 @@
   {
     "DEVCARD":
     {
+      "ID": 8,
       "POINTS": 2,
       "COLOR": "YELLOW",
       "LEVEL": 1,
@@ -97,6 +105,7 @@
   {
     "DEVCARD":
     {
+      "ID": 9,
       "POINTS": 3,
       "COLOR": "GREEN",
       "LEVEL": 1,
@@ -109,6 +118,7 @@
   {
     "DEVCARD":
     {
+      "ID": 10,
       "POINTS": 3,
       "COLOR": "PURPLE",
       "LEVEL": 1,
@@ -121,6 +131,7 @@
   {
     "DEVCARD":
     {
+      "ID": 11,
       "POINTS": 3,
       "COLOR": "BLUE",
       "LEVEL": 1,
@@ -133,6 +144,7 @@
   {
     "DEVCARD":
     {
+      "ID": 12,
       "POINTS": 3,
       "COLOR": "YELLOW",
       "LEVEL": 1,
@@ -145,6 +157,7 @@
   {
     "DEVCARD":
     {
+      "ID": 13,
       "POINTS": 4,
       "COLOR": "GREEN",
       "LEVEL": 1,
@@ -157,6 +170,7 @@
   {
     "DEVCARD":
     {
+      "ID": 14,
       "POINTS": 4,
       "COLOR": "PURPLE",
       "LEVEL": 1,
@@ -169,6 +183,7 @@
   {
     "DEVCARD":
     {
+      "ID": 15,
       "POINTS": 4,
       "COLOR": "BLUE",
       "LEVEL": 1,
@@ -181,6 +196,7 @@
   {
     "DEVCARD":
     {
+      "ID": 16,
       "POINTS": 4,
       "COLOR": "YELLOW",
       "LEVEL": 1,
@@ -193,6 +209,7 @@
   {
     "DEVCARD":
     {
+      "ID": 17,
       "POINTS": 5,
       "COLOR": "GREEN",
       "LEVEL": 2,
@@ -205,6 +222,7 @@
   {
     "DEVCARD":
     {
+      "ID": 18,
       "POINTS": 5,
       "COLOR": "PURPLE",
       "LEVEL": 2,
@@ -217,6 +235,7 @@
   {
     "DEVCARD":
     {
+      "ID": 19,
       "POINTS": 5,
       "COLOR": "BLUE",
       "LEVEL": 2,
@@ -229,6 +248,7 @@
   {
     "DEVCARD":
     {
+      "ID": 20,
       "POINTS": 5,
       "COLOR": "YELLOW",
       "LEVEL": 2,
@@ -241,6 +261,7 @@
   {
     "DEVCARD":
     {
+      "ID": 21,
       "POINTS": 6,
       "COLOR": "GREEN",
       "LEVEL": 2,
@@ -253,6 +274,7 @@
   {
     "DEVCARD":
     {
+      "ID": 22,
       "POINTS": 6,
       "COLOR": "PURPLE",
       "LEVEL": 2,
@@ -265,6 +287,7 @@
   {
     "DEVCARD":
     {
+      "ID": 23,
       "POINTS": 6,
       "COLOR": "BLUE",
       "LEVEL": 2,
@@ -277,6 +300,7 @@
   {
     "DEVCARD":
     {
+      "ID": 24,
       "POINTS": 6,
       "COLOR": "YELLOW",
       "LEVEL": 2,
@@ -289,6 +313,7 @@
   {
     "DEVCARD":
     {
+      "ID": 25,
       "POINTS": 7,
       "COLOR": "GREEN",
       "LEVEL": 2,
@@ -301,6 +326,7 @@
   {
     "DEVCARD":
     {
+      "ID": 26,
       "POINTS": 7,
       "COLOR": "PURPLE",
       "LEVEL": 2,
@@ -313,6 +339,7 @@
   {
     "DEVCARD":
     {
+      "ID": 27,
       "POINTS": 7,
       "COLOR": "BLUE",
       "LEVEL": 2,
@@ -325,6 +352,7 @@
   {
     "DEVCARD":
     {
+      "ID": 28,
       "POINTS": 7,
       "COLOR": "YELLOW",
       "LEVEL": 2,
@@ -337,6 +365,7 @@
   {
     "DEVCARD":
     {
+      "ID": 29,
       "POINTS": 8,
       "COLOR": "GREEN",
       "LEVEL": 2,
@@ -349,6 +378,7 @@
   {
     "DEVCARD":
     {
+      "ID": 30,
       "POINTS": 8,
       "COLOR": "PURPLE",
       "LEVEL": 2,
@@ -361,6 +391,7 @@
   {
     "DEVCARD":
     {
+      "ID": 31,
       "POINTS": 8,
       "COLOR": "BLUE",
       "LEVEL": 2,
@@ -373,6 +404,7 @@
   {
     "DEVCARD":
     {
+      "ID": 32,
       "POINTS": 8,
       "COLOR": "YELLOW",
       "LEVEL": 2,
@@ -385,6 +417,7 @@
   {
     "DEVCARD":
     {
+      "ID": 33,
       "POINTS": 9,
       "COLOR": "GREEN",
       "LEVEL": 3,
@@ -397,6 +430,7 @@
   {
     "DEVCARD":
     {
+      "ID": 34,
       "POINTS": 9,
       "COLOR": "PURPLE",
       "LEVEL": 3,
@@ -409,6 +443,7 @@
   {
     "DEVCARD":
     {
+      "ID": 35,
       "POINTS": 9,
       "COLOR": "BLUE",
       "LEVEL": 3,
@@ -421,6 +456,7 @@
   {
     "DEVCARD":
     {
+      "ID": 36,
       "POINTS": 9,
       "COLOR": "YELLOW",
       "LEVEL": 3,
@@ -433,6 +469,7 @@
   {
     "DEVCARD":
     {
+      "ID": 37,
       "POINTS": 10,
       "COLOR": "GREEN",
       "LEVEL": 3,
@@ -445,6 +482,7 @@
   {
     "DEVCARD":
     {
+      "ID": 38,
       "POINTS": 10,
       "COLOR": "PURPLE",
       "LEVEL": 3,
@@ -457,6 +495,7 @@
   {
     "DEVCARD":
     {
+      "ID": 39,
       "POINTS": 10,
       "COLOR": "BLUE",
       "LEVEL": 3,
@@ -469,6 +508,7 @@
   {
     "DEVCARD":
     {
+      "ID": 40,
       "POINTS": 10,
       "COLOR": "YELLOW",
       "LEVEL": 3,
@@ -481,6 +521,7 @@
   {
     "DEVCARD":
     {
+      "ID": 41,
       "POINTS": 11,
       "COLOR": "GREEN",
       "LEVEL": 3,
@@ -493,6 +534,7 @@
   {
     "DEVCARD":
     {
+      "ID": 42,
       "POINTS": 11,
       "COLOR": "PURPLE",
       "LEVEL": 3,
@@ -505,6 +547,7 @@
   {
     "DEVCARD":
     {
+      "ID": 43,
       "POINTS": 11,
       "COLOR": "BLUE",
       "LEVEL": 3,
@@ -517,6 +560,7 @@
   {
     "DEVCARD":
     {
+      "ID": 44,
       "POINTS": 11,
       "COLOR": "YELLOW",
       "LEVEL": 3,
@@ -529,6 +573,7 @@
   {
     "DEVCARD":
     {
+      "ID": 45,
       "POINTS": 12,
       "COLOR": "GREEN",
       "LEVEL": 3,
@@ -541,6 +586,7 @@
   {
     "DEVCARD":
     {
+      "ID": 46,
       "POINTS": 12,
       "COLOR": "PURPLE",
       "LEVEL": 3,
@@ -553,6 +599,8 @@
   {
     "DEVCARD":
     {
+
+      "ID": 47,
       "POINTS": 12,
       "COLOR": "BLUE",
       "LEVEL": 3,
@@ -565,6 +613,7 @@
   {
     "DEVCARD":
     {
+      "ID": 48,
       "POINTS": 12,
       "COLOR": "YELLOW",
       "LEVEL": 3,

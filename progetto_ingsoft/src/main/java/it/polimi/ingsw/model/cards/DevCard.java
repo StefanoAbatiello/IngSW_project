@@ -11,11 +11,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class DevCard implements Cards{
-
     /**
-     * This attribute represents the points given by the card to the player
+     * This attribute represents the id of the devCard
      */
-    private final long points;
+    private final int id;
+    /**
+     * This attribute represents the points given  to the player by the card
+     */
+    private final int points;
     /**
      * This attribute represents the color of the card
      */
@@ -49,6 +52,7 @@ public class DevCard implements Cards{
 
     /**
      * This constructor creates the development card with in input all the attributes needed from the outside
+     * @param id
      * @param points
      * @param color
      * @param level
@@ -57,7 +61,8 @@ public class DevCard implements Cards{
      * @param prodOut
      * @param faithPoint
      */
-    public DevCard(long points, String color, long level, ArrayList<Resource> requirements, ArrayList<Resource> prodIn, ArrayList<Resource> prodOut, long faithPoint) {
+    public DevCard(int id, int points, String color, long level, ArrayList<Resource> requirements, ArrayList<Resource> prodIn, ArrayList<Resource> prodOut, long faithPoint) {
+        this.id=id;
         this.points= points;
         this.color = color;
         this.level = level;
@@ -65,6 +70,13 @@ public class DevCard implements Cards{
         this.prodIn = prodIn;
         this.prodOut = prodOut;
         this.faithPoint = faithPoint;
+    }
+    /**
+     *
+     * @return the id of the card
+     */
+    public int getId() {
+        return id;
     }
 
     /**
@@ -149,10 +161,10 @@ public class DevCard implements Cards{
 
     public StrongBox useProduction(Player player) throws ResourceNotValidException {
             player.getPersonalBoard().removeResources(getProdIn());
-        for(Resource resource: getProdOut())
-            player.getPersonalBoard().getStrongBox().addInStrongbox(resource);
+            player.getPersonalBoard().getStrongBox().addInStrongbox(getProdOut());
         return player.getPersonalBoard().getStrongBox();
     }
+
 
 }
 

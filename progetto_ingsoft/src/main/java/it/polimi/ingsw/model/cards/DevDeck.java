@@ -54,7 +54,7 @@ public class DevDeck{
         JSONArray jsonRequirements = (JSONArray) devCardObj.get("REQUIREMENTS");
         ArrayList<Resource> requirements = fromJSONArrayToResourceList(jsonRequirements);
 
-        DevCard newDevCard= new DevCard((long) devCardObj.get("POINTS"),
+        DevCard newDevCard= new DevCard(((Integer) devCardObj.get("POINTS")).intValue(),((Integer) devCardObj.get("POINTS")).intValue(),
                 (String) devCardObj.get("COLOR"),
                 (long) devCardObj.get("LEVEL"),
                 requirements,
@@ -100,6 +100,15 @@ public class DevDeck{
      */
     public ArrayList<DevCard> getDevCards() {
         return devCards;
+    }
+
+    public DevCard getCardFromId(int id){
+        for(DevCard card: devCards) {
+            if (card.getId() == id)
+                return card;
+        }
+        //TODO exception
+        return null;
     }
 
 

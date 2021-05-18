@@ -12,11 +12,6 @@ import java.util.Collections;
 public class SinglePlayer extends Game{
 
     private final ArrayList<ActionToken> tokensStack =new ArrayList<>();
-
-    public Market getMarket() {
-        return market;
-    }
-
     private Market market;
 
     public Player[] getPlayers() {
@@ -26,13 +21,18 @@ public class SinglePlayer extends Game{
     }
 
     private Player player;
+    private DevDeckMatrix matrix;
+    private LeadDeck leads;
+    private DevDeck devDeck;
+    private ArrayList<Player> player= new ArrayList<>();
 
     public  ArrayList<ActionToken> getTokensStack() {
         return tokensStack;
     }
 
     public SinglePlayer(String username) throws playerLeadsNotEmptyException {
-        this.player=new Player(username);
+        Player singlePlayer= new Player(username);
+        this.player.add(singlePlayer);
         tokensStack.add(new CrossShuffleAction());
         tokensStack.add(new DoubleCrossAction());
         tokensStack.add(new DoubleCrossAction());
@@ -41,11 +41,16 @@ public class SinglePlayer extends Game{
         tokensStack.add(new DiscardDevCardAction("PURPLE"));
         tokensStack.add(new DiscardDevCardAction("BLUE"));
         Collections.shuffle(tokensStack);
-        new DevDeckMatrix();
+        matrix= new DevDeckMatrix();
+        devDeck = DevDeckMatrix.getDeck();
         new BlackCrossToken();
         this.market=new Market();
-        new LeadDeck().giveToPlayer(player);
+        leads= new LeadDeck();
+        leads.giveToPlayer(player.get(0));
 
+    }
+    public ArrayList<Player>  getPlayers() {
+        return this.player;
     }
 
     /**
@@ -153,4 +158,22 @@ public class SinglePlayer extends Game{
         else
             return true;
         }
+
+
+    public Market getMarket() {
+        return market;
+    }
+
+    public DevDeckMatrix getMatrix() {
+        return matrix;
+    }
+
+    public LeadDeck getLeads() {
+        return leads;
+    }
+
+    @Override
+    public DevDeck getDevDeck() {
+        return devDeck;
+    }
 }

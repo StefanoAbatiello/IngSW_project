@@ -17,9 +17,9 @@ public class StrongBox {
     /**
      * @return strongbox after adding resources
      */
-    public ArrayList<Resource> addInStrongbox(Resource resource) {
-
-        strongboxContent.add(resource);
+    public ArrayList<Resource> addInStrongbox(ArrayList<Resource> resources) {
+        for(Resource res: resources)
+            strongboxContent.add(res);
         return strongboxContent;
     }
 

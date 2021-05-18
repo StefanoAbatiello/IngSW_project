@@ -5,13 +5,13 @@ import it.polimi.ingsw.model.Resource;
 import java.util.ArrayList;
 
 public class ProductionAction {
-    ArrayList<Resource> productions;
+    ArrayList<Integer> productions;
 
-    public ProductionAction(ArrayList<Resource> inputLine) {
+    public ProductionAction(ArrayList<Integer> inputLine) {
         productions=inputLine;
     }
 
-    public ArrayList<Resource> getProductions(){
+    public ArrayList<Integer> getProductions(){
         return this.productions;
     }
 

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.exceptions;
 
-public class ResourceNotValidException extends Throwable {
-    public String getWarning(){
-        return ("Warning: resource not found");}
+public class ResourceNotValidException extends Exception {
+    public ResourceNotValidException(String s){
+        super (s);}
 }

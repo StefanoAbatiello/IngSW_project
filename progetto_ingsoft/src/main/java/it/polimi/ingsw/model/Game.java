@@ -2,6 +2,11 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.Market.Market;
 
+import it.polimi.ingsw.model.Market.Market;
+import it.polimi.ingsw.model.cards.DevDeck;
+import it.polimi.ingsw.model.cards.DevDeckMatrix;
+import it.polimi.ingsw.model.cards.LeadDeck;
+
 import java.util.ArrayList;
 
 public abstract class  Game {
@@ -44,4 +49,10 @@ public abstract class  Game {
     public abstract Market getMarket();
 
     public abstract Player[] getPlayers();
+
+    abstract public ArrayList<Player> getPlayers();
+    abstract public DevDeckMatrix getMatrix();
+    abstract public Market getMarket();
+    abstract public LeadDeck getLeads();
+    abstract public DevDeck getDevDeck();
 }

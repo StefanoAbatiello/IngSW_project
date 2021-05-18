@@ -28,7 +28,7 @@ public class WarehouseDepots implements ResourceCreator {
     /**
      * return a specific resource and remove it from player's warehouse
      */
-    public Resource getResource(Resource resource) throws ResourceNotValidException {
+    public Resource getResource(Resource resource) {
         for(int i=0;i< shelves.length;i++){
             for(Resource resource1 :shelves[i].getResources()){
                 if(resource == resource1){
@@ -38,7 +38,9 @@ public class WarehouseDepots implements ResourceCreator {
                 }
             }
         }
-        throw new ResourceNotValidException();
+        //TODO controllo eccezione, potrebbe essere inutile poichè nel controller prima vedo se ho risorse e poi rimuovo
+        //throw new ResourceNotValidException();
+        return null;
     }
 
     @Override

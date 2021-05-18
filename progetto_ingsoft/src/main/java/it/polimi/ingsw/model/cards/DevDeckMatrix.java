@@ -13,7 +13,7 @@ public class DevDeckMatrix {
      * This attribute represents the matrix of dev cards on the table
      */
     private static final LittleDevDeck[][] devDecksOnTable = new LittleDevDeck[4][3];
-    protected static DevDeck deck;
+    private static DevDeck deck;
     /**
      * This constructor creates a matrix and dispose the cards on the table, divided in little decks of 4 cards each, dived by color and level
      */
@@ -53,6 +53,9 @@ public class DevDeckMatrix {
         return cardsOnTable;
     }
 
+    public static DevDeck getDeck(){
+        return deck;
+    }
     /**
      *
      * @return the dev cards matrix on the game table
@@ -71,17 +74,17 @@ public class DevDeckMatrix {
      * @return the dev card that the caller wants to buy, if the card is present
      * @throws CardNotOnTableException the card wanted is not present on the game table
      */
-    public static DevCard buyCard ( DevCard cardToBuy) throws CardNotOnTableException {
+    public static boolean buyCard ( DevCard cardToBuy) throws CardNotOnTableException {
         for(int i=0;i<4;i++){
             for(int j=0; j<3;j++){
                 if(!devDecksOnTable[i][j].littleDevDeck.isEmpty())
                     if((devDecksOnTable[i][j].littleDevDeck.get(0)).equals(cardToBuy)){
                         devDecksOnTable[i][j].littleDevDeck.remove(0);
-                        return cardToBuy;
+                        return true;
                     }
             }
         }
-        throw new CardNotOnTableException("Error: card not found on table");
+        return false;
     }
 
 

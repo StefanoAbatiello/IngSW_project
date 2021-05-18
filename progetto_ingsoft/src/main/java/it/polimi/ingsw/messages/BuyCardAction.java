@@ -1,14 +1,18 @@
 package it.polimi.ingsw.messages;
 
 public class BuyCardAction implements GameMessage {
-    String card;
+    int card;
+    int slot;
 
-    public BuyCardAction(String inputLine) {
+    public BuyCardAction(int inputLine) {
         card=inputLine;
     }
 
-    public String getCard(){
+    public int getCard(){
         return this.card;
     }
 
+    public Object getSlot() {
+        return this.slot;
+    }
 }

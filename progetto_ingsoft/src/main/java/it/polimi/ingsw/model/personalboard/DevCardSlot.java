@@ -36,10 +36,7 @@ public class DevCardSlot implements Points {
      * @return slot after overlapped devcard, if it is possible
      * @throws InvalidSlotException if selected slot is not between 0 and 2
      */
-    public ArrayList<DevCard>[] overlap(DevCard devCard, int slotID) throws InvalidSlotException {
-        if(slotID<0||slotID>2){
-            throw new InvalidSlotException();
-        }
+    public ArrayList<DevCard>[] overlap(DevCard devCard, int slotID)  {
         for(int row=0;row<3;row++){
                 if(!slot[slotID].isEmpty()){
                     if(devCard.getLevel()==slot[slotID].get(row).getLevel()+1 && slot[slotID].get(row).isActive()) {
