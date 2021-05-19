@@ -11,10 +11,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class PersonalBoardTest {
 
     @Test
+    //TODO da controllare
     void getValidResource() throws ResourceNotValidException {
         PersonalBoard personalBoard=new PersonalBoard();
         ArrayList<Resource> resourcesArrayList=new ArrayList<>();
-        personalBoard.getStrongBox().addInStrongbox(Resource.COIN);
+        ArrayList<Resource> res= new ArrayList<>();
+        res.add(Resource.COIN);
+        res.add(Resource.COIN);
+        personalBoard.getStrongBox().addInStrongbox(res);
         resourcesArrayList.add(Resource.COIN);
         personalBoard.removeResources(resourcesArrayList);
 

@@ -4,6 +4,8 @@ import it.polimi.ingsw.exceptions.ResourceNotValidException;
 import it.polimi.ingsw.model.Resource;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class StrongBoxTest {
@@ -11,24 +13,31 @@ class StrongBoxTest {
     @Test
     void addResourceInStrongbox() {
         StrongBox strongBox=new StrongBox();
-        strongBox.addInStrongbox(Resource.COIN);
-
+        ArrayList<Resource> res= new ArrayList<>();
+        res.add(Resource.COIN);
+        res.add(Resource.COIN);
+        strongBox.addInStrongbox(res);
         assertEquals(1,strongBox.getStrongboxContent().size());
     }
 
     @Test
     void getValidResource() {
         StrongBox strongBox=new StrongBox();
-        strongBox.addInStrongbox(Resource.COIN);
+        ArrayList<Resource> res= new ArrayList<>();
+        res.add(Resource.COIN);
+        res.add(Resource.COIN);
+        strongBox.addInStrongbox(res);
         strongBox.getStrongboxContent().remove(Resource.COIN);
-
         assertTrue(strongBox.getStrongboxContent().isEmpty());
     }
 
     @Test
     void getNotValidResource(){
         StrongBox strongBox = new StrongBox();
-        strongBox.addInStrongbox(Resource.COIN);
+        ArrayList<Resource> res= new ArrayList<>();
+        res.add(Resource.COIN);
+        res.add(Resource.COIN);
+        strongBox.addInStrongbox(res);
         strongBox.getStrongboxContent().remove(Resource.SHIELD);
 
         assertEquals(1,strongBox.getStrongboxContent().size());

@@ -23,7 +23,7 @@ public class DevDeck{
     public DevDeck() {
         JSONParser jsonP = new JSONParser();
 
-        try(FileReader reader = new FileReader("progetto_ingsoft/Deliverables/DEVCARDS.json")){
+        try(FileReader reader = new FileReader("Deliverables/DEVCARDS.json")){
             //Read JSON File
             Object obj = jsonP.parse(reader);
             JSONArray devCardList = (JSONArray) obj;
@@ -54,7 +54,7 @@ public class DevDeck{
         JSONArray jsonRequirements = (JSONArray) devCardObj.get("REQUIREMENTS");
         ArrayList<Resource> requirements = fromJSONArrayToResourceList(jsonRequirements);
 
-        DevCard newDevCard= new DevCard(((Integer) devCardObj.get("POINTS")).intValue(),((Integer) devCardObj.get("POINTS")).intValue(),
+        DevCard newDevCard= new DevCard(((Long) devCardObj.get("ID")).intValue(),((Long) devCardObj.get("POINTS")).intValue(),
                 (String) devCardObj.get("COLOR"),
                 (long) devCardObj.get("LEVEL"),
                 requirements,
