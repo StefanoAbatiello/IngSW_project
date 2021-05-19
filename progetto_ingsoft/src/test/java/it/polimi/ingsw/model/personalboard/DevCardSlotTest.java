@@ -16,7 +16,7 @@ class DevCardSlotTest {
         DevCardSlot devCardSlot=new DevCardSlot();
         ArrayList<Resource> array= new ArrayList<>();
         array.add(Resource.STONE);
-        DevCard card = new DevCard(4,"PURPLE",4,array,array,array,3);
+        DevCard card = new DevCard(2,4,"PURPLE",4,array,array,array,3);
         assertThrows(InvalidSlotException.class,()->devCardSlot.overlap(card,3));
     }
 
@@ -25,7 +25,7 @@ class DevCardSlotTest {
         DevCardSlot devCardSlot=new DevCardSlot();
         ArrayList<Resource> array= new ArrayList<>();
         array.add(Resource.STONE);
-        DevCard card = new DevCard(4,"PURPLE",1,array,array,array,3);
+        DevCard card = new DevCard(3,4,"PURPLE",1,array,array,array,3);
         devCardSlot.overlap(card,2);
 
         assertTrue(devCardSlot.getSlot()[2].get(0).isActive());
@@ -36,7 +36,7 @@ class DevCardSlotTest {
         DevCardSlot devCardSlot=new DevCardSlot();
         ArrayList<Resource> array= new ArrayList<>();
         array.add(Resource.STONE);
-        DevCard card = new DevCard(4,"PURPLE",1,array,array,array,3);
+        DevCard card = new DevCard(5,4,"PURPLE",1,array,array,array,3);
         devCardSlot.overlap(card,2);
         assertEquals(4,devCardSlot.getPoints());
     }
@@ -46,7 +46,7 @@ class DevCardSlotTest {
         DevCardSlot devCardSlot=new DevCardSlot();
         ArrayList<Resource> array= new ArrayList<>();
         array.add(Resource.STONE);
-        DevCard card = new DevCard(4,"PURPLE",1,array,array,array,3);
+        DevCard card = new DevCard(2,4,"PURPLE",1,array,array,array,3);
         devCardSlot.overlap(card,2);
 
         assertEquals(1,devCardSlot.getActiveCards().size());

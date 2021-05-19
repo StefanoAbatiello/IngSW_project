@@ -18,12 +18,13 @@ class DevCardTest {
         ArrayList<Resource> testArray2 = new ArrayList<>();
 
         for (int i = 0; i < 4; i++) {
-            player.getPersonalBoard().getStrongBox().addInStrongbox(Resource.COIN);
-        }
-        for (int i = 0; i < 4; i++) {
             testArray2.add(Resource.SERVANT);
+            testArray1.add(Resource.COIN);
         }
-        DevCard card = new DevCard(2, "GREEN", 3, testArray2, testArray2, testArray2, 1);
+
+        player.getPersonalBoard().getStrongBox().addInStrongbox(testArray1);
+
+        DevCard card = new DevCard(1,2, "GREEN", 3, testArray2, testArray2, testArray2, 1);
 
         assertThrows(ResourceNotValidException.class,()->card.useProduction(player));
     }
@@ -37,13 +38,14 @@ class DevCardTest {
 
 
         for (int i = 0; i < 4; i++) {
-            player.getPersonalBoard().getStrongBox().addInStrongbox(Resource.SERVANT);
             testArray3.add(Resource.SERVANT);
         }
+        player.getPersonalBoard().getStrongBox().addInStrongbox(testArray3);
+
         for (int i = 0; i < 4; i++) {
             testArray2.add(Resource.SHIELD);
         }
-        DevCard card = new DevCard(2, "GREEN", 3, testArray2, testArray3, testArray2, 1);
+        DevCard card = new DevCard(1,2, "GREEN", 3, testArray2, testArray3, testArray2, 1);
 
         card.useProduction(player);
 
