@@ -3,14 +3,15 @@ package it.polimi.ingsw.gameActions;
 import it.polimi.ingsw.messages.GameMessage;
 
 public class DiscardLeadAction implements GameMessage {
-    String lead;
 
-    public DiscardLeadAction(String inputLine) {
-        lead=inputLine;
+    int leaderId;
+
+    public DiscardLeadAction(int leaderId) {
+        this.leaderId= leaderId;
     }
 
-    public String getLead(){
-        return this.lead;
+    public int getLead(){
+        return this.leaderId;
     }
 
 }

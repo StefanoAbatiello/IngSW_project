@@ -1,8 +1,6 @@
 package it.polimi.ingsw.messages;
 
-import it.polimi.ingsw.PreGameMessage;
-
-public class NickNameAction extends PreGameMessage {
+public class NickNameAction implements SerializedMessage {
     String nickname;
 
     public NickNameAction(String inputLine) {

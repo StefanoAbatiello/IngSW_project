@@ -1,31 +1,24 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.messages.PongMessage;
-
+import it.polimi.ingsw.messages.PingMessage;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-
 import static java.lang.Thread.sleep;
 
 public class PongObserver implements Runnable{
 
-    private ObjectOutputStream socketOut;
+    private final ObjectOutputStream socketOut;
     private boolean pingReceived;
     private boolean started;
-    private int maxTimeoutNumber = 3;
+    private final int maxTimeoutNumber = 3;
     private int counterTimeout;
-    private MainClient client;
-    private ObjectOutputStream pongOutStreamObj;
-    private ObjectInputStream pingInStreamObj;
+    private final MainClient client;
 
     public PongObserver(MainClient client, ObjectOutputStream socketOut) {
         this.socketOut=socketOut;
         this.started = false;
         this.counterTimeout = 0;
         this.client = client;
-        this.pingInStreamObj = client.getSocketIn();
-        this.pongOutStreamObj = client.getSocketOut();
     }
 
     public boolean isStarted() {
@@ -46,7 +39,7 @@ public class PongObserver implements Runnable{
                     } else {
                         try {
                             //System.out.println("ho ricevuto il ping");[Debug]
-                            socketOut.writeObject(new PongMessage());
+                            socketOut.writeObject(new PingMessage());
                             //System.out.println("ho inviato il pong");[Debug]
                             socketOut.flush();
                         } catch (IOException e) {

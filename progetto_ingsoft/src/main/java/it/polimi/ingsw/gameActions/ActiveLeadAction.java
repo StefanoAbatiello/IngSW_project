@@ -3,13 +3,14 @@ package it.polimi.ingsw.gameActions;
 import it.polimi.ingsw.messages.GameMessage;
 
 public class ActiveLeadAction implements GameMessage {
-    String lead;
 
-    public ActiveLeadAction(String inputLine) {
-        lead=inputLine;
+    int lead;
+
+    public ActiveLeadAction(int leadId) {
+        this.lead=leadId;
     }
 
-    public String getLead(){
+    public int getLead(){
         return this.lead;
     }
 

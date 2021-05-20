@@ -4,7 +4,7 @@ import it.polimi.ingsw.model.Resource;
 
 import java.util.ArrayList;
 
-public class ProductionAction {
+public class ProductionAction implements GameMessage{
     ArrayList<Integer> productions;
 
     public ProductionAction(ArrayList<Integer> inputLine) {
