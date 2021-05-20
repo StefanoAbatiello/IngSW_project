@@ -25,10 +25,12 @@ public class ClientCardParser {
         JSONParser jsonP = new JSONParser();
         FileReader reader;
         try{
-            reader = new FileReader("Deliverables/DEVCARDS.json");
+            reader = new FileReader("progetto_ingsoft/Deliverables/DEVCARDS.json");
+            System.out.println("ho letto il file dev");
             //Read JSON File
             this.devCardList = (JSONArray)jsonP.parse(reader);
             reader = new FileReader("progetto_ingsoft/Deliverables/LEADCARDS");
+            System.out.println("ho letto il file lead");
             //Read JSON File
             this.leadCardList = (JSONArray) jsonP.parse(reader);
 
@@ -70,7 +72,7 @@ public class ClientCardParser {
     }
     public void takeLeadCardFromId(int cardId){
         this.cardId=cardId;
-        devCardList.forEach(card-> parseLeadCard((JSONObject) card));
+        this.leadCardList.forEach(card-> parseLeadCard((JSONObject) card));
     }
 
     private void parseLeadCard(JSONObject card) {

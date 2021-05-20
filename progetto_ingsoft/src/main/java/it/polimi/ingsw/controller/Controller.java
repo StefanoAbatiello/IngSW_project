@@ -23,8 +23,8 @@ public class Controller {
         this.server=server;
     }
 
-    public VirtualView createGame() {
-        lobby.sendAll((SerializedMessage) new StartingGameMessage());
+    public void createGame() {
+        lobby.sendAll(new StartingGameMessage());
         lobby.setStateOfGame(GameState.PREPARATION1);
         int id;
         if(lobby.getPlayers().size()==1) {
@@ -60,8 +60,9 @@ public class Controller {
             for(LeadCard card:game.getPlayers().get(i).getLeadCards())
                 leaderId.add(card.getId());
             client.getClientHandler().send(new LeaderCardDistribution(leaderId, "Please choose 2 leader card to hold"));
+            i++;
         }
-        return createVirtualView();
+        //return createVirtualView();
     }
 
     //TODO
@@ -81,9 +82,16 @@ public class Controller {
         }//TODO dai le risorse e le 4 carte + scelta 2 carte
 
     public boolean checkPlayersLeads(){
-        for(Player player:game.getPlayers())
-            if(player.getLeadCards().size()!=2)
+        System.out.println("controllo se tutti hanno scelto le leads");
+        int i=0;
+        for(Player player:game.getPlayers()) {
+            if (player.getLeadCards().size() != 2) {
+                System.out.println("player "+i + " non ha ancora scelto le leads");
                 return false;
+            }
+            i++;
+        }
+        System.out.println("tutti i giocatori hanno già scelto le leads");
         return true;
     }
 
@@ -91,38 +99,63 @@ public class Controller {
 
 
     public boolean checkInitialResources() {
-        boolean result= true;
-        for(int i=1;i<=game.getPlayers().size();i++) {
-            if (!game.getPlayers().get(i).getPersonalBoard().getStrongBox().getStrongboxContent().isEmpty())
+        System.out.println("sto controllando se gli altri giocatori hanno scelto le risorse");
+        boolean result = true;
+        for (int i = 0; i < game.getPlayers().size(); i++) {
+            if (!game.getPlayers().get(0).getPersonalBoard().getStrongBox().getStrongboxContent().isEmpty()) {
+                System.out.println("il giocatore " + i + " aveva lo strongbox pieno");
                 game.getPlayers().get(i).getPersonalBoard().getStrongBox().getStrongboxContent().clear();
-            if(i==1) {
-                if (!game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().isEmpty())
+                System.out.println("strongbox pulita");
+            }
+            if (i == 0) {
+                if (game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().size()>0) {
+                    System.out.println("il primo giocatore ha il warehouse pieno");
                     game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().clear();
-            }else if (i == 2 || i == 3) {
+                    System.out.println("warehouse pulita");
+                }
+            } else if (i == 1 || i == 2) {
                 if (game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().size() > 1) {
+                    System.out.println("il giocatore " + i + "aveva il warehouse pieno");
                     game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().clear();
-                    lobby.getPlayers().get(i).getClientHandler().send(new GetInitialResourcesAction("You have more resources than the ones permitted, please resend your initial resources:  "));
+                    System.out.println("warehouse pulita, invio nuovamente la richiesta della risorse iniziale");
+                    lobby.getPlayers().get(i).getClientHandler().send(new GetInitialResourcesActions("You have more resources than the ones permitted, please resend your initial resources:  "));
+                    System.out.println("messaggio inviato");
                     result = false;
-                }else if (game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().size() == 0)
-                    result= false;
-            } else if (i == 4) {
-                if (game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().size() > 2){
-                    game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().clear();
-                    lobby.getPlayers().get(i).getClientHandler().send(new GetInitialResourcesAction("You have more resources than the ones permitted, please resend your initial resources:  "));
-                    result= false;
-                }else if (game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().size() < 2)
+                } else if (game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().size() == 0) {
+                    System.out.println("il giocatore " + i + " deve ancora scegliere la risorsa iniziale");
                     result = false;
                 }
-            if(i==1||i==2){
-                if(game.getPlayers().get(i).getPersonalBoard().getFaithMarker().getFaithPosition()>0)
-                    game.getPlayers().get(i).getPersonalBoard().getFaithMarker().reset();
+            } else if (i == 3) {
+                if (game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().size() > 2) {
+                    System.out.println("il giocatore " + i + "aveva il warehouse pieno");
+                    game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().clear();
+                    System.out.println("warehouse pulita, invio nuovamente la richiesta della risorse iniziale");
+                    lobby.getPlayers().get(i).getClientHandler().send(new GetInitialResourcesActions("You have more resources than the ones permitted, please resend your initial resources:  "));
+                    System.out.println("messaggio inviato");
+                    result = false;
+                } else if (game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().size() < 2) {
+                    System.out.println("il giocatore " + i + " deve ancora scegliere la risorsa iniziale");
+                    result = false;
+                }
             }
-            if (i == 3 || i == 4) {
-                if (game.getPlayers().get(i).getPersonalBoard().getFaithMarker().getFaithPosition() == 0)
-                    game.getPlayers().get(i).getPersonalBoard().getFaithMarker().updatePosition();
-                else if(game.getPlayers().get(i).getPersonalBoard().getFaithMarker().getFaithPosition()>1) {
+            if (i == 0 || i == 1) {
+                if (game.getPlayers().get(i).getPersonalBoard().getFaithMarker().getFaithPosition() > 0) {
+                    System.out.println("il giocatore " + i + " ha punti fede che non dovrebbe avere");
                     game.getPlayers().get(i).getPersonalBoard().getFaithMarker().reset();
+                    System.out.println("punti fede tolti");
+                }
+            }
+            if (i == 2 || i == 3) {
+                if (game.getPlayers().get(i).getPersonalBoard().getFaithMarker().getFaithPosition() == 0) {
+                    System.out.println("il giocatore " + i + " non ha ancora ricevuto il suo punto iniziale");
                     game.getPlayers().get(i).getPersonalBoard().getFaithMarker().updatePosition();
+                    System.out.println("ho assegnato al giocatore " + i + "il suo punto fede iniziale");
+                } else if (game.getPlayers().get(i).getPersonalBoard().getFaithMarker().getFaithPosition() > 1) {
+                    System.out.println("il giocatore " + i + " ha punti fede che non dovrebbe avere");
+                    game.getPlayers().get(i).getPersonalBoard().getFaithMarker().reset();
+                    System.out.println("punti fede tolti");
+                    game.getPlayers().get(i).getPersonalBoard().getFaithMarker().updatePosition();
+                    System.out.println("ho assegnato al giocatore " + i + "il suo punto fede iniziale");
                 }
             }
         }
@@ -130,31 +163,44 @@ public class Controller {
     }
 
     public boolean checkResourcePosition(int id, int position, Resource resource) throws ResourceNotValidException {
+        System.out.println("sto controllando se il giocatore può mettere la risorse nello shelf richiesto");
         int playerPosition = lobby.getPlayers().indexOf(server.getClientFromId().get(id));
         Player player = game.getPlayers().get(playerPosition);
         Shelf shelf= player.getPersonalBoard().getWarehouseDepots().getShelves()[position];
+        System.out.println("mi sono salvato lo shelf richiesto");
         if(((shelf.isShelfAvailability()) && (resource.equals(shelf.getResourceType()))) || shelf.getSlots().isEmpty()) {
+            System.out.println("è possibile inserire la risorsa nello shef");
             player.getPersonalBoard().getWarehouseDepots().addinShelf(position, resource);
             return true;
         //TODO eccezione se tutte sono piene
-        }else
-             throw new ResourceNotValidException("Cannot put the resource in the chosen shelf");
+        }else {
+            System.out.println("NON è possibile inserire la risorsa nello shelf richiesto");
+            throw new ResourceNotValidException("Cannot put the resource in the chosen shelf");
+        }
     }
 
     public boolean check2Leads(int id, int card1, int card2){
+        System.out.println("controllo gli id");
         int playerPosition = lobby.getPlayers().indexOf(server.getClientFromId().get(id));
         Player player = game.getPlayers().get(playerPosition);
+        LeadCard firstCard=LeadDeck.getCardFromId().get(card1);
+        LeadCard secondCard=LeadDeck.getCardFromId().get(card2);
         if(player.getLeadCards().size()==2) {
+            System.out.println("il client " +id+" ha già scelto le carte");
             server.getClientFromId().get(id).getClientHandler().send(new LobbyMessage("You have chosen yours leader cards yet"));
             return false;
-        }else if(player.getLeadCards().contains(card1) && player.getLeadCards().contains(card2) && card1!=card2) {
+        }else if(player.getLeadCards().contains(firstCard) && player.getLeadCards().contains(secondCard) && card1!=card2) {
+            System.out.println("gli id scelti vanno bene");
             return  player.choose2Leads(card1, card2);
         }else {
+            System.out.println("gli id scelti non vanno bene");
             ArrayList<Integer> leaderId = new ArrayList<>();
             for (LeadCard card : player.getLeadCards())
                 leaderId.add(card.getId());
-            lobby.getPlayers().get(id).getClientHandler().send(new LeaderCardDistribution(leaderId,
-                    "You chose leader cards not valid"));
+            System.out.println("mi sono salvato gli id delle carte");
+            server.getClientFromId().get(id).getClientHandler().send(new LeaderCardDistribution(leaderId,
+                    "You choose not valid leader cards "));
+            System.out.println("ho inviato il messaggio");
             return false;
         }
     }
@@ -267,12 +313,12 @@ public class Controller {
             if(i==0)
                 player.getClientHandler().send(new LobbyMessage("Wait until other players have chosen initial resources"));
             else if(i==1)
-                player.getClientHandler().send(new GetInitialResourcesAction("You can choose 1 initial resource"));
+                player.getClientHandler().send(new GetInitialResourcesActions("You can choose 1 initial resource"));
             else if(i==2)
-                player.getClientHandler().send(new GetInitialResourcesAction(
+                player.getClientHandler().send(new GetInitialResourcesActions(
                         "You can choose 1 initial resource, you will receive a faith point also"));
             else
-                player.getClientHandler().send(new GetInitialResourcesAction(
+                player.getClientHandler().send(new GetInitialResourcesActions(
                         "You can choose 2 initial resources, you will receive a faith point also"));
             i++;
         }

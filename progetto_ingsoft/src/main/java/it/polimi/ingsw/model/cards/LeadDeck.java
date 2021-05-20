@@ -19,11 +19,16 @@ import java.util.*;
 public class LeadDeck {
 
     private final ArrayList<LeadCard> leadDeck = new ArrayList<>();
+    private static final Map<Integer,LeadCard> cardFromId = new HashMap<>();
+
+    public static Map<Integer, LeadCard> getCardFromId() {
+        return cardFromId;
+    }
 
     public LeadDeck() {
         JSONParser jsonP = new JSONParser();
 
-        try(FileReader reader = new FileReader("Deliverables/LEADCARDS")){
+        try(FileReader reader = new FileReader("progetto_ingsoft/Deliverables/LEADCARDS")){
             //Read JSON File
             Object obj = jsonP.parse(reader);
             JSONArray leadCardList = (JSONArray) obj;
@@ -44,6 +49,7 @@ public class LeadDeck {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        Collections.shuffle(leadDeck);
     }
     //TODO posso mettere due hashmap opzionali per i requirements
 
@@ -64,6 +70,7 @@ public class LeadDeck {
                     createAbility((String) leadCardObj.get("ABILITY"),abilityResource) );
         }
         leadDeck.add(newCard);
+        cardFromId.put(newCard.getId(),newCard);
 
     }
 

@@ -1,7 +1,7 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.gameActions.ActiveLeadAction;
-import it.polimi.ingsw.gameActions.DiscardLeadAction;
+import it.polimi.ingsw.gameActions.ActiveLeadActions;
+import it.polimi.ingsw.gameActions.DiscardLeadActions;
 import it.polimi.ingsw.messages.*;
 
 import java.io.IOException;
@@ -69,25 +69,13 @@ public class ClientInput implements Runnable{
         }
 
         //4-choose initial resource
-        else if(input.startsWith("InitialResource:") && input.contains(" IN SHELF:")){
+        else if(input.startsWith("InitialResource:") && input.contains(" in shelf:")){
             input= input.replace("InitialResource:","").toUpperCase();
             String resource= "";
-            if(input.contains("SHIELD")){
-                input=input.replace("SHIELD","");
-                resource="SHIELD";
-            } else if(input.contains("COIN")){
-                input=input.replace("COIN","");
-                resource="COIN";
-            } else if(input.contains("SERVANT")){
-                input=input.replace("SERVANT","");
-                resource="SERVANT";
-            } else if(input.contains("STONE")){
-                input=input.replace("STONE","");
-                resource="STONE";
-            }
-            input = input.replace(" IN SHELF:", "");
+            String[] words=input.split(" IN SHELF:");
+            resource=words[0];
             try {
-                int shelfNum = Integer.parseInt(input);
+                int shelfNum = Integer.parseInt(words[1]);
                 if(shelfNum>=0 && shelfNum<=2) {
                     socketOut.writeObject(new InitialResourceMessage(resource, shelfNum));
                     socketOut.flush();
@@ -107,27 +95,20 @@ public class ClientInput implements Runnable{
         //TODO sistemare metodo con gli id delle carte
         //5-choose which leader cards hold
         else if(input.startsWith("ChosenLeads:")){
+            input=input.replace("ChosenLeads:","");
             ArrayList<Integer> chosenId = new ArrayList<>();
-            if(input.contains("0")){
-                chosenId.add(0);
-            }if(input.contains("1")){
-                chosenId.add(1);
-            }if(input.contains("2")){
-                chosenId.add(2);
-            }if(input.contains("3")){
-                chosenId.add(3);
+            String[] words= input.split(",");
+            chosenId.add(Integer.parseInt(words[0]));
+            chosenId.add(Integer.parseInt(words[1]));
+            chosenId.forEach(System.out::println);
+            try {
+                socketOut.writeObject(new ChosenLeadMessage(chosenId));
+                socketOut.flush();
+                System.out.println("ho spedito il messaggio");
+            } catch (IOException e) {
+                System.out.println("Connection closed");
+                client.disconnect();
             }
-            if(chosenId.size()==2) {
-                try {
-                    socketOut.writeObject(new ChosenLeadMessage(chosenId));
-                    socketOut.flush();
-                } catch (IOException e) {
-                    System.out.println("Connection closed");
-                    client.disconnect();
-                }
-            }else
-                System.out.println("Number of card chosen not correct. Please type again "
-                        + "\"ChosenLeads:[first LeadId],[second LeadId]\"");
         }
 
         //6-ask for command's format
@@ -170,7 +151,7 @@ public class ClientInput implements Runnable{
                 for (int i = 0; i < 4; i++)
                     for (int j = 0; j < 3; j++) {
                         if (matrix[i][j] == id) {
-                            socketOut.writeObject(new BuyCardAction(id));
+                            socketOut.writeObject(new BuyCardActions(id));
                             socketOut.flush();
                         }
                     }
@@ -188,7 +169,7 @@ public class ClientInput implements Runnable{
             try {
                 int selector = Integer.parseInt(input);
                 if (selector >= 0 && selector <= 6) {
-                    socketOut.writeObject(new MarketAction(selector));
+                    socketOut.writeObject(new MarketActions(selector));
                     socketOut.flush();
                 } else
                     System.out.println("Index of matrix not valid. Type again" +
@@ -212,7 +193,7 @@ public class ClientInput implements Runnable{
             input=input.replace("ActiveLeadCard:","");
             try {
                 int id = Integer.parseInt(input);
-                socketOut.writeObject(new ActiveLeadAction(id));
+                socketOut.writeObject(new ActiveLeadActions(id));
                 socketOut.flush();
             } catch (NumberFormatException e) {
                 System.out.println("please insert a number. Type again" +
@@ -227,7 +208,7 @@ public class ClientInput implements Runnable{
             input=input.replace("DiscardLeadCard:","");
             try {
                 int id = Integer.parseInt(input);
-                socketOut.writeObject(new DiscardLeadAction(id));
+                socketOut.writeObject(new DiscardLeadActions(id));
                 socketOut.flush();
             } catch (NumberFormatException e) {
                 System.out.println("please insert a number. Type again" +
