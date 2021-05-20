@@ -20,6 +20,10 @@ public class VirtualClient {
         this.clientHandler=clientHandler;
     }
 
+    public Lobby getLobby() {
+        return lobby;
+    }
+
     public int getID() {
         return id;
     }

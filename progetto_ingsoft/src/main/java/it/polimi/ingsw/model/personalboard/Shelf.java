@@ -9,9 +9,6 @@ import java.util.ArrayList;
 public class Shelf implements ResourceCreator {
 
     private ArrayList<Resource> slots;
-
-
-
     private Resource resourceType;
     private boolean shelfAvailability ;
     private int maxSize;

@@ -6,21 +6,12 @@ import it.polimi.ingsw.model.cards.cardExceptions.playerLeadsNotEmptyException;
 import it.polimi.ingsw.model.personalboard.*;
 import it.polimi.ingsw.model.singlePlayerMode.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 public class SinglePlayer extends Game{
 
     private final ArrayList<ActionToken> tokensStack =new ArrayList<>();
     private Market market;
-
-    public Player[] getPlayers() {
-        Player[] player=new Player[1];
-        player[1]=this.player;
-        return player;
-    }
-
-    private Player player;
     private DevDeckMatrix matrix;
     private LeadDeck leads;
     private DevDeck devDeck;
@@ -172,7 +163,6 @@ public class SinglePlayer extends Game{
         return leads;
     }
 
-    @Override
     public DevDeck getDevDeck() {
         return devDeck;
     }

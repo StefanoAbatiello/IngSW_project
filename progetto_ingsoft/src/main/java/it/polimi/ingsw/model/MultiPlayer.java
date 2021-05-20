@@ -6,10 +6,7 @@ import it.polimi.ingsw.model.cards.DevDeck;
 import it.polimi.ingsw.model.cards.DevDeckMatrix;
 import it.polimi.ingsw.model.cards.LeadDeck;
 import it.polimi.ingsw.model.cards.cardExceptions.playerLeadsNotEmptyException;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class MultiPlayer extends Game {
     private ArrayList<Player> players;
@@ -116,7 +113,6 @@ public class MultiPlayer extends Game {
         return leads;
     }
 
-    @Override
     public DevDeck getDevDeck() {
         return devDeck;
     }

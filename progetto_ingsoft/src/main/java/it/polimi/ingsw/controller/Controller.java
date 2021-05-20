@@ -1,20 +1,13 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.server.*;
-import it.polimi.ingsw.exceptions.*;
-import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.model.cards.DevCard;
-import it.polimi.ingsw.model.cards.DevDeckMatrix;
-import it.polimi.ingsw.model.cards.LeadCard;
-import it.polimi.ingsw.model.cards.cardExceptions.CardChosenNotValidException;
-import it.polimi.ingsw.model.cards.cardExceptions.CardNotOnTableException;
 import it.polimi.ingsw.model.personalboard.Shelf;
 import it.polimi.ingsw.server.*;
-import it.polimi.ingsw.messages.LobbyMessage;
-import it.polimi.ingsw.messages.SerializedMessage;
-import it.polimi.ingsw.model.cards.cardExceptions.playerLeadsNotEmptyException;
-
+import it.polimi.ingsw.exceptions.*;
+import it.polimi.ingsw.model.cards.*;
+import it.polimi.ingsw.model.cards.cardExceptions.*;
+import it.polimi.ingsw.server.GameState;
+import it.polimi.ingsw.messages.*;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -30,9 +23,9 @@ public class Controller {
         this.server=server;
     }
 
-    public VirtualView startGame() {
-        lobby.sendAll((SerializedMessage) new LobbyMessage("The game is starting..."));
-        lobby.setStateOfGame(GameState.ONGOING);
+    public VirtualView createGame() {
+        lobby.sendAll((SerializedMessage) new StartingGameMessage());
+        lobby.setStateOfGame(GameState.PREPARATION1);
         int id;
         if(lobby.getPlayers().size()==1) {
             id = lobby.getPlayers().get(0).getID();
@@ -61,8 +54,13 @@ public class Controller {
                 e.printStackTrace();
             }
         }
-        actualPlayerTurn=lobby.getPlayers().get(0);
-        lobby.sendAll(new LobbyMessage("is the turn of "+server.getNameFromId().get(actualPlayerTurn.getID())));
+        int i=0;
+        for(VirtualClient client: lobby.getPlayers()) {
+            ArrayList<Integer> leaderId = new ArrayList<>();
+            for(LeadCard card:game.getPlayers().get(i).getLeadCards())
+                leaderId.add(card.getId());
+            client.getClientHandler().send(new LeaderCardDistribution(leaderId, "Please choose 2 leader card to hold"));
+        }
         return createVirtualView();
     }
 
@@ -81,9 +79,8 @@ public class Controller {
             virtualFaithPos.add(player.getPersonalBoard().getFaithMarker().getFaithPosition());
         return new VirtualView(virtualMarket,virtualDevCards,virtualFaithPos);
         }//TODO dai le risorse e le 4 carte + scelta 2 carte
-    }
 
-    public boolean check2Leads(){
+    public boolean checkPlayersLeads(){
         for(Player player:game.getPlayers())
             if(player.getLeadCards().size()!=2)
                 return false;
@@ -133,7 +130,8 @@ public class Controller {
     }
 
     public boolean checkResourcePosition(int id, int position, Resource resource) throws ResourceNotValidException {
-        Player player = game.getPlayers().get(id);
+        int playerPosition = lobby.getPlayers().indexOf(server.getClientFromId().get(id));
+        Player player = game.getPlayers().get(playerPosition);
         Shelf shelf= player.getPersonalBoard().getWarehouseDepots().getShelves()[position];
         if(((shelf.isShelfAvailability()) && (resource.equals(shelf.getResourceType()))) || shelf.getSlots().isEmpty()) {
             player.getPersonalBoard().getWarehouseDepots().addinShelf(position, resource);
@@ -143,16 +141,22 @@ public class Controller {
              throw new ResourceNotValidException("Cannot put the resource in the chosen shelf");
     }
 
-    public boolean check2Leads(int id, int card1, int card2) throws CardChosenNotValidException, LeadsAlreadyChosenException {
-        Player player = game.getPlayers().get(id);
-        if(player.getLeadCards().size()==2)
-            throw new LeadsAlreadyChosenException("This player has already chosen their cards");
-        else
-        if(player.getLeadCards().contains(card1) && player.getLeadCards().contains(card2) && card1!=card2) {
-           return player.choose2Leads(card1, card2);
+    public boolean check2Leads(int id, int card1, int card2){
+        int playerPosition = lobby.getPlayers().indexOf(server.getClientFromId().get(id));
+        Player player = game.getPlayers().get(playerPosition);
+        if(player.getLeadCards().size()==2) {
+            server.getClientFromId().get(id).getClientHandler().send(new LobbyMessage("You have chosen yours leader cards yet"));
+            return false;
+        }else if(player.getLeadCards().contains(card1) && player.getLeadCards().contains(card2) && card1!=card2) {
+            return  player.choose2Leads(card1, card2);
+        }else {
+            ArrayList<Integer> leaderId = new ArrayList<>();
+            for (LeadCard card : player.getLeadCards())
+                leaderId.add(card.getId());
+            lobby.getPlayers().get(id).getClientHandler().send(new LeaderCardDistribution(leaderId,
+                    "You chose leader cards not valid"));
+            return false;
         }
-        else
-            throw new CardChosenNotValidException("One or both card chosen are not present in the player's leadCards available");
     }
 
 
@@ -254,5 +258,30 @@ public class Controller {
         Player player = game.getPlayers().get(id);
 
         return true;
+    }
+
+    public void askInitialResources() {
+        lobby.setStateOfGame(GameState.PREPARATION2);
+        int i=0;
+        for(VirtualClient player:lobby.getPlayers()){
+            if(i==0)
+                player.getClientHandler().send(new LobbyMessage("Wait until other players have chosen initial resources"));
+            else if(i==1)
+                player.getClientHandler().send(new GetInitialResourcesAction("You can choose 1 initial resource"));
+            else if(i==2)
+                player.getClientHandler().send(new GetInitialResourcesAction(
+                        "You can choose 1 initial resource, you will receive a faith point also"));
+            else
+                player.getClientHandler().send(new GetInitialResourcesAction(
+                        "You can choose 2 initial resources, you will receive a faith point also"));
+            i++;
+        }
+    }
+
+    public void startGame() {
+        lobby.setStateOfGame(GameState.ONGOING);
+        actualPlayerTurn=lobby.getPlayers().get(0);
+        lobby.sendAll(new LobbyMessage("We are ready to start. it's turn of " +
+                server.getNameFromId().get(actualPlayerTurn.getID())));
     }
 }
