@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
-import java.util.Scanner;
 
 public class MainClient {
     private String ip;
@@ -17,6 +17,8 @@ public class MainClient {
     private ObjectOutputStream socketOut;
     private Socket socket;
     private static ClientInput keyboardReader;
+    private ViewCLI viewCLI;
+    private ClientCardParser parser;
 
     public ObjectInputStream getSocketIn() {
         return socketIn;
@@ -29,6 +31,7 @@ public class MainClient {
     public MainClient(String ip, int port) {
         this.ip = ip;
         this.port = port;
+        parser = new ClientCardParser(this);
     }
     public static void main(String[] args) {
         MainClient client = new MainClient("127.0.0.1", 1337);
@@ -62,28 +65,71 @@ public class MainClient {
     }
 
     private void actionHandler(SerializedMessage input, ObjectInputStream socketIn, ObjectOutputStream socketOut) {
+        //1-gestisco la richiesta del nickname
         if (input instanceof NickNameAction) {
             System.out.println(((NickNameAction) input).getMessage());
             System.out.println("Type \"Nickname:[your nickname]\"");
-        } else if (input instanceof RequestNumOfPlayers) {
+        }
+
+        //2-gestisco la richiesta del numero di giocatori che dovrà avere la lobby che sto creando
+        else if (input instanceof RequestNumOfPlayers) {
             System.out.println(((RequestNumOfPlayers) input).getMessage());
             System.out.println("Type \"PlayersNumber:[num of player]\"");
-        } else if (input instanceof LobbyMessage) {
+        }
+
+        //3- gestisco la ricezione di messaggi di servizio all'interno della lobby
+        else if (input instanceof LobbyMessage) {
             System.out.println(((LobbyMessage) input).getMessage());
-        } else if(input instanceof PingMessage) {
+        }
+
+        //4-gestione dell'avviso di inizio partita
+        else if(input instanceof StartingGameMessage){
+            System.out.println(((StartingGameMessage) input).getMessage());
+            viewCLI = new ViewCLI();
+        }
+
+        //5-gestione dei messaggio di ping
+        else if(input instanceof PingMessage) {
             if(!pongObserver.isStarted()) {
-                System.out.println("era il primo ping, faccio partire il pongObserver");
+                //System.out.println("era il primo ping, faccio partire il pongObserver");[Debug]
                 new Thread(pongObserver).start();
-                System.out.println("pongObserver partito");
+                //System.out.println("pongObserver partito");[Debug]
             } else
                 pongObserver.setResponse(true);
-        } /*else if(input instanceof GetInitialResource){
-            System.out.println(input.getMessage());
+        }
+
+        //6-gestione della richiesta di scegliere la/le risorsa/e iniziale/
+        else if(input instanceof GetInitialResourcesAction){
+            System.out.println(((GetInitialResourcesAction)input).getMessage());
             System.out.println("Type \"InitialResource:[COIN/SERVANT/SHIELD/STONE] in shelf:[shef number]\"");
-        } else if(input instanceof ChoseLeadCards){
-            System.out.println(input.getMessage());
-            System.out,println("Type \"ChosenLeads:[first LeadId],[second LeadId]\"");
-        }*/
+        }
+
+        //7-gestione della richiesta di scegliere quali leader card mantenere
+        else if(input instanceof LeaderCardDistribution){
+            ArrayList<Integer> leadCardsId = ((LeaderCardDistribution)input).getLeadCardsId();
+            System.out.println("Leader cards:");
+            for(int id:leadCardsId){
+                parser.takeLeadCardFromId(id);
+                ArrayList<String> [] cardValues = viewCLI.getCardsFromId().get(id);
+                System.out.println("ID: " + id );
+                System.out.println("    Ability: " + cardValues[0].get(0));
+                System.out.println("    Resource: " + cardValues[1].get(0));
+                if(!cardValues[2].isEmpty() && !cardValues[3].isEmpty())
+                    System.out.println("    Requirements: " + cardValues[2].get(0)/*num of resources required*/
+                            + cardValues[3].get(0)/*type of resources required*/);
+                else {
+                    if(cardValues[5].size()==1)
+                        System.out.println("    Requirements: a " + cardValues[5].get(0)/*color of dev card*/
+                                + " devCard of level " + cardValues[4].get(0)/*level of devCArd*/);
+                    else{
+                        System.out.println("    Requirements: devCards of color ");
+                        cardValues[5].forEach(s-> System.out.print(s +", "));
+                    }
+                }
+            }
+            System.out.println("");
+            System.out.println("Type \"ChosenLeads:[first LeadId],[second LeadId]\"");
+        }
     }
 
     public void disconnect() {
@@ -95,5 +141,9 @@ public class MainClient {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public ViewCLI getViewCLI() {
+        return viewCLI;
     }
 }

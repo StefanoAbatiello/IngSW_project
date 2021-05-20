@@ -35,7 +35,6 @@ public class LeadCard  implements Cards, Points,ResourceCreator {
         this.ability = ability;
         this.resourceRequired = null;
         this.devCardRequired = devCardRequired;
-
     }
 
     public int getId() {
