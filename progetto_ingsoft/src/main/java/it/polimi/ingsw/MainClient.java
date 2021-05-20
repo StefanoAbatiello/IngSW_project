@@ -30,7 +30,6 @@ public class MainClient {
         this.ip = ip;
         this.port = port;
     }
-
     public static void main(String[] args) {
         MainClient client = new MainClient("127.0.0.1", 1337);
         try {

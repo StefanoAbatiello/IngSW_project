@@ -8,12 +8,17 @@ import java.util.ArrayList;
 
 public class WarehouseDepots implements ResourceCreator {
 
+
     private Shelf shelves[]=new Shelf[3];
 
 
     public WarehouseDepots(){
         for(int i=0;i<shelves.length;i++)
             shelves[i]=new Shelf(shelves.length-i);
+    }
+
+    public Shelf[] getShelves() {
+        return shelves;
     }
 
     /**

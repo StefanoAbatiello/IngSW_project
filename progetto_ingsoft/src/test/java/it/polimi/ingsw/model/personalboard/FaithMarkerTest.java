@@ -29,7 +29,15 @@ class FaithMarkerTest {
 
     }
 
-
+    @Test
+    void ResetFaithPoints(){
+        FaithMarker faithMarker=new FaithMarker();
+        faithMarker.updatePosition();
+        faithMarker.updatePosition();
+        assertEquals(2,faithMarker.getFaithPosition());
+        faithMarker.reset();
+        assertEquals(0,faithMarker.getFaithPosition());
+    }
 
 
     @Test
@@ -48,7 +56,6 @@ class FaithMarkerTest {
 
         for(int i=0;i<8;i++)
             game.getPlayers().get(0).getPersonalBoard().getFaithMarker().updatePosition();
-
         game.activePopeSpace(game.getPlayers().get(0));
         assertFalse(game.isVC2active());
 
@@ -58,6 +65,7 @@ class FaithMarkerTest {
         assertFalse(game.isVC3active());
 
     }
+
     @Test
     void activePopeSpaceWithDifferentPlayers() throws playerLeadsNotEmptyException {
 
@@ -73,7 +81,7 @@ class FaithMarkerTest {
 
         game.activePopeSpace(game.getPlayers().get(0));
         assertEquals(2,game.getPlayers().get(0).getFaithtrackPoints());
-        assertEquals(0,game.getPlayers().get(0).getFaithtrackPoints());
+        assertEquals(0,game.getPlayers().get(1).getFaithtrackPoints());
 
     }
 

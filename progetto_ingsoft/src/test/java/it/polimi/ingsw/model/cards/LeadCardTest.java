@@ -21,7 +21,7 @@ class LeadCardTest {
         LeadAbility wrongLeadAbility= new LeadAbilityDiscount(Resource.STONE);
         HashMap<Integer, ArrayList<String>> cardsReq= new HashMap<>();
         cardsReq.put(1,color);
-        LeadCard card= new LeadCard(2, leadAbility,new HashMap<Integer, Resource>(), cardsReq);
+        LeadCard card= new LeadCard(49, 2, cardsReq, leadAbility);
 
         assertEquals(leadAbility,card.getAbility());
         assertNotSame(wrongLeadAbility,card.getAbility());
@@ -36,7 +36,7 @@ class LeadCardTest {
 
         HashMap<Integer, ArrayList<String>> cardsReq= new HashMap<>();
         cardsReq.put(1,color);
-        LeadCard card= new LeadCard(2,leadAbility,new HashMap<Integer, Resource>(), cardsReq );
+        LeadCard card= new LeadCard(49, 2, cardsReq, leadAbility);
 
         assertEquals(Resource.SHIELD,card.getAbility().getAbilityResource());
         assertNotEquals(Resource.COIN,card.getAbility().getAbilityResource());
@@ -57,7 +57,7 @@ class LeadCardTest {
         ArrayList<Resource> requirements = new ArrayList<>();
         for(int i=0; i<5; i++)
             requirements.add(Resource.COIN);
-        LeadCard card= new LeadCard(2,leadAbility, resReq, new HashMap<Integer, ArrayList<String>>());
+        LeadCard card= new LeadCard(49, 2, leadAbility, resReq);
         assertEquals(requirements, card.getResources());
 
     }
@@ -70,27 +70,27 @@ class LeadCardTest {
         ArrayList<Resource> requirements = new ArrayList<>();
         for(int i=0; i<4; i++)
             requirements.add(Resource.SERVANT);
-        LeadCard card= new LeadCard(2,leadAbility, resReq, new HashMap<Integer, ArrayList<String>>());
+        LeadCard card= new LeadCard(49, 2, leadAbility, resReq);
         assertNotEquals(requirements, card.getResources());
 
     }
 
 
     @Test
-    void getDevCardReq() {
+    void getDevCardReq() throws NoSuchRequirementException {
         LeadDeck deck = new LeadDeck();
         ArrayList<String> color=new ArrayList<>();
         color.add("GREEN");
         LeadAbility leadAbility= new LeadAbilityWhiteMarble(Resource.SHIELD);
         HashMap<Integer, ArrayList<String>> cardsReq= new HashMap<>();
         cardsReq.put(1,color);
-        LeadCard card= new LeadCard(2,leadAbility,new HashMap<Integer, Resource>(), cardsReq );
+        LeadCard card= new LeadCard(49, 2, cardsReq, leadAbility);
         assertEquals(cardsReq, card.getDevCardRequired());
 
     }
 
     @Test
-    void getDevCardReqWrong() {
+    void getDevCardReqWrong() throws NoSuchRequirementException {
         LeadDeck deck = new LeadDeck();
         ArrayList<String> color=new ArrayList<>();
         color.add("GREEN");
@@ -101,7 +101,7 @@ class LeadCardTest {
         LeadAbility leadAbility= new LeadAbilityWhiteMarble(Resource.SHIELD);
         HashMap<Integer, ArrayList<String>> wCardsReq= new HashMap<>();
         wCardsReq.put(2,wrongColor);
-        LeadCard card= new LeadCard(2,leadAbility,new HashMap<Integer, Resource>(), cardsReq );
+        LeadCard card= new LeadCard(49, 2, cardsReq, leadAbility);
         assertEquals(cardsReq, card.getDevCardRequired());
 ///TODO assertNotEquals
     }
@@ -113,7 +113,7 @@ class LeadCardTest {
         LeadAbility leadAbility= new LeadAbilityWhiteMarble(Resource.SHIELD);
         HashMap<Integer, ArrayList<String>> cardsReq= new HashMap<>();
         cardsReq.put(1,color);
-        LeadCard card= new LeadCard(2,leadAbility,new HashMap<Integer, Resource>(), cardsReq );
+        LeadCard card= new LeadCard(49, 2, cardsReq, leadAbility);
         card.setActive(true);
         assertTrue(card.isActive());
     }

@@ -25,6 +25,11 @@ public class FaithMarker implements Points {
     /**
      * @return true if faith marker position is in vatican zone
      */
+
+   public boolean reset(){
+       faithPosition = 0;
+       return true;
+   }
     public boolean isVaticanZone(){
         if ((getFaithPosition()>=5 && getFaithPosition()<=8) || (getFaithPosition()>=12 && getFaithPosition()<=16)|| (getFaithPosition()>=19 && getFaithPosition()<=24))
             invaticanzone =true;

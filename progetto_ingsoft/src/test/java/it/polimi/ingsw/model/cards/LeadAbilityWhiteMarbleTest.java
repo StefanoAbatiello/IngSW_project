@@ -22,7 +22,7 @@ class LeadAbilityWhiteMarbleTest {
         color.add("GREEN");
         HashMap<Integer, ArrayList<String>> cardsReq= new HashMap<>();
         cardsReq.put(1,color);
-        LeadCard card= new LeadCard(2,whiteAb,new HashMap<Integer, Resource>(),cardsReq);
+        LeadCard card= new LeadCard(49, 2, cardsReq, whiteAb);
         p.activateAbility(card);
         assertTrue(p.getWhiteMarbleAbility().contains(Resource.STONE));
         assertTrue(p.getWhiteMarbleAbility().size()==1);
@@ -36,7 +36,7 @@ class LeadAbilityWhiteMarbleTest {
         color.add("GREEN");
         HashMap<Integer, ArrayList<String>> cardsReq= new HashMap<>();
         cardsReq.put(1,color);
-        LeadCard card= new LeadCard(2,whiteAb,new HashMap<Integer, Resource>(),cardsReq);
+        LeadCard card= new LeadCard(49, 2, cardsReq, whiteAb);
         p.activateAbility(card);
         p.activateAbility(card);
         assertTrue(p.getWhiteMarbleAbility().contains(Resource.STONE));
@@ -52,8 +52,8 @@ class LeadAbilityWhiteMarbleTest {
         LeadAbility leadAbility= new LeadAbilityWhiteMarble(Resource.SERVANT);
         HashMap<Integer, ArrayList<String>> cardsReq= new HashMap<>();
         cardsReq.put(1,color);
-        LeadCard card1= new LeadCard(2,whiteAb,new HashMap<Integer, Resource>(),cardsReq);
-        LeadCard card2= new LeadCard(2,leadAbility,new HashMap<Integer, Resource>(),cardsReq);
+        LeadCard card1= new LeadCard(49, 2, cardsReq, whiteAb);
+        LeadCard card2= new LeadCard(49, 2, cardsReq, leadAbility);
         p.activateAbility(card1);
         p.activateAbility(card2);
         assertTrue(p.getWhiteMarbleAbility().contains(Resource.STONE));

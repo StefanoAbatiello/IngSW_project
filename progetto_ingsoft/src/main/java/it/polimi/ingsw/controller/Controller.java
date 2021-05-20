@@ -4,13 +4,13 @@ import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.cards.DevCard;
 import it.polimi.ingsw.model.cards.DevDeckMatrix;
+import it.polimi.ingsw.model.cards.LeadCard;
+import it.polimi.ingsw.model.cards.cardExceptions.CardChosenNotValidException;
 import it.polimi.ingsw.model.cards.cardExceptions.CardNotOnTableException;
-import it.polimi.ingsw.server.GameState;
+import it.polimi.ingsw.model.personalboard.Shelf;
+import it.polimi.ingsw.server.*;
 import it.polimi.ingsw.messages.LobbyMessage;
 import it.polimi.ingsw.messages.SerializedMessage;
-import it.polimi.ingsw.server.Lobby;
-import it.polimi.ingsw.server.MainServer;
-import it.polimi.ingsw.server.VirtualClient;
 import it.polimi.ingsw.model.cards.cardExceptions.playerLeadsNotEmptyException;
 
 import java.util.ArrayList;
@@ -60,6 +60,79 @@ public class Controller {
         }//TODO dai le risorse e le 4 carte + scelta 2 carte
     }
 
+    public boolean check2Leads(){
+        for(Player player:game.getPlayers())
+            if(player.getLeadCards().size()!=2)
+                return false;
+        return true;
+    }
+
+    //TODO popeSpace control
+
+
+    public boolean checkInitialResources() {
+        boolean result= true;
+        for(int i=1;i<=game.getPlayers().size();i++) {
+            if (!game.getPlayers().get(i).getPersonalBoard().getStrongBox().getStrongboxContent().isEmpty())
+                game.getPlayers().get(i).getPersonalBoard().getStrongBox().getStrongboxContent().clear();
+            if(i==1) {
+                if (!game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().isEmpty())
+                    game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().clear();
+            }else if (i == 2 || i == 3) {
+                if (game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().size() > 1) {
+                    game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().clear();
+                    lobby.getPlayers().get(i).getClientHandler().send(new GetInitialResourcesAction("You have more resources than the ones permitted, please resend your initial resources:  "));
+                    result = false;
+                }else if (game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().size() == 0)
+                    result= false;
+            } else if (i == 4) {
+                if (game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().size() > 2){
+                    game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().clear();
+                    lobby.getPlayers().get(i).getClientHandler().send(new GetInitialResourcesAction("You have more resources than the ones permitted, please resend your initial resources:  "));
+                    result= false;
+                }else if (game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().size() < 2)
+                    result = false;
+                }
+            if(i==1||i==2){
+                if(game.getPlayers().get(i).getPersonalBoard().getFaithMarker().getFaithPosition()>0)
+                    game.getPlayers().get(i).getPersonalBoard().getFaithMarker().reset();
+            }
+            if (i == 3 || i == 4) {
+                if (game.getPlayers().get(i).getPersonalBoard().getFaithMarker().getFaithPosition() == 0)
+                    game.getPlayers().get(i).getPersonalBoard().getFaithMarker().updatePosition();
+                else if(game.getPlayers().get(i).getPersonalBoard().getFaithMarker().getFaithPosition()>1) {
+                    game.getPlayers().get(i).getPersonalBoard().getFaithMarker().reset();
+                    game.getPlayers().get(i).getPersonalBoard().getFaithMarker().updatePosition();
+                }
+            }
+        }
+        return result;
+    }
+
+    public boolean checkResourcePosition(int id, int position, Resource resource) throws ResourceNotValidException {
+        Player player = game.getPlayers().get(id);
+        Shelf shelf= player.getPersonalBoard().getWarehouseDepots().getShelves()[position];
+        if(((shelf.isShelfAvailability()) && (resource.equals(shelf.getResourceType()))) || shelf.getSlots().isEmpty()) {
+            player.getPersonalBoard().getWarehouseDepots().addinShelf(position, resource);
+            return true;
+        //TODO eccezione se tutte sono piene
+        }else
+             throw new ResourceNotValidException("Cannot put the resource in the chosen shelf");
+    }
+
+    public boolean check2Leads(int id, int card1, int card2) throws CardChosenNotValidException, LeadsAlreadyChosenException {
+        Player player = game.getPlayers().get(id);
+        if(player.getLeadCards().size()==2)
+            throw new LeadsAlreadyChosenException("This player has already chosen their cards");
+        else
+        if(player.getLeadCards().contains(card1) && player.getLeadCards().contains(card2) && card1!=card2) {
+           return player.choose2Leads(card1, card2);
+        }
+        else
+            throw new CardChosenNotValidException("One or both card chosen are not present in the player's leadCards available");
+    }
+
+
     //TODO methods actions
     //TODO creo mappa
     public boolean checkBuy(int card, int id, int position) throws CardNotOnTableException, ResourceNotValidException, InvalidSlotException, ActionAlreadySetException {
@@ -105,6 +178,7 @@ public class Controller {
     }
 
     public boolean checkProduction(ArrayList<Integer> gameObj, int id) throws ActionAlreadySetException, ResourceNotValidException, CardNotOwnedByPlayerOrNotActiveException {
+        //TODO cosa manda client, produzione personale e leader da controllare
         Player player = game.getPlayers().get(id);
         Optional<Action> playerAction= Optional.ofNullable(player.getAction());
         if(playerAction.isPresent())
@@ -115,15 +189,14 @@ public class Controller {
             ArrayList<DevCard> prodCards=new ArrayList<>();
             for(Integer idCard:gameObj) {
                 found = false;
-                DevCard card = game.getDevDeck().getCardFromId(idCard.intValue());
+                DevCard card = game.getDevDeck().getCardFromId(idCard);
                 prodCards.add(card);
                 for (DevCard playerCard : player.getPersonalBoard().getDevCardSlot().getActiveCards()) {
                     if (playerCard.equals(card)) {
                         found = true;
-                        for (Resource res : card.getProdIn())
-                            totalProdIn.add(res);
+                        totalProdIn.addAll(card.getProdIn());
                     }
-                } if (found == false)
+                } if (!found)
                     throw new CardNotOwnedByPlayerOrNotActiveException("The card with id: "+idCard + " is not owned by the player or it is not active");
             }
             if(player.getPersonalBoard().checkUseProd(totalProdIn)) {

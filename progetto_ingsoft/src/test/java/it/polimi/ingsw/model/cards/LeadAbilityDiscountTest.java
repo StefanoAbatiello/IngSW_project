@@ -21,7 +21,7 @@ class LeadAbilityDiscountTest {
         color.add("GREEN");
         HashMap<Integer, ArrayList<String>> cardsReq= new HashMap<>();
         cardsReq.put(1,color);
-        LeadCard card= new LeadCard(2,disAb,new HashMap<Integer, Resource>(),cardsReq);
+        LeadCard card= new LeadCard(49, 2, cardsReq, disAb);
         p.activateAbility(card);
         assertTrue(p.getDiscountAbility().contains(Resource.STONE));
         assertTrue(p.getDiscountAbility().size()==1);
@@ -35,7 +35,7 @@ class LeadAbilityDiscountTest {
         color.add("GREEN");
         HashMap<Integer, ArrayList<String>> cardsReq= new HashMap<>();
         cardsReq.put(1,color);
-        LeadCard card= new LeadCard(2,disAb,new HashMap<Integer, Resource>(),cardsReq);
+        LeadCard card= new LeadCard(49, 2, cardsReq, disAb);
         p.activateAbility(card);
         p.activateAbility(card);
         assertTrue(p.getDiscountAbility().contains(Resource.STONE));
@@ -51,8 +51,8 @@ class LeadAbilityDiscountTest {
         LeadAbility leadAbility= new LeadAbilityDiscount(Resource.SERVANT);
         HashMap<Integer, ArrayList<String>> cardsReq= new HashMap<>();
         cardsReq.put(1,color);
-        LeadCard card1= new LeadCard(2,disAb,new HashMap<Integer, Resource>(),cardsReq);
-        LeadCard card2= new LeadCard(2,leadAbility,new HashMap<Integer, Resource>(),cardsReq);
+        LeadCard card1= new LeadCard(49, 2, cardsReq, disAb);
+        LeadCard card2= new LeadCard(49, 2, cardsReq, leadAbility);
         p.activateAbility(card1);
         p.activateAbility(card2);
         assertTrue(p.getDiscountAbility().contains(Resource.STONE));

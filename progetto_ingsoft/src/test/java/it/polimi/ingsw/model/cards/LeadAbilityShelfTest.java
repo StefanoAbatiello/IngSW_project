@@ -21,7 +21,7 @@ class LeadAbilityShelfTest {
         color.add("GREEN");
         HashMap<Integer, ArrayList<String>> cardsReq= new HashMap<>();
         cardsReq.put(1,color);
-        LeadCard card= new LeadCard(2,shelfAb,new HashMap<Integer, Resource>(),cardsReq);
+        LeadCard card= new LeadCard(49,2,cardsReq,shelfAb);
         p.activateAbility(card);
         assertEquals(Resource.STONE, p.getPersonalBoard().getSpecialShelves().get(0).get().getResourceType());
 

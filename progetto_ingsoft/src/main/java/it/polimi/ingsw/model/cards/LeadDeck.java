@@ -23,7 +23,7 @@ public class LeadDeck {
     public LeadDeck() {
         JSONParser jsonP = new JSONParser();
 
-        try(FileReader reader = new FileReader("progetto_ingsoft/Deliverables/LEADCARDS")){
+        try(FileReader reader = new FileReader("Deliverables/LEADCARDS")){
             //Read JSON File
             Object obj = jsonP.parse(reader);
             JSONArray leadCardList = (JSONArray) obj;
@@ -49,10 +49,6 @@ public class LeadDeck {
 
     private void parseLeadCard(JSONObject card) throws WrongAbilityInCardException {
         JSONObject leadCardObj = (JSONObject) card.get("LEADCARD");
-        //get leadCard info to create the card
-        //Integer integerPoints = (Integer) devCardObj.get("POINTS");
-        //int points= integerPoints.intValue();
-
 
         JSONObject jCardReq = (JSONObject) leadCardObj.get("CARDREQ");
         JSONObject jResourceReq = (JSONObject) leadCardObj.get("RESOURCEREQ");
@@ -60,12 +56,12 @@ public class LeadDeck {
         LeadCard newCard;
         if(jCardReq.isEmpty()){
             HashMap<Integer, Resource> requirements = fromJSONObjToResHash(jResourceReq);
-            newCard= new LeadCard((int)(long)leadCardObj.get("POINTS"),
-                    createAbility((String) leadCardObj.get("ABILITY"),abilityResource), requirements, new HashMap<Integer, ArrayList<String>>());
+            newCard= new LeadCard(((Long)leadCardObj.get("ID")).intValue(), ((Long)leadCardObj.get("POINTS")).intValue(),
+                    createAbility((String) leadCardObj.get("ABILITY"),abilityResource), requirements);
         }else{
             HashMap<Integer,ArrayList<String>> requirements = fromJSONObjToCardHash(jCardReq);
-            newCard= new LeadCard( (int)(long) leadCardObj.get("POINTS"),
-                    createAbility((String) leadCardObj.get("ABILITY"),abilityResource), new HashMap<Integer, Resource>(), requirements);
+            newCard= new LeadCard(((Long)leadCardObj.get("ID")).intValue(),((Long) leadCardObj.get("POINTS")).intValue(),requirements,
+                    createAbility((String) leadCardObj.get("ABILITY"),abilityResource) );
         }
         leadDeck.add(newCard);
 
@@ -138,11 +134,11 @@ public class LeadDeck {
      * @return true if the player's lead card array has been fulfill without problems
      * @throws playerLeadsNotEmptyException if the player already has the cards in their array
      */
-//TODO set abilities
+//TODO set abilities/controlla eccezioni/test quante carte do al player
     public boolean giveToPlayer(Player player) throws playerLeadsNotEmptyException{
         if(player.getLeadCards().isEmpty()){
             ArrayList<LeadCard> playerLeads= new ArrayList<>();
-            for(int i=0;i<3;i++){
+            for(int i=0;i<4;i++){
                 playerLeads.add(leadDeck.get(0));
                 leadDeck.remove(0);
             }

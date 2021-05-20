@@ -22,6 +22,6 @@ class PersonalBoardTest {
         resourcesArrayList.add(Resource.COIN);
         personalBoard.removeResources(resourcesArrayList);
 
-        assertTrue(personalBoard.getStrongBox().getStrongboxContent().isEmpty());
+        assertTrue(personalBoard.getStrongBox().getStrongboxContent().size()==1);
     }
 }

@@ -75,7 +75,7 @@ public class PersonalBoard {
      * @return all resources to delete
      * @throws ResourceNotValidException if one resources is not contained in warehouse or in strongbox
      */
-    public ArrayList<Resource> removeResources(ArrayList<Resource> resources) throws ResourceNotValidException {
+    public ArrayList<Resource> removeResources(ArrayList<Resource> resources)  {
         for(Resource resources1:resources){
             if(strongBox.getStrongboxContent().contains(resources1)){
                 strongBox.getStrongboxContent().remove(resources1);

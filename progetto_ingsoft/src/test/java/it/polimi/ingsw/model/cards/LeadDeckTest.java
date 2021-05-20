@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class LeadDeckTest {
 
     @Test
-    void createDeck(){
+    void createDeck() throws NoSuchRequirementException {
         LeadDeck deck = new LeadDeck();
         ArrayList<String> color=new ArrayList<>();
         color.add("YELLOW");
@@ -22,7 +22,7 @@ class LeadDeckTest {
         LeadAbility leadAbility= new LeadAbilityDiscount(Resource.SERVANT);
         HashMap<Integer, ArrayList<String>> cardsReq= new HashMap<>();
         cardsReq.put(1,color);
-        LeadCard card= new LeadCard(2,leadAbility,new HashMap<Integer, Resource>(), cardsReq);
+        LeadCard card= new LeadCard(49,2,cardsReq,leadAbility);
         LeadCard wantedCard= deck.getLeadDeck().get(0);
         assertEquals(card.getPoints(), wantedCard.getPoints());
         assertEquals(card.getAbility().getClass(), wantedCard.getAbility().getClass());
@@ -47,7 +47,7 @@ class LeadDeckTest {
         deck.shuffle();
         Player p= new Player("4");
         ArrayList<LeadCard> leadCards = new ArrayList<>();
-        for(int i=0;i<3;i++)
+        for(int i=0;i<4;i++)
             leadCards.add(deck.getLeadDeck().get(i));
         deck.giveToPlayer(p);
         ArrayList<LeadCard> playerLeads = p.getLeadCards();
@@ -74,11 +74,11 @@ class LeadDeckTest {
         Player p1= new Player("2");
         Player p2= new Player("4");
         ArrayList<LeadCard> leadCards1 = new ArrayList<>();
-        for(int i=0;i<3;i++)
+        for(int i=0;i<4;i++)
             leadCards1.add(deck.getLeadDeck().get(i));
         deck.giveToPlayer(p1);
         ArrayList<LeadCard> leadCards2 = new ArrayList<>();
-        for(int i=0;i<3;i++)
+        for(int i=0;i<4;i++)
             leadCards2.add(deck.getLeadDeck().get(i));
         deck.giveToPlayer(p2);
         ArrayList<LeadCard> p1Leads = p1.getLeadCards();

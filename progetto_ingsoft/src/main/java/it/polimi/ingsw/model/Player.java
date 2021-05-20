@@ -102,19 +102,18 @@ public class Player implements Points{
         this.leadCards= leadCards;
     }
 
-    public boolean choose2Leads(LeadCard card1, LeadCard card2) throws CardChosenNotValidException, WrongAbilityInCardException, AbilityAlreadySetException {//communication with the player
-        if(leadCards.contains(card1) && leadCards.contains(card2)) {//controller? controllo anche che due carte sono differenti
-            leadCards.removeIf(card -> !card.equals(card1) && !card.equals(card2));
+    //TODO check tests
+    public boolean choose2Leads(int card1, int  card2)  {
+        leadCards.removeIf(card -> card.getId() != card1 && card.getId() != card2);
              return true;
         }
-        else
-            throw new CardChosenNotValidException("One or both card chosen are not present in the player's leadCards available");
-    }
+
+
 
 
 //TODO ragionare su abilità e pattern
 
-    public Resource doBasicProduction (ArrayList<Resource> resources,Resource potentialResource) throws ResourceNotValidException {
+    public Resource doBasicProduction (ArrayList<Resource> resources,Resource potentialResource) {
         getPersonalBoard().removeResources(resources);
         return potentialResource;
     }
