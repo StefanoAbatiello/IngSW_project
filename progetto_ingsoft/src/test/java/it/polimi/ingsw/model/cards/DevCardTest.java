@@ -11,8 +11,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DevCardTest {
 
-    @Test
-    void useProductionExceptionTest() throws ResourceNotValidException {
+    //TODO test controller
+    /*void useProductionExceptionTest() throws ResourceNotValidException {
         Player player = new Player("4");
         ArrayList<Resource> testArray1 = new ArrayList<>();
         ArrayList<Resource> testArray2 = new ArrayList<>();
@@ -27,7 +27,7 @@ class DevCardTest {
         DevCard card = new DevCard(1,2, "GREEN", 3, testArray2, testArray2, testArray2, 1);
 
         assertThrows(ResourceNotValidException.class,()->card.useProduction(player));
-    }
+    }*/
 
 
     @Test

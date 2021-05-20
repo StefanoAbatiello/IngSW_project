@@ -21,7 +21,7 @@ class LeadAbilityProductionTest {
         color.add("GREEN");
         HashMap<Integer, ArrayList<String>> cardsReq= new HashMap<>();
         cardsReq.put(1,color);
-        LeadCard card= new LeadCard(2,prodAb,new HashMap<Integer, Resource>(),cardsReq);
+        LeadCard card= new LeadCard(49, 2, cardsReq, prodAb);
         p.activateAbility(card);
         assertTrue(p.getProductionAbility().contains(Resource.STONE));
         assertTrue(p.getProductionAbility().size()==1);
@@ -35,7 +35,7 @@ class LeadAbilityProductionTest {
         color.add("GREEN");
         HashMap<Integer, ArrayList<String>> cardsReq= new HashMap<>();
         cardsReq.put(1,color);
-        LeadCard card= new LeadCard(2,prodAb,new HashMap<Integer, Resource>(),cardsReq);
+        LeadCard card= new LeadCard(49, 2, cardsReq, prodAb);
         p.activateAbility(card);
         p.activateAbility(card);
         assertTrue(p.getProductionAbility().contains(Resource.STONE));
@@ -51,8 +51,8 @@ class LeadAbilityProductionTest {
         LeadAbility leadAbility= new LeadAbilityProduction(Resource.SERVANT);
         HashMap<Integer, ArrayList<String>> cardsReq= new HashMap<>();
         cardsReq.put(1,color);
-        LeadCard card1= new LeadCard(2,prodAb,new HashMap<Integer, Resource>(),cardsReq);
-        LeadCard card2= new LeadCard(2,leadAbility,new HashMap<Integer, Resource>(),cardsReq);
+        LeadCard card1= new LeadCard(49, 2, cardsReq, prodAb);
+        LeadCard card2= new LeadCard(49, 2, cardsReq, leadAbility);
         p.activateAbility(card1);
         p.activateAbility(card2);
         assertTrue(p.getProductionAbility().contains(Resource.STONE));

@@ -17,7 +17,7 @@ class StrongBoxTest {
         res.add(Resource.COIN);
         res.add(Resource.COIN);
         strongBox.addInStrongbox(res);
-        assertEquals(1,strongBox.getStrongboxContent().size());
+        assertEquals(2,strongBox.getStrongboxContent().size());
     }
 
     @Test
@@ -27,6 +27,7 @@ class StrongBoxTest {
         res.add(Resource.COIN);
         res.add(Resource.COIN);
         strongBox.addInStrongbox(res);
+        strongBox.getStrongboxContent().remove(Resource.COIN);
         strongBox.getStrongboxContent().remove(Resource.COIN);
         assertTrue(strongBox.getStrongboxContent().isEmpty());
     }
@@ -40,6 +41,6 @@ class StrongBoxTest {
         strongBox.addInStrongbox(res);
         strongBox.getStrongboxContent().remove(Resource.SHIELD);
 
-        assertEquals(1,strongBox.getStrongboxContent().size());
+        assertEquals(2,strongBox.getStrongboxContent().size());
     }
 }

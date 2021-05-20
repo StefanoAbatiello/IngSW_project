@@ -27,8 +27,8 @@ class PlayerTest {
         assertEquals(Resource.COIN,player.doBasicProduction(prodInput,Resource.COIN));
     }
 
-
-    @Test
+    //TODO controller test
+    /*@Test
     void doNotValidBasicProduction1() throws ResourceNotValidException {
         Player player=new Player("Paki");
         ArrayList<Resource> prodInput=new ArrayList<>();
@@ -36,35 +36,36 @@ class PlayerTest {
         prodInput.add(Resource.SHIELD);
         player.getPersonalBoard().getWarehouseDepots().addinShelf(0, Resource.SERVANT);
         assertThrows(ResourceNotValidException.class,()-> player.doBasicProduction(prodInput,Resource.COIN));
+    }*/
+
+    @Test
+    void firstLeadCardChosen() throws  playerLeadsNotEmptyException {
+        LeadDeck deck= new LeadDeck();
+        Player player = new Player("Ciccio");
+        deck.giveToPlayer(player);
+        System.out.println("num leads: " +player.getLeadCards().size());
+        ArrayList<LeadCard> oldPlayerCards= player.getLeadCards();
+        player.choose2Leads(player.getLeadCards().get(0).getId(), player.getLeadCards().get(1).getId());
+        assertEquals(oldPlayerCards.get(0),player.getLeadCards().get(0));
     }
 
     @Test
-    void firstLeadCardChosen() throws WrongAbilityInCardException, CardChosenNotValidException, AbilityAlreadySetException, playerLeadsNotEmptyException {
+    void secondLeadCardChosen() throws playerLeadsNotEmptyException {
         LeadDeck deck= new LeadDeck();
         Player player = new Player("Ciccio");
         deck.giveToPlayer(player);
         ArrayList<LeadCard> oldPlayerCards= player.getLeadCards();
-        player.choose2Leads(player.getLeadCards().get(0), player.getLeadCards().get(1));
-    }
-
-    @Test
-    void secondLeadCardChosen() throws WrongAbilityInCardException, CardChosenNotValidException, AbilityAlreadySetException, playerLeadsNotEmptyException {
-        LeadDeck deck= new LeadDeck();
-        Player player = new Player("Ciccio");
-        deck.giveToPlayer(player);
-        ArrayList<LeadCard> oldPlayerCards= player.getLeadCards();
-        player.choose2Leads(player.getLeadCards().get(0), player.getLeadCards().get(1));
+        player.choose2Leads(player.getLeadCards().get(0).getId(), player.getLeadCards().get(1).getId());
         assertEquals(oldPlayerCards.get(1),player.getLeadCards().get(1));
     }
 
     @Test
-    void numberOfLeadCardChosen() throws WrongAbilityInCardException, CardChosenNotValidException, AbilityAlreadySetException, playerLeadsNotEmptyException {
+    void numberOfLeadCardChosen() throws playerLeadsNotEmptyException {
         LeadDeck deck= new LeadDeck();
         Player player = new Player("Ciccio");
         deck.giveToPlayer(player);
-        ArrayList<LeadCard> oldPlayerCards= player.getLeadCards();
-        player.choose2Leads(player.getLeadCards().get(0), player.getLeadCards().get(1));
-        assertTrue(player.getLeadCards().size()==2);
+        player.choose2Leads(player.getLeadCards().get(0).getId(), player.getLeadCards().get(1).getId());
+        assertEquals(2, player.getLeadCards().size());
     }
 
     @Test
@@ -74,11 +75,12 @@ class PlayerTest {
         assertEquals(Action.ACTIVATEPRODUCTION,player.getAction());
     }
 
-    @Test
+   //TODO controller test
+    /* @Test
     void checkExceptionSetAction() throws ActionAlreadySetException {
         Player player= new Player("USER");
         player.setAction(Action.ACTIVATEPRODUCTION);
         assertThrows(ActionAlreadySetException.class,()->player.setAction(Action.BUYCARD));
-    }
+    }*/
 
 }

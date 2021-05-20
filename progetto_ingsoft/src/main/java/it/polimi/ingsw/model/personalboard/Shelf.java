@@ -7,7 +7,11 @@ import it.polimi.ingsw.model.ResourceCreator;
 import java.util.ArrayList;
 
 public class Shelf implements ResourceCreator {
+
     private ArrayList<Resource> slots;
+
+
+
     private Resource resourceType;
     private boolean shelfAvailability ;
     private int maxSize;
@@ -15,6 +19,11 @@ public class Shelf implements ResourceCreator {
     public Shelf(int maxSize) {
         this.maxSize = maxSize;
         this.slots=new ArrayList<Resource>();
+    }
+
+
+    public ArrayList<Resource> getSlots() {
+        return slots;
     }
 
     /**
@@ -28,20 +37,23 @@ public class Shelf implements ResourceCreator {
         return shelfAvailability;
     }
 
+
+    public Resource getResourceType() {
+        return resourceType;
+    }
+
     /**
      * @param resource is what we want add in shelf
      * @return slot after adding resource. Adding is allow only in case of shelf availability and compatibility with existing resources type.
      */
-    public ArrayList<Resource> addResources(Resource resource) throws ResourceNotValidException {
-        if((isShelfAvailability())&&(resource==resourceType)&&(!slots.isEmpty())) {
-            slots.add(resource);
-        }
-        else if(slots.isEmpty()){
+    public ArrayList<Resource> addResources(Resource resource){
+
+        if(slots.isEmpty()){
             resourceType=resource;
-            slots.add(resource);
+
         }
-        else
-            throw new ResourceNotValidException();
+        slots.add(resource);
+
         return slots;
     }
 

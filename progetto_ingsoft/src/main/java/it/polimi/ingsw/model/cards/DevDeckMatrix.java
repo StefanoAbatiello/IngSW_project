@@ -74,7 +74,7 @@ public class DevDeckMatrix {
      * @return the dev card that the caller wants to buy, if the card is present
      * @throws CardNotOnTableException the card wanted is not present on the game table
      */
-    public static boolean buyCard ( DevCard cardToBuy) throws CardNotOnTableException {
+    public static boolean buyCard ( DevCard cardToBuy) {
         for(int i=0;i<4;i++){
             for(int j=0; j<3;j++){
                 if(!devDecksOnTable[i][j].littleDevDeck.isEmpty())
