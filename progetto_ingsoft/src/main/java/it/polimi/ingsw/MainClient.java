@@ -99,8 +99,8 @@ public class MainClient {
         }
 
         //6-gestione della richiesta di scegliere la/le risorsa/e iniziale/
-        else if(input instanceof GetInitialResourcesAction){
-            System.out.println(((GetInitialResourcesAction)input).getMessage());
+        else if(input instanceof GetInitialResourcesActions){
+            System.out.println(((GetInitialResourcesActions)input).getMessage());
             System.out.println("Type \"InitialResource:[COIN/SERVANT/SHIELD/STONE] in shelf:[shef number]\"");
         }
 
@@ -124,12 +124,14 @@ public class MainClient {
                     else{
                         System.out.println("    Requirements: devCards of color ");
                         cardValues[5].forEach(s-> System.out.print(s +", "));
+                        System.out.println("");
                     }
                 }
             }
             System.out.println("");
             System.out.println("Type \"ChosenLeads:[first LeadId],[second LeadId]\"");
         }
+        //TODO
     }
 
     public void disconnect() {

@@ -56,7 +56,7 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    public synchronized boolean isActive() {
+    public boolean isActive() {
         return active;
     }
 
@@ -73,9 +73,16 @@ public class ClientHandler implements Runnable {
                actionHandler(input);
             }while(isActive() && !(input instanceof NickNameAction));
             while (isActive()) {
+                System.out.println("aspetto un messaggio");
                  input = (SerializedMessage) inputStreamObj.readObject();
-                 if(!pingHandler(input))
-                    actionHandler(input);
+                 System.out.println("ho ricevuto un messaggio");
+                 if(!pingHandler(input)){
+                     System.out.println("non è un ping");
+                     if(!actionHandler( input)){
+                         System.out.println("non è login");
+                         server.getClientFromId().get(clientID).getLobby().actionHandler(input, clientID);
+                     }
+                 }
             }
             outputStreamObj.close();
             inputStreamObj.close();
@@ -102,7 +109,8 @@ public class ClientHandler implements Runnable {
      * @param input is message sent by the client
      * This method handles each type of input: nickname reception, dimension of the lobby at its creation and messages referred to a Game Action
      */
-    private synchronized void actionHandler(SerializedMessage input) {
+    private boolean actionHandler(SerializedMessage input) {
+        //1-gestisco ricezione del nickname
         if (input instanceof NickNameAction) {
             clientID = checkNickName((NickNameAction) input);
             //TODO altri casi di ritorno clientID non validi
@@ -117,8 +125,10 @@ public class ClientHandler implements Runnable {
                             + " CHOOSE HOW MANY PLAYERS YOU WANT TO CHALLENGE [0 to 3]"+ConsoleColors.RESET));
             }else
                 send(new NickNameAction(ConsoleColors.RED_UNDERLINED +"Nickname already taken." + " Please choose another one:" + ConsoleColors.RESET));
+            return true;
         }
 
+        //2-gestisco ricezione della dimensione della lobby in creazione
         if (input instanceof NumOfPlayersAction) {
             int num = ((NumOfPlayersAction) input).getPlayersNum();
             System.out.println("ho ricevuto: " +num);
@@ -133,8 +143,9 @@ public class ClientHandler implements Runnable {
                 System.out.println("host inserito");
                 send(new LobbyMessage("Lobby created. Wait for the other players to join!"));
             }
-        } else if(input instanceof GameMessage)
-            server.getClientFromId().get(clientID).getLobby().actionHandler((GameMessage) input,clientID);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -183,7 +194,7 @@ public class ClientHandler implements Runnable {
                         reconnectClient(ID, name);
                         lobby.reinsertPlayer(ID);
                         //TODO ricorda modifica lista virtual client in lobby quando disconnessione, gestisco poi riconessione e aggiunta
-                        lobby.sendAll((SerializedMessage) new LobbyMessage(name + " is back in the game"));
+                        lobby.sendAll( new LobbyMessage(name + " is back in the game"));
                         return ID;
                     } else
                         reconnectClient(ID, name);

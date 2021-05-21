@@ -1,6 +1,6 @@
 package it.polimi.ingsw.messages;
 
-public class InitialResourceMessage implements GameMessage{
+public class InitialResourceMessage implements Actions {
 
     private String resource;
     private int shelfNum;

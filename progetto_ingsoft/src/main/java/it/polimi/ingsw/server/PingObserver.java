@@ -57,12 +57,12 @@ public class PingObserver implements Runnable {
         System.out.println("mando il ping al client: "+clientHandler.getClientId());
         try {
             sendPing();
-            System.out.println("aspetto il pong del client: "+clientHandler.getClientId());
+            System.out.println("aspetto il ping del client: "+clientHandler.getClientId());
             if(!waitResponse()) {
                 clientHandler.getServer().disconnectClient(clientHandler.getClientId());
             }
             else
-                System.out.println("pong del client "+clientHandler.getClientId()+" ricevuto ");
+                System.out.println("ping del client "+clientHandler.getClientId()+" ricevuto ");
             pingReceived=false;
         } catch (IOException e) {
             System.out.println("il socket è stato chiuso per qualche motivo. chiudo il CH");

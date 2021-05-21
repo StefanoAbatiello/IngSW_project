@@ -56,15 +56,23 @@ public class Lobby {
         return seatsAvailable;
     }
 
+    public ArrayList<VirtualClient> reinsertPlayer(int id){
+        actualPlayers.add(server.getClientFromId().get(id));
+        this.seatsAvailable--;
+        server.getClientFromId().get(id).giveLobby(server.getLobbyFromClientID().get(id));
+        return actualPlayers;
+    }
+
+
     public ArrayList<VirtualClient> insertPlayer(int id) {
             actualPlayers.add(server.getClientFromId().get(id));
             server.getClientFromId().get(id).giveLobby(this);
             this.seatsAvailable--;
             if(isLobbyFull()) {
                 System.out.println("numero di giocatori raggiunto, inizia la partita!!!");
-                sendAll((SerializedMessage) new LobbyMessage("number of players reached, the game can start!!!"));
-                virtualVew = controller.createGame();
-                            }
+                sendAll(new LobbyMessage("number of players reached, the game can start!!!"));
+                controller.createGame();
+            }
             return actualPlayers;
     }
 
@@ -86,47 +94,57 @@ public class Lobby {
     }
 
 //TODO nel clientHandler stampo "azione giocatore n:" e il risultato di tale azione
-    public ActionAnswer actionHandler(GameMessage input, int id) {
+    public void actionHandler(SerializedMessage input, int id) {
         //TODO ragiono su inizializzazione
         ActionAnswer result = null;
         //TODO ragiono su oggetti che passa il client
         Object gameObj;
         Object gameObj2;
-
+        System.out.println("sono nell'handler della lobby");
         //1-gestisco la scelta del giocatore di quali leader card tenere
         if(input instanceof ChosenLeadMessage){
+            System.out.println("sto leggendo il ChosenLeadMessage");
             if(stateOfGame==GameState.PREPARATION1) {
                 int firstId, secondId;
                 firstId = ((ChosenLeadMessage) input).getChosenId().get(0);
                 secondId = ((ChosenLeadMessage) input).getChosenId().get(1);
-                if(controller.check2Leads(id, firstId, secondId))
-                    if (controller.checkPlayersLeads())
+                System.out.println("ho letto gli id");
+                if(controller.check2Leads(id, firstId, secondId)) {
+                    System.out.println("carte scelte");
+                    if (controller.checkPlayersLeads()) {
+                        System.out.println("tutti hanno scelto le lead cards");
                         controller.askInitialResources();
+                    }
+                }
             }
         }
 
         //2-gestisco le risorse iniziali scelte dal giocatore
         else if(input instanceof InitialResourceMessage){
             if(stateOfGame==GameState.PREPARATION2){
+                System.out.println("sto leggendo il InitialResourceMessage");
                 Resource resource=Resource.valueOf(((InitialResourceMessage)input).getResource());
                 int shelfNum=((InitialResourceMessage)input).getShelfNum();
+                System.out.println("ho letto il messaggio");
                 try {
                     controller.checkResourcePosition(id, shelfNum, resource);
+                    System.out.println("la risorsa è stata depositata");
                     if(controller.checkInitialResources()){
+                        System.out.println("tutti i giocatori hanno scelto le risorse iniziali");
                         controller.startGame();
                     }
                 } catch (ResourceNotValidException e) {
-                    server.getClientFromId().get(id).getClientHandler().send(new GetInitialResourcesAction("You choose a not valid resource or shelf"));
+                    server.getClientFromId().get(id).getClientHandler().send(new GetInitialResourcesActions("You choose a not valid resource or shelf"));
                 }
 
             }
         }
 
         //3- gestisco l'acquisto di una devCard da parte di un giocatore
-        else if (input instanceof BuyCardAction) {
+        else if (input instanceof BuyCardActions) {
             if(stateOfGame==GameState.ONGOING) {
-                gameObj = ((BuyCardAction) input).getCard();
-                gameObj2 = ((BuyCardAction) input).getSlot();
+                gameObj = ((BuyCardActions) input).getCard();
+                gameObj2 = ((BuyCardActions) input).getSlot();
 
                 try {
                     if (controller.checkBuy((int) gameObj, id, (int) gameObj2)) {
@@ -145,9 +163,9 @@ public class Lobby {
         }
 
         //4-gestisco l'acquisizione delle risorse dal market da parte di un giocatore
-        else if (input instanceof MarketAction) {
+        else if (input instanceof MarketActions) {
             if(stateOfGame==GameState.ONGOING) {
-                gameObj = ((MarketAction) input).getCoordinate();
+                gameObj = ((MarketActions) input).getCoordinate();
                 try {
                     if (controller.checkMarket((int) gameObj, id)) {
                         result = new ActionAnswer("mercato cambiato con successo (da coordinata: " + gameObj + " )");
@@ -163,15 +181,15 @@ public class Lobby {
         }
 
         //5-gestisco le produzioni scelte un giocatore
-        else if (input instanceof ProductionAction) {
+        else if (input instanceof ProductionActions) {
             if(stateOfGame==GameState.ONGOING) {
-                gameObj = ((ProductionAction) input).getProductions();
+                gameObj = ((ProductionActions) input).getProductions();
                 try {
                     if (controller.checkProduction((ArrayList<Integer>) gameObj, id)) {
                         result = new ActionAnswer("mercato cambiato con successo (da coordinata: " + gameObj + " )");
                     }
                 } catch (ActionAlreadySetException actionAlreadySetException) {
-                    actualPlayers.get(id).getClientHandler().send(new ActionAlreadySet("Action already set for this player"));
+                    actualPlayers.get(id).getClientHandler().send(new ActionsAlreadySet("Actions already set for this player"));
                 } catch (CardNotOwnedByPlayerOrNotActiveException e) {
                     e.printStackTrace();
                 } catch (ResourceNotValidException e) {
@@ -181,9 +199,9 @@ public class Lobby {
         }
 
         //6-gestisco l'attivazione di una leader card da parte di un giocatore
-        else if (input instanceof ActiveLeadAction) {
+        else if (input instanceof ActiveLeadActions) {
             if (stateOfGame == GameState.ONGOING) {
-                gameObj = ((ActiveLeadAction) input).getLead();
+                gameObj = ((ActiveLeadActions) input).getLead();
                 if (controller.checkLeadActivation((String) gameObj, id)) {
                     result = new ActionAnswer("lead card attivata: " + gameObj);
                 }
@@ -191,9 +209,9 @@ public class Lobby {
         }
 
         //7-gestisco la scelta di scartare una leader card da parte di un giocatore
-        else if (input instanceof DiscardLeadAction) {
+        else if (input instanceof DiscardLeadActions) {
             if (stateOfGame == GameState.ONGOING) {
-                gameObj = ((DiscardLeadAction) input).getLead();
+                gameObj = ((DiscardLeadActions) input).getLead();
                 if (controller.checkDiscardLead((String) gameObj, id)) {
                     result = new ActionAnswer("lead card scartata: " + gameObj);
                 }
@@ -201,6 +219,5 @@ public class Lobby {
         }
 
         //TODO sposta risorse negli scaffali
-        return result;
     }
 }

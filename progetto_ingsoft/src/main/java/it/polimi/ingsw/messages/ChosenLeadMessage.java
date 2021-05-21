@@ -2,7 +2,7 @@ package it.polimi.ingsw.messages;
 
 import java.util.ArrayList;
 
-public class ChosenLeadMessage implements GameMessage{
+public class ChosenLeadMessage implements SerializedMessage{
 
     ArrayList<Integer> chosenId;
 

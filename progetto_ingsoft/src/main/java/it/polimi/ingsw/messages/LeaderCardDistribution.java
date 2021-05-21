@@ -4,7 +4,7 @@ import it.polimi.ingsw.model.cards.LeadCard;
 
 import java.util.ArrayList;
 
-public class LeaderCardDistribution implements GameMessage {
+public class LeaderCardDistribution implements SerializedMessage {
 
     private ArrayList<Integer> leadCardsId;
     private String message;
