@@ -127,17 +127,17 @@ public class Lobby {
                         controller.startGame();
                     }
                 } catch (ResourceNotValidException e) {
-                    server.getClientFromId().get(id).getClientHandler().send(new GetInitialResourcesActions("You choose a not valid resource or shelf"));
+                    server.getClientFromId().get(id).getClientHandler().send(new GetInitialResourcesAction("You choose a not valid resource or shelf"));
                 }
 
             }
         }
 
         //3- gestisco l'acquisto di una devCard da parte di un giocatore
-        else if (input instanceof BuyCardActions) {
+        else if (input instanceof BuyCardAction) {
             if(stateOfGame==GameState.ONGOING) {
-                gameObj = ((BuyCardActions) input).getCard();
-                gameObj2 = ((BuyCardActions) input).getSlot();
+                gameObj = ((BuyCardAction) input).getCard();
+                gameObj2 = ((BuyCardAction) input).getSlot();
 
                 try {
                     if (controller.checkBuy((int) gameObj, id, (int) gameObj2)) {
@@ -156,9 +156,9 @@ public class Lobby {
         }
 
         //4-gestisco l'acquisizione delle risorse dal market da parte di un giocatore
-        else if (input instanceof MarketActions) {
+        else if (input instanceof MarketAction) {
             if(stateOfGame==GameState.ONGOING) {
-                gameObj = ((MarketActions) input).getCoordinate();
+                gameObj = ((MarketAction) input).getCoordinate();
                 try {
                     if (controller.checkMarket((int) gameObj, id)) {
                         result = new ActionAnswer("mercato cambiato con successo (da coordinata: " + gameObj + " )");
@@ -174,15 +174,15 @@ public class Lobby {
         }
 
         //5-gestisco le produzioni scelte un giocatore
-        else if (input instanceof ProductionActions) {
+        else if (input instanceof ProductionAction) {
             if(stateOfGame==GameState.ONGOING) {
-                gameObj = ((ProductionActions) input).getProductions();
+                gameObj = ((ProductionAction) input).getProductions();
                 try {
                     if (controller.checkProduction((ArrayList<Integer>) gameObj, id)) {
                         result = new ActionAnswer("mercato cambiato con successo (da coordinata: " + gameObj + " )");
                     }
                 } catch (ActionAlreadySetException actionAlreadySetException) {
-                    actualPlayers.get(id).getClientHandler().send(new ActionsAlreadySet("Actions already set for this player"));
+                    actualPlayers.get(id).getClientHandler().send(new ActionAlreadySet("Actions already set for this player"));
                 } catch (CardNotOwnedByPlayerOrNotActiveException e) {
                     e.printStackTrace();
                 } catch (ResourceNotValidException e) {
@@ -192,9 +192,9 @@ public class Lobby {
         }
 
         //6-gestisco l'attivazione di una leader card da parte di un giocatore
-        else if (input instanceof ActiveLeadActions) {
+        else if (input instanceof ActiveLeadAction) {
             if (stateOfGame == GameState.ONGOING) {
-                gameObj = ((ActiveLeadActions) input).getLead();
+                gameObj = ((ActiveLeadAction) input).getLead();
                 if (controller.checkLeadActivation((String) gameObj, id)) {
                     result = new ActionAnswer("lead card attivata: " + gameObj);
                 }
@@ -202,9 +202,9 @@ public class Lobby {
         }
 
         //7-gestisco la scelta di scartare una leader card da parte di un giocatore
-        else if (input instanceof DiscardLeadActions) {
+        else if (input instanceof DiscardLeadAction) {
             if (stateOfGame == GameState.ONGOING) {
-                gameObj = ((DiscardLeadActions) input).getLead();
+                gameObj = ((DiscardLeadAction) input).getLead();
                 if (controller.checkDiscardLead((String) gameObj, id)) {
                     result = new ActionAnswer("lead card scartata: " + gameObj);
                 }

@@ -83,8 +83,8 @@ public class MainClient {
         }
 
         //4-gestione dell'avviso di inizio partita
-        else if(input instanceof StartingGameMessage){
-            System.out.println(((StartingGameMessage) input).getMessage());
+        else if(input instanceof CreatingGameMessage){
+            System.out.println(((CreatingGameMessage) input).getMessage());
             viewCLI = new ViewCLI();
         }
 
@@ -99,8 +99,8 @@ public class MainClient {
         }
 
         //6-gestione della richiesta di scegliere la/le risorsa/e iniziale/
-        else if(input instanceof GetInitialResourcesActions){
-            System.out.println(((GetInitialResourcesActions)input).getMessage());
+        else if(input instanceof GetInitialResourcesAction){
+            System.out.println(((GetInitialResourcesAction)input).getMessage());
             System.out.println("Type \"InitialResource:[COIN/SERVANT/SHIELD/STONE] in shelf:[shef number]\"");
         }
 
@@ -130,6 +130,28 @@ public class MainClient {
             }
             System.out.println("");
             System.out.println("Type \"ChosenLeads:[first LeadId],[second LeadId]\"");
+        }
+
+        else if(input instanceof StartingGameMessage){
+            viewCLI.setWarehouse(((StartingGameMessage)input).getWarehouse());
+            int[][] devMatrix=((StartingGameMessage)input).getDevMatrix();
+            viewCLI.setDevMatrix(devMatrix);
+            for(int i=0;i<4;i++) {
+                for (int j = 0; j < 3; j++) {
+                    parser.takeDevCardFromId(devMatrix[i][j]);
+                }
+            }
+            viewCLI.setLeadCardsId(((StartingGameMessage)input).getPersonalCardId());
+            viewCLI.setFaithPosition(((StartingGameMessage)input).getFaithPosition());
+            viewCLI.setMarket(((StartingGameMessage)input).getMarket());
+            System.out.println("this is your personal board:");
+            viewCLI.showPersonalBoard();
+            System.out.println("\n \nthis is the market: ");
+            viewCLI.showMarket();
+            System.out.println("this are dev card buyable: ");
+            viewCLI.showDevMatrix();
+            System.out.println(((StartingGameMessage)input).getMessage());
+            System.out.println("Type \"ShowActions\" to see commands");
         }
         //TODO
     }

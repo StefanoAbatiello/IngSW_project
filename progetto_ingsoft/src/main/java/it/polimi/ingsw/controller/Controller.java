@@ -1,6 +1,7 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.Market.Market;
 import it.polimi.ingsw.model.personalboard.Shelf;
 import it.polimi.ingsw.server.*;
 import it.polimi.ingsw.exceptions.*;
@@ -24,7 +25,7 @@ public class Controller {
     }
 
     public void createGame() {
-        lobby.sendAll(new StartingGameMessage());
+        lobby.sendAll(new CreatingGameMessage());
         lobby.setStateOfGame(GameState.PREPARATION1);
         int id;
         if(lobby.getPlayers().size()==1) {
@@ -118,7 +119,7 @@ public class Controller {
                     System.out.println("il giocatore " + i + "aveva il warehouse pieno");
                     game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().clear();
                     System.out.println("warehouse pulita, invio nuovamente la richiesta della risorse iniziale");
-                    lobby.getPlayers().get(i).getClientHandler().send(new GetInitialResourcesActions("You have more resources than the ones permitted, please resend your initial resources:  "));
+                    lobby.getPlayers().get(i).getClientHandler().send(new GetInitialResourcesAction("You have more resources than the ones permitted, please resend your initial resources:  "));
                     System.out.println("messaggio inviato");
                     result = false;
                 } else if (game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().size() == 0) {
@@ -130,7 +131,7 @@ public class Controller {
                     System.out.println("il giocatore " + i + "aveva il warehouse pieno");
                     game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().clear();
                     System.out.println("warehouse pulita, invio nuovamente la richiesta della risorse iniziale");
-                    lobby.getPlayers().get(i).getClientHandler().send(new GetInitialResourcesActions("You have more resources than the ones permitted, please resend your initial resources:  "));
+                    lobby.getPlayers().get(i).getClientHandler().send(new GetInitialResourcesAction("You have more resources than the ones permitted, please resend your initial resources:  "));
                     System.out.println("messaggio inviato");
                     result = false;
                 } else if (game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().size() < 2) {
@@ -313,12 +314,12 @@ public class Controller {
             if(i==0)
                 player.getClientHandler().send(new LobbyMessage("Wait until other players have chosen initial resources"));
             else if(i==1)
-                player.getClientHandler().send(new GetInitialResourcesActions("You can choose 1 initial resource"));
+                player.getClientHandler().send(new GetInitialResourcesAction("You can choose 1 initial resource"));
             else if(i==2)
-                player.getClientHandler().send(new GetInitialResourcesActions(
+                player.getClientHandler().send(new GetInitialResourcesAction(
                         "You can choose 1 initial resource, you will receive a faith point also"));
             else
-                player.getClientHandler().send(new GetInitialResourcesActions(
+                player.getClientHandler().send(new GetInitialResourcesAction(
                         "You can choose 2 initial resources, you will receive a faith point also"));
             i++;
         }
@@ -327,7 +328,46 @@ public class Controller {
     public void startGame() {
         lobby.setStateOfGame(GameState.ONGOING);
         actualPlayerTurn=lobby.getPlayers().get(0);
-        lobby.sendAll(new LobbyMessage("We are ready to start. it's turn of " +
-                server.getNameFromId().get(actualPlayerTurn.getID())));
+        System.out.println("sto creando il startingGameMessage");
+        Market market = game.getMarket();
+        String[][] semplifiedMarket=new String[3][4];
+        for(int j=0;j<3;j++) {
+            for (int k = 0; k < 4; k++) {
+                semplifiedMarket[j][k] = market.getMarketBoard()[j][k].getColor();
+            }
+        }
+        System.out.println("market salvato");
+        int[][] devMatrix=new int[4][3];
+        DevCard[][] matrix =DevDeckMatrix.getUpperDevCardsOnTable();
+        System.out.println("mi sono salvato le carte acquistabili");
+        for(int j=0;j<4;j++) {
+            for (int k = 0; k < 3; k++) {
+                devMatrix[j][k] = matrix[j][k].getId();
+            }
+        }
+        System.out.println("devMatrix salvata");
+        int i=0;
+        for(VirtualClient client:lobby.getPlayers()){
+            Player player=game.getPlayers().get(i);
+            ArrayList<Integer> cardsId=new ArrayList<>();
+            for(LeadCard card:player.getLeadCards())
+                cardsId.add(card.getId());
+            System.out.println("lead card del player "+i+" salvate");
+            ArrayList<String>[] warehouse=new ArrayList[3];
+            for(int j=0;j<3;j++){
+                warehouse[j]=new ArrayList<>();
+                ArrayList<Resource> slot=player.getPersonalBoard().getWarehouseDepots().getShelves()[j].getSlots();
+                for(int k=0;k<slot.size();k++)
+                    warehouse[j].add(String.valueOf(slot.get(k)));
+            }
+            System.out.println("warehouse del player "+i+" salvato");
+            int faithPosition = player.getPersonalBoard().getFaithMarker().getFaithPosition();
+            System.out.println("messaggio costruito per il player "+i);
+            client.getClientHandler().send(new StartingGameMessage(cardsId,warehouse,faithPosition,semplifiedMarket,devMatrix,"We are ready to start. it's turn of " +
+                    server.getNameFromId().get(actualPlayerTurn.getID())));
+            System.out.println("messaggio inviato al player "+i);
+            i++;
+        }
+
     }
 }
