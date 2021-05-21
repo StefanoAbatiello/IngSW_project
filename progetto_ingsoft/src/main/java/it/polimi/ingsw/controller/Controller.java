@@ -248,9 +248,45 @@ public class Controller {
         return true;
     }
 
-    public boolean checkPositionOfResources(String gameObj, int id) {
+    //ogni posizione dell'array indica un piano
+    public boolean checkPositionOfResourcesAfterReorder(ArrayList<String>[] newdisposition, int id) {
+
         Player player = game.getPlayers().get(id);
 
+        ArrayList<Resource> allres = new ArrayList<>();
+
+        //me lo trasformo in un array di risorse
+        for (ArrayList<String> strings : newdisposition)
+            for(String s:strings)
+                allres.add(Resource.valueOf(s));
+
+        if (newdisposition.length > 5)
+            return false;
+        else {
+            ArrayList<Resource> warehouseResources=player.getPersonalBoard().getWarehouseDepots().getResources();
+            allres.removeIf(warehouseResources::contains);
+            }
+            if(!allres.isEmpty()) {
+                if (player.getPersonalBoard().getSpecialShelves().get(0).isPresent()) {
+                    ArrayList<Resource> specialShelfresources = player.getPersonalBoard().getSpecialShelves().get(0).get().getSpecialSlots();
+                    if (player.getPersonalBoard().getSpecialShelves().get(1).isPresent())
+                        specialShelfresources.addAll(player.getPersonalBoard().getSpecialShelves().get(1).get().getSpecialSlots());
+                    for (Resource s : allres) {
+                        if (!specialShelfresources.contains(s)) {
+                            return false;
+                        }
+                    }
+                    allres.removeIf(specialShelfresources::contains);
+                    if(!allres.isEmpty())
+                        return false;
+                }
+            }
+            //devo controllare che per ogni scaffale abbia risorse dello stesso tipo
+                for(ArrayList<String> stringArrayList:newdisposition)
+                    for(int i=0;i<stringArrayList.size()-1;i++)
+                        if(!stringArrayList.get(i).equals(stringArrayList.get(i+1)))
+                            return false;
+            //controllo che quello che metto nello special shelf corrisponda al tipo effettivo accettato. X es ho 3 nel warehouse e 1 nello SS e voglio fare 2 e 2
         return true;
     }
 

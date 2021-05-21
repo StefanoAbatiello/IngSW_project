@@ -68,6 +68,13 @@ public class Lobby {
             return actualPlayers;
     }
 
+    public ArrayList<VirtualClient> reinsertPlayer(int id){
+        actualPlayers.add(server.getClientFromId().get(id));
+        this.seatsAvailable--;
+        server.getClientFromId().get(id).giveLobby(server.getLobbyFromClientID().get(id));
+        return actualPlayers;
+    }
+
     public ArrayList<VirtualClient> getPlayers() {
         return actualPlayers;
     }

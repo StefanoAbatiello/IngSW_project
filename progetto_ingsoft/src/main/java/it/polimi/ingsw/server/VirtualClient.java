@@ -1,20 +1,18 @@
 package it.polimi.ingsw.server;
 
-import it.polimi.ingsw.server.ClientHandler;
-import it.polimi.ingsw.server.Lobby;
-
 import java.net.Socket;
 
 public class VirtualClient {
-    private Socket socket;
-    private int id;
-    private String nickName;
+    private final int id;
+    private final String nickName;
     private Lobby lobby;
-    private ClientHandler clientHandler;
-    private boolean myTurn=false;
+    private final ClientHandler clientHandler;
+    private final boolean turn =false;
 
+    /**
+     * Constructor of Virtual Client, that is a reference of the client in server
+     */
     public VirtualClient(int id, String name, Socket socket, ClientHandler clientHandler) {
-        this.socket=socket;
         this.id=id;
         nickName=name;
         this.clientHandler=clientHandler;
@@ -36,7 +34,7 @@ public class VirtualClient {
         return clientHandler;
     }
 
-    public boolean isMyTurn() {
-        return myTurn;
+    public boolean isTurn() {
+        return turn;
     }
 }

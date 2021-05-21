@@ -63,7 +63,6 @@ public class MainServer {
         new Thread(keyboardReader).start();
     }
 
-    //TODO controlla se getconn ha bisogno di sinc
     public static ConnectionServer getConnectionServer() {
         return connectionServer;
     }
@@ -79,5 +78,4 @@ public class MainServer {
         System.out.println(name + " is disconnected");
     }
 
-///TODO gestione id e metodi lobby
 }

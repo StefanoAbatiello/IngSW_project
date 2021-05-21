@@ -21,6 +21,9 @@ public class ClientHandler implements Runnable {
         return server;
     }
 
+    /**
+     * @param active sets the active connection field of this SocketServer object
+     */
     public void setActive(boolean active) {
         this.active = active;
         try {
@@ -30,14 +33,13 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    public ObjectInputStream getInputStream() {
-        return inputStreamObj;
-    }
-
     public ObjectOutputStream getOutputStreamObj() {
         return outputStreamObj;
     }
 
+    /**
+     Constructor of Client Handler which generates output and input stream of the socket
+     */
     public ClientHandler(Socket socket, MainServer server) {
         System.out.println("sto creando il CH");
         this.socket = socket;
@@ -58,6 +60,9 @@ public class ClientHandler implements Runnable {
         return active;
     }
 
+    /**
+     * Send a message to client and read the output stream as long as the socket is open
+     */
     @Override
     public void run() {
         try {
@@ -76,12 +81,15 @@ public class ClientHandler implements Runnable {
             inputStreamObj.close();
             socket.close();
         }
-        //TODO tolgo client dal server e nel caso di partita in atto, lo tolgo
         catch (IOException | ClassNotFoundException e) {
             System.err.println(e.getMessage());
         }
     }
 
+    /**
+     * @param input is message sent by the client
+     * @return false if input is not the type of ping
+     */
     private boolean pingHandler(SerializedMessage input) {
         if(input instanceof PingMessage) {
             pingObserver.setResponse(true);
@@ -90,8 +98,11 @@ public class ClientHandler implements Runnable {
         return false;
     }
 
+    /**
+     * @param input is message sent by the client
+     * This method handles each type of input: nickname reception, dimension of the lobby at its creation and messages referred to a Game Action
+     */
     private synchronized void actionHandler(SerializedMessage input) {
-        //1-gestisco ricezione del nickname
         if (input instanceof NickNameAction) {
             clientID = checkNickName((NickNameAction) input);
             //TODO altri casi di ritorno clientID non validi
@@ -108,7 +119,6 @@ public class ClientHandler implements Runnable {
                 send(new NickNameAction(ConsoleColors.RED_UNDERLINED +"Nickname already taken." + " Please choose another one:" + ConsoleColors.RESET));
         }
 
-        //2-gestisco ricezione della dimensione della lobby in creazione
         if (input instanceof NumOfPlayersAction) {
             int num = ((NumOfPlayersAction) input).getPlayersNum();
             System.out.println("ho ricevuto: " +num);
@@ -127,6 +137,10 @@ public class ClientHandler implements Runnable {
             server.getClientFromId().get(clientID).getLobby().actionHandler((GameMessage) input,clientID);
     }
 
+    /**
+     * @param id is the player ID
+     * @return false if player is already contained in someone lobby or if he is entered in a new lobby, true if every lobby is full
+     */
     private boolean checkFirstPlayer(int id) {
         System.out.println("sei dentro check first player");
         if(server.getLobbyFromClientID().containsKey(id)) {
@@ -146,8 +160,10 @@ public class ClientHandler implements Runnable {
         return true;
     }
 
-    //TODO gestione disconnessione
-
+    /**
+     * @param message is the type of input given by the client
+     * @return new player ID when he is inserted in a new game, -1 when he is already logged into
+     */
     private int checkNickName(NickNameAction message) {
         int ID;
         System.out.println("sei dentro checknickname con: " + message.getMessage());
@@ -164,9 +180,8 @@ public class ClientHandler implements Runnable {
                     Lobby lobby = server.getLobbyFromClientID().get(ID);
                     if (lobby.getStateOfGame() != GameState.ENDED) {
                         System.out.println("la partita è in corso, il giocatore può essere ricollegato");
-                        //TODO domando client se vuole entrare in partita in corso
                         reconnectClient(ID, name);
-                        lobby.insertPlayer(ID);
+                        lobby.reinsertPlayer(ID);
                         //TODO ricorda modifica lista virtual client in lobby quando disconnessione, gestisco poi riconessione e aggiunta
                         lobby.sendAll((SerializedMessage) new LobbyMessage(name + " is back in the game"));
                         return ID;
@@ -183,6 +198,10 @@ public class ClientHandler implements Runnable {
         return ID;
 }
 
+    /**
+     * @param name is the user's nickname
+     * @return player ID after connected his client to the server
+     */
     private int connectClient(String name) {
         int ID= server.getNameFromId().size() +1;
         server.getNameFromId().put(ID,name);
@@ -192,18 +211,24 @@ public class ClientHandler implements Runnable {
         return ID;
     }
 
-    private int reconnectClient(int ID, String name) {
+    /**
+     * @param ID is player ID
+     * @param name is player's nickname
+     */
+    private void reconnectClient(int ID, String name) {
         VirtualClient newClient = new VirtualClient(ID, name, this.socket, this);
         server.getClientFromId().put(ID,newClient);
-        return ID;
     }
 
+    /**
+     * @param message is sent to the client from server
+     */
     public void send(SerializedMessage message){
         try {
             outputStreamObj.writeObject(message);
             outputStreamObj.flush();
         } catch (IOException e) {
-            e.printStackTrace();//TODO sistemare eccezioni
+            System.err.println("Impossibile inviare il messaggio. Chiudo il server");
         }
     }
 
