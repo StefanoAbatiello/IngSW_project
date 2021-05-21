@@ -1,7 +1,7 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.gameActions.ActiveLeadActions;
-import it.polimi.ingsw.gameActions.DiscardLeadActions;
+import it.polimi.ingsw.gameActions.ActiveLeadAction;
+import it.polimi.ingsw.gameActions.DiscardLeadAction;
 import it.polimi.ingsw.messages.*;
 
 import java.io.IOException;
@@ -139,7 +139,7 @@ public class ClientInput implements Runnable{
         //TODO ottimizzare la visione
         //7-request to show personal board
         else if(input.equals("ShowPersonalBoard")){
-            client.getViewCLI().showView();
+            client.getViewCLI().showPersonalBoard();
         }
 
         //8-request to buy a development card
@@ -151,7 +151,7 @@ public class ClientInput implements Runnable{
                 for (int i = 0; i < 4; i++)
                     for (int j = 0; j < 3; j++) {
                         if (matrix[i][j] == id) {
-                            socketOut.writeObject(new BuyCardActions(id));
+                            socketOut.writeObject(new BuyCardAction(id));
                             socketOut.flush();
                         }
                     }
@@ -169,7 +169,7 @@ public class ClientInput implements Runnable{
             try {
                 int selector = Integer.parseInt(input);
                 if (selector >= 0 && selector <= 6) {
-                    socketOut.writeObject(new MarketActions(selector));
+                    socketOut.writeObject(new MarketAction(selector));
                     socketOut.flush();
                 } else
                     System.out.println("Index of matrix not valid. Type again" +
@@ -193,7 +193,7 @@ public class ClientInput implements Runnable{
             input=input.replace("ActiveLeadCard:","");
             try {
                 int id = Integer.parseInt(input);
-                socketOut.writeObject(new ActiveLeadActions(id));
+                socketOut.writeObject(new ActiveLeadAction(id));
                 socketOut.flush();
             } catch (NumberFormatException e) {
                 System.out.println("please insert a number. Type again" +
@@ -208,7 +208,7 @@ public class ClientInput implements Runnable{
             input=input.replace("DiscardLeadCard:","");
             try {
                 int id = Integer.parseInt(input);
-                socketOut.writeObject(new DiscardLeadActions(id));
+                socketOut.writeObject(new DiscardLeadAction(id));
                 socketOut.flush();
             } catch (NumberFormatException e) {
                 System.out.println("please insert a number. Type again" +
@@ -216,6 +216,18 @@ public class ClientInput implements Runnable{
             }catch (IOException e) {
                 client.disconnect();
             }
+        }
+
+        //13-show market
+        else if(input.equals("ShowMarket")){
+            System.out.println("this is the market:");
+            client.getViewCLI().showMarket();
+        }
+
+        //14-show dev matrix
+        else if(input.equals("ShowDevCardMatrix")){
+            System.out.println("this are dev cards buyable:");
+            client.getViewCLI().showDevMatrix();
         }
 
         else

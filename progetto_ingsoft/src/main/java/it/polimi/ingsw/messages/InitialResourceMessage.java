@@ -1,6 +1,6 @@
 package it.polimi.ingsw.messages;
 
-public class InitialResourceMessage implements Actions {
+public class InitialResourceMessage implements SerializedMessage {
 
     private String resource;
     private int shelfNum;
