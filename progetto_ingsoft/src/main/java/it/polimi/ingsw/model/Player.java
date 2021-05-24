@@ -50,13 +50,10 @@ public class Player implements Points{
         return whiteMarbleAbility;
     }
 
-    public boolean activateAbility(LeadCard card) throws InvalidActiveParameterException {
-       if(!card.isActive()) {
+    public boolean activateAbility(LeadCard card)  {
            card.getAbility().activeAbility(this);
-           card.setActive(true);
+           card.setActive();
            return card.isActive();
-       }else
-           return false;
     }
 
     public boolean setAction(Action newAction) throws ActionAlreadySetException {
@@ -68,6 +65,9 @@ public class Player implements Points{
         return this.action;
     }
 
+    public String getName() {
+        return name;
+    }
 
     @Override
     public int getPoints(){
@@ -111,7 +111,10 @@ public class Player implements Points{
              return true;
         }
 
-
+    public boolean discardLead(LeadCard card){
+        leadCards.remove(card);
+        return true;
+    }
 
 
 //TODO ragionare su abilità e pattern

@@ -18,17 +18,12 @@ import java.util.*;
 //TODO tipologia di requirement delle lead dipende dall'abilità della carta
 public class LeadDeck {
 
-    private final ArrayList<LeadCard> leadDeck = new ArrayList<>();
-    private static final Map<Integer,LeadCard> cardFromId = new HashMap<>();
-
-    public static Map<Integer, LeadCard> getCardFromId() {
-        return cardFromId;
-    }
+    private static final ArrayList<LeadCard> leadDeck = new ArrayList<>();
 
     public LeadDeck() {
         JSONParser jsonP = new JSONParser();
 
-        try(FileReader reader = new FileReader("progetto_ingsoft/Deliverables/LEADCARDS")){
+        try(FileReader reader = new FileReader("Deliverables/LEADCARDS")){
             //Read JSON File
             Object obj = jsonP.parse(reader);
             JSONArray leadCardList = (JSONArray) obj;
@@ -69,7 +64,6 @@ public class LeadDeck {
                     createAbility((String) leadCardObj.get("ABILITY"),abilityResource) );
         }
         leadDeck.add(newCard);
-        cardFromId.put(newCard.getId(),newCard);
 
     }
 
@@ -152,6 +146,15 @@ public class LeadDeck {
         }else
             throw new playerLeadsNotEmptyException("Error: playerLeads already full");
         return true;
+    }
+
+    public static LeadCard getCardFromId(int id){
+        for(LeadCard card: leadDeck) {
+            if (card.getId() == id)
+                return card;
+        }
+        //TODO exception
+        return null;
     }
 
 

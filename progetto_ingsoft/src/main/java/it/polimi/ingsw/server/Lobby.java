@@ -86,6 +86,7 @@ public class Lobby {
             return actualPlayers;
     }
 
+
     public ArrayList<VirtualClient> getPlayers() {
         return actualPlayers;
     }
@@ -119,7 +120,7 @@ public class Lobby {
                 System.out.println("ho letto gli id");
                 if(controller.check2Leads(id, firstId, secondId)) {
                     System.out.println("carte scelte");
-                    if (controller.checkPlayersLeads()) {
+                    if (controller.checkAllPlayersChooseLeads()) {
                         System.out.println("tutti hanno scelto le lead cards");
                         controller.askInitialResources();
                     }
@@ -135,14 +136,14 @@ public class Lobby {
                 int shelfNum=((InitialResourceMessage)input).getShelfNum();
                 System.out.println("ho letto il messaggio");
                 try {
-                    controller.checkResourcePosition(id, shelfNum, resource);
+                    controller.checkInsertResourcePosition(id, shelfNum, resource);
                     System.out.println("la risorsa è stata depositata");
                     if(controller.checkInitialResources()){
                         System.out.println("tutti i giocatori hanno scelto le risorse iniziali");
                         controller.startGame();
                     }
                 } catch (ResourceNotValidException e) {
-                    server.getClientFromId().get(id).getClientHandler().send(new GetInitialResourcesAction("You choose a not valid resource or shelf"));
+                    server.getClientFromId().get(id).getClientHandler().send(new GetInitialResourcesActions("You choose a not valid resource or shelf"));
                 }
 
             }
@@ -191,7 +192,7 @@ public class Lobby {
         //5-gestisco le produzioni scelte un giocatore
         else if (input instanceof ProductionAction) {
             if(stateOfGame==GameState.ONGOING) {
-                gameObj = ((ProductionAction) input).getProductions();
+                gameObj = ((ProductionAction) input).getCardProductions();
                 try {
                     if (controller.checkProduction((ArrayList<Integer>) gameObj, id)) {
                         result = new ActionAnswer("mercato cambiato con successo (da coordinata: " + gameObj + " )");
@@ -210,7 +211,7 @@ public class Lobby {
         else if (input instanceof ActiveLeadAction) {
             if (stateOfGame == GameState.ONGOING) {
                 gameObj = ((ActiveLeadAction) input).getLead();
-                if (controller.checkLeadActivation((String) gameObj, id)) {
+                if (controller.checkLeadActivation((int) gameObj, id)) {
                     result = new ActionAnswer("lead card attivata: " + gameObj);
                 }
             }
@@ -220,7 +221,7 @@ public class Lobby {
         else if (input instanceof DiscardLeadAction) {
             if (stateOfGame == GameState.ONGOING) {
                 gameObj = ((DiscardLeadAction) input).getLead();
-                if (controller.checkDiscardLead((String) gameObj, id)) {
+                if (controller.checkDiscardLead((int) gameObj, id)) {
                     result = new ActionAnswer("lead card scartata: " + gameObj);
                 }
             }

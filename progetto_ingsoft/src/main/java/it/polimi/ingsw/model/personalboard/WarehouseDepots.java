@@ -34,10 +34,10 @@ public class WarehouseDepots implements ResourceCreator {
      * return a specific resource and remove it from player's warehouse
      */
     public Resource getResource(Resource resource) {
-        for(int i=0;i< shelves.length;i++){
-            for(Resource resource1 :shelves[i].getResources()){
-                if(resource == resource1){
-                    shelves[i].getResources().remove(resource1);
+        for (Shelf shelf : shelves) {
+            for (Resource resource1 : shelf.getResources()) {
+                if (resource == resource1) {
+                    shelf.getResources().remove(resource1);
                     getResources().remove(resource);
                     return resource;
                 }
@@ -54,10 +54,8 @@ public class WarehouseDepots implements ResourceCreator {
      */
     public ArrayList<Resource> getResources(){
         ArrayList<Resource> allres=new ArrayList<>();
-        for(int i=0;i< shelves.length;i++) {
-            for (Resource resources1 : shelves[i].getResources()) {
-                    allres.add(resources1);
-            }
+        for (Shelf shelf : shelves) {
+            allres.addAll(shelf.getResources());
         }
         return allres;
     }

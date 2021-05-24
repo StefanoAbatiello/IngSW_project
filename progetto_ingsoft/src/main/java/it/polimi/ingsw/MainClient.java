@@ -126,7 +126,7 @@ public class MainClient {
             }
         }
 
-        //8-gestione del salcataggio e della stampa della situazione iniziale della partita
+        //8-gestione del salvataggio e della stampa della situazione iniziale della partita
         else if(input instanceof StartingGameMessage){
             viewCLI.setWarehouse(((StartingGameMessage)input).getWarehouse());
             int[][] devMatrix=((StartingGameMessage)input).getDevMatrix();
@@ -143,7 +143,7 @@ public class MainClient {
             viewCLI.showPersonalBoard();
             System.out.println("\n \nthis is the market: ");
             viewCLI.showMarket();
-            System.out.println("\n \nthis are the development cards buyable: ");
+            System.out.println("\n \nthis are the buyable development cards: ");
             viewCLI.showDevMatrix();
             System.out.println(((StartingGameMessage)input).getMessage());
             System.out.println("Type \"ShowActions\" to see commands");

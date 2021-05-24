@@ -2,11 +2,11 @@ package it.polimi.ingsw.messages;
 
 import it.polimi.ingsw.messages.SerializedMessage;
 
-public class GetInitialResourcesAction implements GameMessage {
+public class GetInitialResourcesActions implements GameMessage {
 
     private final String message;
 
-    public GetInitialResourcesAction(String s) {
+    public GetInitialResourcesActions(String s) {
         this.message=s;
     }
 

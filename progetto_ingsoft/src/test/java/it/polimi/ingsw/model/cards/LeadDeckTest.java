@@ -4,18 +4,22 @@ import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Resource;
 import it.polimi.ingsw.model.cards.cardExceptions.NoSuchRequirementException;
 import it.polimi.ingsw.model.cards.cardExceptions.playerLeadsNotEmptyException;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class LeadDeckTest {
 
     @Test
+    @BeforeAll
     void createDeck() throws NoSuchRequirementException {
-        LeadDeck deck = new LeadDeck();
+        LeadDeck deck=new LeadDeck();
         ArrayList<String> color=new ArrayList<>();
         color.add("YELLOW");
         color.add("GREEN");
@@ -23,7 +27,7 @@ class LeadDeckTest {
         HashMap<Integer, ArrayList<String>> cardsReq= new HashMap<>();
         cardsReq.put(1,color);
         LeadCard card= new LeadCard(49,2,cardsReq,leadAbility);
-        LeadCard wantedCard= deck.getLeadDeck().get(0);
+        LeadCard wantedCard= LeadDeck.getCardFromId(49);
         assertEquals(card.getPoints(), wantedCard.getPoints());
         assertEquals(card.getAbility().getClass(), wantedCard.getAbility().getClass());
         assertEquals(card.getAbility().getAbilityResource(), wantedCard.getAbility().getAbilityResource());
@@ -33,7 +37,7 @@ class LeadDeckTest {
 
     @Test
     void shuffle() {
-        LeadDeck deck = new LeadDeck();
+        LeadDeck deck=new LeadDeck();
         ArrayList<LeadCard> newDeck= deck.shuffle();
         assertEquals(deck.getLeadDeck().size(), newDeck.size());
         for(LeadCard card: deck.getLeadDeck())
@@ -41,12 +45,15 @@ class LeadDeckTest {
         //TODO ordine diverso
     }
 
+
+
     @Test
     void giveToPlayer() throws playerLeadsNotEmptyException {
-        LeadDeck deck= new LeadDeck();
+        LeadDeck deck =new LeadDeck();
         deck.shuffle();
         Player p= new Player("4");
         ArrayList<LeadCard> leadCards = new ArrayList<>();
+        deck.shuffle();
         for(int i=0;i<4;i++)
             leadCards.add(deck.getLeadDeck().get(i));
         deck.giveToPlayer(p);
@@ -58,7 +65,7 @@ class LeadDeckTest {
 
     @Test
     void cannotGiveToPlayerExc() throws playerLeadsNotEmptyException {
-        LeadDeck deck= new LeadDeck();
+        LeadDeck deck=new LeadDeck();
         deck.shuffle();
         Player p= new Player("4");
         ArrayList<LeadCard> leadCards = new ArrayList<>();
@@ -70,7 +77,7 @@ class LeadDeckTest {
 
     @Test
     void giveCardsToPlayersAllDifferent() throws playerLeadsNotEmptyException {
-        LeadDeck deck= new LeadDeck();
+        LeadDeck deck=new LeadDeck();
         Player p1= new Player("2");
         Player p2= new Player("4");
         shuffle();
