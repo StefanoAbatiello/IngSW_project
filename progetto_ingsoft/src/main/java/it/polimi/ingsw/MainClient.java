@@ -6,8 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 public class MainClient {
     private String ip;
@@ -33,6 +32,7 @@ public class MainClient {
         this.port = port;
         parser = new ClientCardParser(this);
     }
+
     public static void main(String[] args) {
         MainClient client = new MainClient("127.0.0.1", 1337);
         try {
@@ -47,9 +47,10 @@ public class MainClient {
         System.out.println("Connection established");
         socketIn = new ObjectInputStream(socket.getInputStream());
         socketOut = new ObjectOutputStream(socket.getOutputStream());
-        keyboardReader=new ClientInput(this, socketOut);
+        keyboardReader = new ClientInput(this, socketOut);
         new Thread(keyboardReader).start();
         pongObserver = new PongObserver(this, socketOut);
+        viewCLI = new ViewCLI();
         SerializedMessage input;
         try {
             while (true) {
@@ -60,6 +61,15 @@ public class MainClient {
             System.out.println("Connection closed");
             disconnect();
         } finally {
+            disconnect();
+        }
+    }
+
+    public void send(SerializedMessage message){
+        try {
+            socketOut.writeObject(message);
+            socketOut.flush();
+        } catch (IOException e) {
             disconnect();
         }
     }
@@ -83,14 +93,13 @@ public class MainClient {
         }
 
         //4-gestione dell'avviso di inizio partita
-        else if(input instanceof CreatingGameMessage){
+        else if (input instanceof CreatingGameMessage) {
             System.out.println(((CreatingGameMessage) input).getMessage());
-            viewCLI = new ViewCLI();
         }
 
         //5-gestione dei messaggio di ping
-        else if(input instanceof PingMessage) {
-            if(!pongObserver.isStarted()) {
+        else if (input instanceof PingMessage) {
+            if (!pongObserver.isStarted()) {
                 //System.out.println("era il primo ping, faccio partire il pongObserver");[Debug]
                 new Thread(pongObserver).start();
                 //System.out.println("pongObserver partito");[Debug]
@@ -99,39 +108,25 @@ public class MainClient {
         }
 
         //6-gestione della richiesta di scegliere la/le risorsa/e iniziale/
-        else if(input instanceof GetInitialResourcesAction){
-            System.out.println(((GetInitialResourcesAction)input).getMessage());
+        else if (input instanceof GetInitialResourcesAction) {
+            System.out.println(((GetInitialResourcesAction) input).getMessage());
             System.out.println("Type \"InitialResource:[COIN/SERVANT/SHIELD/STONE] in shelf:[shef number]\"");
         }
 
         //7-gestione della richiesta di scegliere quali leader card mantenere
-        else if(input instanceof LeaderCardDistribution){
-            ArrayList<Integer> leadCardsId = ((LeaderCardDistribution)input).getLeadCardsId();
-            System.out.println("Leader cards:");
-            for(int id:leadCardsId){
+        else if (input instanceof LeaderCardDistribution) {
+            System.out.println(((LeaderCardDistribution)input).getMessage() + "\n");
+            ArrayList<Integer> leadCardsId = ((LeaderCardDistribution) input).getLeadCardsId();
+            for (int id : leadCardsId) {
                 parser.takeLeadCardFromId(id);
-                ArrayList<String> [] cardValues = viewCLI.getCardsFromId().get(id);
-                System.out.println("ID: " + id );
-                System.out.println("    Ability: " + cardValues[0].get(0));
-                System.out.println("    Resource: " + cardValues[1].get(0));
-                if(!cardValues[2].isEmpty() && !cardValues[3].isEmpty())
-                    System.out.println("    Requirements: " + cardValues[2].get(0)/*num of resources required*/
-                            + cardValues[3].get(0)/*type of resources required*/);
-                else {
-                    if(cardValues[5].size()==1)
-                        System.out.println("    Requirements: a " + cardValues[5].get(0)/*color of dev card*/
-                                + " devCard of level " + cardValues[4].get(0)/*level of devCArd*/);
-                    else{
-                        System.out.println("    Requirements: devCards of color ");
-                        cardValues[5].forEach(s-> System.out.print(s +", "));
-                        System.out.println("");
-                    }
-                }
+                viewCLI.showLeadCard(id);
             }
-            System.out.println("");
-            System.out.println("Type \"ChosenLeads:[first LeadId],[second LeadId]\"");
+            if(leadCardsId.size()>2) {
+                System.out.println("\nType \"ChosenLeads:[first LeadId],[second LeadId]\"");
+            }
         }
 
+        //8-gestione del salcataggio e della stampa della situazione iniziale della partita
         else if(input instanceof StartingGameMessage){
             viewCLI.setWarehouse(((StartingGameMessage)input).getWarehouse());
             int[][] devMatrix=((StartingGameMessage)input).getDevMatrix();
@@ -148,9 +143,37 @@ public class MainClient {
             viewCLI.showPersonalBoard();
             System.out.println("\n \nthis is the market: ");
             viewCLI.showMarket();
-            System.out.println("this are dev card buyable: ");
+            System.out.println("\n \nthis are the development cards buyable: ");
             viewCLI.showDevMatrix();
             System.out.println(((StartingGameMessage)input).getMessage());
+            System.out.println("Type \"ShowActions\" to see commands");
+        }
+
+        //9-gestione del salvataggio e della stampa della situazione della partta dopo la riconnessione
+        else if(input instanceof ReconnectionMessage){
+            viewCLI.setWarehouse(((ReconnectionMessage)input).getWarehouse());
+            int[][] devMatrix=((ReconnectionMessage)input).getDevMatrix();
+            viewCLI.setDevMatrix(devMatrix);
+            Arrays.stream(devMatrix[0]).forEach(id-> parser.takeDevCardFromId(id));
+            Arrays.stream(devMatrix[1]).forEach(id-> parser.takeDevCardFromId(id));
+            Arrays.stream(devMatrix[2]).forEach(id-> parser.takeDevCardFromId(id));
+            Arrays.stream(devMatrix[3]).forEach(id-> parser.takeDevCardFromId(id));
+            Map<Integer,Boolean> leadcardsId = new HashMap<>();
+            ((ReconnectionMessage)input).getCardsId().keySet().stream().filter(integer -> integer>48 && integer<65).forEach(card->parser.takeLeadCardFromId(card));
+            ((ReconnectionMessage)input).getCardsId().keySet().stream().filter(integer -> integer>48 && integer<65).forEach(card->leadcardsId.put(card,((ReconnectionMessage)input).getCardsId().get(card)));
+            viewCLI.setLeadCardsId(leadcardsId);
+            Map<Integer,Boolean> devcardsId= new HashMap<>();
+            ((ReconnectionMessage)input).getCardsId().keySet().stream().filter(integer -> integer>0 && integer<49).forEach(card->parser.takeDevCardFromId(card));
+            ((ReconnectionMessage)input).getCardsId().keySet().stream().filter(integer -> integer>0 && integer<49).forEach(card->devcardsId.put(card,((ReconnectionMessage)input).getCardsId().get(card)));
+            viewCLI.setDevCardsId(devcardsId);
+            viewCLI.setFaithPosition(((ReconnectionMessage)input).getFaithposition());
+            viewCLI.setMarket(((ReconnectionMessage)input).getSimplifiedMarket());
+            System.out.println("this is your personal board:");
+            viewCLI.showPersonalBoard();
+            System.out.println("\n \nthis is the market: ");
+            viewCLI.showMarket();
+            System.out.println("\n \nthis are the development cards buyable: ");
+            viewCLI.showDevMatrix();
             System.out.println("Type \"ShowActions\" to see commands");
         }
         //TODO

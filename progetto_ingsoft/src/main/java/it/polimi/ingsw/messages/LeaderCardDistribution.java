@@ -1,6 +1,5 @@
 package it.polimi.ingsw.messages;
 
-import it.polimi.ingsw.model.cards.LeadCard;
 
 import java.util.ArrayList;
 
@@ -17,4 +16,9 @@ public class LeaderCardDistribution implements SerializedMessage {
     public ArrayList<Integer> getLeadCardsId(){
         return this.leadCardsId;
     }
+
+    public String getMessage() {
+        return message;
+    }
+
 }

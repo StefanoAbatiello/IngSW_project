@@ -49,7 +49,6 @@ public class LeadDeck {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        Collections.shuffle(leadDeck);
     }
     //TODO posso mettere due hashmap opzionali per i requirements
 

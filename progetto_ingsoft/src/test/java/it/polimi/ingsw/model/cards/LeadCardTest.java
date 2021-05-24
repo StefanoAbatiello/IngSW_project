@@ -41,13 +41,15 @@ class LeadCardTest {
         assertEquals(Resource.SHIELD,card.getAbility().getAbilityResource());
         assertNotEquals(Resource.COIN,card.getAbility().getAbilityResource());
     }
-
+/*
     @Test
     void getResExceptionThrowable() {
         LeadDeck deck = new LeadDeck();
         LeadCard wantedCard= deck.getLeadDeck().get(0);
         assertThrows(NoSuchRequirementException.class, () -> wantedCard.getResources() );
     }
+
+ */
 
     @Test
     void getResourceReqTrue() throws NoSuchRequirementException {

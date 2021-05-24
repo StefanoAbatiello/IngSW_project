@@ -1,17 +1,18 @@
 package it.polimi.ingsw.messages;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class StartingGameMessage implements SerializedMessage{
 
-    private ArrayList<Integer> personalCardId;
+    private Map<Integer,Boolean> personalCardId;
     private ArrayList<String>[] warehouse;
     private int faithPosition;
     private String[][] market;
     private int[][] devMatrix;
     private String message;
 
-    public StartingGameMessage(ArrayList<Integer> personalCardId, ArrayList<String>[] warehouse,
+    public StartingGameMessage(Map<Integer,Boolean> personalCardId, ArrayList<String>[] warehouse,
                                int faithPosition, String[][] market, int[][] devMatrix, String message) {
         this.personalCardId = personalCardId;
         this.warehouse = warehouse;
@@ -25,7 +26,7 @@ public class StartingGameMessage implements SerializedMessage{
         return message;
     }
 
-    public ArrayList<Integer> getPersonalCardId() {
+    public Map<Integer,Boolean> getPersonalCardId() {
         return personalCardId;
     }
 

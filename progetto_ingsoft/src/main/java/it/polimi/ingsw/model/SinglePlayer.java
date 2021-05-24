@@ -37,6 +37,7 @@ public class SinglePlayer extends Game{
         new BlackCrossToken();
         this.market=new Market();
         leads= new LeadDeck();
+        leads.shuffle();
         leads.giveToPlayer(player.get(0));
 
     }

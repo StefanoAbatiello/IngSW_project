@@ -8,8 +8,9 @@ import static java.lang.Thread.sleep;
 
 public class PingObserver implements Runnable {
 
+    private boolean active;
     private boolean pingReceived;
-    private final int maxTimeoutNumber = 10;
+    private final int maxTimeoutNumber = 5;
     private int counterTimeout;
     private ObjectOutputStream pingOutStreamObj;
     private final ClientHandler clientHandler;
@@ -19,55 +20,47 @@ public class PingObserver implements Runnable {
         counterTimeout = 0;
         pingOutStreamObj = clientHandler.getOutputStreamObj();
         this.pingReceived = false;
+        this.active=true;
     }
 
-    public void sendPing() throws IOException {
-            pingOutStreamObj.writeObject(new PingMessage());
-            pingOutStreamObj.flush();
-        }
+    public void setActive(boolean active){
+        this.active=active;
+    }
 
-        public boolean waitResponse () {
-            try {
-                while (counterTimeout < maxTimeoutNumber) {
-                    sleep(4000);
+    public boolean waitResponse () {
+        try {
+            while (counterTimeout < maxTimeoutNumber) {
+                sleep(4000);
+                if (active) {
                     if (pingReceived) {
                         counterTimeout = 0;
                         break;
                     } else {
                         counterTimeout = counterTimeout + 1;
                         System.out.println("ping non ricevuto " + counterTimeout + " volta/e dal client: " + clientHandler.getClientId());
-                        try {
-                            sendPing();
-                        } catch (IOException e) {
-                            System.out.println("il socket è stato chiuso per qualche motivo. chiudo il CH");
-                            clientHandler.getServer().disconnectClient(clientHandler.getClientId());
-                            break;
-                        }
+                        clientHandler.asyncSend(new PingMessage());
                     }
-                }
-            }catch(InterruptedException e){
-                    e.printStackTrace();
+                }else
+                    return false;
             }
-            return pingReceived;
+        }catch(InterruptedException e){
+                e.printStackTrace();
         }
+        return pingReceived;
+    }
 
 
     @Override
     public void run() {
         System.out.println("mando il ping al client: "+clientHandler.getClientId());
-        try {
-            sendPing();
-            System.out.println("aspetto il ping del client: "+clientHandler.getClientId());
-            if(!waitResponse()) {
-                clientHandler.getServer().disconnectClient(clientHandler.getClientId());
-            }
-            else
-                System.out.println("ping del client "+clientHandler.getClientId()+" ricevuto ");
-            pingReceived=false;
-        } catch (IOException e) {
-            System.out.println("il socket è stato chiuso per qualche motivo. chiudo il CH");
+        clientHandler.asyncSend(new PingMessage());
+        System.out.println("aspetto il ping del client: "+clientHandler.getClientId());
+        if(!waitResponse()) {
             clientHandler.getServer().disconnectClient(clientHandler.getClientId());
         }
+        else
+            System.out.println("ping del client "+clientHandler.getClientId()+" ricevuto ");
+        pingReceived=false;
     }
 
     public void setResponse(boolean response) {

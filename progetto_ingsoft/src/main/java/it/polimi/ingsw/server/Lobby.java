@@ -56,17 +56,27 @@ public class Lobby {
         return seatsAvailable;
     }
 
-    public ArrayList<VirtualClient> reinsertPlayer(int id){
-        actualPlayers.add(server.getClientFromId().get(id));
+    public ArrayList<VirtualClient> reinsertPlayer(int id) {
+        System.out.println("sto reinserendo il player nella lobby");
+        String name=server.getNameFromId().get(id);
+        if(getStateOfGame()==GameState.PREPARATION1||getStateOfGame()==GameState.PREPARATION2||getStateOfGame()==GameState.ONGOING){
+            System.out.println("la partita è già iniziata");
+            controller.insertPlayerInOrder(id,name);
+        } else{
+            System.out.println("la partita non è ancora iniziata. Inserisco il giocatore con ultimo");
+            actualPlayers.add(server.getClientFromId().get(id));
+        }
         this.seatsAvailable--;
         server.getClientFromId().get(id).giveLobby(server.getLobbyFromClientID().get(id));
+        System.out.println("ho inserito il giocatore nella lobby, gli invio le info");
+        controller.sendInfoOfgame(id,name);
         return actualPlayers;
     }
-
 
     public ArrayList<VirtualClient> insertPlayer(int id) {
             actualPlayers.add(server.getClientFromId().get(id));
             server.getClientFromId().get(id).giveLobby(this);
+            server.getLobbyFromClientID().put(id,this);
             this.seatsAvailable--;
             if(isLobbyFull()) {
                 System.out.println("numero di giocatori raggiunto, inizia la partita!!!");
@@ -81,6 +91,11 @@ public class Lobby {
     }
 
     public ArrayList<VirtualClient> removePlayer(VirtualClient player) {
+        if(stateOfGame==GameState.ONGOING) {
+            if (player.equals(controller.getActualPlayerTurn())) {
+                controller.turnUpdate();
+            }
+        }
         actualPlayers.remove(player);
         seatsAvailable++;
         return actualPlayers;
@@ -208,6 +223,13 @@ public class Lobby {
                 if (controller.checkDiscardLead((String) gameObj, id)) {
                     result = new ActionAnswer("lead card scartata: " + gameObj);
                 }
+            }
+        }
+
+        //8-gestisco il cambio del turno dei giocatori
+        else if(input instanceof TurnChangeMessage){
+            if (stateOfGame==GameState.ONGOING){
+                controller.turnUpdate();
             }
         }
 

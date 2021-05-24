@@ -1,8 +1,13 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.messages.PingMessage;
+import it.polimi.ingsw.messages.SerializedMessage;
+
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import static java.lang.Thread.sleep;
 
 public class PongObserver implements Runnable{
@@ -13,12 +18,14 @@ public class PongObserver implements Runnable{
     private final int maxTimeoutNumber = 3;
     private int counterTimeout;
     private final MainClient client;
+    private ExecutorService executor;
 
     public PongObserver(MainClient client, ObjectOutputStream socketOut) {
         this.socketOut=socketOut;
         this.started = false;
         this.counterTimeout = 0;
         this.client = client;
+        this.executor= Executors.newCachedThreadPool();
     }
 
     public boolean isStarted() {
@@ -37,14 +44,7 @@ public class PongObserver implements Runnable{
                         //System.out.println("ping non ricevuto " + counterTimeout + " volta/e");[Debug]
                         sleep(2000);
                     } else {
-                        try {
-                            //System.out.println("ho ricevuto il ping");[Debug]
-                            socketOut.writeObject(new PingMessage());
-                            //System.out.println("ho inviato il pong");[Debug]
-                            socketOut.flush();
-                        } catch (IOException e) {
-                            client.disconnect();
-                        }
+                        asyncSend(new PingMessage());
                         counterTimeout = 0;
                         pingReceived = false;
                         break;
@@ -59,6 +59,15 @@ public class PongObserver implements Runnable{
                 e.printStackTrace();
             }
         }
+    }
+
+    private void asyncSend(PingMessage pingMessage) {
+        executor.submit(new Runnable() {
+            @Override
+            public void run() {
+                client.send(pingMessage);
+            }
+        });
     }
 
     public void setResponse(boolean received) {

@@ -5,6 +5,8 @@ import it.polimi.ingsw.messages.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import it.polimi.ingsw.server.ConsoleColors;
 
@@ -75,7 +77,8 @@ public class ClientHandler implements Runnable {
                      System.out.println("non è un ping");
                      if(!actionHandler( input)){
                          System.out.println("non è login");
-                         server.getClientFromId().get(clientID).getLobby().actionHandler(input, clientID);
+                         server.getLobbyFromClientID().get(clientID).actionHandler(input,clientID);
+                         //server.getClientFromId().get(clientID).getLobby().actionHandler(input, clientID);
                      }
                  }
             }
@@ -168,7 +171,8 @@ public class ClientHandler implements Runnable {
                 if(server.getClientFromId().containsKey(ID)) {
                     System.out.println("l'utente " + ID + "è online. Il nuovo utente deve cambiare nickname");
                     return -1;
-                }else if (server.getLobbyFromClientID().containsKey(ID)) {
+                }
+                if (server.getLobbyFromClientID().containsKey(ID)) {
                     System.out.println("l'utente" + ID + "non è collegato, ma esiste partita in cui giocava");
                     Lobby lobby = server.getLobbyFromClientID().get(ID);
                     if (lobby.getStateOfGame() != GameState.ENDED) {
@@ -212,8 +216,18 @@ public class ClientHandler implements Runnable {
             outputStreamObj.writeObject(message);
             outputStreamObj.flush();
         } catch (IOException e) {
-            e.printStackTrace();//TODO sistemare eccezioni
+            server.disconnectClient(clientID);
         }
+    }
+
+    public void asyncSend(PingMessage pingMessage) {
+        ExecutorService executor=Executors.newCachedThreadPool();
+        executor.submit(new Runnable() {
+            @Override
+            public void run() {
+                send(pingMessage);
+            }
+        });
     }
 
     public Socket getSocket() {
