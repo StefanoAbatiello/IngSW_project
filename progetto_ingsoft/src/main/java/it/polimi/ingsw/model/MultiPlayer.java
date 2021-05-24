@@ -44,6 +44,7 @@ public class MultiPlayer extends Game {
         System.out.println("market creato, creo le leadCards");
         leads = new LeadDeck();
         System.out.println("distribuisco le leadCards");
+        leads.shuffle();
         for(Player player:players){
             leads.giveToPlayer(player);
         }

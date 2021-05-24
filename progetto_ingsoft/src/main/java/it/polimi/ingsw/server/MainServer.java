@@ -1,6 +1,8 @@
 package it.polimi.ingsw.server;
 
 
+import it.polimi.ingsw.messages.LobbyMessage;
+
 import java.util.*;
 
 public class MainServer {
@@ -69,9 +71,13 @@ public class MainServer {
 
     public void disconnectClient(int clientId) {
         ClientHandler clientHandler = getClientFromId().get(clientId).getClientHandler();
+        clientHandler.getPingObserver().setActive(false);
         ConnectionServer.removePingObserver(clientHandler.getPingObserver());
-        if(lobbyFromClientID.containsKey(clientId))
-            lobbyFromClientID.get(clientId).removePlayer(clientFromId.remove(clientId));
+        if(lobbyFromClientID.containsKey(clientId)) {
+            Lobby lobby=lobbyFromClientID.get(clientId);
+            lobby.removePlayer(clientFromId.get(clientId));
+            lobby.sendAll(new LobbyMessage(nameFromId.get(clientId)+" left the game"));
+        }
         clientFromId.remove(clientId);
         clientHandler.setActive(false);
         String name = nameFromId.get(clientId);

@@ -5,6 +5,8 @@ import it.polimi.ingsw.messages.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import it.polimi.ingsw.server.ConsoleColors;
 
@@ -239,8 +241,18 @@ public class ClientHandler implements Runnable {
             outputStreamObj.writeObject(message);
             outputStreamObj.flush();
         } catch (IOException e) {
-            System.err.println("Impossibile inviare il messaggio. Chiudo il server");
+            server.disconnectClient(clientID);
         }
+    }
+
+    public void asyncSend(PingMessage pingMessage) {
+        ExecutorService executor=Executors.newCachedThreadPool();
+        executor.submit(new Runnable() {
+            @Override
+            public void run() {
+                send(pingMessage);
+            }
+        });
     }
 
     public Socket getSocket() {

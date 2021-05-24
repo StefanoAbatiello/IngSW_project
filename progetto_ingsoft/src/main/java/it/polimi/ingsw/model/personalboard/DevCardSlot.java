@@ -36,6 +36,13 @@ public class DevCardSlot implements Points {
         return cards;
     }
 
+    public ArrayList<DevCard> getDevCards(){
+        ArrayList<DevCard> cards=new ArrayList<>();
+        for (int i=0;i<3;i++)
+            cards.addAll(slot[i]);
+        return cards;
+    }
+
     /**
      * @param devCard is the card that is added in slot
      * @param slotID is the selected row

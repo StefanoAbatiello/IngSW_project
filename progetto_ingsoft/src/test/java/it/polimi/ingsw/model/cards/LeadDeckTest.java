@@ -80,6 +80,7 @@ class LeadDeckTest {
         LeadDeck deck=new LeadDeck();
         Player p1= new Player("2");
         Player p2= new Player("4");
+        shuffle();
         ArrayList<LeadCard> leadCards1 = new ArrayList<>();
         for(int i=0;i<4;i++)
             leadCards1.add(deck.getLeadDeck().get(i));

@@ -1,13 +1,11 @@
 package it.polimi.ingsw;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class ViewCLI {
 
-    private ArrayList<Integer> devCardsId;
-    private ArrayList<Integer> leadCardsId;
+    private Map<Integer, Boolean> devCardsId;
+    private Map<Integer, Boolean> leadCardsId;
     private ArrayList<String>[] warehouse;
     /*Array di risorse dove ogni indice è un tipo di risorse:
         0-COIN
@@ -21,7 +19,7 @@ public class ViewCLI {
     private Map<Integer, ArrayList<String>[]> cardsFromId;
     private String[][] market;
 
-    public void setLeadCardsId(ArrayList<Integer> leadCardsId) {
+    public void setLeadCardsId(Map<Integer,Boolean> leadCardsId) {
         this.leadCardsId = leadCardsId;
     }
 
@@ -37,9 +35,13 @@ public class ViewCLI {
         this.market = market;
     }
 
+    public void setDevCardsId(Map<Integer, Boolean> devCardsId) {
+        this.devCardsId = devCardsId;
+    }
+
     public ViewCLI() {
-        devCardsId=new ArrayList<>();
-        leadCardsId=new ArrayList<>();
+        devCardsId=new HashMap<>();
+        leadCardsId=new HashMap<>();
         warehouse=new ArrayList[3];
         for(int i=0;i<3;i++)
             warehouse[i] = new ArrayList<>();
@@ -66,20 +68,20 @@ public class ViewCLI {
 
     public int[][] getDevMatrix(){return this.devMatrix;}
 
-    public ArrayList<Integer> getDevCardsId() {
+    public Map<Integer, Boolean> getDevCardsId() {
         return devCardsId;
     }
 
-    public void addDevCardId(int devCardId) {
-        this.devCardsId.add(devCardId);
+    public void addDevCardId(int devCardId,boolean active) {
+        this.devCardsId.put(devCardId,active);
     }
 
-    public ArrayList<Integer> getLeadCardsId() {
+    public Map<Integer,Boolean> getLeadCardsId() {
         return leadCardsId;
     }
 
-    public void addLeadCardsId(int leadCardsId) {
-        this.leadCardsId.add(leadCardsId);
+    public void addLeadCardsId(int leadCardsId,Boolean active) {
+        this.leadCardsId.put(leadCardsId,active);
     }
 
     public int[] getStrongbox() {
@@ -134,12 +136,12 @@ public class ViewCLI {
 
     public void showPersonalBoard(){
         System.out.println("Your development card id:");
-        for(int i:devCardsId) {
-            System.out.println(i);
+        for(int i:devCardsId.keySet()) {
+            showDevCard(i);
         }
         System.out.println("Your leader card id:");
-        for(int i:leadCardsId) {
-            System.out.println(i);
+        for(int i:leadCardsId.keySet()) {
+            showLeadCard(i);
         }
         System.out.println("Your faith track is in position: " + faithPosition);
         System.out.print("In strongbox you have: ");
@@ -151,46 +153,71 @@ public class ViewCLI {
         if(warehouse[0].isEmpty())
             System.out.println("No resources in first shelf");
         else
-            System.out.println(warehouse[0].size() + warehouse[0].get(0) + " in first shelf");
+            System.out.println(warehouse[0].size() +" "+ warehouse[0].get(0) + " in first shelf");
         if(warehouse[1].isEmpty())
             System.out.println("No resources in second shelf");
         else
-            System.out.print(warehouse[1].size() + warehouse[1].get(0) + " in second shelf");
+            System.out.println(warehouse[1].size() +" "+ warehouse[1].get(0) + " in second shelf");
         if(warehouse[2].isEmpty())
             System.out.println("No resources in third shelf");
         else
-            System.out.print(warehouse[2].size() + warehouse[2].get(0) + " in second shelf");
+            System.out.println(warehouse[2].size() +" "+ warehouse[2].get(0) + " in third shelf");
     }
 
     public void showMarket(){
         for(int i=0;i<3;i++){
-            System.out.println(i+"-> " + market[i][0] + " " + market[i][1] + " " + market[i][2] + " " + market[i][3]);
+            System.out.println(i+"->    " + market[i][0] + "    |       " + market[i][1] + "    |       " + market[i][2] + "    |       " + market[i][3]);
         }
-        System.out.println("    ^     ^     ^     ^");
-        System.out.println("    3     4     5     6");
+        System.out.println("        ^               ^                   ^               ^");
+        System.out.println("        3               4                   5               6");
+    }
+
+    public void showLeadCard(int cardId) {
+        ArrayList<String>[] card = cardsFromId.get(cardId);
+        System.out.println("ID: " + cardId);
+        System.out.println("    Ability: " + card[0].get(0));
+        System.out.println("    Resource: " + card[1].get(0));
+        if (!card[2].isEmpty() && !card[3].isEmpty())
+            System.out.println("    Requirements: " + card[2].get(0)/*num of resources required*/
+                    +" "+ card[3].get(0)/*type of resources required*/);
+        else {
+            if (card[5].size() == 1)
+                System.out.println("    Requirements: a " + card[5].get(0)/*color of dev card*/
+                        + " devCard of level " + card[4].get(0)/*level of devCArd*/);
+            else {
+                System.out.print("    Requirements: devCards of color ");
+                card[5].forEach(s -> System.out.print(s + ", "));
+                System.out.println("");
+            }
+        }
+    }
+
+    private void showDevCard(int cardId){
+        ArrayList<String>[] card = cardsFromId.get(cardId);
+        System.out.println("id: "+cardId);
+        System.out.println("    level: "+card[0].get(0));
+        System.out.println("    color: "+card[1].get(0));
+        System.out.print("    prodin: "+card[2].get(0));
+        for(int k=0;k<card[2].size()-1;k++)
+            System.out.print(", "+card[2].get(k));
+        if(!card[3].isEmpty()) {
+            System.out.print("\n    prodout: " + card[3].get(0));
+            for (int k = 0; k < card[3].size() - 1; k++)
+                System.out.print(", " + card[3].get(k));
+        }else
+            System.out.print("\n    prodout: ");
+        System.out.println("\n    faithpoints: "+card[4].get(0));
     }
 
     public void showDevMatrix(){
         ArrayList<String>[] card;
         for(int i=0; i<4;i++)
             for(int j=0;j<3;j++){
-                card = getCardsFromId().get(devMatrix[i][j]);
-                System.out.println("id: "+devMatrix[i][j]);
-                System.out.println("    level: "+card[0].get(0));
-                System.out.println("    color: "+card[1].get(0));
-                System.out.print("    prodin: "+card[2].get(0));
-                for(int k=0;k<card[2].size()-1;k++)
-                    System.out.print("        "+card[2].get(k));
-                if(!card[3].isEmpty()) {
-                    System.out.print("\n    prodout: " + card[3].get(0));
-                    for (int k = 0; k < card[3].size() - 1; k++)
-                        System.out.print("        " + card[3].get(k));
-                }else
-                    System.out.println("\n  prodout: ");
-                System.out.println("\n    faithpoints: "+card[4].get(0));
+                card = cardsFromId.get(devMatrix[i][j]);
+                showDevCard(devMatrix[i][j]);
                 System.out.print("    requirements: "+card[5].get(0));
                 for(int k=0;k<card[5].size()-1;k++)
-                    System.out.print("        "+card[5].get(k));
+                    System.out.print(", "+card[5].get(k));
                 System.out.println("\n");
         }
     }
