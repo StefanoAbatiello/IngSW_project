@@ -73,10 +73,7 @@ public class LeadCard  implements Cards, Points,ResourceCreator {
         return active;
     }
 
-    public void setActive(boolean active) throws InvalidActiveParameterException {
-        if (!active)
-            throw new InvalidActiveParameterException("Invalid Input: active card cannot be deactivated");
-
+    public void setActive(){
         this.active = true;
     }
 

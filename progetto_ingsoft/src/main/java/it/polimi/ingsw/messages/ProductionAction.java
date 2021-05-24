@@ -1,18 +1,34 @@
 package it.polimi.ingsw.messages;
 
-import it.polimi.ingsw.model.Resource;
-
 import java.util.ArrayList;
 
-public class ProductionAction implements GameMessage{
-    ArrayList<Integer> productions;
+public class ProductionAction implements SerializedMessage {
 
-    public ProductionAction(ArrayList<Integer> inputLine) {
-        productions=inputLine;
+    private ArrayList<Integer> cardProductions;
+    private ArrayList<String> personalProduction;
+    private String personalOut;
+    private String leadOut;
+
+    public ProductionAction(ArrayList<Integer> cardProductions, ArrayList<String> personalProduction, String personalOut, String leadOut) {
+        this.cardProductions = cardProductions;
+        this.personalProduction = personalProduction;
+        this.personalOut = personalOut;
+        this.leadOut = leadOut;
     }
 
-    public ArrayList<Integer> getProductions(){
-        return this.productions;
+    public ArrayList<Integer> getCardProductions() {
+        return cardProductions;
     }
 
+    public ArrayList<String> getPersonalProduction() {
+        return personalProduction;
+    }
+
+    public String getPersonalOut() {
+        return personalOut;
+    }
+
+    public String getLeadOut() {
+        return leadOut;
+    }
 }

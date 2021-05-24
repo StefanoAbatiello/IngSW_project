@@ -5,6 +5,7 @@ import java.net.Socket;
 public class VirtualClient {
     private final int id;
     private final String nickName;
+    private Socket socket;
     private Lobby lobby;
     private final ClientHandler clientHandler;
     private final boolean turn =false;
@@ -16,6 +17,10 @@ public class VirtualClient {
         this.id=id;
         nickName=name;
         this.clientHandler=clientHandler;
+    }
+
+    public String getNickName() {
+        return nickName;
     }
 
     public Lobby getLobby() {

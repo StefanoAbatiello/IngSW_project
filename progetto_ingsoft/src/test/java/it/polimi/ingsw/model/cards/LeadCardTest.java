@@ -42,12 +42,13 @@ class LeadCardTest {
         assertNotEquals(Resource.COIN,card.getAbility().getAbilityResource());
     }
 
-    @Test
+    //TODO controller test
+    /*@Test
     void getResExceptionThrowable() {
         LeadDeck deck = new LeadDeck();
         LeadCard wantedCard= deck.getLeadDeck().get(0);
         assertThrows(NoSuchRequirementException.class, () -> wantedCard.getResources() );
-    }
+    }*/
 
     @Test
     void getResourceReqTrue() throws NoSuchRequirementException {
@@ -114,7 +115,7 @@ class LeadCardTest {
         HashMap<Integer, ArrayList<String>> cardsReq= new HashMap<>();
         cardsReq.put(1,color);
         LeadCard card= new LeadCard(49, 2, cardsReq, leadAbility);
-        card.setActive(true);
+        card.setActive();
         assertTrue(card.isActive());
     }
 
