@@ -33,9 +33,6 @@ public class Player implements Points{
         //System.out.println("personalBoard creata"); [Debug]
     }
 
-    public String getName(){
-        return name;
-    }
     //TODO penso metodi in game che chiamano strategy,penso a costruttore di ability
 
     public ArrayList<Resource> getProductionAbility() {

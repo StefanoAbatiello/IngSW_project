@@ -143,7 +143,7 @@ public class Lobby {
                         controller.startGame();
                     }
                 } catch (ResourceNotValidException e) {
-                    server.getClientFromId().get(id).getClientHandler().send(new GetInitialResourcesActions("You choose a not valid resource or shelf"));
+                    server.getClientFromId().get(id).getClientHandler().send(new GetInitialResourcesAction("You choose a not valid resource or shelf"));
                 }
 
             }
