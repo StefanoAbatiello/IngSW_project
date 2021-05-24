@@ -316,6 +316,7 @@ public class Controller {
             getHandlerFromPlayer(id).send(new LobbyMessage("Selector out of range : "+ gameObj));
         else {
             //TODO check fullSupplyException
+            player.setAction(Action.TAKEFROMMARKET);
             game.getMarket().buyResources(gameObj, player);
             ArrayList<Resource> resSupply = player.getResourceSupply().getResources();
             ArrayList<String> supply= (ArrayList<String>) resSupply.stream().map(resource-> Objects.toString(resource, null)).collect(Collectors.toList());
@@ -325,38 +326,108 @@ public class Controller {
         return false;
     }
 
-    public boolean checkProduction(ArrayList<Integer> gameObj, int id) throws ActionAlreadySetException, ResourceNotValidException, CardNotOwnedByPlayerOrNotActiveException {
+    public boolean checkProduction(ArrayList<Integer> cardProd ,ArrayList<String> personalProdIn, Optional<String> personalProdOut, Optional<String> leadProdOut, int id) throws ActionAlreadySetException, ResourceNotValidException, CardNotOwnedByPlayerOrNotActiveException {
         //TODO cosa manda client, produzione personale e leader da controllare
         Player player = game.getPlayers().get(id);
-        Optional<Action> playerAction= Optional.ofNullable(player.getAction());
-        if(playerAction.isPresent())
+        Optional<Action> playerAction = Optional.ofNullable(player.getAction());
+        if (playerAction.isPresent())
             throw new ActionAlreadySetException("The player has already gone through with an action in their turn");
-        else{
-            ArrayList<Resource> totalProdIn= new ArrayList<>();
-            boolean found;
-            ArrayList<DevCard> prodCards=new ArrayList<>();
-            for(Integer idCard:gameObj) {
-                found = false;
-                DevCard card = game.getDevDeck().getCardFromId(idCard);
-                prodCards.add(card);
-                for (DevCard playerCard : player.getPersonalBoard().getDevCardSlot().getActiveCards()) {
-                    if (playerCard.equals(card)) {
-                        found = true;
-                        totalProdIn.addAll(card.getProdIn());
-                    }
-                } if (!found)
-                    throw new CardNotOwnedByPlayerOrNotActiveException("The card with id: "+idCard + " is not owned by the player or it is not active");
-            }
-            if(player.getPersonalBoard().checkUseProd(totalProdIn)) {
+        else if (checkOwnerCards(cardProd,player)) {
+            ArrayList<Resource> totalProdIn = takeAllProdIn(cardProd, StringArrayToResArray(personalProdIn), player);
+            ArrayList<Resource> totalProdOut;
+            if(checkResourcePlayer(totalProdIn, player)) {
                 player.setAction(Action.ACTIVATEPRODUCTION);
-                for (DevCard card : prodCards)
-                    player.getPersonalBoard().getStrongBox().addInStrongbox(card.getProdOut());
-            }else
-                throw new ResourceNotValidException("The player does not have enough resources to abilitate the productions");
+                totalProdOut = takeAllProdOut(cardProd, StringArrayToResArray(personalProdIn), personalProdOut, leadProdOut, id);
+                player.getPersonalBoard().getStrongBox().addInStrongbox(totalProdOut);
+                return true;
+            }
+
         }
-        return true;
+        return false;
     }
 
+    private boolean checkResourcePlayer(ArrayList<Resource> totalProdIn, Player player) {
+        List<Resource>  playerResources= Stream.concat(player.getPersonalBoard().getStrongBox().getStrongboxContent().stream(),player.getPersonalBoard().getWarehouseDepots().getResources().stream()).collect(Collectors.toList());
+        for(int i=0;i<2;i++) {
+            if (player.getPersonalBoard().getSpecialShelves().get(i).isPresent())
+                if (!player.getPersonalBoard().getSpecialShelves().get(i).get().getSpecialSlots().isEmpty())
+                    playerResources.addAll(player.getPersonalBoard().getSpecialShelves().get(i).get().getSpecialSlots());
+        }
+        totalProdIn.removeIf(playerResources::contains);
+        if(totalProdIn.isEmpty())
+            return true;
+        else
+            return false;
+    }
+
+    private ArrayList<Resource> takeAllProdIn(ArrayList<Integer> cardProd ,ArrayList<Resource> personalProdIn, Player player) {
+        ArrayList<Resource> totalProdIn = new ArrayList<>();
+        ArrayList<DevCard> prodDevs = new ArrayList<>();
+        ArrayList<LeadCard> prodLeads = new ArrayList<>();
+        cardProd.stream().filter(integer -> integer > 0 && integer < 49).forEach(integer -> {
+            DevCard dev = game.getDevDeck().getCardFromId(integer);
+            prodDevs.add(dev);
+        });
+        cardProd.stream().filter(integer -> integer > 48 && integer < 65).forEach(integer -> {
+            LeadCard lead = player.getCardFromId(integer);
+            prodLeads.add(lead);
+        });
+        if (!prodDevs.isEmpty())
+            prodDevs.forEach(card -> {
+                ArrayList<Resource> prodIn = card.getProdIn();
+                totalProdIn.addAll(prodIn);
+            });
+        if (!prodLeads.isEmpty())
+            prodLeads.forEach(card -> {
+                Resource prodIn = card.getAbility().getAbilityResource();
+                totalProdIn.add(prodIn);
+            });
+        if (!personalProdIn.isEmpty())
+            totalProdIn.addAll(personalProdIn);
+
+       return totalProdIn;
+    }
+
+    private ArrayList<Resource> takeAllProdOut(ArrayList<Integer> cardProd ,ArrayList<Resource> personalProdIn, Optional<String> personalProdOut,Optional<String> leadProdOut, int id) {
+        ArrayList<Resource> totalProdOut = new ArrayList<>();
+        ArrayList<DevCard> prodDevs = new ArrayList<>();
+        cardProd.stream().filter(integer -> integer > 0 && integer < 49).forEach(integer -> {
+            DevCard dev = game.getDevDeck().getCardFromId(integer);
+            prodDevs.add(dev);
+        });
+        prodDevs.forEach(card -> {
+                ArrayList<Resource> prodOut = card.getProdOut();
+                totalProdOut.addAll(prodOut);
+            });
+        if(!(cardProd.stream().anyMatch(integer -> integer > 48)))
+            if(leadProdOut.isPresent()) {
+                totalProdOut.add(Resource.valueOf(leadProdOut.get()));
+                game.getPlayers().get(id).getPersonalBoard().getFaithMarker().updatePosition();
+            }else
+                getHandlerFromPlayer(id).send(new LobbyMessage("Prod Out of the LeadCard requested missing"));
+        if(!personalProdIn.isEmpty())
+            if(personalProdOut.isPresent())
+                totalProdOut.add(Resource.valueOf(personalProdOut.get()));
+            else
+                getHandlerFromPlayer(id).send(new LobbyMessage("Prod Out of the personal production requested missing"));
+
+        return totalProdOut;
+    }
+
+    private boolean checkOwnerCards(ArrayList<Integer> cardsId,Player player){
+        ArrayList<Integer> playerCards= new ArrayList<>();
+
+        player.getPersonalBoard().getDevCardSlot().getDevCards().stream().forEach(card->{int id=card.getId();playerCards.add(id);});
+        player.getLeadCards().stream().forEach(card->{int id=card.getId();playerCards.add(id);});
+
+        if(playerCards.containsAll(cardsId))
+            return true;
+        else
+            return false;
+
+
+
+    }
     public boolean checkLeadActivation(int gameObj, int id) {
         Player player = game.getPlayers().get(id);
         LeadCard card;
@@ -497,19 +568,6 @@ public class Controller {
         return true;
     }
 
-    /*public boolean checkTakeResFromSupply(String gameObj, int id) {
-        //controllo strongbox non cambiato
-        Player player = game.getPlayers().get(id);
-        ArrayList<Resource> oldResources = new ArrayList<>(player.getPersonalBoard().getWarehouseDepots().getResources());
-        oldResources.addAll()
-        if(!player.getPersonalBoard().getSpecialShelves().isEmpty()) {
-            for(int i=0;i<2;i++)
-                if (player.getPersonalBoard().getSpecialShelves().get(i).isPresent())
-                    oldResources.addAll(player.getPersonalBoard().getSpecialShelves().get(i).get().getSpecialSlots());
-        }
-
-        return true;
-    }*/
 
     private ClientHandler getHandlerFromPlayer(String name){
         int id = server.getIDFromName().get(name);

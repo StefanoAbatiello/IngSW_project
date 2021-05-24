@@ -9,6 +9,7 @@ import it.polimi.ingsw.model.Resource;
 import it.polimi.ingsw.model.cards.cardExceptions.*;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class Lobby {
     private final MainServer server;
@@ -145,7 +146,7 @@ public class Lobby {
                         result = new ActionAnswer("carta" + gameObj + "comprata");
                     }
                 } catch (ActionAlreadySetException actionAlreadySetException) {
-                    actionAlreadySetException.printStackTrace();
+                    actualPlayers.get(id).getClientHandler().send(new ActionAlreadySet("Actions already set for this player"));
                 } catch (InvalidSlotException e) {
                     //TODO send ask new slot
                 } catch (ResourceNotValidException e) {
@@ -169,7 +170,7 @@ public class Lobby {
                 } catch (FullSupplyException e) {
                     e.printStackTrace();
                 } catch (ActionAlreadySetException actionAlreadySetException) {
-                    actionAlreadySetException.printStackTrace();
+                    actualPlayers.get(id).getClientHandler().send(new ActionAlreadySet("Actions already set for this player"));
                 }
             }
         }
@@ -177,10 +178,13 @@ public class Lobby {
         //5-gestisco le produzioni scelte un giocatore
         else if (input instanceof ProductionAction) {
             if(stateOfGame==GameState.ONGOING) {
-                gameObj = ((ProductionAction) input).getCardProductions();
+                ArrayList<Integer> cardProd= ((ProductionAction) input).getCardProductions();
+                ArrayList<String> personalProdIn= ((ProductionAction) input).getPersProdIn();
+                Optional<String> personalProdOut=((ProductionAction) input).getPersProdOut();
+                Optional<String> leadProdOut= ((ProductionAction) input).getLeadProdOut();
                 try {
-                    if (controller.checkProduction((ArrayList<Integer>) gameObj, id)) {
-                        result = new ActionAnswer("mercato cambiato con successo (da coordinata: " + gameObj + " )");
+                    if (controller.checkProduction(cardProd, personalProdIn, personalProdOut, leadProdOut, id)) {
+                        result = new ActionAnswer("produzioni effettuate \n(carte: " + cardProd + "\npersonal:"+personalProdIn+" )");
                     }
                 } catch (ActionAlreadySetException actionAlreadySetException) {
                     actualPlayers.get(id).getClientHandler().send(new ActionAlreadySet("Actions already set for this player"));

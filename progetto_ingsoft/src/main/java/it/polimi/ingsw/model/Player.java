@@ -121,6 +121,14 @@ public class Player implements Points{
         return potentialResource;
     }
 
+    public LeadCard getCardFromId(int id){
+        for(LeadCard card: leadCards) {
+            if (card.getId() == id)
+                return card;
+        }
+        //TODO exception
+        return null;
+    }
 
     public ResourceSupply getResourceSupply() {
         return  resourceSupply;
