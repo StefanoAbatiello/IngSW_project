@@ -1,12 +1,12 @@
-package it.polimi.ingsw.messages;
+package it.polimi.ingsw.messages.answerMessages;
 
 import it.polimi.ingsw.messages.SerializedMessage;
 
-public class NumOfPlayersAction implements SerializedMessage {
+public class NumOfPlayersAnswer implements SerializedMessage {
 
     private int playersNum;
 
-    public NumOfPlayersAction(int playersNum) {
+    public NumOfPlayersAnswer(int playersNum) {
         this.playersNum = playersNum;
     }
 

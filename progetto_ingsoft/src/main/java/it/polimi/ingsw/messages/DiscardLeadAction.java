@@ -1,4 +1,4 @@
-package it.polimi.ingsw.gameActions;
+package it.polimi.ingsw.messages;
 
 import it.polimi.ingsw.messages.GameMessage;
 
