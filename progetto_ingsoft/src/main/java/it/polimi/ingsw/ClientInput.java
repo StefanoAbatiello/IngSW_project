@@ -1,21 +1,21 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.gameActions.ActiveLeadAction;
-import it.polimi.ingsw.gameActions.DiscardLeadAction;
+import it.polimi.ingsw.messages.ActiveLeadAction;
+import it.polimi.ingsw.messages.DiscardLeadAction;
 import it.polimi.ingsw.messages.*;
+import it.polimi.ingsw.messages.answerMessages.NumOfPlayersAnswer;
 
-import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ClientInput implements Runnable{
 
-    private MainClient client;
+    private ClientCLI client;
     private final ObjectOutputStream socketOut;
     private Boolean mainAction;
 
-    public ClientInput(MainClient client, ObjectOutputStream socketOut) {
+    public ClientInput(ClientCLI client, ObjectOutputStream socketOut) {
         this.client = client;
         this.socketOut = socketOut;
         this.mainAction=false;
@@ -27,7 +27,7 @@ public class ClientInput implements Runnable{
         Scanner scanner=new Scanner(System.in);
         while (true) {
             String input = scanner.nextLine();
-            inputHandler(input);
+            inputHandler(input.replace(" ",""));
         }
     }
 
@@ -50,7 +50,7 @@ public class ClientInput implements Runnable{
                 int num = Integer.parseInt(string);
                 if(num>=0 && num<=3) {
                     System.out.println("stai creando una lobby con altri " + num + " giocatori");
-                    client.send(new NumOfPlayersAction(num));
+                    client.send(new NumOfPlayersAnswer(num));
                 }else
                     System.out.println("Number of player selected not valid. Please type again " +
                             "\"PlayersNumber:[num of player]\"");
@@ -61,10 +61,10 @@ public class ClientInput implements Runnable{
         }
 
         //4-choose initial resource
-        else if(input.startsWith("InitialResource:") && input.contains(" in shelf:")){
+        else if(input.startsWith("InitialResource:") && input.contains("inshelf:")){
             input= input.replace("InitialResource:","").toUpperCase();
             String resource= "";
-            String[] words=input.split(" IN SHELF:");
+            String[] words=input.split("INSHELF:");
             resource=words[0];
             try {
                 int shelfNum = Integer.parseInt(words[1]);
@@ -81,7 +81,7 @@ public class ClientInput implements Runnable{
 
         //TODO sistemare metodo con gli id delle carte
         //5-choose which leader cards hold
-        else if(input.startsWith("ChosenLeads:")){
+        else if(input.startsWith("ChosenLeads:") && input.contains(",")){
             input=input.replace("ChosenLeads:","");
             ArrayList<Integer> chosenId = new ArrayList<>();
             String[] words= input.split(",");
@@ -176,7 +176,7 @@ public class ClientInput implements Runnable{
         }
 
         //11-request to activate a leader card
-        else if(input.startsWith("ActiveLeadCard")){
+        else if(input.startsWith("ActiveLeadCard:")){
             if (!mainAction) {
                 mainAction=true;
                 input = input.replace("ActiveLeadCard:", "");
@@ -190,7 +190,29 @@ public class ClientInput implements Runnable{
             }
         }
 
-        //12-request to discard a leader card
+        //12-request of put new resources in warehouse
+        else if(input.startsWith("PutNewResources:")){
+            input=input.replace("PutNewResources:","").toUpperCase();
+            String[] commands = input.split(",");
+            ArrayList<String>[] warehouse=client.getViewCLI().getWarehouse().clone();
+            for(String command:commands){
+                if(command.contains("INSHELF")) {
+                    String[] word = command.split("INSHELF");
+                    if (word[0].equalsIgnoreCase("COIN")||word[0].equalsIgnoreCase("SERVANT")||word[0].equalsIgnoreCase("SHIELD")||word[0].equalsIgnoreCase("STONE")){
+                        warehouse[Integer.parseInt(word[1])].add(word[0]);
+                    }else{
+                        System.out.println("Input not valid, please type again");
+                        return;
+                    }
+                }else {
+                    System.out.println("Input not valid, please type again");
+                    return;
+                }
+            }
+            client.send(new ResourceInSupplyAction(warehouse));
+        }
+
+        //13-request to discard a leader card
         else if(input.startsWith("DiscardLeadCard")){
             if (!mainAction) {
                 mainAction=true;
@@ -205,18 +227,19 @@ public class ClientInput implements Runnable{
             }
         }
 
-        //13-show market
+        //14-show market
         else if(input.equals("ShowMarket")){
             System.out.println("this is the market:");
             client.getViewCLI().showMarket();
         }
 
-        //14-show dev matrix
+        //15-show dev matrix
         else if(input.equals("ShowDevCardMatrix")){
             System.out.println("this are dev cards buyable:");
             client.getViewCLI().showDevMatrix();
         }
 
+        //16-End of the turn
         else if(input.equals("EndTurn")){
             if(mainAction){
                 client.send(new TurnChangeMessage());

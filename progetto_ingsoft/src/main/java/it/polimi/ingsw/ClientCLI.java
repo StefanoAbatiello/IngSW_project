@@ -8,13 +8,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.*;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class MainClient implements Executor{
+public class ClientCLI implements Runnable{
+
     private String ip;
     private int port;
     private PongObserver pongObserver;
@@ -24,51 +23,27 @@ public class MainClient implements Executor{
     private static ClientInput keyboardReader;
     private ViewCLI viewCLI;
     private ClientCardParser parser;
-    private static ExecutorService executors;
+    private ExecutorService executors;
 
-    public ObjectInputStream getSocketIn() {
-        return socketIn;
-    }
-
-    public ObjectOutputStream getSocketOut() {
-        return socketOut;
-    }
-
-    /*public MainClient(String ip, int port) {
+    public ClientCLI(String ip, int port) {
         this.ip = ip;
         this.port = port;
         parser = new ClientCardParser(this);
         executors= Executors.newCachedThreadPool();
     }
 
-     */
-
-    public static void main(String[] args) {
-        ClientCLI client = new ClientCLI("127.0.0.1", 1337);
-        new Thread(client).start();
-        /*executors= Executors.newCachedThreadPool();
-        executors.submit(new Runnable() {
-            @Override
-            public void run() {
-                client.run();
-            }
-        });
-
-         */
-    }
-    /*
-    private void run() {
+    public void run() {
         try {
             socket = new Socket(ip, port);
             System.out.println("Connection established");
             socketIn = new ObjectInputStream(socket.getInputStream());
             socketOut = new ObjectOutputStream(socket.getOutputStream());
-        }catch (IOException e) {
+        }catch (IOException | NullPointerException e) {
             disconnect();
         }
         keyboardReader = new ClientInput(this, socketOut);
-        new Thread(keyboardReader).start();
-        pongObserver = new PongObserver(this, socketOut);
+        executors.submit(keyboardReader);
+        pongObserver = new PongObserver(this);
         viewCLI = new ViewCLI();
         SerializedMessage input;
         try {
@@ -76,7 +51,7 @@ public class MainClient implements Executor{
                 input = (SerializedMessage) socketIn.readObject();
                 actionHandler(input, socketIn, socketOut);
             }
-        } catch (ClassNotFoundException | NoSuchElementException | IOException e) {
+        } catch (ClassNotFoundException | IOException | NullPointerException e) {
             System.out.println("Connection closed");
             disconnect();
         } finally {
@@ -84,7 +59,7 @@ public class MainClient implements Executor{
         }
     }
 
-    public void send(SerializedMessage message){
+    public synchronized void send(SerializedMessage message){
         try {
             socketOut.writeObject(message);
             socketOut.flush();
@@ -93,7 +68,16 @@ public class MainClient implements Executor{
         }
     }
 
-    private void actionHandler(SerializedMessage input, ObjectInputStream socketIn, ObjectOutputStream socketOut) {
+    public void asyncSend(PingMessage pingMessage) {
+        executors.submit(new Runnable() {
+            @Override
+            public void run() {
+                send(pingMessage);
+            }
+        });
+    }
+
+    private synchronized void actionHandler(SerializedMessage input, ObjectInputStream socketIn, ObjectOutputStream socketOut) {
         //1-gestisco la richiesta del nickname
         if (input instanceof NickNameAction) {
             System.out.println(((NickNameAction) input).getMessage());
@@ -113,9 +97,11 @@ public class MainClient implements Executor{
 
         //4-gestione dei messaggio di ping
         else if (input instanceof PingMessage) {
+            System.out.println("ho ricevuto un ping");
             if (!pongObserver.isStarted()) {
                 //System.out.println("era il primo ping, faccio partire il pongObserver");[Debug]
-                new Thread(pongObserver).start();
+                executors.submit(pongObserver);
+                //new Thread(pongObserver).start();
                 //System.out.println("pongObserver partito");[Debug]
             } else
                 pongObserver.setResponse(true);
@@ -235,17 +221,12 @@ public class MainClient implements Executor{
             socketIn.close();
             socketOut.close();
             socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException | NullPointerException e) {
+            System.out.println("Socket closed yet");
         }
     }
 
     public ViewCLI getViewCLI() {
         return viewCLI;
-    }
-*/
-    @Override
-    public void execute(Runnable command) {
-
     }
 }

@@ -42,9 +42,6 @@ public class ViewCLI {
     public ViewCLI() {
         devCardsId=new HashMap<>();
         leadCardsId=new HashMap<>();
-        warehouse=new ArrayList[3];
-        for(int i=0;i<3;i++)
-            warehouse[i] = new ArrayList<>();
         strongbox = new int[4];
         for (int i=0;i<4;i++)
             strongbox[i]=0;
@@ -60,6 +57,10 @@ public class ViewCLI {
 
     public void setWarehouse(ArrayList<String>[] warehouse) {
         this.warehouse = warehouse;
+    }
+
+    public ArrayList<String>[] getWarehouse(){
+        return warehouse;
     }
 
     public void setDevMatrix(int[][] devMatrix) {

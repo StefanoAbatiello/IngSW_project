@@ -15,12 +15,12 @@ import java.util.Iterator;
 
 public class ClientCardParser {
 
-    private MainClient client;
+    private ClientCLI client;
     private JSONArray devCardList;
     private JSONArray leadCardList;
     private int cardId;
 
-    public ClientCardParser(MainClient client) {
+    public ClientCardParser(ClientCLI client) {
         this.client=client;
         JSONParser jsonP = new JSONParser();
         FileReader reader;
