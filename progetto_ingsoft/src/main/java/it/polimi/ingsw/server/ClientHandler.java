@@ -1,6 +1,7 @@
 package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.messages.*;
+import it.polimi.ingsw.messages.answerMessages.NumOfPlayersAnswer;
 
 import java.io.*;
 import java.net.Socket;
@@ -8,16 +9,16 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
-import it.polimi.ingsw.server.ConsoleColors;
 
 public class ClientHandler implements Runnable {
-    private Socket socket;
-    private MainServer server;
+    private final Socket socket;
+    private final MainServer server;
     private ObjectInputStream inputStreamObj;
     private ObjectOutputStream outputStreamObj;
     private int clientID;
     private boolean active;
     private PingObserver pingObserver;
+    private boolean pingReceived;
 
     public MainServer getServer() {
         return server;
@@ -31,7 +32,7 @@ public class ClientHandler implements Runnable {
         try {
             socket.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Socket closed yet");
         }
     }
 
@@ -56,6 +57,7 @@ public class ClientHandler implements Runnable {
         } catch (IOException e) {
             System.err.println("Error during socket creation");
         }
+        this.pingReceived=false;
     }
 
     public boolean isActive() {
@@ -79,9 +81,7 @@ public class ClientHandler implements Runnable {
                  input = (SerializedMessage) inputStreamObj.readObject();
                  System.out.println("ho ricevuto un messaggio");
                  if(!pingHandler(input)){
-                     System.out.println("non è un ping");
                      if(!actionHandler( input)){
-                         System.out.println("non è login");
                          server.getClientFromId().get(clientID).getLobby().actionHandler(input, clientID);
                      }
                  }
@@ -91,7 +91,7 @@ public class ClientHandler implements Runnable {
             socket.close();
         }
         catch (IOException | ClassNotFoundException e) {
-            System.err.println(e.getMessage());
+            System.err.println("Client not reachable");
         }
     }
 
@@ -99,9 +99,10 @@ public class ClientHandler implements Runnable {
      * @param input is message sent by the client
      * @return false if input is not the type of ping
      */
-    private boolean pingHandler(SerializedMessage input) {
+    private synchronized boolean pingHandler(SerializedMessage input) {
         if(input instanceof PingMessage) {
-            pingObserver.setResponse(true);
+            System.out.println("ping message client "+clientID);
+            pingReceived=true;
             return true;
         }
         return false;
@@ -119,20 +120,22 @@ public class ClientHandler implements Runnable {
             System.out.println("sto creando il pingObserver");
             pingObserver = new PingObserver(this);
             System.out.println("sto salvando il pingObserver");
-            MainServer.getConnectionServer().addPingObserver(pingObserver);
+            server.getConnectionServer().addPingObserver(pingObserver);
             System.out.println("ho salvato il pingObserver");
             if (clientID >= 0) {
                 if (checkFirstPlayer(clientID))
-                    send(new RequestNumOfPlayers(ConsoleColors.YELLOW_BACKGROUND_BRIGHT + ConsoleColors.BLUE_BOLD +"YOU ARE THE HOST OF A NEW LOBBY"
-                            + " CHOOSE HOW MANY PLAYERS YOU WANT TO CHALLENGE [0 to 3]"+ConsoleColors.RESET));
-            }else
-                send(new NickNameAction(ConsoleColors.RED_UNDERLINED +"Nickname already taken." + " Please choose another one:" + ConsoleColors.RESET));
+                    send(new RequestNumOfPlayers(ConsoleColors.YELLOW_BACKGROUND_BRIGHT + ConsoleColors.BLUE_BOLD + "YOU ARE THE HOST OF A NEW LOBBY"
+                            + " CHOOSE HOW MANY PLAYERS YOU WANT TO CHALLENGE [0 to 3]" + ConsoleColors.RESET));
+            } else if (clientID == -1)
+                send(new NickNameAction("Nickname not valid, please choose an other one"));
+            else  if(clientID==-2)
+                send(new NickNameAction(ConsoleColors.RED_UNDERLINED + "Nickname already taken." + " Please choose another one:" + ConsoleColors.RESET));
             return true;
         }
 
         //2-gestisco ricezione della dimensione della lobby in creazione
-        if (input instanceof NumOfPlayersAction) {
-            int num = ((NumOfPlayersAction) input).getPlayersNum();
+        if (input instanceof NumOfPlayersAnswer) {
+            int num = ((NumOfPlayersAnswer) input).getPlayersNum();
             System.out.println("ho ricevuto: " +num);
             if (num < 0 || num > 3)
                 send(new RequestNumOfPlayers("Number of Player not valid. Please type a valid number [0 to 3]"));
@@ -180,36 +183,40 @@ public class ClientHandler implements Runnable {
     private int checkNickName(NickNameAction message) {
         int ID;
         System.out.println("sei dentro checknickname con: " + message.getMessage());
-        for (String name : server.getNameFromId().values()) {
-            System.out.println(name);
-            if (message.getMessage().equals(name)) {
-                ID = server.getIDFromName().get(name);
-                System.out.println("nickname già scelto dall'utente: "+ID);
-                if(server.getClientFromId().containsKey(ID)) {
-                    System.out.println("l'utente " + ID + "è online. Il nuovo utente deve cambiare nickname");
-                    return -1;
-                }else if (server.getLobbyFromClientID().containsKey(ID)) {
-                    System.out.println("l'utente" + ID + "non è collegato, ma esiste partita in cui giocava");
-                    Lobby lobby = server.getLobbyFromClientID().get(ID);
-                    if (lobby.getStateOfGame() != GameState.ENDED) {
-                        System.out.println("la partita è in corso, il giocatore può essere ricollegato");
-                        reconnectClient(ID, name);
-                        lobby.reinsertPlayer(ID);
-                        //TODO ricorda modifica lista virtual client in lobby quando disconnessione, gestisco poi riconessione e aggiunta
-                        lobby.sendAll( new LobbyMessage(name + " is back in the game"));
+        String newName = message.getMessage();
+        if(!newName.isEmpty()) {
+            for (String name : server.getNameFromId().values()) {
+                System.out.println(name);
+                if (newName.equals(name)) {
+                    ID = server.getIDFromName().get(name);
+                    System.out.println("nickname già scelto dall'utente: " + ID);
+                    if (server.getClientFromId().containsKey(ID)) {
+                        System.out.println("l'utente " + ID + "è online. Il nuovo utente deve cambiare nickname");
+                        return -2;
+                    } else if (server.getLobbyFromClientID().containsKey(ID)) {
+                        System.out.println("l'utente" + ID + "non è collegato, ma esiste partita in cui giocava");
+                        Lobby lobby = server.getLobbyFromClientID().get(ID);
+                        if (lobby.getStateOfGame() != GameState.ENDED) {
+                            System.out.println("la partita è in corso, il giocatore può essere ricollegato");
+                            reconnectClient(ID, name);
+                            lobby.reinsertPlayer(ID);
+                            //TODO ricorda modifica lista virtual client in lobby quando disconnessione, gestisco poi riconessione e aggiunta
+                            lobby.sendAll(new LobbyMessage(name + " is back in the game"));
+                            return ID;
+                        } else
+                            reconnectClient(ID, name);
                         return ID;
-                    } else
-                        reconnectClient(ID, name);
-                    return ID;
-                } else {
-                    ID = connectClient(message.getMessage());
-                    return ID;
+                    } else {
+                        ID = connectClient(message.getMessage());
+                        return ID;
+                    }
                 }
             }
+            ID = connectClient(message.getMessage());
+            return ID;
         }
-        ID = connectClient(message.getMessage());
-        return ID;
-}
+        return -1;
+    }
 
     /**
      * @param name is the user's nickname
@@ -265,6 +272,14 @@ public class ClientHandler implements Runnable {
 
     public PingObserver getPingObserver() {
         return pingObserver;
+    }
+
+    public boolean getPingReceived() {
+        return pingReceived;
+    }
+
+    public void setPingRecieved(boolean b) {
+        this.pingReceived=b;
     }
 }
 

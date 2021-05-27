@@ -6,14 +6,14 @@ import it.polimi.ingsw.messages.LobbyMessage;
 import java.util.*;
 
 public class MainServer {
-    private static ConnectionServer connectionServer;
+    private final ConnectionServer connectionServer;
     //this map identifies a client from their id;
     private final Map<Integer, VirtualClient> clientFromId;
     private final Map<Integer,String> nameFromId;
     private final Map<String,Integer> IDFromName;
     private final Map<Integer, Lobby> lobbyFromClientID;
     private int nextLobbyId;
-    private static ServerInput keyboardReader;
+    private final ServerInput keyboardReader;
 
     public Map<Integer, VirtualClient> getClientFromId() {
         return clientFromId;
@@ -45,7 +45,9 @@ public class MainServer {
         this.nameFromId = new HashMap<>();
         this.IDFromName = new HashMap<>();
         nextLobbyId = 0;
-        keyboardReader =new ServerInput();
+        keyboardReader =new ServerInput(this);
+        new Thread(connectionServer).start();
+        new Thread(keyboardReader).start();
     }
 
     public static void main(String[] args) {
@@ -61,11 +63,11 @@ public class MainServer {
         /*ExecutorService executorService= Executors.newCachedThreadPool();
         executorService.submit(mainServer.connectionServer);
          */
-        new Thread(connectionServer).start();
-        new Thread(keyboardReader).start();
+        //new Thread(connectionServer).start();
+        //new Thread(keyboardReader).start();
     }
 
-    public static ConnectionServer getConnectionServer() {
+    public ConnectionServer getConnectionServer() {
         return connectionServer;
     }
 

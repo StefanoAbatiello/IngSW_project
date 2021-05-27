@@ -4,7 +4,6 @@ package it.polimi.ingsw.server;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.messages.*;
-import it.polimi.ingsw.gameActions.*;
 import it.polimi.ingsw.model.Resource;
 import it.polimi.ingsw.model.cards.cardExceptions.*;
 
@@ -63,14 +62,17 @@ public class Lobby {
         if(getStateOfGame()==GameState.PREPARATION1||getStateOfGame()==GameState.PREPARATION2||getStateOfGame()==GameState.ONGOING){
             System.out.println("la partita è già iniziata");
             controller.insertPlayerInOrder(id,name);
+            this.seatsAvailable--;
+            controller.sendInfoOfgame(id,name);
         } else{
             System.out.println("la partita non è ancora iniziata. Inserisco il giocatore con ultimo");
             actualPlayers.add(server.getClientFromId().get(id));
+            this.seatsAvailable--;
+            if (isLobbyFull())
+                controller.startGame();
         }
-        this.seatsAvailable--;
         server.getClientFromId().get(id).giveLobby(server.getLobbyFromClientID().get(id));
-        System.out.println("ho inserito il giocatore nella lobby, gli invio le info");
-        controller.sendInfoOfgame(id,name);
+        System.out.println("ho inserito il giocatore nella lobby");
         return actualPlayers;
     }
 
@@ -104,9 +106,8 @@ public class Lobby {
     }
 
 //TODO nel clientHandler stampo "azione giocatore n:" e il risultato di tale azione
-    public void actionHandler(SerializedMessage input, int id) {
+    public synchronized void actionHandler(SerializedMessage input, int id) {
         //TODO ragiono su inizializzazione
-        ActionAnswer result = null;
         //TODO ragiono su oggetti che passa il client
         Object gameObj;
         Object gameObj2;
@@ -151,17 +152,17 @@ public class Lobby {
         }
 
         //3- gestisco l'acquisto di una devCard da parte di un giocatore
-        else if (input instanceof BuyCardAction) {
+        else if (input instanceof BuyCardAction && server.getClientFromId().get(id).equals(controller.getActualPlayerTurn())) {
             if(stateOfGame==GameState.ONGOING) {
                 gameObj = ((BuyCardAction) input).getCard();
                 gameObj2 = ((BuyCardAction) input).getSlot();
 
                 try {
                     if (controller.checkBuy((int) gameObj, id, (int) gameObj2)) {
-                        result = new ActionAnswer("carta" + gameObj + "comprata");
+                        //result = new ActionAnswer("carta" + gameObj + "comprata");
                     }
                 } catch (ActionAlreadySetException actionAlreadySetException) {
-                    actualPlayers.get(id).getClientHandler().send(new ActionAlreadySet("Actions already set for this player"));
+                    actualPlayers.get(id).getClientHandler().send(new LobbyMessage("Actions already set for this player"));
                 } catch (InvalidSlotException e) {
                     //TODO send ask new slot
                 } catch (ResourceNotValidException e) {
@@ -173,25 +174,32 @@ public class Lobby {
         }
 
         //4-gestisco l'acquisizione delle risorse dal market da parte di un giocatore
-        else if (input instanceof MarketAction) {
+        else if (input instanceof MarketAction && server.getClientFromId().get(id).equals(controller.getActualPlayerTurn())) {
             if(stateOfGame==GameState.ONGOING) {
-                gameObj = ((MarketAction) input).getCoordinate();
+                System.out.println("è una richiesta di acquisire nuove risorse");
+                int selector = ((MarketAction) input).getCoordinate();
                 try {
-                    if (controller.checkMarket((int) gameObj, id)) {
-                        result = new ActionAnswer("mercato cambiato con successo (da coordinata: " + gameObj + " )");
-                    }
+                    System.out.println("controllo se è possibile eseguire la richiesta");
+                    controller.checkMarket(selector, id);
                 } catch (NotAcceptableSelectorException e) {
-                    e.printStackTrace();
+                    server.getClientFromId().get(id).getClientHandler().send(new LobbyMessage("Coordinate not valid, please chose another one"));
                 } catch (FullSupplyException e) {
                     e.printStackTrace();
                 } catch (ActionAlreadySetException actionAlreadySetException) {
-                    actualPlayers.get(id).getClientHandler().send(new ActionAlreadySet("Actions already set for this player"));
-                }
+                    server.getClientFromId().get(id).getClientHandler().send(new LobbyMessage("Main action done yet"));                }
+            }
+        }
+
+        //6-gestisco il posizionamento delle nuove risorse prese dal supply
+        else if(input instanceof ResourceInSupplyAction && server.getClientFromId().get(id).equals(controller.getActualPlayerTurn())){
+            System.out.println("è una richiesta di posizionare le nuove risorse");
+            if(stateOfGame==GameState.ONGOING){
+               controller.checkPositionOfResources(((ResourceInSupplyAction)input).getWarehouse(),id);
             }
         }
 
         //5-gestisco le produzioni scelte un giocatore
-        else if (input instanceof ProductionAction) {
+        else if (input instanceof ProductionAction && server.getClientFromId().get(id).equals(controller.getActualPlayerTurn())) {
             if(stateOfGame==GameState.ONGOING) {
                 ArrayList<Integer> cardProd= ((ProductionAction) input).getCardProductions();
                 ArrayList<String> personalProdIn= ((ProductionAction) input).getPersProdIn();
@@ -199,10 +207,10 @@ public class Lobby {
                 Optional<String> leadProdOut= ((ProductionAction) input).getLeadProdOut();
                 try {
                     if (controller.checkProduction(cardProd, personalProdIn, personalProdOut, leadProdOut, id)) {
-                        result = new ActionAnswer("produzioni effettuate \n(carte: " + cardProd + "\npersonal:"+personalProdIn+" )");
+                        //result = new ActionAnswer("produzioni effettuate \n(carte: " + cardProd + "\npersonal:"+personalProdIn+" )");
                     }
                 } catch (ActionAlreadySetException actionAlreadySetException) {
-                    actualPlayers.get(id).getClientHandler().send(new ActionAlreadySet("Actions already set for this player"));
+                    actualPlayers.get(id).getClientHandler().send(new LobbyMessage("Actions already set for this player"));
                 } catch (CardNotOwnedByPlayerOrNotActiveException e) {
                     e.printStackTrace();
                 } catch (ResourceNotValidException e) {
@@ -212,27 +220,27 @@ public class Lobby {
         }
 
         //6-gestisco l'attivazione di una leader card da parte di un giocatore
-        else if (input instanceof ActiveLeadAction) {
+        else if (input instanceof ActiveLeadAction && server.getClientFromId().get(id).equals(controller.getActualPlayerTurn())) {
             if (stateOfGame == GameState.ONGOING) {
                 gameObj = ((ActiveLeadAction) input).getLead();
                 if (controller.checkLeadActivation((int) gameObj, id)) {
-                    result = new ActionAnswer("lead card attivata: " + gameObj);
+                    //result = new ActionAnswer("lead card attivata: " + gameObj);
                 }
             }
         }
 
         //7-gestisco la scelta di scartare una leader card da parte di un giocatore
-        else if (input instanceof DiscardLeadAction) {
+        else if (input instanceof DiscardLeadAction && server.getClientFromId().get(id).equals(controller.getActualPlayerTurn())) {
             if (stateOfGame == GameState.ONGOING) {
                 gameObj = ((DiscardLeadAction) input).getLead();
                 if (controller.checkDiscardLead((int) gameObj, id)) {
-                    result = new ActionAnswer("lead card scartata: " + gameObj);
+                    //result = new ActionAnswer("lead card scartata: " + gameObj);
                 }
             }
         }
 
         //8-gestisco il cambio del turno dei giocatori
-        else if(input instanceof TurnChangeMessage){
+        else if(input instanceof TurnChangeMessage && server.getClientFromId().get(id).equals(controller.getActualPlayerTurn())){
             if (stateOfGame==GameState.ONGOING){
                 controller.turnUpdate();
             }

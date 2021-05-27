@@ -33,7 +33,7 @@ public class ConnectionServer implements Runnable{
         this.server=server;
         this.executorService= Executors.newCachedThreadPool();
         this.active=true;
-        pingManager = new PingManager();
+        pingManager = new PingManager(server);
         timer=new Timer();
         observers = new ArrayList<>();
     }

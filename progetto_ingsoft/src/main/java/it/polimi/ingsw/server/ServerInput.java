@@ -8,13 +8,19 @@ import static java.lang.Thread.sleep;
 
 public class ServerInput implements Runnable {
 
+    private final MainServer server;
+
+    public ServerInput(MainServer server){
+        this.server=server;
+    }
+
     @Override
     public void run() {
         System.out.println("sto leggendo da tastiera");
         Scanner scanner=new Scanner(System.in);
         while (true){
             if(scanner.next().equalsIgnoreCase("quit")){
-                MainServer.getConnectionServer().setActive(false);
+                server.getConnectionServer().setActive(false);
                 /*try {
                     sleep(10000);
                 } catch (InterruptedException e) {
