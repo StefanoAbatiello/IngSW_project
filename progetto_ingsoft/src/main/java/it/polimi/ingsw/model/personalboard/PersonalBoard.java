@@ -26,6 +26,14 @@ public class PersonalBoard {
         warehouseDepots=new WarehouseDepots();
         //System.out.println("warehousedepots creata, creo strongbox");[Debug]
         strongBox=new StrongBox();
+        ArrayList<Resource> resources=new ArrayList<>();
+        for(int i=0;i<5;i++){
+            resources.add(Resource.COIN);
+            resources.add(Resource.STONE);
+            resources.add(Resource.SHIELD);
+            resources.add(Resource.SERVANT);
+        }
+        strongBox.addInStrongbox(resources);
         //System.out.println("strongbox creata, creo devslot");[Debug]
         devCardSlot=new DevCardSlot();
         //System.out.println("devslot creati, creo specialshelf");[Debug]

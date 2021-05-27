@@ -10,13 +10,15 @@ public class ReconnectionMessage implements SerializedMessage {
     private int faithposition;
     private String [][] simplifiedMarket;
     private int [][] devMatrix;
+    private int[] strongbox;
 
-    public ReconnectionMessage(Map<Integer,Boolean> cardsId, ArrayList<String>[] warehouse, int faithPosition, String[][] simplifiedMarket, int[][] devMatrix) {
+    public ReconnectionMessage(Map<Integer,Boolean> cardsId, ArrayList<String>[] warehouse, int faithPosition, String[][] simplifiedMarket, int[][] devMatrix, int[] strongbox) {
         this.cardsId=cardsId;
         this.warehouse=warehouse;
         this.faithposition=faithPosition;
         this.simplifiedMarket=simplifiedMarket;
         this.devMatrix=devMatrix;
+        this.strongbox=strongbox;
     }
 
     public Map<Integer,Boolean> getCardsId() {

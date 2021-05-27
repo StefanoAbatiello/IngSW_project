@@ -7,6 +7,7 @@ import it.polimi.ingsw.messages.answerMessages.NumOfPlayersAnswer;
 
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class ClientInput implements Runnable{
@@ -133,12 +134,14 @@ public class ClientInput implements Runnable{
                 mainAction=true;
                 input = input.replace("BuyDevCard:", "");
                 try {
-                    int id = Integer.parseInt(input);
+                    String[] word=input.split(",");
+                    int id = Integer.parseInt(word[0]);
+                    int slot=Integer.parseInt(word[1]);
                     int[][] matrix = client.getViewCLI().getDevMatrix();
                     for (int i = 0; i < 4; i++)
                         for (int j = 0; j < 3; j++) {
                             if (matrix[i][j] == id) {
-                                client.send(new BuyCardAction(id));
+                                client.send(new BuyCardAction(id,slot));
                             }
                         }
                 } catch (NumberFormatException e) {
@@ -194,12 +197,34 @@ public class ClientInput implements Runnable{
         else if(input.startsWith("PutNewResources:")){
             input=input.replace("PutNewResources:","").toUpperCase();
             String[] commands = input.split(",");
-            ArrayList<String>[] warehouse=client.getViewCLI().getWarehouse().clone();
+            int dim=client.getViewCLI().getWarehouse().length;
+            System.out.println("mi faccio una copia del warehouse");
+            ArrayList<String>[] warehouse=new ArrayList[dim];
+            for(int i=0;i<dim;i++) {
+                warehouse[i]=new ArrayList<>();
+            }
+            for(int i=0;i<dim;i++) {
+                System.out.println("copia dello shelf "+i);
+                int finalI = i;
+                client.getViewCLI().getWarehouse()[i].forEach(strings -> {
+                    warehouse[finalI].add(strings);
+                });
+            }
+            System.out.println("copia fatta");
             for(String command:commands){
+                System.out.println("valuto validità del comando");
                 if(command.contains("INSHELF")) {
                     String[] word = command.split("INSHELF");
-                    if (word[0].equalsIgnoreCase("COIN")||word[0].equalsIgnoreCase("SERVANT")||word[0].equalsIgnoreCase("SHIELD")||word[0].equalsIgnoreCase("STONE")){
-                        warehouse[Integer.parseInt(word[1])].add(word[0]);
+                    System.out.println("ho separato il comando");
+                    int shelfNum=Integer.parseInt(word[1]);
+                    if ((word[0].equalsIgnoreCase("COIN")||
+                            word[0].equalsIgnoreCase("SERVANT")||
+                            word[0].equalsIgnoreCase("SHIELD")||
+                            word[0].equalsIgnoreCase("STONE")) && shelfNum<dim && shelfNum>=0){
+                        System.out.println("input valido: "+word[0]+" "+shelfNum);
+                        warehouse[shelfNum].add(word[0]);
+                        warehouse[shelfNum].forEach(string->System.out.println("on shelf "+ shelfNum+" ["+string+"]"));
+                        System.out.println("input salvato");
                     }else{
                         System.out.println("Input not valid, please type again");
                         return;
@@ -209,7 +234,9 @@ public class ClientInput implements Runnable{
                     return;
                 }
             }
+            System.out.println("invio il messaggio");
             client.send(new ResourceInSupplyAction(warehouse));
+            System.out.println("messaggio inviato");
         }
 
         //13-request to discard a leader card

@@ -1,7 +1,10 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.messages.ResourceInSupplyRequest;
+import it.polimi.ingsw.messages.answerMessages.CardIDChangeMessage;
+import it.polimi.ingsw.messages.answerMessages.DevMatrixChangeMessage;
 import it.polimi.ingsw.messages.answerMessages.MarketChangeMessage;
+import it.polimi.ingsw.messages.answerMessages.WareHouseChangeMessage;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.Market.*;
 import it.polimi.ingsw.model.personalboard.*;
@@ -68,7 +71,7 @@ public class Controller {
     }
 
     //TODO
-    private VirtualView createVirtualView() {
+    /*private VirtualView createVirtualView() {
         String[][] virtualMarket=game.getMarket().viewMarketBoard();
         int[][] virtualDevCards=new int[4][3];
         int k=0;
@@ -82,6 +85,7 @@ public class Controller {
             virtualFaithPos.add(player.getPersonalBoard().getFaithMarker().getFaithPosition());
         return new VirtualView(virtualMarket,virtualDevCards,virtualFaithPos);
         }//TODO dai le risorse e le 4 carte + scelta 2 carte
+     */
 
     public boolean checkAllPlayersChooseLeads(){
         System.out.println("controllo se tutti hanno scelto le leads");
@@ -206,27 +210,46 @@ public class Controller {
     //TODO methods actions
     //TODO creo mappa
     public boolean checkBuy(int card, int id, int position) throws CardNotOnTableException, ResourceNotValidException, InvalidSlotException, ActionAlreadySetException {
-        Player player = game.getPlayers().get(id);
+        System.out.println("controllo se può comprare la carta");
+        String name=getActualPlayerTurn().getNickName();
+        Player player=game.getPlayers().get(0);
+        for(Player p:game.getPlayers()){
+            if (p.getName().equals(name))
+                player=p;
+        }
         Optional<Action> playerAction= Optional.ofNullable(player.getAction());
         if(playerAction.isPresent())
             throw new ActionAlreadySetException("The player has already gone through with an action in their turn");
         else if(position<0||position>2)
             throw new InvalidSlotException();
         else {
+            System.out.println("ho controllato l'azione e la posizione scelta");
             DevCard[][] upper = DevDeckMatrix.getUpperDevCardsOnTable();
             for (int i = 0; i < 4; i++) {
                 for (int j = 0; j < 3; j++) {
+                    System.out.println(upper[i][j].getId());
+                }
+            }
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < 3; j++) {
                     if (upper[i][j].getId() == card) {
+                        System.out.println("ho trovato la carta");
                         DevCard cardToBuy = game.getDevDeck().getCardFromId(card);
+                        System.out.println("mi sono preso la carta");
                         if (player.getPersonalBoard().removeProdResources(cardToBuy.getRequirements())) {
+                            System.out.println("ha le risorse necessarie");
                             player.setAction(Action.BUYCARD);
                             DevDeckMatrix.buyCard(cardToBuy);
-                            //lobby.sendAll(new DevMatrixChange());
+                            System.out.println("ha comprato la carta, invio la nuova dev matrix");
+                            lobby.sendAll(new DevMatrixChangeMessage(getDevMatrix()));
+                            System.out.println("dev matrix inviata");
                             player.getPersonalBoard().removeResources(cardToBuy.getRequirements());
+                            System.out.println("ho rimosso le risorse usate");
                             player.getPersonalBoard().getDevCardSlot().overlap(cardToBuy, position);
+                            System.out.println("ho posizionato la carta");
+                            getHandlerFromPlayer(id).send(new CardIDChangeMessage(getCardsId(player)));
                             return true;
                         } else
-                            //TODO da resource
                             throw new ResourceNotValidException("The player does not have enough resources to go through with the action");
                     }
                 }
@@ -451,8 +474,9 @@ public class Controller {
                 player=p;
         }
         System.out.println("mi sono salvato il player");
-        boolean result= false;
+
         if (gameObj.length <= 5){
+            System.out.println("DEBUG 1");
             ResourceSupply supply= player.getResourceSupply();
             ArrayList<Resource> newRes= new ArrayList<>();
 
@@ -462,11 +486,13 @@ public class Controller {
 
             if(!supply.getResources().isEmpty())
                 allResources.addAll(supply.getResources());
-
-            for(int i=0;i<2;i++)
-                if (player.getPersonalBoard().getSpecialShelves().get(i).isPresent())
-                    allResources.addAll(player.getPersonalBoard().getSpecialShelves().get(i).get().getSpecialSlots());
-
+            System.out.println("DEBUG 2");
+            if(!player.getPersonalBoard().getSpecialShelves().isEmpty()) {
+                for (int i = 0; i < 2; i++)
+                    if (player.getPersonalBoard().getSpecialShelves().get(i).isPresent())
+                        allResources.addAll(player.getPersonalBoard().getSpecialShelves().get(i).get().getSpecialSlots());
+            }
+            System.out.println("DEBUG 3");
             allResources.removeIf(newRes::contains);
 
             if(!allResources.isEmpty())
@@ -479,32 +505,50 @@ public class Controller {
                         }
                     if(supply.getResources().isEmpty())
                         for (int i = 0; i < game.getPlayers().size(); i++)
-                                if (game.getPlayers().get(i) != player) {
-                                    game.getPlayers().get(i).getPersonalBoard().getFaithMarker().updatePosition();
-                                    lobby.getPlayers().get(i).getClientHandler().send(new LobbyMessage(player.getName() + " has discard " + num + "resources, you gained " + num + "faithpoints"));
-                                }
-                    else
-                       getHandlerFromPlayer(id).send(new LobbyMessage("Resources chosen out of bound, please verify you put the right resources in your board"));
-
-                }else
+                            if (game.getPlayers().get(i) != player) {
+                                game.getPlayers().get(i).getPersonalBoard().getFaithMarker().updatePosition();
+                                lobby.getPlayers().get(i).getClientHandler().send(new LobbyMessage(player.getName() + " has discard " + num + "resources, you gained " + num + "faithpoints"));
+                            }
+                            else {
+                                getHandlerFromPlayer(id).send(new LobbyMessage("Resources chosen out of bound, please verify you put the right resources in your board"));
+                            }
+                }else{
                     getHandlerFromPlayer(id).send(new LobbyMessage("Resources chosen out of bound, please verify you put the right resources in your board"));
+                }
+
             else{
                 if(checkShelfContent(gameObj,id)){
-                    for(int i=0;i<4;i++) {
-                        if(gameObj[i].isEmpty())
-                            player.getPersonalBoard().getWarehouseDepots().getShelves()[i]=new Shelf(i+1);
-                        else
+                    for(int i=0;i<3;i++) {
+                        if(gameObj[i].isEmpty()) {
+                            System.out.println("DEBUG 3.1");
+                            player.getPersonalBoard().getWarehouseDepots().getShelves()[i] = new Shelf(i + 1);
+                            System.out.println("DEBUG 3.2");
+                        }else
                             player.getPersonalBoard().getWarehouseDepots().addinShelf(i, stringArrayToResArray(gameObj[i]));
-
-                    }result = true;
+                    }
+                    if(!player.getPersonalBoard().getSpecialShelves().isEmpty()){
+                        for(int i=3;i<5;i++) {
+                            Resource resource=player.getPersonalBoard().getSpecialShelves().get(i-3).get().getResourceType();
+                            player.getPersonalBoard().getSpecialShelves().remove(i-3);
+                            System.out.println("DEBUG 3.3");
+                            player.getPersonalBoard().getSpecialShelves().add(i-3, Optional.of(new SpecialShelf(resource)));
+                            if(!gameObj[i].isEmpty()) {
+                                System.out.println("DEBUG 3.4");
+                                player.getPersonalBoard().getWarehouseDepots().addinShelf(i, stringArrayToResArray(gameObj[i]));
+                                System.out.println("DEBUG 3.5");
+                            }
+                        }
+                    }
+                    System.out.println("DEBUG 3.6");
+                    getHandlerFromPlayer(id).send( new WareHouseChangeMessage(getSimplifiedWarehouse(player)));
+                    System.out.println("DEBUG 3.7");
                 }else{
                     getHandlerFromPlayer(id).send(new LobbyMessage("Resources not valid in this disposition, please retry"));
                 }
             }
         }
-
+        System.out.println("DEBUG 4");
     }
-
 
 
 /*
@@ -587,12 +631,13 @@ public class Controller {
             String name=p.getName();
             System.out.println(name);
             ArrayList<String>[] warehouse = getSimplifiedWarehouse(p);
+
             Map<Integer,Boolean> cardsId =getCardsId(p);
             System.out.println("warehouse di " + name + " salvato");
             int faithPosition = p.getPersonalBoard().getFaithMarker().getFaithPosition();
             System.out.println("messaggio costruito per " + name);
             getHandlerFromPlayer(name).send(new StartingGameMessage(cardsId,warehouse,faithPosition, simplifiedMarket,devMatrix,"We are ready to start. it's turn of " +
-                    server.getNameFromId().get(actualPlayerTurn.getID())));
+                    server.getNameFromId().get(actualPlayerTurn.getID()), getSimplifiedStrongbox(p)));
             System.out.println("messaggio inviato al player "+name);
         }
 
@@ -677,10 +722,32 @@ public class Controller {
                     System.out.println("warehouse di " + name + " salvato");
                     int faithPosition = p.getPersonalBoard().getFaithMarker().getFaithPosition();
                     System.out.println("messaggio costruito per " + name);
-                    server.getClientFromId().get(id).getClientHandler().send(new ReconnectionMessage(cardsId, warehouse, faithPosition, simplifiedMarket, devMatrix));
+                    server.getClientFromId().get(id).getClientHandler().send(new ReconnectionMessage(cardsId, warehouse, faithPosition, simplifiedMarket, devMatrix, getSimplifiedStrongbox(p)));
                 }
             }
         }
+    }
+
+    private int[] getSimplifiedStrongbox(Player p){
+        int[] strongbox=new int[4];
+        ArrayList<Resource> resources=p.getPersonalBoard().getStrongBox().getStrongboxContent();
+        for (Resource resource:resources) {
+            switch (resource) {
+                case COIN:
+                    strongbox[0]++;
+                    break;
+                case SERVANT:
+                    strongbox[1]++;
+                    break;
+                case SHIELD:
+                    strongbox[2]++;
+                    break;
+                case STONE:
+                    strongbox[3]++;
+                    break;
+            }
+        }
+        return strongbox;
     }
 
     private String[][] getSimplifiedMarket() {

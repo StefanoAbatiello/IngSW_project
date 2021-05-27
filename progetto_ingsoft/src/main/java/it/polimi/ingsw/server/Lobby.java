@@ -154,17 +154,18 @@ public class Lobby {
         //3- gestisco l'acquisto di una devCard da parte di un giocatore
         else if (input instanceof BuyCardAction && server.getClientFromId().get(id).equals(controller.getActualPlayerTurn())) {
             if(stateOfGame==GameState.ONGOING) {
-                gameObj = ((BuyCardAction) input).getCard();
-                gameObj2 = ((BuyCardAction) input).getSlot();
-
+                System.out.println("è un buycardaction");
+                int cardID = ((BuyCardAction) input).getCard();
+                int slot = ((BuyCardAction) input).getSlot();
+                System.out.println("card "+ cardID + " in slot "+slot);
                 try {
-                    if (controller.checkBuy((int) gameObj, id, (int) gameObj2)) {
+                    if (controller.checkBuy(cardID, id, slot)) {
                         //result = new ActionAnswer("carta" + gameObj + "comprata");
                     }
-                } catch (ActionAlreadySetException actionAlreadySetException) {
-                    actualPlayers.get(id).getClientHandler().send(new LobbyMessage("Actions already set for this player"));
+                } catch (ActionAlreadySetException e) {
+                    controller.getActualPlayerTurn().getClientHandler().send(new LobbyMessage("Actions already set for this player"));
                 } catch (InvalidSlotException e) {
-                    //TODO send ask new slot
+                    controller.getActualPlayerTurn().getClientHandler().send(new LobbyMessage("Invalid Slot"));
                 } catch (ResourceNotValidException e) {
                     e.printStackTrace();
                 } catch (CardNotOnTableException e) {

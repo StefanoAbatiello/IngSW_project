@@ -11,15 +11,18 @@ public class StartingGameMessage implements SerializedMessage{
     private String[][] market;
     private int[][] devMatrix;
     private String message;
+    private int[] strongbox;
+
 
     public StartingGameMessage(Map<Integer,Boolean> personalCardId, ArrayList<String>[] warehouse,
-                               int faithPosition, String[][] market, int[][] devMatrix, String message) {
+                               int faithPosition, String[][] market, int[][] devMatrix, String message, int[] strongbox) {
         this.personalCardId = personalCardId;
         this.warehouse = warehouse;
         this.faithPosition = faithPosition;
         this.market = market;
         this.devMatrix = devMatrix;
         this.message=message;
+        this.strongbox=strongbox;
     }
 
     public String getMessage() {

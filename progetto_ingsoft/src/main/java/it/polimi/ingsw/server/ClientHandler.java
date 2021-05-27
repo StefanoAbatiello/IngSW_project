@@ -245,10 +245,13 @@ public class ClientHandler implements Runnable {
      */
     public void send(SerializedMessage message){
         try {
+            System.out.println("sto inviando il messaggio");
             outputStreamObj.writeObject(message);
             outputStreamObj.flush();
+            System.out.println("messaggio inviato");
         } catch (IOException e) {
             server.disconnectClient(clientID);
+            e.printStackTrace();
         }
     }
 

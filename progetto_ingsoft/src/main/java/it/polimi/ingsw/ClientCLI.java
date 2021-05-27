@@ -1,8 +1,10 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.messages.*;
+import it.polimi.ingsw.messages.answerMessages.CardIDChangeMessage;
+import it.polimi.ingsw.messages.answerMessages.DevMatrixChangeMessage;
 import it.polimi.ingsw.messages.answerMessages.MarketChangeMessage;
-import it.polimi.ingsw.messages.answerMessages.PersonalBoardChangeMessage;
+import it.polimi.ingsw.messages.answerMessages.WareHouseChangeMessage;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -196,25 +198,38 @@ public class ClientCLI implements Runnable{
             viewCLI.setMarket(((MarketChangeMessage)input).getMarket());
         }
 
-        //11-gestione della modifica della personal board
-        else if (input instanceof PersonalBoardChangeMessage) {
-            if (((PersonalBoardChangeMessage) input).getCardID().isPresent()) {
-                ((PersonalBoardChangeMessage) input).getCardID().get().keySet().stream().filter(integer -> integer > 48 && integer < 65).forEach(card -> {if (!viewCLI.getCardsFromId().containsKey(card))
-                    parser.takeLeadCardFromId(card);
-                    if (!viewCLI.getLeadCardsId().get(card))viewCLI.getLeadCardsId().put(card, ((PersonalBoardChangeMessage) input).getCardID().get().get(card));
-                });
-                ((PersonalBoardChangeMessage) input).getCardID().get().keySet().stream().filter(integer -> integer >= 0 && integer <= 48).forEach(card -> {if (!viewCLI.getCardsFromId().containsKey(card))
-                    parser.takeDevCardFromId(card);
-                    if (!viewCLI.getDevCardsId().get(card))viewCLI.getDevCardsId().put(card, ((PersonalBoardChangeMessage) input).getCardID().get().get(card));
-                });
-
-            }
+        //11-gestione della modifica del warehouse
+        else if (input instanceof WareHouseChangeMessage) {
+            /*
             if(((PersonalBoardChangeMessage)input).getFaithPosition().isPresent()){
                 viewCLI.setFaithPosition(((PersonalBoardChangeMessage)input).getFaithPosition().get());
             }
-            if (((PersonalBoardChangeMessage)input).getWarehouse().isPresent()){
-                viewCLI.setWarehouse(((PersonalBoardChangeMessage)input).getWarehouse().get());
+            */
+                viewCLI.setWarehouse(((WareHouseChangeMessage)input).getWarehouse());
             }
+
+        //12-gestione della modifica delle cardsid
+        else if(input instanceof CardIDChangeMessage){
+                ((CardIDChangeMessage) input).getCardID().keySet().stream().filter(integer -> integer > 48 && integer < 65).forEach(card ->
+                    {if (!viewCLI.getCardsFromId().containsKey(card))
+                        parser.takeLeadCardFromId(card);
+                        if (!viewCLI.getLeadCardsId().get(card))viewCLI.getLeadCardsId().put(card, ((CardIDChangeMessage) input).getCardID().get(card));
+                    });
+                ((CardIDChangeMessage) input).getCardID().keySet().stream().filter(integer -> integer >= 0 && integer <= 48).forEach(card ->
+                    {if (!viewCLI.getCardsFromId().containsKey(card))
+                        parser.takeDevCardFromId(card);
+                        if (!viewCLI.getDevCardsId().get(card))viewCLI.getDevCardsId().put(card, ((CardIDChangeMessage) input).getCardID().get(card));
+                    });
+        }
+
+        //13-gestione della modifica della matrice della development card
+        else if (input instanceof DevMatrixChangeMessage){
+            int[][] devMatrix=((DevMatrixChangeMessage)input).getDevMatrix();
+            Arrays.stream(devMatrix[0]).forEach(id-> parser.takeDevCardFromId(id));
+            Arrays.stream(devMatrix[1]).forEach(id-> parser.takeDevCardFromId(id));
+            Arrays.stream(devMatrix[2]).forEach(id-> parser.takeDevCardFromId(id));
+            Arrays.stream(devMatrix[3]).forEach(id-> parser.takeDevCardFromId(id));
+            viewCLI.setDevMatrix(devMatrix);
         }
     }
 

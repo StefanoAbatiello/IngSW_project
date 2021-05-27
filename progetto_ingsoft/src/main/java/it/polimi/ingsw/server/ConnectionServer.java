@@ -74,7 +74,7 @@ public class ConnectionServer implements Runnable{
         try {
             ServerSocket serverSocket=new ServerSocket(port);
             System.out.println("Socket Server started. Listening on port "+port+". Type \"quit\" to exit" );
-            timer.schedule(pingManager, timerInitialDelay, timerPeriod);
+            //timer.schedule(pingManager, timerInitialDelay, timerPeriod);
             acceptConnections(serverSocket);
         } catch (IOException e) {
             System.err.println("Error during server socket creation");

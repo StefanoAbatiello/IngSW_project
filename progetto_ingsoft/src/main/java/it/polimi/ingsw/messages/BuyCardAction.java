@@ -4,15 +4,16 @@ public class BuyCardAction implements GameMessage {
     int card;
     int slot;
 
-    public BuyCardAction(int inputLine) {
-        card=inputLine;
+    public BuyCardAction(int card, int slot) {
+        this.card=card;
+        this.slot=slot;
     }
 
     public int getCard(){
         return this.card;
     }
 
-    public Object getSlot() {
+    public int getSlot() {
         return this.slot;
     }
 }
