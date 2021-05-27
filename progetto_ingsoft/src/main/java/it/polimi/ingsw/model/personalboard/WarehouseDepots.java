@@ -24,8 +24,14 @@ public class WarehouseDepots implements ResourceCreator {
     /**
      * @return shelf at floor i
      */
-    public Shelf addinShelf(int i, Resource resource) throws ResourceNotValidException {
-        shelves[i].addResources(resource);
+    public Shelf addinShelf(int i, ArrayList<Resource> resources) {
+        shelves[i].getSlots().addAll(resources);
+        return shelves[i];
+
+    }
+
+    public Shelf addinShelf(int i, Resource resource) {
+        shelves[i].getSlots().add(resource);
         return shelves[i];
 
     }

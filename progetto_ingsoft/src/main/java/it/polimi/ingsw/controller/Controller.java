@@ -219,7 +219,7 @@ public class Controller {
                 for (int j = 0; j < 3; j++) {
                     if (upper[i][j].getId() == card) {
                         DevCard cardToBuy = game.getDevDeck().getCardFromId(card);
-                        if (player.getPersonalBoard().checkUseProd(cardToBuy.getRequirements())) {
+                        if (player.getPersonalBoard().removeProdResources(cardToBuy.getRequirements())) {
                             player.setAction(Action.BUYCARD);
                             DevDeckMatrix.buyCard(cardToBuy);
                             player.getPersonalBoard().removeResources(cardToBuy.getRequirements());
@@ -264,6 +264,7 @@ public class Controller {
             ArrayList<Resource> totalProdOut;
             if(checkResourcePlayer(totalProdIn, player)) {
                 player.setAction(Action.ACTIVATEPRODUCTION);
+                player.getPersonalBoard().removeResources(totalProdIn);
                 totalProdOut = takeAllProdOut(cardProd, StringArrayToResArray(personalProdIn), personalProdOut, leadProdOut, id);
                 player.getPersonalBoard().getStrongBox().addInStrongbox(totalProdOut);
                 return true;
@@ -274,17 +275,8 @@ public class Controller {
     }
 
     private boolean checkResourcePlayer(ArrayList<Resource> totalProdIn, Player player) {
-        List<Resource>  playerResources= Stream.concat(player.getPersonalBoard().getStrongBox().getStrongboxContent().stream(),player.getPersonalBoard().getWarehouseDepots().getResources().stream()).collect(Collectors.toList());
-        for(int i=0;i<2;i++) {
-            if (player.getPersonalBoard().getSpecialShelves().get(i).isPresent())
-                if (!player.getPersonalBoard().getSpecialShelves().get(i).get().getSpecialSlots().isEmpty())
-                    playerResources.addAll(player.getPersonalBoard().getSpecialShelves().get(i).get().getSpecialSlots());
-        }
-        totalProdIn.removeIf(playerResources::contains);
-        if(totalProdIn.isEmpty())
+       player.getPersonalBoard().removeResources(totalProdIn);
             return true;
-        else
-            return false;
     }
 
     private ArrayList<Resource> takeAllProdIn(ArrayList<Integer> cardProd ,ArrayList<Resource> personalProdIn, Player player) {
@@ -355,6 +347,7 @@ public class Controller {
 
 
     }
+
     public boolean checkLeadActivation(int gameObj, int id) {
         Player player = game.getPlayers().get(id);
         LeadCard card;
@@ -399,7 +392,6 @@ public class Controller {
     //ogni posizione dell'array indica un piano
     //TODO anche con special shelf
 
-
     private ArrayList<Resource> StringArrayToResArray(ArrayList<String> gameObj){
         ArrayList<Resource> allRes = new ArrayList<>();
 
@@ -439,33 +431,55 @@ public class Controller {
         return result;
     }
 
-
     public boolean checkPositionOfResources(ArrayList<String>[] gameObj, int id){
         Player player = game.getPlayers().get(id);
         boolean result= false;
-        if (gameObj.length > 5)
-            result= false;
-        else{
+        if (gameObj.length <= 5){
             ResourceSupply supply= player.getResourceSupply();
             ArrayList<Resource> newRes= new ArrayList<>();
 
-            for(int i=0;i<gameObj.length;i++)
-            newRes.addAll(StringArrayToResArray(gameObj[i])) ;
+            for (ArrayList<String> strings : gameObj) newRes.addAll(StringArrayToResArray(strings));
 
             ArrayList<Resource> allResources=player.getPersonalBoard().getWarehouseDepots().getResources();
+
             if(!supply.getResources().isEmpty())
                 allResources.addAll(supply.getResources());
+
             for(int i=0;i<2;i++)
                 if (player.getPersonalBoard().getSpecialShelves().get(i).isPresent())
                     allResources.addAll(player.getPersonalBoard().getSpecialShelves().get(i).get().getSpecialSlots());
-            newRes.removeIf(allResources::contains);
-            if(!newRes.isEmpty())
-                getHandlerFromPlayer(id).send(new LobbyMessage("Resources chosen out of bound, please verify you put the right resources in your board"));
+
+            allResources.removeIf(newRes::contains);
+
+            if(!allResources.isEmpty())
+                if(!supply.getResources().isEmpty()) {
+                    int num = 0;
+                    for (Resource res : allResources)
+                        if (supply.getResources().contains(res)) {
+                            supply.getResources().remove(res);
+                            num++;
+                        }
+                    if(supply.getResources().isEmpty())
+                        for (int i = 0; i < game.getPlayers().size(); i++)
+                                if (game.getPlayers().get(i) != player) {
+                                    game.getPlayers().get(i).getPersonalBoard().getFaithMarker().updatePosition();
+                                    lobby.getPlayers().get(i).getClientHandler().send(new LobbyMessage(player.getName() + " has discard " + num + "resources, you gained " + num + "faithpoints"));
+                                }
+                    else
+                       getHandlerFromPlayer(id).send(new LobbyMessage("Resources chosen out of bound, please verify you put the right resources in your board"));
+
+                }else
+                    getHandlerFromPlayer(id).send(new LobbyMessage("Resources chosen out of bound, please verify you put the right resources in your board"));
             else{
-                if(checkShelfContent(gameObj,id))
-                    result= true;
-                else{
-                    result= false;
+                if(checkShelfContent(gameObj,id)){
+                    for(int i=0;i<4;i++) {
+                        if(gameObj[i].isEmpty())
+                            player.getPersonalBoard().getWarehouseDepots().getShelves()[i]=new Shelf(i+1);
+                        else
+                            player.getPersonalBoard().getWarehouseDepots().addinShelf(i,StringArrayToResArray(gameObj[i]));
+
+                    }result = true;
+                }else{
                     getHandlerFromPlayer(id).send(new LobbyMessage("Resources not valid in this disposition, please retry"));
                 }
             }
@@ -495,7 +509,6 @@ public class Controller {
         return true;
     }
 
-
     public void askInitialResources() {
         if(game.getPlayers().size()>1) {
             lobby.setStateOfGame(GameState.PREPARATION2);
@@ -508,6 +521,7 @@ public class Controller {
         }else
             startGame();
         }
+
     private ClientHandler getHandlerFromPlayer(String name){
         int id = server.getIDFromName().get(name);
         return server.getClientFromId().get(id).getClientHandler();
@@ -663,6 +677,5 @@ public class Controller {
             }
         }
     }
-
 
 }

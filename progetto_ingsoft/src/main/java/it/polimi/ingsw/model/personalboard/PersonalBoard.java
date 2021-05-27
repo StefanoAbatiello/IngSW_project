@@ -55,7 +55,7 @@ public class PersonalBoard {
      * @param resourceArrayList are resources that we want check if they are in warehouse or in strongbox
      * @return true if resources are contains , false otherwise
      */
-    public boolean checkUseProd(ArrayList<Resource> resourceArrayList){
+    public boolean removeProdResources(ArrayList<Resource> resourceArrayList){
         boolean result = false;
         List<Resource> personalResources = Stream.concat(getWarehouseDepots().getResources().stream(), getStrongBox().getStrongboxContent().stream())
                 .collect(Collectors.toList());
@@ -76,14 +76,18 @@ public class PersonalBoard {
      * @throws ResourceNotValidException if one resources is not contained in warehouse or in strongbox
      */
     public ArrayList<Resource> removeResources(ArrayList<Resource> resources)  {
-        for(Resource resources1:resources){
-            if(strongBox.getStrongboxContent().contains(resources1)){
-                strongBox.getStrongboxContent().remove(resources1);
+        for(Resource resource:resources){
+            if(warehouseDepots.getResources().contains(resource)){
+                warehouseDepots.getResources().remove(resource);
             }
-            else if(warehouseDepots.getResources().contains(resources1)){
-                warehouseDepots.getResource(resources1);
-                warehouseDepots.getResources().remove(resources1);
+            else if(!specialShelves.isEmpty()) {
+                for(int i=0; i<2;i++)
+                if (specialShelves.get(i).isPresent())
+                    specialShelves.get(i).get().getSpecialSlots().remove(resource);
             }
+            else strongBox.getStrongboxContent().remove(resource);
+
+
         }
         return resources;
     }

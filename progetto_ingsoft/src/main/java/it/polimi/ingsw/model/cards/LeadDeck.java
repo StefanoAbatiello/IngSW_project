@@ -23,7 +23,7 @@ public class LeadDeck {
     public LeadDeck() {
         JSONParser jsonP = new JSONParser();
 
-        try(FileReader reader = new FileReader("Deliverables/LEADCARDS")){
+        try(FileReader reader = new FileReader("progetto_ingsoft/Deliverables/LEADCARDS")){
             //Read JSON File
             Object obj = jsonP.parse(reader);
             JSONArray leadCardList = (JSONArray) obj;
