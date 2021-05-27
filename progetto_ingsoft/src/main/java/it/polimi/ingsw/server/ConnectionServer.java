@@ -23,7 +23,7 @@ public class ConnectionServer implements Runnable{
     private static final int timerPeriod = 30000; // time in milliseconds
     private static Timer timer;
     private static TimerTask pingManager;
-    private static ArrayList<PingObserver> observers;
+    private static ArrayList<PongObserver> observers;
 
     /**
      * this class is used to create the socket connection from the server
@@ -38,12 +38,12 @@ public class ConnectionServer implements Runnable{
         observers = new ArrayList<>();
     }
 
-    public void addPingObserver(PingObserver observer){
+    public void addPingObserver(PongObserver observer){
         System.out.println("sto aggiungendo l'observer");
         observers.add(observer);
     }
 
-    public static void removePingObserver(PingObserver observer){
+    public static void removePingObserver(PongObserver observer){
         synchronized (observers) {
             observers.remove(observer);
         }
@@ -82,7 +82,7 @@ public class ConnectionServer implements Runnable{
         }
     }
 
-    public ArrayList<PingObserver> getObservers() {
+    public ArrayList<PongObserver> getObservers() {
         return observers;
     }
 

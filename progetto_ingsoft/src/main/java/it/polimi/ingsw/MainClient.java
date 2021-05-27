@@ -1,23 +1,15 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.messages.*;
-import it.polimi.ingsw.messages.answerMessages.MarketChangeMessage;
-import it.polimi.ingsw.messages.answerMessages.PersonalBoardChangeMessage;
-
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.*;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class MainClient implements Executor{
     private String ip;
     private int port;
-    private PongObserver pongObserver;
+    private PingObserver pongObserver;
     private ObjectInputStream socketIn;
     private ObjectOutputStream socketOut;
     private Socket socket;

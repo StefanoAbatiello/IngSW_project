@@ -16,7 +16,7 @@ public class ClientCLI implements Runnable{
 
     private String ip;
     private int port;
-    private PongObserver pongObserver;
+    private PingObserver pingObserver;
     private ObjectInputStream socketIn;
     private ObjectOutputStream socketOut;
     private Socket socket;
@@ -24,12 +24,16 @@ public class ClientCLI implements Runnable{
     private ViewCLI viewCLI;
     private ClientCardParser parser;
     private ExecutorService executors;
+    private Timer timer;
+    private static final int timerPeriod = 30000; // time in milliseconds
+
 
     public ClientCLI(String ip, int port) {
         this.ip = ip;
         this.port = port;
         parser = new ClientCardParser(this);
         executors= Executors.newCachedThreadPool();
+        timer=new Timer();
     }
 
     public void run() {
@@ -43,7 +47,7 @@ public class ClientCLI implements Runnable{
         }
         keyboardReader = new ClientInput(this, socketOut);
         executors.submit(keyboardReader);
-        pongObserver = new PongObserver(this);
+        pingObserver = new PingObserver(this);
         viewCLI = new ViewCLI();
         SerializedMessage input;
         try {
@@ -97,14 +101,13 @@ public class ClientCLI implements Runnable{
 
         //4-gestione dei messaggio di ping
         else if (input instanceof PingMessage) {
-            System.out.println("ho ricevuto un ping");
-            if (!pongObserver.isStarted()) {
+            System.out.println("ho ricevuto un ping");//[Debug]
+            if (!pingObserver.isStarted()) {
                 //System.out.println("era il primo ping, faccio partire il pongObserver");[Debug]
-                executors.submit(pongObserver);
-                //new Thread(pongObserver).start();
+                timer.schedule(pingObserver, 0, timerPeriod);
                 //System.out.println("pongObserver partito");[Debug]
-            } else
-                pongObserver.setResponse(true);
+            }
+            pingObserver.setResponse(true);
         }
 
         //5-gestione della richiesta di scegliere la/le risorsa/e iniziale/
@@ -216,6 +219,9 @@ public class ClientCLI implements Runnable{
     }
 
     public void disconnect() {
+        System.out.println("blocco i timer dei ping");
+        timer.cancel();
+        timer.purge();
         System.out.println("sto chiudendo il socket");
         try {
             socketIn.close();

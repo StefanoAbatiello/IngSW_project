@@ -17,7 +17,7 @@ public class ClientHandler implements Runnable {
     private ObjectOutputStream outputStreamObj;
     private int clientID;
     private boolean active;
-    private PingObserver pingObserver;
+    private PongObserver pingObserver;
     private boolean pingReceived;
 
     public MainServer getServer() {
@@ -118,7 +118,7 @@ public class ClientHandler implements Runnable {
             clientID = checkNickName((NickNameAction) input);
             //TODO altri casi di ritorno clientID non validi
             System.out.println("sto creando il pingObserver");
-            pingObserver = new PingObserver(this);
+            pingObserver = new PongObserver(this);
             System.out.println("sto salvando il pingObserver");
             server.getConnectionServer().addPingObserver(pingObserver);
             System.out.println("ho salvato il pingObserver");
@@ -270,7 +270,7 @@ public class ClientHandler implements Runnable {
         return clientID;
     }
 
-    public PingObserver getPingObserver() {
+    public PongObserver getPingObserver() {
         return pingObserver;
     }
 
