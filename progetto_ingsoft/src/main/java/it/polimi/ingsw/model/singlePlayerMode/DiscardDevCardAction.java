@@ -4,11 +4,12 @@ import it.polimi.ingsw.model.SinglePlayer;
 import java.util.ArrayList;
 
 public class DiscardDevCardAction implements ActionToken {
-
     /*
-    this String indicates the color of the card to discard
-     */
+        this String indicates the color of the card to discard
+         */
     private final String color;
+
+    private final String effect="Lorenzo has discarded two development card of color ";
 
     /*
     this constructor associates the color to this ActionToken
@@ -25,11 +26,12 @@ public class DiscardDevCardAction implements ActionToken {
     }
 
     /**
-     * @return 0 if the card removal works correctly, otherwise -1, or -2 if the card removal failed
+     * @return a String which descibes the effect of specified token
      */
     @Override
-    public int applyEffect(ArrayList<ActionToken> tokensStack) {
-        return SinglePlayer.removeTokenCard(color);
+    public String applyEffect(ArrayList<ActionToken> tokensStack) {
+        SinglePlayer.removeTokenCard(color);
+        return effect + color;
     }
 }
 

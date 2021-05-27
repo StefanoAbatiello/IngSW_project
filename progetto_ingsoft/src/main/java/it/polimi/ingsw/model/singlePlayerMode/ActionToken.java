@@ -4,9 +4,10 @@ import java.util.ArrayList;
 
 public interface ActionToken {
 
+
     /**
-     * @return new blackCross position or 0 if there are other card with that color
+     * @return a String which descibes the effect of specified token
      */
-    int applyEffect(ArrayList<ActionToken> tokensStack);
+    String applyEffect(ArrayList<ActionToken> tokensStack);
 }
 

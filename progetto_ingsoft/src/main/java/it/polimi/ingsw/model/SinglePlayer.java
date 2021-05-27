@@ -68,11 +68,11 @@ public class SinglePlayer extends Game{
     /**
      * @return tokensStack after activation of first token's effect and reorganization of the stack
      */
-    public ArrayList<ActionToken> draw(){
+    @Override
+    public String draw(){
         ActionToken token = tokensStack.remove(0);
         tokensStack.add(token);
-        token.applyEffect(tokensStack);
-        return tokensStack;
+        return token.applyEffect(tokensStack);
     }
 
     /**

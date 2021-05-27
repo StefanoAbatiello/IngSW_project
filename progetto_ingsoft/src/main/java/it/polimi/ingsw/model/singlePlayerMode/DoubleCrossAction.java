@@ -5,12 +5,16 @@ import java.util.ArrayList;
 
 public class DoubleCrossAction implements ActionToken {
 
+    private final String effect="Lorenzo receives two faith point";
+
+
     /**
-     * @return the new position of Lorenzo's BlackCross
+     * @return a String which descibes the effect of specified token
      */
     @Override
-    public int applyEffect(ArrayList<ActionToken> tokensStack){
-        return BlackCrossToken.updateBlackCross(2);
+    public String applyEffect(ArrayList<ActionToken> tokensStack){
+        BlackCrossToken.updateBlackCross(2);
+        return effect;
     }
 
 }

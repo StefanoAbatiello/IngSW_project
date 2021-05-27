@@ -48,4 +48,8 @@ public abstract class  Game {
     public abstract ArrayList<Player> getPlayers();
 
     public abstract DevDeck getDevDeck();
+
+    public String draw(){
+        return "";
+    }
 }
