@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.Resource;
 import it.polimi.ingsw.model.ResourceCreator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ResourceSupply implements ResourceCreator {
 
@@ -46,18 +47,30 @@ public class ResourceSupply implements ResourceCreator {
     }
 
     /**
-     * @return an ArrayList of the Resources stored in ResourceSupply
+     * @return shows the Resources stored in ResourceSupply
      */
-    @Override
-    public ArrayList<Resource> getResources() {
+    public ArrayList<Resource> viewResources() {
         ArrayList<Resource> resources = new ArrayList<>();
-        for (Container container : containers) {
-            if (!container.isEmpty()) {
-                resources.add(container.takeResource());
-            }
-        }
+        Arrays.stream(containers).forEach(container ->{if (!container.isEmpty()) resources.add(container.getResource());});
         return resources;
     }
 
 
+    /**
+     * @return an Arraylist of the Resources stored in ResourceSupply
+     */
+    @Override
+    public ArrayList<Resource> getResources() {
+        ArrayList<Resource> resources = new ArrayList<>();
+        Arrays.stream(containers).forEach(container ->{if (!container.isEmpty()) resources.add(container.takeResource());});
+        return resources;
+    }
+
+    public void discardResources(ArrayList<Resource> discardedResources) {
+        for (Resource res : discardedResources) {
+            Arrays.stream(containers).forEach(container -> {
+                if (!container.isEmpty() && container.getResource() == res) container.takeResource();
+            });
+        }
+    }
 }

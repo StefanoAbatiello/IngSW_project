@@ -51,4 +51,10 @@ public class Container {
             return this.resource;
     }
 
+    /**
+     * @return the type of resource stored in this container
+     */
+    public Resource getResource(){
+        return resource;
+    }
 }
