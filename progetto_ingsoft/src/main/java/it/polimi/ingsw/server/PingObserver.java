@@ -9,17 +9,13 @@ import static java.lang.Thread.sleep;
 public class PingObserver implements Runnable {
 
     private boolean active;
-    private boolean pingReceived;
     private final int maxTimeoutNumber = 5;
     private int counterTimeout;
-    private ObjectOutputStream pingOutStreamObj;
     private final ClientHandler clientHandler;
 
     public PingObserver(ClientHandler clientHandler) {
         this.clientHandler = clientHandler;
         counterTimeout = 0;
-        pingOutStreamObj = clientHandler.getOutputStreamObj();
-        this.pingReceived = false;
         this.active=true;
     }
 
@@ -32,9 +28,9 @@ public class PingObserver implements Runnable {
             while (counterTimeout < maxTimeoutNumber) {
                 sleep(4000);
                 if (active) {
-                    if (pingReceived) {
+                    if (clientHandler.getPingReceived()) {
                         counterTimeout = 0;
-                        break;
+                        return true;
                     } else {
                         counterTimeout = counterTimeout + 1;
                         System.out.println("ping non ricevuto " + counterTimeout + " volta/e dal client: " + clientHandler.getClientId());
@@ -46,7 +42,7 @@ public class PingObserver implements Runnable {
         }catch(InterruptedException e){
                 e.printStackTrace();
         }
-        return pingReceived;
+        return false;
     }
 
 
@@ -60,10 +56,7 @@ public class PingObserver implements Runnable {
         }
         else
             System.out.println("ping del client "+clientHandler.getClientId()+" ricevuto ");
-        pingReceived=false;
+        clientHandler.setPingRecieved(false);
     }
 
-    public void setResponse(boolean response) {
-        this.pingReceived=response;
-    }
 }

@@ -9,14 +9,16 @@ import java.util.concurrent.Executors;
 public class PingManager extends TimerTask {
 
     private final ExecutorService executorService;
+    private final MainServer server;
 
-    public PingManager() {
+    public PingManager(MainServer server) {
         this.executorService= Executors.newCachedThreadPool();
+        this.server=server;
     }
 
     @Override
     public void run() {
-        ConnectionServer connectionServer = MainServer.getConnectionServer();
+        ConnectionServer connectionServer = server.getConnectionServer();
         if (!connectionServer.getObservers().isEmpty()) {
             for (PingObserver observer : connectionServer.getObservers()) {
                 executorService.submit(observer);
