@@ -144,9 +144,9 @@ public class ClientHandler implements Runnable {
                 //TODO controllo valido clientID
                 System.out.println("Lobby di" + num + "giocatori creata con id: " + lobby.getLobbyID() + "." +
                         "inserisco l'host");
+                send(new LobbyMessage("Lobby created. Wait for the other players to join!"));
                 lobby.insertPlayer(clientID);
                 System.out.println("host inserito");
-                send(new LobbyMessage("Lobby created. Wait for the other players to join!"));
             }
             return true;
         }

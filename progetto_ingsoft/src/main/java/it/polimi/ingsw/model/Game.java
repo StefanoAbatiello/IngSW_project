@@ -3,6 +3,7 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.model.Market.Market;
 
 import it.polimi.ingsw.model.cards.DevDeck;
+import it.polimi.ingsw.model.personalboard.BlackCrossToken;
 
 import java.util.ArrayList;
 
@@ -49,7 +50,7 @@ public abstract class  Game {
 
     public abstract DevDeck getDevDeck();
 
-    public String draw(){
+    public String draw() {
         return "";
     }
 }

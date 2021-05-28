@@ -38,6 +38,7 @@ public class PersonalBoard {
         devCardSlot=new DevCardSlot();
         //System.out.println("devslot creati, creo specialshelf");[Debug]
         specialShelves = new ArrayList<>();
+
     }
 
     public ArrayList<Optional<SpecialShelf>> getSpecialShelves() {
@@ -63,7 +64,7 @@ public class PersonalBoard {
      * @param resourceArrayList are resources that we want check if they are in warehouse or in strongbox
      * @return true if resources are contains , false otherwise
      */
-    public boolean removeProdResources(ArrayList<Resource> resourceArrayList){
+    public boolean removeResourcesfromBuy(ArrayList<Resource> resourceArrayList){
         boolean result = false;
         List<Resource> personalResources = Stream.concat(getWarehouseDepots().getResources().stream(), getStrongBox().getStrongboxContent().stream())
                 .collect(Collectors.toList());

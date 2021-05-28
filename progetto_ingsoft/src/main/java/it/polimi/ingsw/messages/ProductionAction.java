@@ -9,14 +9,14 @@ public class ProductionAction implements SerializedMessage {
 
     private ArrayList<Integer> cardProductions;
     private ArrayList<String> personalProduction;
-    private Optional<String> personalOut;
-    private Optional<String> leadOut;
+    private String personalOut;
+    private ArrayList<String> leadOut;
 
-    public ProductionAction(ArrayList<Integer> cardProductions, ArrayList<String> personalProduction, String personalOut, String leadOut) {
+    public ProductionAction(ArrayList<Integer> cardProductions, ArrayList<String> personalProduction, String personalOut, ArrayList<String> leadOut) {
         this.cardProductions = cardProductions;
         this.personalProduction = personalProduction;
-        this.personalOut = Optional.ofNullable(personalOut);
-        this.leadOut = Optional.ofNullable(leadOut);
+        this.personalOut = personalOut;
+        this.leadOut = leadOut;
     }
 
     public ArrayList<Integer> getCardProductions() {
@@ -27,12 +27,12 @@ public class ProductionAction implements SerializedMessage {
         return personalProduction;
     }
 
-    public Optional<String> getPersProdOut() {
+    public String getPersProdOut() {
         return personalOut;
     }
 
 
-    public Optional<String> getLeadProdOut() {
+    public ArrayList<String> getLeadProdOut() {
         return leadOut;
     }
 }

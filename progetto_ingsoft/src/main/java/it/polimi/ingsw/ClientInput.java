@@ -4,10 +4,10 @@ import it.polimi.ingsw.messages.ActiveLeadAction;
 import it.polimi.ingsw.messages.DiscardLeadAction;
 import it.polimi.ingsw.messages.*;
 import it.polimi.ingsw.messages.answerMessages.NumOfPlayersAnswer;
+import it.polimi.ingsw.model.Resource;
 
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class ClientInput implements Runnable{
@@ -102,7 +102,7 @@ public class ClientInput implements Runnable{
                 System.out.println("# Take resources from market: "
                         + "\"BuyResources:[MarketTray's index - 0 to 6]\"");
                 System.out.println("# Do development production: "
-                        + "\"DoProductions:[First card's Id],[Second card's id]...\"");
+                        + "\"DoProductions:Cards:[card1ID,card2ID,...];personalIn:[Resource1,Resource2];personalOut:[Resource];LeadOut:[Resource...]\"");
                 //TODO gestione delle produzioni "speciali"
             }else
                 System.out.println("# End your turn: " +
@@ -173,12 +173,64 @@ public class ClientInput implements Runnable{
                 }
             }
         }
-
+        //DoProductions:Cards:[card1ID,card2ID,...];personalIn:[Resource1,Resource2];personalOut:[Resource];LeadOut:[Resource...]\""
         //TODO ideare gestione della scelta delle produzioni
         //10-request to activate productions
-        else if(input.startsWith("DoProductions")){
+        else if(input.startsWith("DoProductions")&&input.contains("Cards")&&input.contains("personalIn")&&input.contains("personalOut")&&input.contains("LeadOut")){
             if(!mainAction){
                 mainAction=true;
+                input = input.replace("DoProduction:", "");
+                String[] commands = input.split(";");
+
+                ArrayList<Integer> intId = new ArrayList<>();
+                ArrayList<String> personalIn =new ArrayList<>();
+                String personalOut=null;
+                ArrayList<String> leadOut =new ArrayList<>();
+
+
+                for(String string:commands) {
+                    if (string.contains("Cards")) {
+                        string = string.replace("Cards:", "");
+                        String[] words = string.split(",");
+                        for (String word : words) {
+                            if(word!=null) {
+                                intId.add(Integer.parseInt(word));
+                            }
+                        }
+                    }
+                    else
+                        System.out.println("Production of cards failed");
+                    if(string.contains("personalIn")){
+                        string=string.replace("personalIn:","");
+                        String[] words = string.split(",");
+                        for(String word:words){
+                            if(word!=null){
+                                personalIn.add(word);
+                            }
+                        }
+                    }
+                    else
+                        System.out.println("Production personalIn failed");
+                    if(string.contains("personalOut")){
+                        string=string.replace("personalOut:","");
+                        if(string!=null){
+                            personalOut=string;
+                        }
+                    }else
+                        System.out.println("Production personalOut failed");
+                    if(string.contains("LeadOut")){
+                        string=string.replace("LeadOut:","");
+                        String[] words = string.split(",");
+                        for(String word:words){
+                            if(word!=null){
+                                leadOut.add(word);
+                            }
+                        }
+                    }
+                    else
+                        System.out.println("Production of leads failed");
+                }
+                client.send(new ProductionAction(intId,personalIn,personalOut,leadOut));
             }
         }
 

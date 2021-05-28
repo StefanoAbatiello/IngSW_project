@@ -72,7 +72,10 @@ public class SinglePlayer extends Game{
     public String draw(){
         ActionToken token = tokensStack.remove(0);
         tokensStack.add(token);
-        return token.applyEffect(tokensStack);
+        String effect=token.applyEffect(tokensStack);
+        if(checkBlackCrossPosition()||checkEmptyLineInMatrix())
+            return "Finished";
+        return effect;
     }
 
     /**

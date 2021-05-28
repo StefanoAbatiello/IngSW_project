@@ -204,8 +204,8 @@ public class Lobby {
             if(stateOfGame==GameState.ONGOING) {
                 ArrayList<Integer> cardProd= ((ProductionAction) input).getCardProductions();
                 ArrayList<String> personalProdIn= ((ProductionAction) input).getPersProdIn();
-                Optional<String> personalProdOut=((ProductionAction) input).getPersProdOut();
-                Optional<String> leadProdOut= ((ProductionAction) input).getLeadProdOut();
+                String personalProdOut=((ProductionAction) input).getPersProdOut();
+                ArrayList<String> leadProdOut= ((ProductionAction) input).getLeadProdOut();
                 try {
                     if (controller.checkProduction(cardProd, personalProdIn, personalProdOut, leadProdOut, id)) {
                         //result = new ActionAnswer("produzioni effettuate \n(carte: " + cardProd + "\npersonal:"+personalProdIn+" )");

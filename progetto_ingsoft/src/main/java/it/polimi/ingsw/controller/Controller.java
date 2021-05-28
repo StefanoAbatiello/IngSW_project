@@ -235,7 +235,7 @@ public class Controller {
                             System.out.println("ho trovato la carta");
                             DevCard cardToBuy = game.getDevDeck().getCardFromId(card);
                             System.out.println("mi sono preso la carta");
-                            if (player.getPersonalBoard().removeProdResources(cardToBuy.getRequirements())) {
+                            if (player.getPersonalBoard().removeResourcesfromBuy(cardToBuy.getRequirements())) {
                                 System.out.println("ha le risorse necessarie");
                                 player.setAction(Action.BUYCARD);
                                 DevDeckMatrix.buyCard(cardToBuy);
@@ -307,9 +307,21 @@ public class Controller {
         }
     }
 
-    public boolean checkProduction(ArrayList<Integer> cardProd ,ArrayList<String> personalProdIn, Optional<String> personalProdOut, Optional<String> leadProdOut, int id) throws ActionAlreadySetException, ResourceNotValidException, CardNotOwnedByPlayerOrNotActiveException {
+    public boolean checkProduction(ArrayList<Integer> cardProd , ArrayList<String> personalProdIn, String personalProdOut, ArrayList<String> leadProdOut, int id) throws ActionAlreadySetException, ResourceNotValidException, CardNotOwnedByPlayerOrNotActiveException {
         //TODO cosa manda client, produzione personale e leader da controllare
-        Player player = game.getPlayers().get(id);
+        String name=getActualPlayerTurn().getNickName();
+        Player player=game.getPlayers().get(0);
+        for(Player p:game.getPlayers()){
+            if (p.getName().equals(name))
+                player=p;
+        }
+        ArrayList<Resource> resourceArrayList=player.getPersonalBoard().getStrongBox().getStrongboxContent();
+        resourceArrayList.addAll(player.getPersonalBoard().getWarehouseDepots().getResources());
+        if(!player.getPersonalBoard().getSpecialShelves().isEmpty()) {
+            resourceArrayList.addAll(player.getPersonalBoard().getSpecialShelves().get(0).get().getSpecialSlots());
+            resourceArrayList.addAll(player.getPersonalBoard().getSpecialShelves().get(1).get().getSpecialSlots());
+        }
+
         Optional<Action> playerAction = Optional.ofNullable(player.getAction());
         if (playerAction.isPresent())
             throw new ActionAlreadySetException("The player has already gone through with an action in their turn");
@@ -318,15 +330,18 @@ public class Controller {
             ArrayList<Resource> totalProdOut;
             if(checkResourcePlayer(totalProdIn, player)) {
                 player.setAction(Action.ACTIVATEPRODUCTION);
-                player.getPersonalBoard().removeResources(totalProdIn);
                 totalProdOut = takeAllProdOut(cardProd, stringArrayToResArray(personalProdIn), personalProdOut, leadProdOut, id);
                 player.getPersonalBoard().getStrongBox().addInStrongbox(totalProdOut);
+                getHandlerFromPlayer(id).send(new StrongboxChangeMessage(getSimplifiedStrongbox(player)));
+                getHandlerFromPlayer(id).send(new WareHouseChangeMessage(getSimplifiedWarehouse(player)));
                 return true;
             }
 
         }
+
         return false;
     }
+
 
     private boolean checkResourcePlayer(ArrayList<Resource> totalProdIn, Player player) {
        player.getPersonalBoard().removeResources(totalProdIn);
@@ -361,7 +376,7 @@ public class Controller {
        return totalProdIn;
     }
 
-    private ArrayList<Resource> takeAllProdOut(ArrayList<Integer> cardProd ,ArrayList<Resource> personalProdIn, Optional<String> personalProdOut,Optional<String> leadProdOut, int id) {
+    private ArrayList<Resource> takeAllProdOut(ArrayList<Integer> cardProd ,ArrayList<Resource> personalProdIn, String personalProdOut,ArrayList<String> leadProdOut, int id) {
         ArrayList<Resource> totalProdOut = new ArrayList<>();
         ArrayList<DevCard> prodDevs = new ArrayList<>();
         cardProd.stream().filter(integer -> integer > 0 && integer < 49).forEach(integer -> {
@@ -372,15 +387,15 @@ public class Controller {
                 ArrayList<Resource> prodOut = card.getProdOut();
                 totalProdOut.addAll(prodOut);
             });
-        if(!(cardProd.stream().anyMatch(integer -> integer > 48)))
-            if(leadProdOut.isPresent()) {
-                totalProdOut.add(Resource.valueOf(leadProdOut.get()));
-                game.getPlayers().get(id).getPersonalBoard().getFaithMarker().updatePosition();
-            }else
-                getHandlerFromPlayer(id).send(new LobbyMessage("Prod Out of the LeadCard requested missing"));
+        int numofLead=cardProd.stream().filter(integer -> integer > 48).collect(Collectors.toList()).size();
+        if(numofLead==leadProdOut.size()){
+            leadProdOut.forEach(resource -> totalProdOut.add(Resource.valueOf(resource)));
+            game.getPlayers().get(id).getPersonalBoard().getFaithMarker().updatePosition();
+        }else
+            getHandlerFromPlayer(id).send(new LobbyMessage("Prod Out of the LeadCard requested missing"));
         if(!personalProdIn.isEmpty())
-            if(personalProdOut.isPresent())
-                totalProdOut.add(Resource.valueOf(personalProdOut.get()));
+            if(personalProdOut!=null)
+                totalProdOut.add(Resource.valueOf(personalProdOut));
             else
                 getHandlerFromPlayer(id).send(new LobbyMessage("Prod Out of the personal production requested missing"));
 
@@ -391,7 +406,9 @@ public class Controller {
         ArrayList<Integer> playerCards= new ArrayList<>();
 
         player.getPersonalBoard().getDevCardSlot().getDevCards().stream().forEach(card->{int id=card.getId();playerCards.add(id);});
-        player.getLeadCards().stream().forEach(card->{int id=card.getId();playerCards.add(id);});
+        player.getLeadCards().stream().forEach(card->{int id=card.getId();
+            if(card.isActive()&&(card.getAbility() instanceof LeadAbilityProduction))
+                    playerCards.add(id);});
 
         if(playerCards.containsAll(cardsId))
             return true;
@@ -681,6 +698,9 @@ public class Controller {
         String s =game.draw();
         if(s.isEmpty())
             lobby.sendAll(new LobbyMessage("è il turno di " +server.getNameFromId().get(actualPlayerTurn.getID())));
+        else if(s.equalsIgnoreCase("finished")) {
+            //TODO gestione fine gioco
+        }
         else
             lobby.sendAll(new LobbyMessage(s+", è di nuovo il tuo turno"));
     }
