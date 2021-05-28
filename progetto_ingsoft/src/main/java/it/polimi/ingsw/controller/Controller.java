@@ -221,40 +221,58 @@ public class Controller {
             throw new InvalidSlotException();
         else {
             System.out.println("ho controllato l'azione e la posizione scelta");
-            DevCard[][] upper = DevDeckMatrix.getUpperDevCardsOnTable();
-            for (int i = 0; i < 4; i++) {
-                for (int j = 0; j < 3; j++) {
-                    System.out.println(upper[i][j].getId());
-                }
-            }
-            for (int i = 0; i < 4; i++) {
-                for (int j = 0; j < 3; j++) {
-                    if (upper[i][j].getId() == card) {
-                        System.out.println("ho trovato la carta");
-                        DevCard cardToBuy = game.getDevDeck().getCardFromId(card);
-                        System.out.println("mi sono preso la carta");
-                        if (player.getPersonalBoard().removeProdResources(cardToBuy.getRequirements())) {
-                            System.out.println("ha le risorse necessarie");
-                            player.setAction(Action.BUYCARD);
-                            DevDeckMatrix.buyCard(cardToBuy);
-                            System.out.println("ha comprato la carta, invio la nuova dev matrix");
-                            lobby.sendAll(new DevMatrixChangeMessage(getDevMatrix()));
-                            System.out.println("dev matrix inviata");
-                            player.getPersonalBoard().removeResources(cardToBuy.getRequirements());
-                            getHandlerFromPlayer(id).send(new WareHouseChangeMessage(getSimplifiedWarehouse(player)));
-                            getHandlerFromPlayer(id).send(new StrongboxChangeMessage(getSimplifiedStrongbox(player)));
-                            System.out.println("ho rimosso le risorse usate");
-                            player.getPersonalBoard().getDevCardSlot().overlap(cardToBuy, position);
-                            System.out.println("ho posizionato la carta");
-                            getHandlerFromPlayer(id).send(new CardIDChangeMessage(getCardsId(player)));
-                            System.out.println("messaggio delle carte inviato");
-                            return true;
-                        } else
-                            throw new ResourceNotValidException("The player does not have enough resources to go through with the action");
+            DevCard[][] upper;
+            if(playerCardLevel(player, card)) {
+                upper = DevDeckMatrix.getUpperDevCardsOnTable();
+                for (int i = 0; i < 4; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        System.out.println(upper[i][j].getId());
                     }
                 }
-            } throw new CardNotOnTableException("Error: card not found on table");
+                for (int i = 0; i < 4; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        if (upper[i][j].getId() == card) {
+                            System.out.println("ho trovato la carta");
+                            DevCard cardToBuy = game.getDevDeck().getCardFromId(card);
+                            System.out.println("mi sono preso la carta");
+                            if (player.getPersonalBoard().removeProdResources(cardToBuy.getRequirements())) {
+                                System.out.println("ha le risorse necessarie");
+                                player.setAction(Action.BUYCARD);
+                                DevDeckMatrix.buyCard(cardToBuy);
+                                System.out.println("ha comprato la carta, invio la nuova dev matrix");
+                                lobby.sendAll(new DevMatrixChangeMessage(getDevMatrix()));
+                                System.out.println("dev matrix inviata");
+                                player.getPersonalBoard().removeResources(cardToBuy.getRequirements());
+                                getHandlerFromPlayer(id).send(new WareHouseChangeMessage(getSimplifiedWarehouse(player)));
+                                getHandlerFromPlayer(id).send(new StrongboxChangeMessage(getSimplifiedStrongbox(player)));
+                                System.out.println("ho rimosso le risorse usate");
+                                player.getPersonalBoard().getDevCardSlot().overlap(cardToBuy, position);
+                                System.out.println("ho posizionato la carta");
+                                getHandlerFromPlayer(id).send(new CardIDChangeMessage(getCardsId(player)));
+                                System.out.println("messaggio delle carte inviato");
+                                return true;
+                            } else
+                                throw new ResourceNotValidException("The player does not have enough resources to go through with the action");
+                        }
+                    }
+                }
+            }
+                throw new CardNotOnTableException("Error: card not found on table");
         }
+    }
+
+    private boolean playerCardLevel(Player player, int card) {
+        DevCard devCard=game.getDevDeck().getCardFromId(card);
+        int level=devCard.getLevel();
+        if(level==1) {
+            if (player.getPersonalBoard().getDevCardSlot().getActiveCards().size() < 3)
+                return true;
+        }else {
+                for (DevCard card1 : player.getPersonalBoard().getDevCardSlot().getActiveCards())
+                    if (card1.getLevel() == level - 1)
+                        return true;
+       }
+        return false;
     }
 
     public void checkMarket(int gameObj, int id) throws NotAcceptableSelectorException, FullSupplyException, ActionAlreadySetException {

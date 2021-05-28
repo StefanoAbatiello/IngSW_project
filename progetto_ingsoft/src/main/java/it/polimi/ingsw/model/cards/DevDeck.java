@@ -56,7 +56,7 @@ public class DevDeck{
 
         DevCard newDevCard= new DevCard(((Long) devCardObj.get("ID")).intValue(),((Long) devCardObj.get("POINTS")).intValue(),
                 (String) devCardObj.get("COLOR"),
-                (long) devCardObj.get("LEVEL"),
+                ((Long) devCardObj.get("LEVEL")).intValue(),
                 requirements,
                 prodIn,
                 prodOut,(long) devCardObj.get("FAITHPOINT")

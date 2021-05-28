@@ -26,7 +26,7 @@ public class DevCard implements Cards{
     /**
      *This attribute represents the level of the card
      */
-    private final long level;
+    private final int level;
     /**
      *This attribute represents the requirements needed to buy the card
      */
@@ -61,7 +61,7 @@ public class DevCard implements Cards{
      * @param prodOut
      * @param faithPoint
      */
-    public DevCard(int id, int points, String color, long level, ArrayList<Resource> requirements, ArrayList<Resource> prodIn, ArrayList<Resource> prodOut, long faithPoint) {
+    public DevCard(int id, int points, String color, int level, ArrayList<Resource> requirements, ArrayList<Resource> prodIn, ArrayList<Resource> prodOut, long faithPoint) {
         this.id=id;
         this.points= points;
         this.color = color;
@@ -99,7 +99,7 @@ public class DevCard implements Cards{
      *
      * @return the level of the card
      */
-    public long getLevel() {
+    public int getLevel() {
         return level;
     }
 
