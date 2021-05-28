@@ -78,13 +78,13 @@ public class ClientHandler implements Runnable {
             }while(isActive() && !(input instanceof NickNameAction));
             while (isActive()) {
                 System.out.println("aspetto un messaggio");
-                 input = (SerializedMessage) inputStreamObj.readObject();
-                 System.out.println("ho ricevuto un messaggio");
-                 if(!pingHandler(input)){
-                     if(!actionHandler( input)){
-                         server.getClientFromId().get(clientID).getLobby().actionHandler(input, clientID);
-                     }
-                 }
+                input = (SerializedMessage) inputStreamObj.readObject();
+                System.out.println("ho ricevuto un messaggio");
+                if(!pingHandler(input)){
+                    if(!actionHandler( input)){
+                        server.getClientFromId().get(clientID).getLobby().actionHandler(input, clientID);
+                    }
+                }
             }
             outputStreamObj.close();
             inputStreamObj.close();
@@ -250,6 +250,7 @@ public class ClientHandler implements Runnable {
             outputStreamObj.flush();
             System.out.println("messaggio inviato");
         } catch (IOException e) {
+            System.err.println("client not reachable(send)");
             server.disconnectClient(clientID);
             e.printStackTrace();
         }

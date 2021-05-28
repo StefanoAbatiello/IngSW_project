@@ -129,7 +129,7 @@ public class ClientInput implements Runnable{
         }
 
         //8-request to buy a development card
-        else if(input.startsWith("BuyDevCard")){
+        else if(input.startsWith("BuyDevCard") && input.contains(",")){
             if(!mainAction) {
                 mainAction=true;
                 input = input.replace("BuyDevCard:", "");
@@ -137,13 +137,17 @@ public class ClientInput implements Runnable{
                     String[] word=input.split(",");
                     int id = Integer.parseInt(word[0]);
                     int slot=Integer.parseInt(word[1]);
-                    int[][] matrix = client.getViewCLI().getDevMatrix();
-                    for (int i = 0; i < 4; i++)
-                        for (int j = 0; j < 3; j++) {
-                            if (matrix[i][j] == id) {
-                                client.send(new BuyCardAction(id,slot));
+                    if(id>=0 && id<=48 && slot>=0 && slot<=2) {
+                        int[][] matrix = client.getViewCLI().getDevMatrix();
+                        for (int i = 0; i < 4; i++)
+                            for (int j = 0; j < 3; j++) {
+                                if (matrix[i][j] == id) {
+                                    client.send(new BuyCardAction(id, slot));
+                                }
                             }
-                        }
+                    }else
+                        System.out.println("Input not valid, please type again " +
+                                "\"BuyDevCard:[CardId - 0 to 48],[Board Slot - 0 to 2]\"");
                 } catch (NumberFormatException e) {
                     System.out.println("Card id selected not valid. Please type again" +
                             "\"BuyDevCard:[CardId - 0 to 48],[Board Slot - 0 to 2]\"");

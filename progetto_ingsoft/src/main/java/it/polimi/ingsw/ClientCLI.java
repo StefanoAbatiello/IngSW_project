@@ -1,10 +1,7 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.messages.*;
-import it.polimi.ingsw.messages.answerMessages.CardIDChangeMessage;
-import it.polimi.ingsw.messages.answerMessages.DevMatrixChangeMessage;
-import it.polimi.ingsw.messages.answerMessages.MarketChangeMessage;
-import it.polimi.ingsw.messages.answerMessages.WareHouseChangeMessage;
+import it.polimi.ingsw.messages.answerMessages.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -55,12 +52,10 @@ public class ClientCLI implements Runnable{
         try {
             while (true) {
                 input = (SerializedMessage) socketIn.readObject();
-                actionHandler(input, socketIn, socketOut);
+                actionHandler(input);
             }
         } catch (ClassNotFoundException | IOException | NullPointerException e) {
-            System.out.println("Connection closed");
-            disconnect();
-        } finally {
+            System.err.println("Connection closed");
             disconnect();
         }
     }
@@ -70,6 +65,7 @@ public class ClientCLI implements Runnable{
             socketOut.writeObject(message);
             socketOut.flush();
         } catch (IOException e) {
+            System.err.println("server not reachable");
             disconnect();
         }
     }
@@ -83,7 +79,7 @@ public class ClientCLI implements Runnable{
         });
     }
 
-    private synchronized void actionHandler(SerializedMessage input, ObjectInputStream socketIn, ObjectOutputStream socketOut) {
+    private synchronized void actionHandler(SerializedMessage input) {
         //1-gestisco la richiesta del nickname
         if (input instanceof NickNameAction) {
             System.out.println(((NickNameAction) input).getMessage());
@@ -135,6 +131,7 @@ public class ClientCLI implements Runnable{
         else if(input instanceof StartingGameMessage){
             ArrayList<String>[] warehouse=((StartingGameMessage)input).getWarehouse();
             viewCLI.setWarehouse(warehouse);
+            viewCLI.setStrongbox(((StartingGameMessage)input).getStrongbox());
             int[][] devMatrix=((StartingGameMessage)input).getDevMatrix();
             viewCLI.setDevMatrix(devMatrix);
             for(int i=0;i<4;i++) {
@@ -158,6 +155,7 @@ public class ClientCLI implements Runnable{
         //8-gestione del salvataggio e della stampa della situazione della partta dopo la riconnessione
         else if(input instanceof ReconnectionMessage){
             viewCLI.setWarehouse(((ReconnectionMessage)input).getWarehouse());
+            viewCLI.setStrongbox(((ReconnectionMessage)input).getStrongbox());
             int[][] devMatrix=((ReconnectionMessage)input).getDevMatrix();
             viewCLI.setDevMatrix(devMatrix);
             Arrays.stream(devMatrix[0]).forEach(id-> parser.takeDevCardFromId(id));
@@ -195,11 +193,13 @@ public class ClientCLI implements Runnable{
 
         //10-gestione dell'aggiurnamento del market
         else if(input instanceof MarketChangeMessage){
+            System.out.println("Market is changed:");
             viewCLI.setMarket(((MarketChangeMessage)input).getMarket());
         }
 
         //11-gestione della modifica del warehouse
         else if (input instanceof WareHouseChangeMessage) {
+            System.out.println("Your warehouse is changed:");
             /*
             if(((PersonalBoardChangeMessage)input).getFaithPosition().isPresent()){
                 viewCLI.setFaithPosition(((PersonalBoardChangeMessage)input).getFaithPosition().get());
@@ -210,20 +210,38 @@ public class ClientCLI implements Runnable{
 
         //12-gestione della modifica delle cardsid
         else if(input instanceof CardIDChangeMessage){
-                ((CardIDChangeMessage) input).getCardID().keySet().stream().filter(integer -> integer > 48 && integer < 65).forEach(card ->
-                    {if (!viewCLI.getCardsFromId().containsKey(card))
-                        parser.takeLeadCardFromId(card);
-                        if (!viewCLI.getLeadCardsId().get(card))viewCLI.getLeadCardsId().put(card, ((CardIDChangeMessage) input).getCardID().get(card));
-                    });
-                ((CardIDChangeMessage) input).getCardID().keySet().stream().filter(integer -> integer >= 0 && integer <= 48).forEach(card ->
-                    {if (!viewCLI.getCardsFromId().containsKey(card))
-                        parser.takeDevCardFromId(card);
-                        if (!viewCLI.getDevCardsId().get(card))viewCLI.getDevCardsId().put(card, ((CardIDChangeMessage) input).getCardID().get(card));
-                    });
+            System.out.println("Your cards are changed:");
+            ((CardIDChangeMessage) input).getCardID().keySet().stream().filter(integer -> integer > 48 && integer < 65).forEach(cardID -> {
+                if (!viewCLI.getCardsFromId().containsKey(cardID)) {
+                    parser.takeLeadCardFromId(cardID);
+                    System.out.println("sto parsando la carta " + cardID);
+                }
+                if (viewCLI.getLeadCardsId().get(cardID) != ((CardIDChangeMessage) input).getCardID().get(cardID)) {
+                    viewCLI.getLeadCardsId().remove(cardID);
+                }
+                if (!viewCLI.getLeadCardsId().containsKey(cardID)) {
+                    viewCLI.addLeadCardsId(cardID, ((CardIDChangeMessage) input).getCardID().get(cardID));
+                    System.out.println("mi sto salvando la carta " + cardID);
+                }
+            });
+            ((CardIDChangeMessage) input).getCardID().keySet().stream().filter(integer -> integer >= 0 && integer <= 48).forEach(cardID -> {
+                if (!viewCLI.getCardsFromId().containsKey(cardID)) {
+                parser.takeDevCardFromId(cardID);
+                System.out.println("sto parsando la carta " + cardID);
+                }
+                if(viewCLI.getDevCardsId().get(cardID)!=((CardIDChangeMessage) input).getCardID().get(cardID)){
+                    viewCLI.getDevCardsId().remove(cardID);
+                }
+                if (!viewCLI.getDevCardsId().containsKey(cardID)) {
+                    viewCLI.addDevCardId(cardID, ((CardIDChangeMessage) input).getCardID().get(cardID));
+                    System.out.println("mi sto salvando la carta "+cardID);
+                }
+            });
         }
 
         //13-gestione della modifica della matrice della development card
         else if (input instanceof DevMatrixChangeMessage){
+            System.out.println("Development cards matrix is changed:");
             int[][] devMatrix=((DevMatrixChangeMessage)input).getDevMatrix();
             Arrays.stream(devMatrix[0]).forEach(id-> parser.takeDevCardFromId(id));
             Arrays.stream(devMatrix[1]).forEach(id-> parser.takeDevCardFromId(id));
@@ -231,6 +249,13 @@ public class ClientCLI implements Runnable{
             Arrays.stream(devMatrix[3]).forEach(id-> parser.takeDevCardFromId(id));
             viewCLI.setDevMatrix(devMatrix);
         }
+
+        //14-gestione della modifica dello strongbox
+        else if (input instanceof StrongboxChangeMessage) {
+            System.out.println("Your strongbox is changed:");
+            viewCLI.setStrongbox(((StrongboxChangeMessage)input).getStrongbox());
+        }
+
     }
 
     public void disconnect() {
@@ -243,7 +268,7 @@ public class ClientCLI implements Runnable{
             socketOut.close();
             socket.close();
         } catch (IOException | NullPointerException e) {
-            System.out.println("Socket closed yet");
+            System.err.println("Socket closed yet");
         }
     }
 

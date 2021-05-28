@@ -48,4 +48,8 @@ public class StartingGameMessage implements SerializedMessage{
     public int[][] getDevMatrix() {
         return devMatrix;
     }
+
+    public  int[] getStrongbox(){
+        return strongbox;
+    }
 }

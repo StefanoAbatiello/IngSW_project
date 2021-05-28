@@ -1,10 +1,7 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.messages.ResourceInSupplyRequest;
-import it.polimi.ingsw.messages.answerMessages.CardIDChangeMessage;
-import it.polimi.ingsw.messages.answerMessages.DevMatrixChangeMessage;
-import it.polimi.ingsw.messages.answerMessages.MarketChangeMessage;
-import it.polimi.ingsw.messages.answerMessages.WareHouseChangeMessage;
+import it.polimi.ingsw.messages.answerMessages.*;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.Market.*;
 import it.polimi.ingsw.model.personalboard.*;
@@ -244,10 +241,13 @@ public class Controller {
                             lobby.sendAll(new DevMatrixChangeMessage(getDevMatrix()));
                             System.out.println("dev matrix inviata");
                             player.getPersonalBoard().removeResources(cardToBuy.getRequirements());
+                            getHandlerFromPlayer(id).send(new WareHouseChangeMessage(getSimplifiedWarehouse(player)));
+                            getHandlerFromPlayer(id).send(new StrongboxChangeMessage(getSimplifiedStrongbox(player)));
                             System.out.println("ho rimosso le risorse usate");
                             player.getPersonalBoard().getDevCardSlot().overlap(cardToBuy, position);
                             System.out.println("ho posizionato la carta");
                             getHandlerFromPlayer(id).send(new CardIDChangeMessage(getCardsId(player)));
+                            System.out.println("messaggio delle carte inviato");
                             return true;
                         } else
                             throw new ResourceNotValidException("The player does not have enough resources to go through with the action");
