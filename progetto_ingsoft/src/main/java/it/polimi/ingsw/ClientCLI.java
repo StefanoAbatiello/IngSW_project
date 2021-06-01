@@ -22,7 +22,7 @@ public class ClientCLI implements Runnable{
     private static ClientInput keyboardReader;
     private ViewCLI viewCLI;
     private ClientCardParser parser;
-    private ExecutorService executors;
+    //private ExecutorService executors;
     private Timer timer;
     private static final int timerPeriod = 30000; // time in milliseconds
 
@@ -31,7 +31,7 @@ public class ClientCLI implements Runnable{
         this.ip = ip;
         this.port = port;
         parser = new ClientCardParser(this);
-        executors= Executors.newCachedThreadPool();
+        //executors= Executors.newCachedThreadPool();
         timer=new Timer();
     }
 
@@ -44,14 +44,16 @@ public class ClientCLI implements Runnable{
         }catch (IOException | NullPointerException e) {
             disconnect();
         }
-        keyboardReader = new ClientInput(this, socketOut);
-        executors.submit(keyboardReader);
+        keyboardReader = new ClientInput(this);
+        //executors.submit(keyboardReader);
+        new Thread(keyboardReader).start();
         pingObserver = new PingObserver(this);
         viewCLI = new ViewCLI();
         SerializedMessage input;
         try {
             while (true) {
                 input = (SerializedMessage) socketIn.readObject();
+                System.out.println("ho letto un messaggio");
                 actionHandler(input);
             }
         } catch (ClassNotFoundException | IOException | NullPointerException e) {
@@ -71,7 +73,8 @@ public class ClientCLI implements Runnable{
     }
 
     public void asyncSend(PingMessage pingMessage) {
-        executors.submit(new Runnable() {
+        //executors.submit
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 send(pingMessage);
@@ -100,12 +103,14 @@ public class ClientCLI implements Runnable{
         //4-gestione dei messaggio di ping
         else if (input instanceof PingMessage) {
             System.out.println("ho ricevuto un ping");//[Debug]
-            if (!pingObserver.isStarted()) {
-                //System.out.println("era il primo ping, faccio partire il pongObserver");[Debug]
-                timer.schedule(pingObserver, 0, timerPeriod);
-                //System.out.println("pongObserver partito");[Debug]
-            }
             pingObserver.setResponse(true);
+            send(new PingMessage());
+            System.out.println("ho inviato la risposta");
+            if (!pingObserver.isStarted()) {
+                System.out.println("era il primo ping, faccio partire il pongObserver");//[Debug]
+                timer.schedule(pingObserver, 0, timerPeriod);
+                System.out.println("pongObserver partito");//[Debug]
+            }
         }
 
         //5-gestione della richiesta di scegliere la/le risorsa/e iniziale/

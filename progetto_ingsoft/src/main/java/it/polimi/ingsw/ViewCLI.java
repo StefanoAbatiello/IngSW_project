@@ -139,10 +139,12 @@ public class ViewCLI {
         System.out.println("Your development card id:");
         for(int i:devCardsId.keySet()) {
             showDevCard(i);
+            System.out.println("\n    active: " + devCardsId.get(i));
         }
         System.out.println("Your leader card id:");
         for(int i:leadCardsId.keySet()) {
             showLeadCard(i);
+            System.out.println("\n    active: " + leadCardsId.get(i));
         }
         System.out.println("Your faith track is in position: " + faithPosition);
         System.out.print("In strongbox you have: ");
@@ -188,7 +190,7 @@ public class ViewCLI {
             else {
                 System.out.print("    Requirements: devCards of color ");
                 card[5].forEach(s -> System.out.print(s + ", "));
-                System.out.println("");
+                System.out.print("\n");
             }
         }
     }
@@ -219,7 +221,7 @@ public class ViewCLI {
                 System.out.print("    requirements: "+card[5].get(0));
                 for(int k=0;k<card[5].size()-1;k++)
                     System.out.print(", "+card[5].get(k));
-                System.out.println("\n");
+                System.out.print("\n");
         }
     }
 

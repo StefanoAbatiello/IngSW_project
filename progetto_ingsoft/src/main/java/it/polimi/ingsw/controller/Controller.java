@@ -11,6 +11,7 @@ import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.cards.cardExceptions.*;
 import it.polimi.ingsw.messages.*;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 public class Controller {
@@ -326,7 +327,13 @@ public class Controller {
         if (playerAction.isPresent())
             throw new ActionAlreadySetException("The player has already gone through with an action in their turn");
         else if (checkOwnerCards(cardProd,player)) {
-            ArrayList<Resource> totalProdIn = takeAllProdIn(cardProd, stringArrayToResArray(personalProdIn), player);
+            ArrayList<Resource> totalProdIn = null;
+            try {
+                totalProdIn = takeAllProdIn(id, cardProd, stringArrayToResArray(personalProdIn), player);
+            } catch (CardChosenNotValidException e) {
+                getHandlerFromPlayer(id).send(new LobbyMessage(e.getMessage()));
+                return false;
+            }
             ArrayList<Resource> totalProdOut;
             if(checkResourcePlayer(totalProdIn, player)) {
                 player.setAction(Action.ACTIVATEPRODUCTION);
@@ -348,7 +355,7 @@ public class Controller {
             return true;
     }
 
-    private ArrayList<Resource> takeAllProdIn(ArrayList<Integer> cardProd ,ArrayList<Resource> personalProdIn, Player player) {
+    private ArrayList<Resource> takeAllProdIn(int clientID, ArrayList<Integer> cardProd ,ArrayList<Resource> personalProdIn, Player player) throws CardChosenNotValidException {
         ArrayList<Resource> totalProdIn = new ArrayList<>();
         ArrayList<DevCard> prodDevs = new ArrayList<>();
         ArrayList<LeadCard> prodLeads = new ArrayList<>();
@@ -356,10 +363,18 @@ public class Controller {
             DevCard dev = game.getDevDeck().getCardFromId(integer);
             prodDevs.add(dev);
         });
+        AtomicBoolean correctLead= new AtomicBoolean(true);
         cardProd.stream().filter(integer -> integer > 48 && integer < 65).forEach(integer -> {
-            LeadCard lead = player.getCardFromId(integer);
+            LeadCard lead = null;
+            try {
+                lead = player.getCardFromId(integer);
+            } catch (CardChosenNotValidException e) {
+                correctLead.set(false);
+            }
             prodLeads.add(lead);
         });
+        if (!correctLead.get())
+            throw new CardChosenNotValidException("You have not the card chosen");
         if (!prodDevs.isEmpty())
             prodDevs.forEach(card -> {
                 ArrayList<Resource> prodIn = card.getProdIn();
@@ -419,45 +434,57 @@ public class Controller {
 
     }
 
-    public boolean checkLeadActivation(int gameObj, int id) {
-        Player player = game.getPlayers().get(id);
-        LeadCard card;
-        String username = player.getName();
-        boolean result= false;
+    public void checkLeadActivation(int gameObj, int id) {
+        String name = getActualPlayerTurn().getNickName();
+        Player player = game.getPlayers().get(0);
+        for (Player p : game.getPlayers()) {
+            if (p.getName().equals(name))
+                player = p;
+        }
+        System.out.println("mi sono salvato il player");
         if (gameObj < 48 || gameObj > 64) {
-            getHandlerFromPlayer(username).send(new LobbyMessage("LeadCard ID not valid"));
+            getHandlerFromPlayer(name).send(new LobbyMessage("LeadCard ID not valid"));
         } else {
-            card = LeadDeck.getCardFromId(gameObj);
-            if (!player.getLeadCards().contains(card)) {
-                getHandlerFromPlayer(username).send(new LobbyMessage("You do not own the leadCard chosen"));
-            } else if (card.isActive())
-                getHandlerFromPlayer(username).send(new LobbyMessage("This leadCard is already active"));
-            else {
-                result= player.activateAbility(card);
-                //
+            System.out.println("mi hai passato l'id di una lead");
+            try {
+                LeadCard card = player.getCardFromId(gameObj);
+                if (card.isActive()) {
+                    getHandlerFromPlayer(name).send(new LobbyMessage("This leadCard is already active"));
+                } else {
+                    System.out.println("puoi attivare la carta");
+                    player.activateAbility(card);
+                    getHandlerFromPlayer(id).send(new CardIDChangeMessage(getCardsId(player)));
+                }
+            } catch (CardChosenNotValidException e) {
+                getHandlerFromPlayer(name).send(new LobbyMessage("You do not own the leadCard chosen"));
             }
         }
-        return result;
     }
 
-    public boolean checkDiscardLead(int gameObj, int id) {
-        Player player = game.getPlayers().get(id);
-        LeadCard card;
-        String username = player.getName();
-        boolean result= false;
+    public void checkDiscardLead(int gameObj, int id) {
+        String name = getActualPlayerTurn().getNickName();
+        Player player = game.getPlayers().get(0);
+        for (Player p : game.getPlayers()) {
+            if (p.getName().equals(name))
+                player = p;
+        }System.out.println("mi sono salvato il player");
         if (gameObj < 48 || gameObj > 64) {
-            getHandlerFromPlayer(username).send(new LobbyMessage("LeadCard ID not valid"));
+            getHandlerFromPlayer(name).send(new LobbyMessage("LeadCard ID not valid"));
         } else {
-            card = LeadDeck.getCardFromId(gameObj);
-            if (!player.getLeadCards().contains(card)) {
-                getHandlerFromPlayer(username).send(new LobbyMessage("You do not own the leadCard chosen"));
-            } else if (card.isActive())
-                getHandlerFromPlayer(username).send(new LobbyMessage("This leadCard is already active"));
-            else {
-                result= player.discardLead(card);
+            System.out.println("mi hai passato l'id di una lead");
+            try {
+                LeadCard card = player.getCardFromId(gameObj);
+                if (card.isActive()) {
+                    getHandlerFromPlayer(name).send(new LobbyMessage("This leadCard is already active"));
+                } else {
+                    System.out.println("puoi attivare la carta");
+                    player.discardLead(card);
+                    getHandlerFromPlayer(id).send(new CardIDChangeMessage(getCardsId(player)));
+                }
+            } catch (CardChosenNotValidException e) {
+                getHandlerFromPlayer(name).send(new LobbyMessage("You do not own the leadCard chosen"));
             }
         }
-        return result;
     }
 
     //ogni posizione dell'array indica un piano
@@ -688,6 +715,7 @@ public class Controller {
         for(Player player:game.getPlayers()){
             if (server.getNameFromId().get(id).equals(player.getName())){
                 actualIndex=game.getPlayers().indexOf(player);
+                player.resetAction();
                 break;
             }
         }
@@ -696,13 +724,16 @@ public class Controller {
         id=server.getIDFromName().get(name);
         actualPlayerTurn=server.getClientFromId().get(id);
         String s =game.draw();
-        if(s.isEmpty())
-            lobby.sendAll(new LobbyMessage("è il turno di " +server.getNameFromId().get(actualPlayerTurn.getID())));
-        else if(s.equalsIgnoreCase("finished")) {
+        if(s.isEmpty()) {
+            lobby.sendAll(new LobbyMessage("è il turno di " + server.getNameFromId().get(actualPlayerTurn.getID())));
+        }else if(s.equalsIgnoreCase("finished")) {
             //TODO gestione fine gioco
-        }
-        else
+        } else{
+            if(s.contains("Lorenzo has discarded two development card of color ")) {
+                lobby.sendAll(new DevMatrixChangeMessage(getDevMatrix()));
+            }
             lobby.sendAll(new LobbyMessage(s+", è di nuovo il tuo turno"));
+        }
     }
 
     public void insertPlayerInOrder(int id, String name) {

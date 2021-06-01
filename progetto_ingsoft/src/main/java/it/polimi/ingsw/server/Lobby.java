@@ -223,10 +223,9 @@ public class Lobby {
         //6-gestisco l'attivazione di una leader card da parte di un giocatore
         else if (input instanceof ActiveLeadAction && server.getClientFromId().get(id).equals(controller.getActualPlayerTurn())) {
             if (stateOfGame == GameState.ONGOING) {
-                gameObj = ((ActiveLeadAction) input).getLead();
-                if (controller.checkLeadActivation((int) gameObj, id)) {
-                    //result = new ActionAnswer("lead card attivata: " + gameObj);
-                }
+                System.out.println("è una lead activation");
+                int cardID = ((ActiveLeadAction) input).getLead();
+                controller.checkLeadActivation(cardID, id);
             }
         }
 
@@ -234,9 +233,7 @@ public class Lobby {
         else if (input instanceof DiscardLeadAction && server.getClientFromId().get(id).equals(controller.getActualPlayerTurn())) {
             if (stateOfGame == GameState.ONGOING) {
                 gameObj = ((DiscardLeadAction) input).getLead();
-                if (controller.checkDiscardLead((int) gameObj, id)) {
-                    //result = new ActionAnswer("lead card scartata: " + gameObj);
-                }
+                controller.checkDiscardLead((int) gameObj, id);
             }
         }
 

@@ -33,6 +33,8 @@ public class Player implements Points{
         //System.out.println("personalBoard creata"); [Debug]
     }
 
+    public void resetAction(){action=null;}
+
     //TODO penso metodi in game che chiamano strategy,penso a costruttore di ability
 
     public ArrayList<Resource> getProductionAbility() {
@@ -121,16 +123,16 @@ public class Player implements Points{
         return potentialResource;
     }
 
-    public LeadCard getCardFromId(int id){
+    public LeadCard getCardFromId(int id) throws CardChosenNotValidException {
         for(LeadCard card: leadCards) {
             if (card.getId() == id)
                 return card;
         }
-        //TODO exception
-        return null;
+        throw new CardChosenNotValidException("You have not this card");
     }
 
     public ResourceSupply getResourceSupply() {
         return  resourceSupply;
     }
+
 }

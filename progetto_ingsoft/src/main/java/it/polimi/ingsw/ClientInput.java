@@ -13,12 +13,10 @@ import java.util.Scanner;
 public class ClientInput implements Runnable{
 
     private ClientCLI client;
-    private final ObjectOutputStream socketOut;
     private Boolean mainAction;
 
-    public ClientInput(ClientCLI client, ObjectOutputStream socketOut) {
+    public ClientInput(ClientCLI client) {
         this.client = client;
-        this.socketOut = socketOut;
         this.mainAction=false;
     }
 
@@ -80,7 +78,6 @@ public class ClientInput implements Runnable{
             }
         }
 
-        //TODO sistemare metodo con gli id delle carte
         //5-choose which leader cards hold
         else if(input.startsWith("ChosenLeads:") && input.contains(",")){
             input=input.replace("ChosenLeads:","");
@@ -88,7 +85,7 @@ public class ClientInput implements Runnable{
             String[] words= input.split(",");
             chosenId.add(Integer.parseInt(words[0]));
             chosenId.add(Integer.parseInt(words[1]));
-            chosenId.forEach(System.out::println);
+            //chosenId.forEach(System.out::println);
             client.send(new ChosenLeadMessage(chosenId));
             //System.out.println("Ho inviato il messaggio");[Debug]
         }
@@ -145,14 +142,19 @@ public class ClientInput implements Runnable{
                                     client.send(new BuyCardAction(id, slot));
                                 }
                             }
-                    }else
+                    }else {
                         System.out.println("Input not valid, please type again " +
                                 "\"BuyDevCard:[CardId - 0 to 48],[Board Slot - 0 to 2]\"");
+                        mainAction = false;
+                    }
                 } catch (NumberFormatException e) {
                     System.out.println("Card id selected not valid. Please type again" +
                             "\"BuyDevCard:[CardId - 0 to 48],[Board Slot - 0 to 2]\"");
+                        mainAction = false;
                 }
-            }
+            }else
+                System.out.println("Main action done yet," +
+                        " please type \"ShowActions\" to see which action you can do now");
         }
 
         //9-request to take resorces from market
@@ -163,16 +165,25 @@ public class ClientInput implements Runnable{
                 try {
                     int selector = Integer.parseInt(input);
                     if (selector >= 0 && selector <= 6) {
+                        System.out.println("invio il messaggio");
                         client.send(new MarketAction(selector));
-                    } else
+                        System.out.println("messaggio inviato");
+                    } else {
                         System.out.println("Index of matrix not valid. Type again" +
                                 "\"BuyResources:[MarketTray's index - 0 to 6]\"");
+                        mainAction = false;
+                    }
                 } catch (NumberFormatException e) {
                     System.out.println("Command not valid. Please type again" +
                             "\"BuyResources:[MarketTray's index - 0 to 6]\"");
+                    mainAction = false;
                 }
-            }
+            }else
+                System.out.println("Main action done yet," +
+                        " please type \"ShowActions\" to see which action you can do now");
+
         }
+
         //DoProductions:Cards:[card1ID,card2ID,...];personalIn:[Resource1,Resource2];personalOut:[Resource];LeadOut:[Resource...]\""
         //TODO ideare gestione della scelta delle produzioni
         //10-request to activate productions
@@ -231,21 +242,20 @@ public class ClientInput implements Runnable{
                         System.out.println("Production of leads failed");
                 }
                 client.send(new ProductionAction(intId,personalIn,personalOut,leadOut));
-            }
+            }else
+                System.out.println("Main action done yet," +
+                        " please type \"ShowActions\" to see which action you can do now");
         }
 
         //11-request to activate a leader card
         else if(input.startsWith("ActiveLeadCard:")){
-            if (!mainAction) {
-                mainAction=true;
-                input = input.replace("ActiveLeadCard:", "");
-                try {
-                    int id = Integer.parseInt(input);
-                    client.send(new ActiveLeadAction(id));
-                } catch (NumberFormatException e) {
-                    System.out.println("please insert a number. Type again" +
-                            "\"ActiveLeadCard:[Card id]\"");
-                }
+            input = input.replace("ActiveLeadCard:", "");
+            try {
+                int id = Integer.parseInt(input);
+                client.send(new ActiveLeadAction(id));
+            } catch (NumberFormatException e) {
+                System.out.println("please insert a number. Type again" +
+                        "\"ActiveLeadCard:[Card id]\"");
             }
         }
 
@@ -297,16 +307,13 @@ public class ClientInput implements Runnable{
 
         //13-request to discard a leader card
         else if(input.startsWith("DiscardLeadCard")){
-            if (!mainAction) {
-                mainAction=true;
-                input = input.replace("DiscardLeadCard:", "");
-                try {
-                    int id = Integer.parseInt(input);
-                    client.send(new DiscardLeadAction(id));
-                } catch (NumberFormatException e) {
-                    System.out.println("please insert a number. Type again" +
-                            "\"DiscardLeadCard:[Card id]\"");
-                }
+            input = input.replace("DiscardLeadCard:", "");
+            try {
+                int id = Integer.parseInt(input);
+                client.send(new DiscardLeadAction(id));
+            } catch (NumberFormatException e) {
+                System.out.println("please insert a number. Type again" +
+                        "\"DiscardLeadCard:[Card id]\"");
             }
         }
 
@@ -327,8 +334,10 @@ public class ClientInput implements Runnable{
             if(mainAction){
                 client.send(new TurnChangeMessage());
                 mainAction=false;
-            }
+            }else
+                System.out.println("you have not done a main action yet");
         }
+
         else
             System.out.println("Input not valid, type again");
     }

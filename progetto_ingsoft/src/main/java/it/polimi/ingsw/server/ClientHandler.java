@@ -2,7 +2,6 @@ package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.messages.*;
 import it.polimi.ingsw.messages.answerMessages.NumOfPlayersAnswer;
-
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -18,7 +17,6 @@ public class ClientHandler implements Runnable {
     private int clientID;
     private boolean active;
     private PongObserver pingObserver;
-    private boolean pingReceived;
 
     public MainServer getServer() {
         return server;
@@ -57,7 +55,6 @@ public class ClientHandler implements Runnable {
         } catch (IOException e) {
             System.err.println("Error during socket creation");
         }
-        this.pingReceived=false;
     }
 
     public boolean isActive() {
@@ -101,8 +98,8 @@ public class ClientHandler implements Runnable {
      */
     private synchronized boolean pingHandler(SerializedMessage input) {
         if(input instanceof PingMessage) {
-            System.out.println("ping message client "+clientID);
-            pingReceived=true;
+            System.out.println("ping message client "+clientID);//[Debug]
+            this.pingObserver.setResponse();
             return true;
         }
         return false;
@@ -112,7 +109,7 @@ public class ClientHandler implements Runnable {
      * @param input is message sent by the client
      * This method handles each type of input: nickname reception, dimension of the lobby at its creation and messages referred to a Game Action
      */
-    private boolean actionHandler(SerializedMessage input) {
+    private synchronized boolean actionHandler(SerializedMessage input) {
         //1-gestisco ricezione del nickname
         if (input instanceof NickNameAction) {
             clientID = checkNickName((NickNameAction) input);
@@ -165,11 +162,13 @@ public class ClientHandler implements Runnable {
         }
         ArrayList<Lobby> lobbies= (ArrayList<Lobby>) server.getLobbyFromClientID().values().stream().distinct().collect(Collectors.toList());
         for(Lobby lobby:lobbies) {
-            if (!lobby.isLobbyFull()) {
+            if (!lobby.isLobbyFull() && lobby.getStateOfGame()==GameState.WAITING) {
                 System.out.println("c'è una lobby libera");
-                lobby.sendAll(new LobbyMessage(server.getNameFromId().get(id)+" is entered in the lobby"));
-                lobby.insertPlayer(id);//TODO aggiungo nuovo client nella mappa ID-lobby
-                return false;
+                if((lobby.getPlayers().size()+lobby.getSeatsAvailable())!=1) {
+                    lobby.sendAll(new LobbyMessage(server.getNameFromId().get(id) + " is entered in the lobby"));
+                    lobby.insertPlayer(id);//TODO aggiungo nuovo client nella mappa ID-lobby
+                    return false;
+                }
             }
         }
         System.out.println("tutte le lobby sono piene, creo una nuova lobby");
@@ -243,7 +242,7 @@ public class ClientHandler implements Runnable {
     /**
      * @param message is sent to the client from server
      */
-    public void send(SerializedMessage message){
+    public synchronized void send(SerializedMessage message){
         try {
             System.out.println("sto inviando il messaggio");
             outputStreamObj.writeObject(message);
@@ -278,12 +277,5 @@ public class ClientHandler implements Runnable {
         return pingObserver;
     }
 
-    public boolean getPingReceived() {
-        return pingReceived;
-    }
-
-    public void setPingRecieved(boolean b) {
-        this.pingReceived=b;
-    }
 }
 
