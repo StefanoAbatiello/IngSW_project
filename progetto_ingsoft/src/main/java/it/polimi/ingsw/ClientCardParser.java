@@ -1,6 +1,5 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.model.Resource;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -10,8 +9,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 
 public class ClientCardParser {
 
@@ -25,15 +22,14 @@ public class ClientCardParser {
         JSONParser jsonP = new JSONParser();
         FileReader reader;
         try{
-            reader = new FileReader("C:\\Users\\salva\\IdeaProjects\\ingswAM2021-Blasucci-Abatiello-Buono\\progetto_ingsoft\\src\\main\\resources\\DEVCARDS.json");
+            reader = new FileReader("progetto_ingsoft/src/main/resources/DEVCARDS.json");
             System.out.println("ho letto il file dev");
             //Read JSON File
             this.devCardList = (JSONArray)jsonP.parse(reader);
-            reader = new FileReader("C:\\Users\\salva\\IdeaProjects\\ingswAM2021-Blasucci-Abatiello-Buono\\progetto_ingsoft\\src\\main\\resources\\LEADCARDS.json");
+            reader = new FileReader("progetto_ingsoft/src/main/resources/LEADCARDS.json");
             System.out.println("ho letto il file lead");
             //Read JSON File
             this.leadCardList = (JSONArray) jsonP.parse(reader);
-
         }
         catch (FileNotFoundException e) {
             System.out.println("File Not found");

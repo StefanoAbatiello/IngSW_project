@@ -1,14 +1,16 @@
 package it.polimi.ingsw.model.cards;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.*;
-
 import it.polimi.ingsw.model.Resource;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
 
 public class DevDeck{
 
@@ -23,7 +25,7 @@ public class DevDeck{
     public DevDeck() {
         JSONParser jsonP = new JSONParser();
 
-        try(FileReader reader = new FileReader("C:\\Users\\salva\\IdeaProjects\\ingswAM2021-Blasucci-Abatiello-Buono\\progetto_ingsoft\\src\\main\\resources\\DEVCARDS.json")){
+        try(FileReader reader = new FileReader("progetto_ingsoft/src/main/resources/DEVCARDS.json")){
             //Read JSON File
             Object obj = jsonP.parse(reader);
             JSONArray devCardList = (JSONArray) obj;
