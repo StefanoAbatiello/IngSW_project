@@ -30,6 +30,7 @@ class DevCardTest {
     }*/
 
 
+    /*
     @Test
     void useProductionWorkingRight() throws ResourceNotValidException {
         Player player = new Player("4");
@@ -52,4 +53,6 @@ class DevCardTest {
         assertEquals(testArray2, player.getPersonalBoard().getStrongBox().getStrongboxContent());
     }
 
+
+     */
 }

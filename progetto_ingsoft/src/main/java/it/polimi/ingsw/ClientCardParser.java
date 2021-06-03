@@ -25,11 +25,11 @@ public class ClientCardParser {
         JSONParser jsonP = new JSONParser();
         FileReader reader;
         try{
-            reader = new FileReader("progetto_ingsoft/Deliverables/DEVCARDS.json");
+            reader = new FileReader("C:\\Users\\salva\\IdeaProjects\\ingswAM2021-Blasucci-Abatiello-Buono\\progetto_ingsoft\\src\\main\\resources\\DEVCARDS.json");
             System.out.println("ho letto il file dev");
             //Read JSON File
             this.devCardList = (JSONArray)jsonP.parse(reader);
-            reader = new FileReader("progetto_ingsoft/Deliverables/LEADCARDS");
+            reader = new FileReader("C:\\Users\\salva\\IdeaProjects\\ingswAM2021-Blasucci-Abatiello-Buono\\progetto_ingsoft\\src\\main\\resources\\LEADCARDS.json");
             System.out.println("ho letto il file lead");
             //Read JSON File
             this.leadCardList = (JSONArray) jsonP.parse(reader);

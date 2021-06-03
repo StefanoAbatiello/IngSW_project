@@ -243,7 +243,7 @@ public class Lobby {
                 controller.turnUpdate();
             }
         }
-
-        //TODO sposta risorse negli scaffali
+        else if(!server.getClientFromId().get(id).equals(controller.getActualPlayerTurn()))
+            server.getClientFromId().get(id).getClientHandler().send(new LobbyMessage("Wait for your turn!"));
     }
 }

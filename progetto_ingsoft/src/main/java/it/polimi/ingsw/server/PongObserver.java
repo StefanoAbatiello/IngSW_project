@@ -15,16 +15,18 @@ public class PongObserver implements Runnable {
     private int counterTimeout;
     private final ClientHandler clientHandler;
     private Timer timer;
-    private static final int timerPeriod = 4000; // time in milliseconds
+    private static final int timerPeriod = 4000;// time in milliseconds
+    private boolean pingReceived;
 
     public PongObserver(ClientHandler clientHandler) {
         this.clientHandler = clientHandler;
         counterTimeout = 0;
         this.active=true;
         timer=new Timer();
+        pingReceived=false;
     }
 
-    public void setActive(boolean active){
+    public synchronized void setActive(boolean active){
         this.active=active;
     }
 /*
@@ -63,7 +65,7 @@ public class PongObserver implements Runnable {
             @Override
             public void run() {
                 if (active) {
-                    if (clientHandler.getPingReceived()) {
+                    if (pingReceived) {
                         System.out.println("ping ricevuto");
                         counterTimeout = 0;
                         timer.cancel();
@@ -83,4 +85,7 @@ public class PongObserver implements Runnable {
         timer.schedule(checkResponse, 0, timerPeriod);
     }
 
+    public synchronized void setResponse() {
+        pingReceived=true;
+    }
 }

@@ -22,7 +22,7 @@ public class ClientInput implements Runnable{
 
     @Override
     public void run() {
-        System.out.println("sto leggendo da tastiera");
+        //System.out.println("sto leggendo da tastiera");
         Scanner scanner=new Scanner(System.in);
         while (true) {
             String input = scanner.nextLine();
@@ -119,7 +119,6 @@ public class ClientInput implements Runnable{
                     "\"ShowDevCardMatrix\"");
         }
 
-        //TODO ottimizzare la visione
         //7-request to show personal board
         else if(input.equals("ShowPersonalBoard")){
             client.getViewCLI().showPersonalBoard();
@@ -188,7 +187,7 @@ public class ClientInput implements Runnable{
         //TODO ideare gestione della scelta delle produzioni
         //10-request to activate productions
         else if(input.startsWith("DoProductions")&&input.contains("Cards")&&input.contains("personalIn")&&input.contains("personalOut")&&input.contains("LeadOut")){
-            if(!mainAction){
+            if (!mainAction) {
                 mainAction=true;
                 input = input.replace("DoProduction:", "");
                 String[] commands = input.split(";");
@@ -307,13 +306,16 @@ public class ClientInput implements Runnable{
 
         //13-request to discard a leader card
         else if(input.startsWith("DiscardLeadCard")){
-            input = input.replace("DiscardLeadCard:", "");
-            try {
-                int id = Integer.parseInt(input);
-                client.send(new DiscardLeadAction(id));
-            } catch (NumberFormatException e) {
-                System.out.println("please insert a number. Type again" +
-                        "\"DiscardLeadCard:[Card id]\"");
+            if (!mainAction) {
+                mainAction=true;
+                input = input.replace("DiscardLeadCard:", "");
+                try {
+                    int id = Integer.parseInt(input);
+                    client.send(new DiscardLeadAction(id));
+                } catch (NumberFormatException e) {
+                    System.out.println("please insert a number. Type again" +
+                            "\"DiscardLeadCard:[Card id]\"");
+                }
             }
         }
 
