@@ -1,8 +1,6 @@
 package it.polimi.ingsw.messages;
 
-import it.polimi.ingsw.messages.SerializedMessage;
-
-public class GetInitialResourcesAction implements GameMessage {
+public class GetInitialResourcesAction implements SerializedMessage {
 
     private final String message;
 

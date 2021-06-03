@@ -1,6 +1,6 @@
 package it.polimi.ingsw.messages;
 
-public class MarketAction implements GameMessage {
+public class MarketAction implements SerializedMessage {
     int coordinate;
 
     public MarketAction(int position) {

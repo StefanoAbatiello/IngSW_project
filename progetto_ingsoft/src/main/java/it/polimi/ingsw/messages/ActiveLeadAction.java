@@ -1,8 +1,6 @@
 package it.polimi.ingsw.messages;
 
-import it.polimi.ingsw.messages.GameMessage;
-
-public class ActiveLeadAction implements GameMessage {
+public class ActiveLeadAction implements SerializedMessage {
 
     int lead;
 

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.messages;
 
-public class BuyCardAction implements GameMessage {
+public class BuyCardAction implements SerializedMessage {
     int card;
     int slot;
 

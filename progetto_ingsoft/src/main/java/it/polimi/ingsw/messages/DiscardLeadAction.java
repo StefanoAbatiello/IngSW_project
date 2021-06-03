@@ -1,8 +1,6 @@
 package it.polimi.ingsw.messages;
 
-import it.polimi.ingsw.messages.GameMessage;
-
-public class DiscardLeadAction implements GameMessage {
+public class DiscardLeadAction implements SerializedMessage {
 
     int leaderId;
 
