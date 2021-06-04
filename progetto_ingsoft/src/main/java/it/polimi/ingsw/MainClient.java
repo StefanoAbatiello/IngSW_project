@@ -6,7 +6,7 @@ import java.net.Socket;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 
-public class MainClient implements Executor{
+public class MainClient {
     private String ip;
     private int port;
     private PingObserver pongObserver;
@@ -36,7 +36,7 @@ public class MainClient implements Executor{
      */
 
     public static void main(String[] args) {
-        ClientCLI client = new ClientCLI("127.0.0.1", 1337);
+        ClientCLI client = new ClientCLI(args[0], Integer.parseInt(args[1]));
         new Thread(client).start();
         /*executors= Executors.newCachedThreadPool();
         executors.submit(new Runnable() {
@@ -236,8 +236,5 @@ public class MainClient implements Executor{
         return viewCLI;
     }
 */
-    @Override
-    public void execute(Runnable command) {
 
-    }
 }
