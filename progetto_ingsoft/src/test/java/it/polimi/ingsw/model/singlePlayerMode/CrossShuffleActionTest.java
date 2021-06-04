@@ -18,7 +18,9 @@ class CrossShuffleActionTest {
         CrossShuffleAction action=new CrossShuffleAction();
         for(int i=0;i<5;i++)
             action.applyEffect(sP.getTokensStack());
-        assertEquals(BlackCrossToken.getCrossPosition()+1, action.applyEffect(sP.getTokensStack()));
+        int pos=BlackCrossToken.getCrossPosition();
+        action.applyEffect(sP.getTokensStack());
+        assertEquals(pos+1, BlackCrossToken.getCrossPosition());
     }
 
     /*

@@ -17,6 +17,8 @@ class DoubleCrossActionTest {
         DoubleCrossAction action=new DoubleCrossAction();
         for(int i=0;i<5;i++)
             action.applyEffect(sP.getTokensStack());
-        assertEquals(BlackCrossToken.getCrossPosition()+2,action.applyEffect(sP.getTokensStack()));
+        int pos=BlackCrossToken.getCrossPosition();
+        action.applyEffect(sP.getTokensStack());
+        assertEquals(pos+2,BlackCrossToken.getCrossPosition());
     }
 }

@@ -66,7 +66,8 @@ class SinglePlayerTest {
             list.add(sP.getTokensStack().get(i));
         }
         list.add(sP.getTokensStack().get(0));
-        assertEquals(list,sP.draw());
+        sP.draw();
+        assertEquals(list, sP.getTokensStack());
     }
 
     /*

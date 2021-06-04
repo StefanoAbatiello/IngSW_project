@@ -25,7 +25,7 @@ public class DevDeck{
     public DevDeck() {
         JSONParser jsonP = new JSONParser();
 
-        try(FileReader reader = new FileReader("progetto_ingsoft/src/main/resources/DEVCARDS.json")){
+        try(FileReader reader = new FileReader("src/main/resources/DEVCARDS.json")){
             //Read JSON File
             Object obj = jsonP.parse(reader);
             JSONArray devCardList = (JSONArray) obj;
