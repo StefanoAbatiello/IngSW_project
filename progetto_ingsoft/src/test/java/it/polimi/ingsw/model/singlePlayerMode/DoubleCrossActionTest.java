@@ -14,11 +14,11 @@ class DoubleCrossActionTest {
     @Test
     void UpdatingBlackCrossTest() throws playerLeadsNotEmptyException {
         SinglePlayer sP = new SinglePlayer("USER");
-        DoubleCrossAction action=new DoubleCrossAction();
+        DoubleCrossAction action=new DoubleCrossAction(sP);
         for(int i=0;i<5;i++)
             action.applyEffect(sP.getTokensStack());
-        int pos=BlackCrossToken.getCrossPosition();
+        int pos=sP.getBlackCrossToken().getCrossPosition();
         action.applyEffect(sP.getTokensStack());
-        assertEquals(pos+2,BlackCrossToken.getCrossPosition());
+        assertEquals(pos+2,sP.getBlackCrossToken().getCrossPosition());
     }
 }

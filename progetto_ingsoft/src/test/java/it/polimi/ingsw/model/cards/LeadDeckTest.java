@@ -27,7 +27,7 @@ class LeadDeckTest {
         HashMap<Integer, ArrayList<String>> cardsReq= new HashMap<>();
         cardsReq.put(1,color);
         LeadCard card= new LeadCard(49,2,cardsReq,leadAbility);
-        LeadCard wantedCard= LeadDeck.getCardFromId(49);
+        LeadCard wantedCard= deck.getCardFromId(49);
         assertEquals(card.getPoints(), wantedCard.getPoints());
         assertEquals(card.getAbility().getClass(), wantedCard.getAbility().getClass());
         assertEquals(card.getAbility().getAbilityResource(), wantedCard.getAbility().getAbilityResource());

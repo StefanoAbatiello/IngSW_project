@@ -14,13 +14,13 @@ class SinglePlayerTest {
      */
     @Test
     void checkEmptyLineInMatrixTest() throws playerLeadsNotEmptyException {
-        new SinglePlayer("USER");
+        SinglePlayer sP=new SinglePlayer("USER");
         int i=0, j=0;
-        String color = DevDeckMatrix.getDevMatrix()[i][j].getLittleDevDeck().get(0).getColor();
+        String color = sP.getDevDeckMatrix().getDevMatrix()[i][j].getLittleDevDeck().get(0).getColor();
         for(int k = 0; k <12; k++) {
-            SinglePlayer.removeTokenCard(color);
+            sP.removeTokenCard(color);
         }
-        assertTrue(SinglePlayer.checkEmptyLineInMatrix());
+        assertTrue(sP.checkEmptyLineInMatrix());
     }
 
     /*
@@ -28,23 +28,24 @@ class SinglePlayerTest {
      */
     @Test
     void checkLinesInMatrixTest() throws playerLeadsNotEmptyException {
-        new SinglePlayer("USER");
+        SinglePlayer sP=new SinglePlayer("USER");
         for (int i=0; i<5; i++)
-            SinglePlayer.removeTokenCard("BLUE");
-        assertFalse(SinglePlayer.checkEmptyLineInMatrix());
+            sP.removeTokenCard("BLUE");
+        assertFalse(sP.checkEmptyLineInMatrix());
     }
 
     /*
     this Test is implemented to check if the method return the correct value in case Lorenzo's BlackCross reaches the end of FaithTrack
      */
     @Test
-    void LorenzoWinTest() {
+    void LorenzoWinTest() throws playerLeadsNotEmptyException {
+        SinglePlayer singlePlayer=new SinglePlayer("Player");
         ArrayList<ActionToken> tokens = new ArrayList<>();
-        DoubleCrossAction token = new DoubleCrossAction();
+        DoubleCrossAction token = new DoubleCrossAction(singlePlayer);
         tokens.add(token);
         for(int i=0; i<12; i++)
             token.applyEffect(tokens);
-        assertTrue(SinglePlayer.checkBlackCrossPosition());
+        assertTrue(singlePlayer.checkBlackCrossPosition());
     }
 
     /*
@@ -54,13 +55,13 @@ class SinglePlayerTest {
     void drawTest() throws playerLeadsNotEmptyException {
         SinglePlayer sP = new SinglePlayer("USER");
         sP.getTokensStack().clear();
-        sP.getTokensStack().add(new DoubleCrossAction());
-        sP.getTokensStack().add(new DoubleCrossAction());
-        sP.getTokensStack().add(new DiscardDevCardAction("YELLOW"));
-        sP.getTokensStack().add(new DiscardDevCardAction("GREEN"));
-        sP.getTokensStack().add(new DiscardDevCardAction("PURPLE"));
-        sP.getTokensStack().add(new DiscardDevCardAction("BLUE"));
-        sP.getTokensStack().add(new CrossShuffleAction());
+        sP.getTokensStack().add(new DoubleCrossAction(sP));
+        sP.getTokensStack().add(new DoubleCrossAction(sP));
+        sP.getTokensStack().add(new DiscardDevCardAction("YELLOW",sP));
+        sP.getTokensStack().add(new DiscardDevCardAction("GREEN",sP));
+        sP.getTokensStack().add(new DiscardDevCardAction("PURPLE",sP));
+        sP.getTokensStack().add(new DiscardDevCardAction("BLUE",sP));
+        sP.getTokensStack().add(new CrossShuffleAction(sP));
         ArrayList<ActionToken> list= new ArrayList<>();
         for (int i=1;i<=6;i++) {
             list.add(sP.getTokensStack().get(i));
@@ -75,11 +76,11 @@ class SinglePlayerTest {
      */
     @Test
     void removeTokenCardTest() throws playerLeadsNotEmptyException {
-        new SinglePlayer("USER");
+        SinglePlayer sP=new SinglePlayer("USER");
         int i=0, j=0;
-        ArrayList<DevCard> list = new ArrayList<>(DevDeckMatrix.getDevMatrix()[i][j].getLittleDevDeck());
+        ArrayList<DevCard> list = new ArrayList<>(sP.getDevDeckMatrix().getDevMatrix()[i][j].getLittleDevDeck());
         String color = list.remove(0).getColor();
-        SinglePlayer.removeTokenCard(color);
-        assertEquals(list,DevDeckMatrix.getDevMatrix()[i][j].getLittleDevDeck());
+        sP.removeTokenCard(color);
+        assertEquals(list,sP.getDevDeckMatrix().getDevMatrix()[i][j].getLittleDevDeck());
     }
 }

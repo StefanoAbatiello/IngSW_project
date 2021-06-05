@@ -38,7 +38,7 @@ public class MultiPlayer extends Game {
         }
         System.out.println("lista di giocatori salvata, creo le devCards");
         matrix = new DevDeckMatrix();
-        devDeck = DevDeckMatrix.getDeck();
+        devDeck = matrix.getDeck();
         System.out.println("devCards create, creo il market");
         this.market=new Market();
         System.out.println("market creato, creo le leadCards");
@@ -106,15 +106,16 @@ public class MultiPlayer extends Game {
         return market;
     }
 
-    public DevDeckMatrix getMatrix() {
-        return matrix;
-    }
-
     public LeadDeck getLeads() {
         return leads;
     }
 
     public DevDeck getDevDeck() {
         return devDeck;
+    }
+
+    @Override
+    public DevDeckMatrix getDevDeckMatrix() {
+        return null;
     }
 }

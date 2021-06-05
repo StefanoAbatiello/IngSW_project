@@ -9,13 +9,16 @@ public class DiscardDevCardAction implements ActionToken {
          */
     private final String color;
 
+    private final SinglePlayer sP;
+
     private final String effect="Lorenzo has discarded two development card of color ";
 
     /*
     this constructor associates the color to this ActionToken
      */
-    public DiscardDevCardAction(String color) {
+    public DiscardDevCardAction(String color,SinglePlayer singlePlayer) {
         this.color = color;
+        this.sP=singlePlayer;
     }
 
     /**
@@ -30,7 +33,7 @@ public class DiscardDevCardAction implements ActionToken {
      */
     @Override
     public String applyEffect(ArrayList<ActionToken> tokensStack) {
-        SinglePlayer.removeTokenCard(color);
+        sP.removeTokenCard(color);
         return effect + color;
     }
 }

@@ -1,7 +1,8 @@
 package it.polimi.ingsw.model.personalboard;
 
 public class BlackCrossToken {
-    private static int crossPosition;
+
+    private int crossPosition;
 
     public BlackCrossToken() {
         this.crossPosition = 0;
@@ -10,7 +11,7 @@ public class BlackCrossToken {
     /**
      * @return current cross position
      */
-    public static int getCrossPosition() {
+    public  int getCrossPosition() {
         return crossPosition;
     }
 
@@ -18,7 +19,7 @@ public class BlackCrossToken {
      * @param pos is the future position of cross
      * @return cross position after the updating
      */
-    public static int updateBlackCross(int pos){
+    public  int updateBlackCross(int pos){
         crossPosition+=pos;
         return crossPosition;
     }

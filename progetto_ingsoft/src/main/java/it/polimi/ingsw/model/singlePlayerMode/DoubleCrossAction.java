@@ -1,11 +1,18 @@
 package it.polimi.ingsw.model.singlePlayerMode;
 
+import it.polimi.ingsw.model.SinglePlayer;
 import it.polimi.ingsw.model.personalboard.BlackCrossToken;
 import java.util.ArrayList;
 
 public class DoubleCrossAction implements ActionToken {
 
     private final String effect="Lorenzo receives two faith point";
+    private final SinglePlayer sP;
+
+
+    public DoubleCrossAction(SinglePlayer singlePlayer) {
+        this.sP=singlePlayer;
+    }
 
 
     /**
@@ -13,7 +20,7 @@ public class DoubleCrossAction implements ActionToken {
      */
     @Override
     public String applyEffect(ArrayList<ActionToken> tokensStack){
-        BlackCrossToken.updateBlackCross(2);
+        sP.getBlackCrossToken().updateBlackCross(2);
         return effect;
     }
 

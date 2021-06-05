@@ -12,59 +12,59 @@ class DevDeckMatrixTest {
 
     @Test
     void getUpperDevCardsOnTable() {
-        new DevDeckMatrix();
-        DevCard card = DevDeckMatrix.getDevMatrix()[0][0].littleDevDeck.get(0);
-        DevCard[][] upperCards= DevDeckMatrix.getUpperDevCardsOnTable();
+        DevDeckMatrix matrix=new DevDeckMatrix();
+        DevCard card = matrix.getDevMatrix()[0][0].littleDevDeck.get(0);
+        DevCard[][] upperCards= matrix.getUpperDevCardsOnTable();
         assertEquals(card,upperCards[0][0]);
     }
 
     @Test
     void SameColorInALine(){
-        new DevDeckMatrix();
+        DevDeckMatrix matrix=new DevDeckMatrix();
         int i=0;
         for(int j=0; j<3;j++)
             for(int k=0; k<4;k++)
-                assertEquals("GREEN", DevDeckMatrix.getDevMatrix()[i][j].littleDevDeck.get(k).getColor());
+                assertEquals("GREEN", matrix.getDevMatrix()[i][j].littleDevDeck.get(k).getColor());
     }
 
     @Test
     void sameColorInALine(){
-        new DevDeckMatrix();
+        DevDeckMatrix matrix=new DevDeckMatrix();
         int i=2;
         for(int j=0; j<3;j++)
             for(int k=0; k<4;k++)
-                assertEquals("PURPLE", DevDeckMatrix.getDevMatrix()[i][j].littleDevDeck.get(k).getColor());
+                assertEquals("PURPLE", matrix.getDevMatrix()[i][j].littleDevDeck.get(k).getColor());
     }
 
     @Test
     void allDifferentCards() {
-        new DevDeckMatrix();
+        DevDeckMatrix matrix=new DevDeckMatrix();
         ArrayList<DevCard> check= new ArrayList<>();
 
         for(int i=0;i<4;i++){
             for(int j=0; j<3;j++){
                 for(int k=0;k<4;k++)
-                    check.add(DevDeckMatrix.getDevMatrix()[i][j].littleDevDeck.get(k));
+                    check.add(matrix.getDevMatrix()[i][j].littleDevDeck.get(k));
             }
         }
-        for(DevCard card: DevDeckMatrix.getDeck().getDevCards())
+        for(DevCard card: matrix.getDeck().getDevCards())
             assertTrue(check.contains(card));
     }
 
     @Test
     void getNumberOfCardsIn1Slot() {
-        new DevDeckMatrix();
-        assertEquals(4,DevDeckMatrix.getDevMatrix()[0][0].littleDevDeck.size());
+        DevDeckMatrix matrix=new DevDeckMatrix();
+        assertEquals(4,matrix.getDevMatrix()[0][0].littleDevDeck.size());
 
     }
 
     @Test
     void getUpperWhenLittleIsEmpty() throws CardNotOnTableException {
-        new DevDeckMatrix();
+        DevDeckMatrix matrix=new DevDeckMatrix();
         for(int i =0; i<4;i++)
-            DevDeckMatrix.buyCard(DevDeckMatrix.getDevMatrix()[0][0].littleDevDeck.get(0));
+            matrix.buyCard(matrix.getDevMatrix()[0][0].littleDevDeck.get(0));
 
-        DevCard[][] upperCards= DevDeckMatrix.getUpperDevCardsOnTable();
+        DevCard[][] upperCards= matrix.getUpperDevCardsOnTable();
         assertNull(upperCards[0][0]);
     }
 

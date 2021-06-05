@@ -224,7 +224,7 @@ public class Controller {
             System.out.println("ho controllato l'azione e la posizione scelta");
             DevCard[][] upper;
             if(playerCardLevel(player, card)) {
-                upper = DevDeckMatrix.getUpperDevCardsOnTable();
+                upper = game.getDevDeckMatrix().getUpperDevCardsOnTable();
                 for (int i = 0; i < 4; i++) {
                     for (int j = 0; j < 3; j++) {
                         System.out.println(upper[i][j].getId());
@@ -239,7 +239,7 @@ public class Controller {
                             if (player.getPersonalBoard().removeResourcesfromBuy(cardToBuy.getRequirements())) {
                                 System.out.println("ha le risorse necessarie");
                                 player.setAction(Action.BUYCARD);
-                                DevDeckMatrix.buyCard(cardToBuy);
+                                game.getDevDeckMatrix().buyCard(cardToBuy);
                                 System.out.println("ha comprato la carta, invio la nuova dev matrix");
                                 lobby.sendAll(new DevMatrixChangeMessage(getDevMatrix()));
                                 System.out.println("dev matrix inviata");
@@ -834,7 +834,7 @@ public class Controller {
 
     private  int[][] getDevMatrix(){
         int[][] devMatrix = new int[4][3];
-        DevCard[][] matrix = DevDeckMatrix.getUpperDevCardsOnTable();
+        DevCard[][] matrix = game.getDevDeckMatrix().getUpperDevCardsOnTable();
         System.out.println("mi sono salvato le carte acquistabili");
         for (int j = 0; j < 4; j++) {
             for (int k = 0; k < 3; k++) {

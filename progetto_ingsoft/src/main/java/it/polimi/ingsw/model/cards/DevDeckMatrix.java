@@ -12,8 +12,8 @@ public class DevDeckMatrix {
     /**
      * This attribute represents the matrix of dev cards on the table
      */
-    private static final LittleDevDeck[][] devDecksOnTable = new LittleDevDeck[4][3];
-    private static DevDeck deck;
+    private final LittleDevDeck[][] devDecksOnTable = new LittleDevDeck[4][3];
+    private DevDeck deck;
     /**
      * This constructor creates a matrix and dispose the cards on the table, divided in little decks of 4 cards each, dived by color and level
      */
@@ -42,7 +42,7 @@ public class DevDeckMatrix {
      *This method gets only the first dev card of each slot in the matrix
      * @return a matrix of dev cards which contains in each slot the first dev card contained in the game matrix
      */
-    public static DevCard[][] getUpperDevCardsOnTable(){
+    public DevCard[][] getUpperDevCardsOnTable(){
         DevCard[][] cardsOnTable = new DevCard[4][3];
         for(int i=0;i<4;i++){
             for(int j=0; j<3;j++){
@@ -53,14 +53,14 @@ public class DevDeckMatrix {
         return cardsOnTable;
     }
 
-    public static DevDeck getDeck(){
+    public DevDeck getDeck(){
         return deck;
     }
     /**
      *
      * @return the dev cards matrix on the game table
      */
-    public static LittleDevDeck[][] getDevMatrix(){
+    public LittleDevDeck[][] getDevMatrix(){
         return devDecksOnTable;
     }
 
@@ -74,7 +74,7 @@ public class DevDeckMatrix {
      * @return the dev card that the caller wants to buy, if the card is present
      * @throws CardNotOnTableException the card wanted is not present on the game table
      */
-    public static boolean buyCard ( DevCard cardToBuy) {
+    public boolean buyCard ( DevCard cardToBuy) {
         for(int i=0;i<4;i++){
             for(int j=0; j<3;j++){
                 if(!devDecksOnTable[i][j].littleDevDeck.isEmpty())

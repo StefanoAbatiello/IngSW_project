@@ -15,12 +15,12 @@ class CrossShuffleActionTest {
     @Test
     void UpdatingBlackCrossTest() throws playerLeadsNotEmptyException {
         SinglePlayer sP=new SinglePlayer("USER");
-        CrossShuffleAction action=new CrossShuffleAction();
+        CrossShuffleAction action=new CrossShuffleAction(sP);
         for(int i=0;i<5;i++)
             action.applyEffect(sP.getTokensStack());
-        int pos=BlackCrossToken.getCrossPosition();
+        int pos=sP.getBlackCrossToken().getCrossPosition();
         action.applyEffect(sP.getTokensStack());
-        assertEquals(pos+1, BlackCrossToken.getCrossPosition());
+        assertEquals(pos+1, sP.getBlackCrossToken().getCrossPosition());
     }
 
     /*
@@ -30,13 +30,13 @@ class CrossShuffleActionTest {
     void ShufflingTest() throws playerLeadsNotEmptyException {
         SinglePlayer sP = new SinglePlayer("USER");
         sP.getTokensStack().clear();
-        sP.getTokensStack().add(new CrossShuffleAction());
-        sP.getTokensStack().add(new DoubleCrossAction());
-        sP.getTokensStack().add(new DoubleCrossAction());
-        sP.getTokensStack().add(new DiscardDevCardAction("YELLOW"));
-        sP.getTokensStack().add(new DiscardDevCardAction("GREEN"));
-        sP.getTokensStack().add(new DiscardDevCardAction("PURPLE"));
-        sP.getTokensStack().add(new DiscardDevCardAction("BLUE"));
+        sP.getTokensStack().add(new CrossShuffleAction(sP));
+        sP.getTokensStack().add(new DoubleCrossAction(sP));
+        sP.getTokensStack().add(new DoubleCrossAction(sP));
+        sP.getTokensStack().add(new DiscardDevCardAction("YELLOW",sP));
+        sP.getTokensStack().add(new DiscardDevCardAction("GREEN",sP));
+        sP.getTokensStack().add(new DiscardDevCardAction("PURPLE",sP));
+        sP.getTokensStack().add(new DiscardDevCardAction("BLUE",sP));
         ArrayList<ActionToken> list1 = new ArrayList<>(sP.getTokensStack());
         list1.add(list1.remove(0));
         sP.draw();

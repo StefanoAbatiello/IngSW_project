@@ -18,7 +18,7 @@ import java.util.*;
 //TODO tipologia di requirement delle lead dipende dall'abilità della carta
 public class LeadDeck {
 
-    private static final ArrayList<LeadCard> leadDeck = new ArrayList<>();
+    private final ArrayList<LeadCard> leadDeck = new ArrayList<>();
 
     public LeadDeck() {
         JSONParser jsonP = new JSONParser();
@@ -148,7 +148,7 @@ public class LeadDeck {
         return true;
     }
 
-    public static LeadCard getCardFromId(int id){
+    public LeadCard getCardFromId(int id){
         for(LeadCard card: leadDeck) {
             if (card.getId() == id)
                 return card;

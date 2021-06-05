@@ -16,6 +16,7 @@ public class SinglePlayer extends Game{
     private LeadDeck leads;
     private DevDeck devDeck;
     private ArrayList<Player> player= new ArrayList<>();
+    private BlackCrossToken blackCrossToken;
 
     public  ArrayList<ActionToken> getTokensStack() {
         return tokensStack;
@@ -24,17 +25,17 @@ public class SinglePlayer extends Game{
     public SinglePlayer(String username) throws playerLeadsNotEmptyException {
         Player singlePlayer= new Player(username);
         this.player.add(singlePlayer);
-        tokensStack.add(new CrossShuffleAction());
-        tokensStack.add(new DoubleCrossAction());
-        tokensStack.add(new DoubleCrossAction());
-        tokensStack.add(new DiscardDevCardAction("YELLOW"));
-        tokensStack.add(new DiscardDevCardAction("GREEN"));
-        tokensStack.add(new DiscardDevCardAction("PURPLE"));
-        tokensStack.add(new DiscardDevCardAction("BLUE"));
+        tokensStack.add(new CrossShuffleAction(this));
+        tokensStack.add(new DoubleCrossAction(this));
+        tokensStack.add(new DoubleCrossAction(this));
+        tokensStack.add(new DiscardDevCardAction("YELLOW",this));
+        tokensStack.add(new DiscardDevCardAction("GREEN",this));
+        tokensStack.add(new DiscardDevCardAction("PURPLE",this));
+        tokensStack.add(new DiscardDevCardAction("BLUE",this));
         Collections.shuffle(tokensStack);
         matrix= new DevDeckMatrix();
-        devDeck = DevDeckMatrix.getDeck();
-        new BlackCrossToken();
+        devDeck = matrix.getDeck();
+        blackCrossToken=new BlackCrossToken();
         this.market=new Market();
         leads= new LeadDeck();
         leads.shuffle();
@@ -48,11 +49,11 @@ public class SinglePlayer extends Game{
     /**
      * @return true if checking line by line an empty one is found(each line corresponds to a color)
      */
-    public static boolean checkEmptyLineInMatrix() {
+    public boolean checkEmptyLineInMatrix() {
         for(int i=0;i<4;i++) {
-            if (DevDeckMatrix.getDevMatrix()[i][0].getLittleDevDeck().isEmpty() &&
-                DevDeckMatrix.getDevMatrix()[i][1].getLittleDevDeck().isEmpty() &&
-                DevDeckMatrix.getDevMatrix()[i][2].getLittleDevDeck().isEmpty())
+            if (matrix.getDevMatrix()[i][0].getLittleDevDeck().isEmpty() &&
+                matrix.getDevMatrix()[i][1].getLittleDevDeck().isEmpty() &&
+                matrix.getDevMatrix()[i][2].getLittleDevDeck().isEmpty())
                     return true;
         }
         return false;
@@ -61,8 +62,8 @@ public class SinglePlayer extends Game{
     /**
      * @return true if Lorenzo's BlackCross has reached the end of Faith track
      */
-    public static boolean checkBlackCrossPosition(){
-        return BlackCrossToken.getCrossPosition() >= 24;
+    public boolean checkBlackCrossPosition(){
+        return blackCrossToken.getCrossPosition() >= 24;
     }
 
     /**
@@ -82,13 +83,13 @@ public class SinglePlayer extends Game{
      * @param color indicates the color of the card that lorenzo is trying to discard from DevDeckMatrix
      * @return 0 if removing a card there are other cards with same color, otherwise -1, or -2 if the card removal failed
      */
-    public static int removeTokenCard(String color)  {
+    public int removeTokenCard(String color)  {
         for(int i=0;i<4;i++){
             for(int j=0; j<3;j++){
-                if(!DevDeckMatrix.getDevMatrix()[i][j].getLittleDevDeck().isEmpty()){
-                    if(DevDeckMatrix.getDevMatrix()[i][j].getLittleDevDeck().get(0).getColor().equals(color)){
-                        DevDeckMatrix.getDevMatrix()[i][j].getLittleDevDeck().remove(0);
-                        if(j==2 && DevDeckMatrix.getDevMatrix()[i][j].getLittleDevDeck().isEmpty())
+                if(!matrix.getDevMatrix()[i][j].getLittleDevDeck().isEmpty()){
+                    if(matrix.getDevMatrix()[i][j].getLittleDevDeck().get(0).getColor().equals(color)){
+                        matrix.getDevMatrix()[i][j].getLittleDevDeck().remove(0);
+                        if(j==2 && matrix.getDevMatrix()[i][j].getLittleDevDeck().isEmpty())
                             return -1;
                         return 0;
                     }else
@@ -131,20 +132,20 @@ public class SinglePlayer extends Game{
 
     @Override
     public boolean activePopeSpace(Player player) {
-        if((player.getPersonalBoard().getFaithMarker().getFaithPosition()==8 || BlackCrossToken.getCrossPosition()==8) && isVC1active()) {
+        if((player.getPersonalBoard().getFaithMarker().getFaithPosition()==8 || blackCrossToken.getCrossPosition()==8) && isVC1active()) {
 
             if(player.getPersonalBoard().getFaithMarker().isVaticanZone())
                 player.increaseFaithtrackPoints(2);
             setVC1active(false);
             return isVC1active();
         }
-        else if((player.getPersonalBoard().getFaithMarker().getFaithPosition()==16 || BlackCrossToken.getCrossPosition()==16) && isVC2active()) {
+        else if((player.getPersonalBoard().getFaithMarker().getFaithPosition()==16 || blackCrossToken.getCrossPosition()==16) && isVC2active()) {
             if(player.getPersonalBoard().getFaithMarker().isVaticanZone())
                 player.increaseFaithtrackPoints(3);
             setVC2active(false);
             return isVC2active();
         }
-        else if((player.getPersonalBoard().getFaithMarker().getFaithPosition()==24 || BlackCrossToken.getCrossPosition()==24) && isVC3active()) {
+        else if((player.getPersonalBoard().getFaithMarker().getFaithPosition()==24 || blackCrossToken.getCrossPosition()==24) && isVC3active()) {
             if(player.getPersonalBoard().getFaithMarker().isVaticanZone())
                 player.increaseFaithtrackPoints(4);
             setVC3active(false);
@@ -154,13 +155,10 @@ public class SinglePlayer extends Game{
             return true;
         }
 
+    public BlackCrossToken getBlackCrossToken(){return blackCrossToken;}
 
     public Market getMarket() {
         return market;
-    }
-
-    public DevDeckMatrix getMatrix() {
-        return matrix;
     }
 
     public LeadDeck getLeads() {
@@ -169,5 +167,10 @@ public class SinglePlayer extends Game{
 
     public DevDeck getDevDeck() {
         return devDeck;
+    }
+
+    @Override
+    public DevDeckMatrix getDevDeckMatrix() {
+        return matrix;
     }
 }

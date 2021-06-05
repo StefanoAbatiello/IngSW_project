@@ -18,11 +18,11 @@ class DiscardDevCardActionTest {
     void applyEffect() throws playerLeadsNotEmptyException {
         int i=1;
         SinglePlayer sP = new SinglePlayer("USER");
-        ArrayList<DevCard> devDeck = DevDeckMatrix.getDevMatrix()[i][0].getLittleDevDeck();
+        ArrayList<DevCard> devDeck = sP.getDevDeckMatrix().getDevMatrix()[i][0].getLittleDevDeck();
         String color = devDeck.get(0).getColor();
-        DiscardDevCardAction token = new DiscardDevCardAction(color);
+        DiscardDevCardAction token = new DiscardDevCardAction(color,sP);
         token.applyEffect(sP.getTokensStack());
         devDeck.remove(0);
-        assertEquals(devDeck,DevDeckMatrix.getDevMatrix()[i][0].getLittleDevDeck());
+        assertEquals(devDeck,sP.getDevDeckMatrix().getDevMatrix()[i][0].getLittleDevDeck());
     }
 }
