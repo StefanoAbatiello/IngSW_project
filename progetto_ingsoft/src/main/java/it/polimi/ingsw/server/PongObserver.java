@@ -58,7 +58,7 @@ public class PongObserver implements Runnable {
     @Override
     public void run() {
         System.out.println("mando il ping al client: "+clientHandler.getClientId());
-        clientHandler.asyncSend(new PingMessage());
+        clientHandler.send(new PingMessage());
         System.out.println("aspetto il ping del client: "+clientHandler.getClientId());
         timer=new Timer();
         TimerTask checkResponse=new TimerTask() {
@@ -66,18 +66,22 @@ public class PongObserver implements Runnable {
             public void run() {
                 if (active) {
                     if (pingReceived) {
-                        System.out.println("ping ricevuto");
+                        System.out.println("ping ricevuto dal client "+clientHandler.getClientId());
                         counterTimeout = 0;
+                        pingReceived = false;
                         timer.cancel();
                         timer.purge();
                         cancel();
                     } else {
                         counterTimeout = counterTimeout + 1;
                         System.out.println("ping non ricevuto " + counterTimeout + " volta/e dal client: " + clientHandler.getClientId());
-                        clientHandler.asyncSend(new PingMessage());
+                        clientHandler.send(new PingMessage());
                     }
                     if (counterTimeout==maxTimeoutNumber){
                         clientHandler.getServer().disconnectClient(clientHandler.getClientId());
+                        timer.cancel();
+                        timer.purge();
+                        cancel();
                     }
                 }
             }

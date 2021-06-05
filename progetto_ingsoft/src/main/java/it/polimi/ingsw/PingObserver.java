@@ -35,19 +35,19 @@ public class PingObserver extends TimerTask {
     @Override
     public void run() {
         started = true;
-        //System.out.println("creo il timer");
+        //System.out.println("creo il timer");[Debug]
         timer=new Timer();
-        //System.out.println("creo il timertask");
+        //System.out.println("creo il timertask");[Debug]
         TimerTask checkPing=new TimerTask() {
             @Override
             public void run() {
                 //System.out.println("pongObserver a rapporto");[Debug]
                 if (!pingReceived) {
                     counterTimeout = counterTimeout + 1;
-                    //System.out.println("ping non ricevuto " + counterTimeout + " volta/e");//[Debug]
+                    //System.out.println("ping non ricevuto " + counterTimeout + " volta/e");[Debug]
                 } else {
                     //System.out.println("ping ricevuto");
-                    client.asyncSend(new PingMessage());
+                    client.send(new PingMessage());
                     counterTimeout = 0;
                     pingReceived=false;
                     //System.err.println("blocco il timer");

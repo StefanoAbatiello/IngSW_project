@@ -110,7 +110,6 @@ public class Lobby {
         //TODO ragiono su inizializzazione
         //TODO ragiono su oggetti che passa il client
         Object gameObj;
-        Object gameObj2;
         System.out.println("sono nell'handler della lobby");
         //1-gestisco la scelta del giocatore di quali leader card tenere
         if(input instanceof ChosenLeadMessage){

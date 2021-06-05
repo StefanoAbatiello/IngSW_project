@@ -662,15 +662,17 @@ public class Controller {
     public void askInitialResources() {
         if(game.getPlayers().size()>1) {
             lobby.setStateOfGame(GameState.PREPARATION2);
-            lobby.getPlayers().get(0).getClientHandler().send(new LobbyMessage("Wait until other players have chosen initial resources"));
+            lobby.getPlayers().get(0).getClientHandler().send(new GetInitialResourcesAction("Wait until other players have chosen initial resources"));
             lobby.getPlayers().get(1).getClientHandler().send(new GetInitialResourcesAction("You can choose 1 initial resource"));
-            lobby.getPlayers().get(2).getClientHandler().send(new GetInitialResourcesAction(
-                    "You can choose 1 initial resource, you will receive a faith point also"));
-            lobby.getPlayers().get(3).getClientHandler().send(new GetInitialResourcesAction(
+            if(game.getPlayers().size()>2)
+                lobby.getPlayers().get(2).getClientHandler().send(new GetInitialResourcesAction(
+                        "You can choose 1 initial resource, you will receive a faith point also"));
+            if(game.getPlayers().size()>3)
+                lobby.getPlayers().get(3).getClientHandler().send(new GetInitialResourcesAction(
                     "You can choose 2 initial resources, you will receive a faith point also"));
         }else
             startGame();
-        }
+    }
 
     private ClientHandler getHandlerFromPlayer(String name){
         int id = server.getIDFromName().get(name);

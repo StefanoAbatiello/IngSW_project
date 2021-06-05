@@ -72,16 +72,6 @@ public class ClientCLI implements Runnable{
         }
     }
 
-    public void asyncSend(PingMessage pingMessage) {
-        //executors.submit
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                send(pingMessage);
-            }
-        });
-    }
-
     private synchronized void actionHandler(SerializedMessage input) {
         //1-gestisco la richiesta del nickname
         if (input instanceof NickNameAction) {
@@ -102,14 +92,18 @@ public class ClientCLI implements Runnable{
 
         //4-gestione dei messaggio di ping
         else if (input instanceof PingMessage) {
-            //System.out.println("ho ricevuto un ping");//[Debug]
+            //System.out.println("ho ricevuto un ping");[Debug]
             pingObserver.setResponse(true);
             send(new PingMessage());
-            //System.out.println("ho inviato la risposta");
+            //System.out.println("ho inviato la risposta");[Debug]
             if (!pingObserver.isStarted()) {
-                //System.out.println("era il primo ping, faccio partire il pongObserver");//[Debug]
-                timer.schedule(pingObserver, 0, timerPeriod);
-                //System.out.println("pongObserver partito");//[Debug]
+                //System.out.println("era il primo ping, faccio partire il pongObserver");[Debug]
+                try{
+                    timer.schedule(pingObserver, 0, timerPeriod);
+                } catch (IllegalStateException e) {
+                    System.out.println("timer scheduled yet");
+                }
+                //System.out.println("pongObserver partito");[Debug]
             }
         }
 

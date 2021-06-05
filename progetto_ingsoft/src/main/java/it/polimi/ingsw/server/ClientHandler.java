@@ -76,7 +76,7 @@ public class ClientHandler implements Runnable {
             while (isActive()) {
                 System.out.println("aspetto un messaggio");
                 input = (SerializedMessage) inputStreamObj.readObject();
-                System.out.println("ho ricevuto un messaggio");
+                System.out.println("ho ricevuto un messaggio da "+ server.getNameFromId().get(clientID));
                 if(!pingHandler(input)){
                     if(!actionHandler( input)){
                         server.getClientFromId().get(clientID).getLobby().actionHandler(input, clientID);
@@ -253,20 +253,6 @@ public class ClientHandler implements Runnable {
             server.disconnectClient(clientID);
             e.printStackTrace();
         }
-    }
-
-    public void asyncSend(PingMessage pingMessage) {
-        ExecutorService executor=Executors.newCachedThreadPool();
-        executor.submit(new Runnable() {
-            @Override
-            public void run() {
-                send(pingMessage);
-            }
-        });
-    }
-
-    public Socket getSocket() {
-        return this.socket;
     }
 
     public int getClientId() {
