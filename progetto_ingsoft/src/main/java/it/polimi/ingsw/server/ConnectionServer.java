@@ -1,7 +1,6 @@
 package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.messages.LobbyMessage;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -38,16 +37,26 @@ public class ConnectionServer implements Runnable{
         observers = new ArrayList<>();
     }
 
+    /**
+     * @param observer is the one to add in the pongObserver's list
+     */
     public void addPingObserver(PongObserver observer){
-        System.out.println("sto aggiungendo l'observer");
         observers.add(observer);
     }
 
+    /**
+     * @param observer is the one to remove from the pongObserver's list
+     */
     public static void removePingObserver(PongObserver observer){
         synchronized (observers) {
             observers.remove(observer);
         }
     }
+
+    /**
+     * set the attribute and notify all client that the server is closing
+     * @param active is the value to give to the connectionServer's attribute active
+     */
     public void setActive(boolean active) {
         this.active = active;
         ArrayList<Lobby> lobbies= (ArrayList<Lobby>) server.getLobbyFromClientID().values().stream().distinct().collect(Collectors.toList());
@@ -55,11 +64,15 @@ public class ConnectionServer implements Runnable{
             lobby.sendAll(new LobbyMessage("Server is closing!"));
     }
 
+    /**
+     * accept a client, create the socket then create its clientHandler and run it on a new thread
+     * @param serverSocket is the serverSocket that accept the connection of clients
+     */
     public void acceptConnections(ServerSocket serverSocket){
         while (active){
             try{
                 Socket socket= serverSocket.accept();
-                System.out.println("sto accettando la connessione di un client");
+                System.out.println("sto accettando la connessione di un client");//[Debug]
                 ClientHandler clientHandler=new ClientHandler(socket, server);
                 executorService.submit(clientHandler);
             }
@@ -70,6 +83,10 @@ public class ConnectionServer implements Runnable{
     }
 
     //TODO classe di tutte le costanti
+
+    /**
+     * create the timer of pingMnager, create a serverSocket and prepares to accept clients
+     */
     public void run() {
         try {
             ServerSocket serverSocket=new ServerSocket(port);

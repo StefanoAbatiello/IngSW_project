@@ -20,6 +20,9 @@ public class ClientInput implements Runnable{
         this.mainAction=false;
     }
 
+    /**
+     * try to read from keyboard and analise it
+     */
     @Override
     public void run() {
         //System.out.println("sto leggendo da tastiera");
@@ -48,7 +51,6 @@ public class ClientInput implements Runnable{
             try{
                 int num = Integer.parseInt(string);
                 if(num>=0 && num<=3) {
-                    System.out.println("stai creando una lobby con altri " + num + " giocatori");
                     client.send(new NumOfPlayersAnswer(num));
                 }else
                     System.out.println("Number of player selected not valid. Please type again " +

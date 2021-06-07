@@ -20,13 +20,12 @@ public class Lobby {
     private final Controller controller;
     private VirtualView virtualVew;
 
-    public Lobby(int clientID, int lobbyID, int seatsAvailable, MainServer server){
+    public Lobby(int lobbyID, int seatsAvailable, MainServer server){
+        this.stateOfGame=GameState.WAITING;
         this.lobbyID=lobbyID;
         this.seatsAvailable = seatsAvailable;
         this.actualPlayers= new ArrayList<>();
-        this.stateOfGame=GameState.WAITING;
         this.server=server;
-        this.server.getLobbyFromClientID().put(clientID, this);
         controller=new Controller(this,this.server);
     }
 
