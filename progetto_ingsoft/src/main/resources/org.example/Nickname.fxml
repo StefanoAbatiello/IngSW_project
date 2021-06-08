@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.org.example.PrimaryController">
+   <children>
+      <Label fx:id="confirmation" layoutX="193.0" layoutY="80.0" text="CHOOSE A NICKNAME">
+         <font>
+            <Font name="System Bold" size="23.0" />
+         </font>
+      </Label>
+      <TextField fx:id="nickname_field" layoutX="241.0" layoutY="168.0" />
+      <Label layoutX="164.0" layoutY="172.0" text="Insert here:" />
+      <Button fx:id="nicknamebutton" layoutX="278.0" layoutY="278.0" mnemonicParsing="false" onAction="#startgame" text="Start Game" />
+   </children>
+</Pane>

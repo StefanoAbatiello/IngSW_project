@@ -36,7 +36,8 @@ public class MainClient {
      */
 
     public static void main(String[] args) {
-        ClientCLI client = new ClientCLI(args[0], Integer.parseInt(args[1]));
+        //TODO sistemare richiesta porta e ip lato cli
+        ClientCLI client = new ClientCLI("ciao",1,false);
         new Thread(client).start();
         /*executors= Executors.newCachedThreadPool();
         executors.submit(new Runnable() {

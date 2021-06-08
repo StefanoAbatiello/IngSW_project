@@ -24,15 +24,17 @@ public class ClientCLI implements Runnable, Sender{
     private ClientCardParser parser;
     //private ExecutorService executors;
     private Timer timer;
+    private boolean gui;
     private static final int timerPeriod = 30000; // time in milliseconds
 
 
-    public ClientCLI(String ip, int port) {
+    public ClientCLI(String ip, int port,boolean gui) {
         this.ip = ip;
         this.port = port;
         parser = new ClientCardParser(this);
         //executors= Executors.newCachedThreadPool();
         timer=new Timer();
+        this.gui=gui;
     }
 
     public void run() {
@@ -81,8 +83,14 @@ public class ClientCLI implements Runnable, Sender{
 
         //2-gestisco la richiesta del numero di giocatori che dovrà avere la lobby che sto creando
         else if (input instanceof RequestNumOfPlayers) {
-            System.out.println(((RequestNumOfPlayers) input).getMessage());
-            System.out.println("Type \"PlayersNumber:[num of player]\"");
+
+            if(gui){
+
+            }
+            else {
+                System.out.println(((RequestNumOfPlayers) input).getMessage());
+                System.out.println("Type \"PlayersNumber:[num of player]\"");
+            }
         }
 
         //3- gestisco la ricezione di messaggi di servizio all'interno della lobby
