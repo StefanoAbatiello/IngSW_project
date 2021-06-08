@@ -8,7 +8,10 @@ import org.json.simple.parser.ParseException;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ClientCardParser {
 
@@ -20,13 +23,15 @@ public class ClientCardParser {
     public ClientCardParser(ClientCLI client) {
         this.client=client;
         JSONParser jsonP = new JSONParser();
-        FileReader reader;
+        InputStreamReader reader;
         try{
-            reader = new FileReader("progetto_ingsoft/src/main/resources/DEVCARDS.json");
+            reader = new InputStreamReader(Objects.requireNonNull(JSONParser.class.getResourceAsStream(
+                    "/DEVCARDS.json")), StandardCharsets.UTF_8);
             System.out.println("ho letto il file dev");
             //Read JSON File
             this.devCardList = (JSONArray)jsonP.parse(reader);
-            reader = new FileReader("progetto_ingsoft/src/main/resources/LEADCARDS.json");
+            reader = new InputStreamReader(Objects.requireNonNull(JSONParser.class.getResourceAsStream(
+                    "/LEADCARDS.json")), StandardCharsets.UTF_8);
             System.out.println("ho letto il file lead");
             //Read JSON File
             this.leadCardList = (JSONArray) jsonP.parse(reader);

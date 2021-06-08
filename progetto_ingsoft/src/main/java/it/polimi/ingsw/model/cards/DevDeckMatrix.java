@@ -1,7 +1,10 @@
 package it.polimi.ingsw.model.cards;
 
 import it.polimi.ingsw.model.cards.cardExceptions.CardNotOnTableException;
+import org.json.simple.parser.ParseException;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,11 +16,16 @@ public class DevDeckMatrix {
      * This attribute represents the matrix of dev cards on the table
      */
     private final LittleDevDeck[][] devDecksOnTable = new LittleDevDeck[4][3];
+
+    /**
+     *This attribute is a reference to the whole deck of development card
+     */
     private DevDeck deck;
+
     /**
      * This constructor creates a matrix and dispose the cards on the table, divided in little decks of 4 cards each, dived by color and level
      */
-    public DevDeckMatrix (){
+    public DevDeckMatrix () throws FileNotFoundException, IOException, ParseException {
         deck = new DevDeck();
         ArrayList<DevCard> greenCards = deck.createLittleDecks("GREEN");
         ArrayList<DevCard> yellowCards = deck.createLittleDecks("YELLOW");
@@ -56,6 +64,7 @@ public class DevDeckMatrix {
     public DevDeck getDeck(){
         return deck;
     }
+
     /**
      *
      * @return the dev cards matrix on the game table
@@ -63,10 +72,6 @@ public class DevDeckMatrix {
     public LittleDevDeck[][] getDevMatrix(){
         return devDecksOnTable;
     }
-
-
-    //TODO creo mazzo quando faccio order? mazzo deve essere static, anche i mini array
-    //TODO gestisco eccezione
 
     /**
      *This method gives the possibility to get a card from the matrix
@@ -86,8 +91,6 @@ public class DevDeckMatrix {
         }
         return false;
     }
-
-
 
 }
 

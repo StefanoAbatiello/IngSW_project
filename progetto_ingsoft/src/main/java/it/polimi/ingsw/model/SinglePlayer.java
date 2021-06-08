@@ -5,6 +5,9 @@ import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.cards.cardExceptions.playerLeadsNotEmptyException;
 import it.polimi.ingsw.model.personalboard.*;
 import it.polimi.ingsw.model.singlePlayerMode.*;
+import org.json.simple.parser.ParseException;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -22,7 +25,7 @@ public class SinglePlayer extends Game{
         return tokensStack;
     }
 
-    public SinglePlayer(String username) throws playerLeadsNotEmptyException {
+    public SinglePlayer(String username) throws playerLeadsNotEmptyException, FileNotFoundException, IOException, ParseException {
         Player singlePlayer= new Player(username);
         this.player.add(singlePlayer);
         tokensStack.add(new CrossShuffleAction(this));

@@ -3,7 +3,11 @@ package it.polimi.ingsw.model.singlePlayerMode;
 import it.polimi.ingsw.model.SinglePlayer;
 import it.polimi.ingsw.model.cards.cardExceptions.playerLeadsNotEmptyException;
 import it.polimi.ingsw.model.personalboard.BlackCrossToken;
+
+import java.io.IOException;
 import java.util.ArrayList;
+
+import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,7 +17,7 @@ class CrossShuffleActionTest {
    this test is implemented to check if token effect modifies BlackCrossPosition correctly
     */
     @Test
-    void UpdatingBlackCrossTest() throws playerLeadsNotEmptyException {
+    void UpdatingBlackCrossTest() throws playerLeadsNotEmptyException, IOException, ParseException  {
         SinglePlayer sP=new SinglePlayer("USER");
         CrossShuffleAction action=new CrossShuffleAction(sP);
         for(int i=0;i<5;i++)
@@ -27,7 +31,7 @@ class CrossShuffleActionTest {
     this test is implemented to check if token effect works correctly after multiple usages
      */
     @Test
-    void ShufflingTest() throws playerLeadsNotEmptyException {
+    void ShufflingTest() throws playerLeadsNotEmptyException, IOException, ParseException {
         SinglePlayer sP = new SinglePlayer("USER");
         sP.getTokensStack().clear();
         sP.getTokensStack().add(new CrossShuffleAction(sP));

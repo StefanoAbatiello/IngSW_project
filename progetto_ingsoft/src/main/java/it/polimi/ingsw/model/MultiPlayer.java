@@ -6,6 +6,10 @@ import it.polimi.ingsw.model.cards.DevDeck;
 import it.polimi.ingsw.model.cards.DevDeckMatrix;
 import it.polimi.ingsw.model.cards.LeadDeck;
 import it.polimi.ingsw.model.cards.cardExceptions.playerLeadsNotEmptyException;
+import org.json.simple.parser.ParseException;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class MultiPlayer extends Game {
@@ -22,7 +26,7 @@ public class MultiPlayer extends Game {
      * @param username is the players' list of the game
      * @throws playerLeadsNotEmptyException when a player receive a fifth lead card
      */
-    public MultiPlayer(ArrayList<String> username, int numPlayer) throws playerLeadsNotEmptyException {
+    public MultiPlayer(ArrayList<String> username, int numPlayer) throws playerLeadsNotEmptyException, FileNotFoundException, IOException, ParseException {
         setVC1active(true);
         setVC2active(true);
         setVC3active(true);

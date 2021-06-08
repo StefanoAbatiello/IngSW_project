@@ -1,10 +1,11 @@
 package it.polimi.ingsw.model.cards;
 
 import it.polimi.ingsw.model.Resource;
-import it.polimi.ingsw.model.cards.cardExceptions.InvalidActiveParameterException;
 import it.polimi.ingsw.model.cards.cardExceptions.NoSuchRequirementException;
+import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -13,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class LeadCardTest {
 
     @Test
-    void getLeadCardAbility() {
+    void getLeadCardAbility() throws IOException, ParseException {
         LeadDeck deck = new LeadDeck();
         ArrayList<String> color=new ArrayList<>();
         color.add("GREEN");
@@ -28,7 +29,7 @@ class LeadCardTest {
     }
 
     @Test
-    void getLeadCardRes() {
+    void getLeadCardRes() throws IOException, ParseException{
         LeadDeck deck = new LeadDeck();
         ArrayList<String> color=new ArrayList<>();
         color.add("GREEN");
@@ -78,7 +79,7 @@ class LeadCardTest {
 
 
     @Test
-    void getDevCardReq() throws NoSuchRequirementException {
+    void getDevCardReq() throws NoSuchRequirementException, IOException, ParseException {
         LeadDeck deck = new LeadDeck();
         ArrayList<String> color=new ArrayList<>();
         color.add("GREEN");
@@ -91,7 +92,7 @@ class LeadCardTest {
     }
 
     @Test
-    void getDevCardReqWrong() throws NoSuchRequirementException {
+    void getDevCardReqWrong() throws NoSuchRequirementException, IOException, ParseException {
         LeadDeck deck = new LeadDeck();
         ArrayList<String> color=new ArrayList<>();
         color.add("GREEN");
@@ -108,7 +109,7 @@ class LeadCardTest {
     }
 
     @Test
-    void isLeadActive() throws InvalidActiveParameterException {
+    void isLeadActive() {
         ArrayList<String> color=new ArrayList<>();
         color.add("GREEN");
         LeadAbility leadAbility= new LeadAbilityWhiteMarble(Resource.SHIELD);

@@ -10,6 +10,10 @@ import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.cards.cardExceptions.*;
 import it.polimi.ingsw.messages.*;
+import org.json.simple.parser.ParseException;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
@@ -37,7 +41,14 @@ public class Controller {
                 game = new SinglePlayer(server.getNameFromId().get(id));
                 System.out.println("partita singlePlayer creata");
             } catch (playerLeadsNotEmptyException e) {
-                e.printStackTrace();
+                System.err.println("Error in Leader Card distribution, I'm retrying to create the game");
+                //TODO chiudere lobby
+            } catch (FileNotFoundException e) {
+                System.err.println("JSON file not found, I'm closing the server");
+                server.getConnectionServer().setActive(false);
+            } catch (IOException | ParseException e) {
+                System.err.println("Error in JSON parser creation, i'm retrying to create the game");
+                //TODO chiudere lobby
             }
         }
         else{
@@ -53,8 +64,15 @@ public class Controller {
                 game=new MultiPlayer(playersName, lobby.getPlayers().size());
                 //TODO creo mappa id-player
                 System.out.println("partita multiPlayer creata");
-           } catch (playerLeadsNotEmptyException e) {
-                e.printStackTrace();
+            } catch (playerLeadsNotEmptyException e) {
+                System.err.println("Error in Leader Card distribution, I'm retrying to create the game");
+                createGame();
+            } catch (FileNotFoundException e) {
+                System.err.println("Development Cards' file not found, I'm closing the server");
+                server.getConnectionServer().setActive(false);
+            } catch (IOException | ParseException e) {
+                System.err.println("Error in JSON parser creation, i'm retrying to create the game");
+                createGame();
             }
         }
         int i=0;
@@ -234,7 +252,13 @@ public class Controller {
                     for (int j = 0; j < 3; j++) {
                         if (upper[i][j].getId() == card) {
                             System.out.println("ho trovato la carta");
-                            DevCard cardToBuy = game.getDevDeck().getCardFromId(card);
+                            DevCard cardToBuy = null;
+                            try {
+                                cardToBuy = game.getDevDeck().getCardFromId(card);
+                            } catch (CardChosenNotValidException e) {
+                                System.err.println(e.getMessage());
+                                server.getClientFromId().get(id).getClientHandler().send(new LobbyMessage(e.getMessage()));
+                            }
                             System.out.println("mi sono preso la carta");
                             if (player.getPersonalBoard().removeResourcesfromBuy(cardToBuy.getRequirements())) {
                                 System.out.println("ha le risorse necessarie");
@@ -263,7 +287,13 @@ public class Controller {
     }
 
     private boolean playerCardLevel(Player player, int card) {
-        DevCard devCard=game.getDevDeck().getCardFromId(card);
+        DevCard devCard= null;
+        try {
+            devCard = game.getDevDeck().getCardFromId(card);
+        } catch (CardChosenNotValidException e) {
+            System.err.println(e.getMessage());
+            return false;
+        }
         int level=devCard.getLevel();
         if(level==1) {
             if (player.getPersonalBoard().getDevCardSlot().getActiveCards().size() < 3)
@@ -360,7 +390,13 @@ public class Controller {
         ArrayList<DevCard> prodDevs = new ArrayList<>();
         ArrayList<LeadCard> prodLeads = new ArrayList<>();
         cardProd.stream().filter(integer -> integer > 0 && integer < 49).forEach(integer -> {
-            DevCard dev = game.getDevDeck().getCardFromId(integer);
+            DevCard dev = null;
+            try {
+                dev = game.getDevDeck().getCardFromId(integer);
+            } catch (CardChosenNotValidException e) {
+                System.err.println(e.getMessage());
+                return;
+            }
             prodDevs.add(dev);
         });
         AtomicBoolean correctLead= new AtomicBoolean(true);
@@ -395,7 +431,13 @@ public class Controller {
         ArrayList<Resource> totalProdOut = new ArrayList<>();
         ArrayList<DevCard> prodDevs = new ArrayList<>();
         cardProd.stream().filter(integer -> integer > 0 && integer < 49).forEach(integer -> {
-            DevCard dev = game.getDevDeck().getCardFromId(integer);
+            DevCard dev = null;
+            try {
+                dev = game.getDevDeck().getCardFromId(integer);
+            } catch (CardChosenNotValidException e) {
+                System.err.println(e.getMessage());
+                return;
+            }
             prodDevs.add(dev);
         });
         prodDevs.forEach(card -> {

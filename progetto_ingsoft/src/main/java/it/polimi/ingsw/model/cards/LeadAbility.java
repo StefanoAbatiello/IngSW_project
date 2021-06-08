@@ -14,8 +14,8 @@ public abstract class LeadAbility {
     public LeadAbility(Resource resource){
         this.abilityResource=resource;
     }
-    public abstract boolean activeAbility(Player p);
 
+    public abstract boolean activeAbility(Player p);
 
     public Resource getAbilityResource(){
         return abilityResource;

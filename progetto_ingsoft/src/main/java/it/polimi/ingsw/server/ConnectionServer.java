@@ -77,7 +77,7 @@ public class ConnectionServer implements Runnable{
                 executorService.submit(clientHandler);
             }
             catch (IOException e){
-                System.out.println("Error:"+ e.getMessage());
+                System.err.println("Error:"+ e.getMessage());
             }
         }
     }

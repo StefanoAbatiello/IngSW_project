@@ -4,8 +4,10 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.MultiPlayer;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.cards.cardExceptions.playerLeadsNotEmptyException;
+import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -41,7 +43,7 @@ class FaithMarkerTest {
 
 
     @Test
-    void CheckDifferentActivePopeSpace() throws playerLeadsNotEmptyException {
+    void CheckDifferentActivePopeSpace() throws playerLeadsNotEmptyException, IOException, ParseException {
         ArrayList<String> user= new ArrayList<>();
         user.add("a");
         user.add("b");
@@ -67,7 +69,7 @@ class FaithMarkerTest {
     }
 
     @Test
-    void activePopeSpaceWithDifferentPlayers() throws playerLeadsNotEmptyException {
+    void activePopeSpaceWithDifferentPlayers() throws playerLeadsNotEmptyException, IOException, ParseException {
 
         ArrayList<String> user= new ArrayList<>();
         user.add("a");
@@ -97,7 +99,7 @@ class FaithMarkerTest {
     }
 
     @Test
-    void updatePoints() throws playerLeadsNotEmptyException {
+    void updatePoints() throws playerLeadsNotEmptyException, IOException, ParseException  {
         ArrayList<String> user= new ArrayList<>();
         user.add("a");
         user.add("b");

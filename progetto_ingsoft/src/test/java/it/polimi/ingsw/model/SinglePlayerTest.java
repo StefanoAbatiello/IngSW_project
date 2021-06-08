@@ -3,7 +3,11 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.cards.cardExceptions.playerLeadsNotEmptyException;
 import it.polimi.ingsw.model.singlePlayerMode.*;
+
+import java.io.IOException;
 import java.util.ArrayList;
+
+import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,7 +17,7 @@ class SinglePlayerTest {
     this Test is implemented to check if the method return the correct value in case of an empty line in DevDeckMatrix
      */
     @Test
-    void checkEmptyLineInMatrixTest() throws playerLeadsNotEmptyException {
+    void checkEmptyLineInMatrixTest() throws playerLeadsNotEmptyException, IOException, ParseException  {
         SinglePlayer sP=new SinglePlayer("USER");
         int i=0, j=0;
         String color = sP.getDevDeckMatrix().getDevMatrix()[i][j].getLittleDevDeck().get(0).getColor();
@@ -27,7 +31,7 @@ class SinglePlayerTest {
     this Test is implemented to check if the method return the correct value if there other cards of a specified color
      */
     @Test
-    void checkLinesInMatrixTest() throws playerLeadsNotEmptyException {
+    void checkLinesInMatrixTest() throws playerLeadsNotEmptyException, IOException, ParseException  {
         SinglePlayer sP=new SinglePlayer("USER");
         for (int i=0; i<5; i++)
             sP.removeTokenCard("BLUE");
@@ -38,7 +42,7 @@ class SinglePlayerTest {
     this Test is implemented to check if the method return the correct value in case Lorenzo's BlackCross reaches the end of FaithTrack
      */
     @Test
-    void LorenzoWinTest() throws playerLeadsNotEmptyException {
+    void LorenzoWinTest() throws playerLeadsNotEmptyException, IOException, ParseException  {
         SinglePlayer singlePlayer=new SinglePlayer("Player");
         ArrayList<ActionToken> tokens = new ArrayList<>();
         DoubleCrossAction token = new DoubleCrossAction(singlePlayer);
@@ -52,7 +56,7 @@ class SinglePlayerTest {
     this test is implemented to check if the scrolling of TokensStack works correctly
      */
     @Test
-    void drawTest() throws playerLeadsNotEmptyException {
+    void drawTest() throws playerLeadsNotEmptyException, IOException, ParseException  {
         SinglePlayer sP = new SinglePlayer("USER");
         sP.getTokensStack().clear();
         sP.getTokensStack().add(new DoubleCrossAction(sP));
@@ -75,7 +79,7 @@ class SinglePlayerTest {
     this Test is implemented to check if the card is removed correctly
      */
     @Test
-    void removeTokenCardTest() throws playerLeadsNotEmptyException {
+    void removeTokenCardTest() throws playerLeadsNotEmptyException, IOException, ParseException {
         SinglePlayer sP=new SinglePlayer("USER");
         int i=0, j=0;
         ArrayList<DevCard> list = new ArrayList<>(sP.getDevDeckMatrix().getDevMatrix()[i][j].getLittleDevDeck());

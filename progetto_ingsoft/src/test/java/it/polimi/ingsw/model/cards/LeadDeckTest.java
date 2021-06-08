@@ -2,12 +2,15 @@ package it.polimi.ingsw.model.cards;
 
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Resource;
+import it.polimi.ingsw.model.cards.cardExceptions.CardChosenNotValidException;
 import it.polimi.ingsw.model.cards.cardExceptions.NoSuchRequirementException;
 import it.polimi.ingsw.model.cards.cardExceptions.playerLeadsNotEmptyException;
+import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -18,7 +21,7 @@ class LeadDeckTest {
 
     @Test
     @BeforeAll
-    void createDeck() throws NoSuchRequirementException {
+    void createDeck() throws NoSuchRequirementException, IOException, ParseException, CardChosenNotValidException {
         LeadDeck deck=new LeadDeck();
         ArrayList<String> color=new ArrayList<>();
         color.add("YELLOW");
@@ -36,7 +39,7 @@ class LeadDeckTest {
     }
 
     @Test
-    void shuffle() {
+    void shuffle() throws IOException, ParseException {
         LeadDeck deck=new LeadDeck();
         ArrayList<LeadCard> newDeck= deck.shuffle();
         assertEquals(deck.getLeadDeck().size(), newDeck.size());
@@ -48,7 +51,7 @@ class LeadDeckTest {
 
 
     @Test
-    void giveToPlayer() throws playerLeadsNotEmptyException {
+    void giveToPlayer() throws playerLeadsNotEmptyException, IOException, ParseException {
         LeadDeck deck =new LeadDeck();
         deck.shuffle();
         Player p= new Player("4");
@@ -64,7 +67,7 @@ class LeadDeckTest {
     }*/
 
     @Test
-    void cannotGiveToPlayerExc() throws playerLeadsNotEmptyException {
+    void cannotGiveToPlayerExc() throws playerLeadsNotEmptyException, IOException, ParseException {
         LeadDeck deck=new LeadDeck();
         deck.shuffle();
         Player p= new Player("4");
@@ -76,7 +79,7 @@ class LeadDeckTest {
     }
 
     @Test
-    void giveCardsToPlayersAllDifferent() throws playerLeadsNotEmptyException {
+    void giveCardsToPlayersAllDifferent() throws playerLeadsNotEmptyException, IOException, ParseException {
         LeadDeck deck=new LeadDeck();
         Player p1= new Player("2");
         Player p2= new Player("4");

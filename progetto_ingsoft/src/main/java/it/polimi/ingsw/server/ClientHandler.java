@@ -1,11 +1,12 @@
 package it.polimi.ingsw.server;
 
+import it.polimi.ingsw.Sender;
 import it.polimi.ingsw.messages.*;
-import it.polimi.ingsw.messages.answerMessages.NumOfPlayersAnswer;
+import it.polimi.ingsw.messages.answerMessages.*;
 import java.io.*;
 import java.net.Socket;
 
-public class ClientHandler implements Runnable {
+public class ClientHandler implements Runnable, Sender {
     private final Socket socket;
     private final MainServer server;
     private ObjectInputStream inputStreamObj;
@@ -127,11 +128,11 @@ public class ClientHandler implements Runnable {
                         server.getConnectionServer().addPingObserver(pingObserver);
                         //System.out.println("Ho creato il pongObserver");[Debug]
                         if (!server.getLobbyFromClientID().containsKey(clientID) && !server.findEmptyLobby(clientID)) {
-                            send(new RequestNumOfPlayers(ConsoleColors.YELLOW_BACKGROUND_BRIGHT + ConsoleColors.BLUE_BOLD + "YOU ARE THE HOST OF A NEW LOBBY"
-                                    + " CHOOSE HOW MANY PLAYERS YOU WANT TO CHALLENGE [0 to 3]" + ConsoleColors.RESET));
+                            send(new RequestNumOfPlayers("YOU ARE THE HOST OF A NEW LOBBY"
+                                    + " CHOOSE HOW MANY PLAYERS YOU WANT TO CHALLENGE [0 to 3]"));
                         }
                     } else if (clientID == -2) {
-                        send(new NickNameAction(ConsoleColors.RED_UNDERLINED + "Nickname already taken." + " Please choose another one:" + ConsoleColors.RESET));
+                        send(new NickNameAction("Nickname already taken." + " Please choose another one:"));
                     }
                 } else
                     send(new LobbyMessage("Nickname not valid"));

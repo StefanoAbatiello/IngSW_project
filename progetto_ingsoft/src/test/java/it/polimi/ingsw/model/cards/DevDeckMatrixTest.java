@@ -2,8 +2,10 @@ package it.polimi.ingsw.model.cards;
 
 import it.polimi.ingsw.model.Resource;
 import it.polimi.ingsw.model.cards.cardExceptions.CardNotOnTableException;
+import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -11,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class DevDeckMatrixTest {
 
     @Test
-    void getUpperDevCardsOnTable() {
+    void getUpperDevCardsOnTable() throws IOException, ParseException {
         DevDeckMatrix matrix=new DevDeckMatrix();
         DevCard card = matrix.getDevMatrix()[0][0].littleDevDeck.get(0);
         DevCard[][] upperCards= matrix.getUpperDevCardsOnTable();
@@ -19,7 +21,7 @@ class DevDeckMatrixTest {
     }
 
     @Test
-    void SameColorInALine(){
+    void SameColorInALine()throws IOException, ParseException {
         DevDeckMatrix matrix=new DevDeckMatrix();
         int i=0;
         for(int j=0; j<3;j++)
@@ -28,7 +30,7 @@ class DevDeckMatrixTest {
     }
 
     @Test
-    void sameColorInALine(){
+    void sameColorInALine()throws IOException, ParseException {
         DevDeckMatrix matrix=new DevDeckMatrix();
         int i=2;
         for(int j=0; j<3;j++)
@@ -37,7 +39,7 @@ class DevDeckMatrixTest {
     }
 
     @Test
-    void allDifferentCards() {
+    void allDifferentCards() throws IOException, ParseException {
         DevDeckMatrix matrix=new DevDeckMatrix();
         ArrayList<DevCard> check= new ArrayList<>();
 
@@ -52,14 +54,14 @@ class DevDeckMatrixTest {
     }
 
     @Test
-    void getNumberOfCardsIn1Slot() {
+    void getNumberOfCardsIn1Slot()throws IOException, ParseException  {
         DevDeckMatrix matrix=new DevDeckMatrix();
         assertEquals(4,matrix.getDevMatrix()[0][0].littleDevDeck.size());
 
     }
 
     @Test
-    void getUpperWhenLittleIsEmpty() throws CardNotOnTableException {
+    void getUpperWhenLittleIsEmpty() throws CardNotOnTableException, IOException, ParseException  {
         DevDeckMatrix matrix=new DevDeckMatrix();
         for(int i =0; i<4;i++)
             matrix.buyCard(matrix.getDevMatrix()[0][0].littleDevDeck.get(0));

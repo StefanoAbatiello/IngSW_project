@@ -11,12 +11,34 @@ import java.util.HashMap;
 
 public class LeadCard  implements Cards, Points,ResourceCreator {
 
-
+    /**
+     * This attribute represents the card id
+     */
     private final int id;
+
+    /**
+     * This attribute represents the card's points
+     */
     private final int points;
+
+    /**
+     * This attribute represents type of LeadAbility of the card
+     */
     private final LeadAbility ability;
+
+    /**
+     * This attribute represents the list of resources required to active the card
+     */
     private final HashMap<Integer,Resource> resourceRequired;
+
+    /**
+     * This attribute represents the list of development card required to active the card
+     */
     private final HashMap<Integer,ArrayList<String>> devCardRequired;
+
+    /**
+     * This attribute represents if the card is active or not
+     */
     private boolean active = false;
 
 
@@ -50,7 +72,10 @@ public class LeadCard  implements Cards, Points,ResourceCreator {
         return ability;
     }
 
-    //TODO check exception
+    /**
+     * @return an arraylist of the resources required to active the card
+     * @throws NoSuchRequirementException if resources are not required
+     */
     @Override
     public ArrayList<Resource> getResources() throws NoSuchRequirementException {
         if(resourceRequired==null)
@@ -62,6 +87,10 @@ public class LeadCard  implements Cards, Points,ResourceCreator {
         return resReq;
     }
 
+    /**
+     * @return an hashmap of the development card required to active the card
+     * @throws NoSuchRequirementException if development card are not required
+     */
     public HashMap<Integer,ArrayList<String>> getDevCardRequired() throws NoSuchRequirementException {
         if(devCardRequired==null)
             throw new NoSuchRequirementException("This card does not have a resource requirement");

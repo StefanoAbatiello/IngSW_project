@@ -52,14 +52,14 @@ public class DevCard implements Cards{
 
     /**
      * This constructor creates the development card with in input all the attributes needed from the outside
-     * @param id
-     * @param points
-     * @param color
-     * @param level
-     * @param requirements
-     * @param prodIn
-     * @param prodOut
-     * @param faithPoint
+     * @param id is the card id
+     * @param points are the card's points
+     * @param color is the card's color
+     * @param level is card's level
+     * @param requirements are card's requirements
+     * @param prodIn is the list of Resources to give for production
+     * @param prodOut is the list of Resources that the player receives from production
+     * @param faithPoint is the number of faith point that the player receives from production
      */
     public DevCard(int id, int points, String color, int level, ArrayList<Resource> requirements, ArrayList<Resource> prodIn, ArrayList<Resource> prodOut, long faithPoint) {
         this.id=id;
@@ -71,94 +71,57 @@ public class DevCard implements Cards{
         this.prodOut = prodOut;
         this.faithPoint = faithPoint;
     }
-    /**
-     *
-     * @return the id of the card
-     */
+
     public int getId() {
         return id;
     }
 
-    /**
-     *
-     * @return the points of the card
-     */
     public long getPoints() {
         return points;
     }
 
-    /**
-     *
-     * @return the color of the card
-     */
     public String getColor() {
         return color;
     }
 
-    /**
-     *
-     * @return the level of the card
-     */
     public int getLevel() {
         return level;
     }
 
-    /**
-     *
-     * @return the requirements of the card
-     */
     public ArrayList<Resource> getRequirements() {
         return requirements;
     }
 
-    /**
-     *
-     * @return the input of the card production
-     */
     public ArrayList<Resource> getProdIn() {
         return prodIn;
     }
 
-    /**
-     *
-     * @return the output of the card production
-     */
     public ArrayList<Resource> getProdOut() {
         return prodOut;
     }
 
-    /**
-     *
-     * @return if the card has a faithpoint as output of the production
-     */
     public long getFaithPoint() {
         return faithPoint;
     }
 
-    /**
-     *
-     * @return if the card is active
-     */
     public boolean isActive() {
         return active;
     }
 
-    /**
-     *This method sets if the card is active
-     */
     public void setActive(boolean active) {
         this.active = active;
     }
 
-    /**
-     *
-     * @return the devCard
-     */
     @Override
     public Cards getCard() {
         return this;
     }
 
+    /**
+     * @param player is a reference to the player who is doing production
+     * @return the entire strongbox after the production with the new resources and in case without the resources used
+     * @throws ResourceNotValidException if the player doesn't have the resources required for production
+     */
     public StrongBox useProduction(Player player) throws ResourceNotValidException {
             player.getPersonalBoard().removeResources(getProdIn());
             player.getPersonalBoard().getStrongBox().addInStrongbox(getProdOut());

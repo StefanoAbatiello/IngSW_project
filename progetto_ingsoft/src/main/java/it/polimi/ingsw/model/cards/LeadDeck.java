@@ -4,26 +4,25 @@ import it.polimi.ingsw.exceptions.WrongAbilityInCardException;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Resource;
 
+import it.polimi.ingsw.model.cards.cardExceptions.CardChosenNotValidException;
 import it.polimi.ingsw.model.cards.cardExceptions.playerLeadsNotEmptyException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-//TODO tipologia di requirement delle lead dipende dall'abilità della carta
-public class LeadDeck {
+public class LeadDeck implements Decks {
 
     private final ArrayList<LeadCard> leadDeck = new ArrayList<>();
 
-    public LeadDeck() {
+    public LeadDeck() throws IOException, ParseException {
         JSONParser jsonP = new JSONParser();
-
-        try(FileReader reader = new FileReader("progetto_ingsoft/src/main/resources/LEADCARDS.json")){
+        InputStreamReader reader = new InputStreamReader(
+                Objects.requireNonNull(JSONParser.class.getResourceAsStream("/LEADCARDS.json")), StandardCharsets.UTF_8);
             //Read JSON File
             Object obj = jsonP.parse(reader);
             JSONArray leadCardList = (JSONArray) obj;
@@ -36,17 +35,12 @@ public class LeadDeck {
                     e.printStackTrace();
                 }
             });
-        }
-        catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
     }
-    //TODO posso mettere due hashmap opzionali per i requirements
 
+    /**
+     * This method parse all the values of a leader card get from the JSON file in a java leader card
+     * @param card is a JSONObject representing a leader card
+     */
     private void parseLeadCard(JSONObject card) throws WrongAbilityInCardException {
         JSONObject leadCardObj = (JSONObject) card.get("LEADCARD");
 
@@ -67,26 +61,32 @@ public class LeadDeck {
 
     }
 
-    private LeadAbility createAbility(String string, Resource resource) throws WrongAbilityInCardException {
+    /**
+     * @param string represents the ability of this lead card
+     * @param resource is the resources related to the ability
+     * @return the new LeadAbility
+     * @throws WrongAbilityInCardException if
+     */
+    private LeadAbility createAbility(String string, Resource resource) {
+        LeadAbility ability=null;
         switch (string) {
             case "WHITEMARBLE":
-                return new LeadAbilityWhiteMarble(resource);
+                ability=new LeadAbilityWhiteMarble(resource);
             case "PRODUCTION":
-                return new LeadAbilityProduction(resource);
+                ability=new LeadAbilityProduction(resource);
             case "SHELF":
-                return new LeadAbilityShelf(resource);
+                ability=new LeadAbilityShelf(resource);
             case "DISCOUNT":
-                return new LeadAbilityDiscount(resource);
+                ability=new LeadAbilityDiscount(resource);
 
         }
-        //TODO stop the game? error in the card construction
-        throw new WrongAbilityInCardException("Error in the card construction");
+        return ability;
+        //throw new WrongAbilityInCardException("Error in the card construction");
     }
 
     /**
-     *
-     * @param jsonObj
-     * @return
+     * @param jsonObj is the attribute of the card in JSON that has to be translate in an hashmap of resources
+     * @return the hashmap of resources required to active the card
      */
     private HashMap<Integer, Resource> fromJSONObjToResHash(JSONObject jsonObj){
         HashMap<Integer,Resource> requirements = new HashMap<>();
@@ -95,10 +95,10 @@ public class LeadDeck {
         return requirements;
     }
 
+
     /**
-     *
-     * @param jsonObj
-     * @return
+     * @param jsonObj is the attribute of the card in JSON that has to be translate in an hashmap of development card
+     * @return the hashmap of development card required to active the card
      */
     private HashMap<Integer,ArrayList<String>> fromJSONObjToCardHash(JSONObject jsonObj){
         HashMap<Integer,ArrayList<String>> requirements = new HashMap<>();
@@ -114,7 +114,6 @@ public class LeadDeck {
     }
 
     public ArrayList<LeadCard> getLeadDeck(){
-
         return  this.leadDeck;
     }
     /**
@@ -122,9 +121,7 @@ public class LeadDeck {
      * @return the lead deck shuffled
      */
     public ArrayList<LeadCard> shuffle(){
-
         Collections.shuffle(this.leadDeck);
-
         return  this.leadDeck;
     }
 
@@ -148,13 +145,17 @@ public class LeadDeck {
         return true;
     }
 
-    public LeadCard getCardFromId(int id){
+    /**
+     * @param id is the id of the card to find
+     * @return the card searched
+     * @throws CardChosenNotValidException if the id passed is not valid(id<49 || id>65)
+     */
+    public LeadCard getCardFromId(int id) throws CardChosenNotValidException {
         for(LeadCard card: leadDeck) {
             if (card.getId() == id)
                 return card;
         }
-        //TODO exception
-        return null;
+        throw new CardChosenNotValidException("the id passed is not valid");
     }
 
 

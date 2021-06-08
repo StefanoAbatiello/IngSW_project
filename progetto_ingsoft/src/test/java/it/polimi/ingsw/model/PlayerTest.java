@@ -8,8 +8,10 @@ import it.polimi.ingsw.model.cards.LeadCard;
 import it.polimi.ingsw.model.cards.LeadDeck;
 import it.polimi.ingsw.model.cards.cardExceptions.CardChosenNotValidException;
 import it.polimi.ingsw.model.cards.cardExceptions.playerLeadsNotEmptyException;
+import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -39,7 +41,7 @@ class PlayerTest {
     }*/
 
     @Test
-    void firstLeadCardChosen() throws  playerLeadsNotEmptyException {
+    void firstLeadCardChosen() throws  playerLeadsNotEmptyException, IOException, ParseException {
         LeadDeck deck= new LeadDeck();
         Player player = new Player("Ciccio");
         deck.giveToPlayer(player);
@@ -50,7 +52,7 @@ class PlayerTest {
     }
 
     @Test
-    void secondLeadCardChosen() throws playerLeadsNotEmptyException {
+    void secondLeadCardChosen() throws playerLeadsNotEmptyException, IOException, ParseException {
         LeadDeck deck= new LeadDeck();
         Player player = new Player("Ciccio");
         deck.giveToPlayer(player);
@@ -60,7 +62,7 @@ class PlayerTest {
     }
 
     @Test
-    void numberOfLeadCardChosen() throws playerLeadsNotEmptyException {
+    void numberOfLeadCardChosen() throws playerLeadsNotEmptyException, IOException, ParseException {
         LeadDeck deck= new LeadDeck();
         Player player = new Player("Ciccio");
         deck.giveToPlayer(player);

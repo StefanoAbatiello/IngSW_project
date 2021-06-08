@@ -1,18 +1,18 @@
 package it.polimi.ingsw.model.cards;
-import it.polimi.ingsw.model.Resource;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import it.polimi.ingsw.model.Resource;
+import it.polimi.ingsw.model.cards.cardExceptions.*;
+import org.json.simple.*;
+import org.json.simple.parser.*;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.Objects;
 
-public class DevDeck{
+public class DevDeck implements ResourceGeneratorFromJSON, Decks{
 
     /**
      * This attribute is the array of development cards that form the development deck
@@ -22,30 +22,21 @@ public class DevDeck{
     /**
      * This constructor uses a JSON file to create the deck of dev cards through the parsing methods
      */
-    public DevDeck() {
+    public DevDeck() throws IOException, ParseException {
         JSONParser jsonP = new JSONParser();
-
-        try(FileReader reader = new FileReader("progetto_ingsoft/src/main/resources/DEVCARDS.json")){
-            //Read JSON File
-            Object obj = jsonP.parse(reader);
-            JSONArray devCardList = (JSONArray) obj;
-            //Iterate over devCard array
-            devCardList.forEach(card-> parseDevCard((JSONObject) card));
-        }
-        catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        InputStreamReader reader = new InputStreamReader(Objects.requireNonNull(JSONParser.class.getResourceAsStream("/DEVCARDS.json"
+        )), StandardCharsets.UTF_8);
+        //Read JSON File
+        Object obj = jsonP.parse(reader);
+        JSONArray devCardList = (JSONArray) obj;
+        //Iterate over devCard array
+        devCardList.forEach(card -> parseDevCard((JSONObject) card));
     }
 
     /**
      * This method parse all the values of a development card get from the JSON file in a java development card
-     * @param card represents a JSONObject representing a development card
+     * @param card is a JSONObject representing a development card
      */
-
     private void parseDevCard(JSONObject card) {
         JSONObject devCardObj = (JSONObject) card.get("DEVCARD");
         //get devCard info to create the card
@@ -68,13 +59,13 @@ public class DevDeck{
     }
 
     /**
-     * This method permits to cast a received JSONArray in an array of Resources that is returned at the end of the process
+     * This method permits to cast a received JSONArray in an array of Resources
+     * that is returned at the end of the process
      * @param jsonArray represents an array of object in JSON
      * @return ArrayList<Resource> used to create different attributes of a development card
      */
-    //TODO @Override
-    private ArrayList<Resource> fromJSONArrayToResourceList(JSONArray jsonArray){
-
+    @Override
+    public ArrayList<Resource> fromJSONArrayToResourceList(JSONArray jsonArray){
         ArrayList<Resource> resourceList= new ArrayList<>();
         Iterator<String> iterator= jsonArray.iterator();
         while(iterator.hasNext()){
@@ -85,7 +76,7 @@ public class DevDeck{
 
     /**
      * This method creates a little deck of cards of a certain color and put the cards in it in order of level
-     * @param color represent the color of the cards desidered in the new little deck
+     * @param color represent the color of the cards desired in the new little deck
      * @return an ArrayList of DevCard representing a little deck with all the cards of the same color and in order of level
      */
     public ArrayList<DevCard> createLittleDecks(String color){
@@ -97,20 +88,24 @@ public class DevDeck{
     }
 
     /**
-     *
      * @return current state of devCards
      */
     public ArrayList<DevCard> getDevCards() {
         return devCards;
     }
 
-    public DevCard getCardFromId(int id){
+    /**
+     * @param id is the id of the card to find
+     * @return the card searched
+     * @throws CardChosenNotValidException if the id passed is not valid(id<0 || id>48)
+     */
+    @Override
+    public DevCard getCardFromId(int id) throws CardChosenNotValidException {
         for(DevCard card: devCards) {
             if (card.getId() == id)
                 return card;
         }
-        //TODO exception
-        return null;
+        throw new CardChosenNotValidException("the id passed is not valid");
     }
 
 

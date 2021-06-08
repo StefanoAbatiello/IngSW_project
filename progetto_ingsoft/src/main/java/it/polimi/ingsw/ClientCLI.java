@@ -11,7 +11,7 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class ClientCLI implements Runnable{
+public class ClientCLI implements Runnable, Sender{
 
     private String ip;
     private int port;

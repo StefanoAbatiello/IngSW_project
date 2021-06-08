@@ -68,13 +68,18 @@ public class MainServer {
     public static void main(String[] args) {
         System.out.println("I'm the Server, welcome!");
         //String hostname=args[0];
-        int portNumber = Integer.parseInt(args[1]);
-        if(portNumber<0||(portNumber>0 && portNumber<1024)){
-            System.err.println("Port number not valid, restart the program");
-            System.exit(0);
+        try {
+            int portNumber = Integer.parseInt(args[1]);
+            if (portNumber < 0 || (portNumber > 0 && portNumber < 1024)) {
+                System.err.println("Port number not valid, restart the program");
+                System.exit(0);
+            }
+            System.out.println("Creating socket server");
+            new MainServer(portNumber);
+        }catch (NumberFormatException e){
+            System.err.println(e.getMessage());
+            System.exit(-1);
         }
-        System.out.println("Creating socket server");
-        new MainServer(portNumber);
     }
 
     public ConnectionServer getConnectionServer() {
