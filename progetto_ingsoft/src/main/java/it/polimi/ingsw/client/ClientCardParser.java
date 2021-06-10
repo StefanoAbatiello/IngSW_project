@@ -1,4 +1,4 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.client;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -6,7 +6,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -15,12 +14,12 @@ import java.util.Objects;
 
 public class ClientCardParser {
 
-    private ClientCLI client;
+    private MainClient client;
     private JSONArray devCardList;
     private JSONArray leadCardList;
     private int cardId;
 
-    public ClientCardParser(ClientCLI client) {
+    public ClientCardParser(MainClient client) {
         this.client=client;
         JSONParser jsonP = new JSONParser();
         InputStreamReader reader;

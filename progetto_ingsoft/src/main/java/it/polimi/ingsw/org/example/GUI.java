@@ -1,5 +1,8 @@
 package it.polimi.ingsw.org.example;
 
+import it.polimi.ingsw.client.View;
+import it.polimi.ingsw.messages.*;
+import it.polimi.ingsw.messages.answerMessages.*;
 import it.polimi.ingsw.server.ClientHandler;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -12,7 +15,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class GUI extends Application {
+public class GUI extends Application implements View {
 
     private final String LOGIN="Login.fxml";
     private final String NICKNAME="Nickname.fxml";
@@ -69,4 +72,66 @@ public class GUI extends Application {
     public ClientHandler getClientHandler() {
         return clientHandler;
     }
+
+    @Override
+    public void nicknameHandler(NickNameAction nickNameAction) {
+
+    }
+
+    @Override
+    public void numOfPlayerHandler(RequestNumOfPlayers requestNumOfPlayers) {
+
+    }
+
+    @Override
+    public void lobbyMessageHandler(LobbyMessage lobbyMessage) {
+
+    }
+
+    @Override
+    public void initialResourceHandler(GetInitialResourcesAction initialResourcesAction) {
+
+    }
+
+    @Override
+    public void leadCardHandler(LeaderCardDistribution leaderCardDistribution) {
+
+    }
+
+    @Override
+    public void supplyHandler(ResourceInSupplyRequest resource) {
+
+    }
+
+    @Override
+    public void marketHandler(MarketChangeMessage marketChangeMessage) {
+
+    }
+
+    @Override
+    public void warehouseHandler(WareHouseChangeMessage wareHouseChangeMessage) {
+
+    }
+
+    @Override
+    public void personalCardHandler(CardIDChangeMessage cardIDChangeMessage) {
+
+    }
+
+    @Override
+    public void devMatrixHandler(DevMatrixChangeMessage devMatrixChangeMessage) {
+
+    }
+
+    @Override
+    public void strongboxHandler(StrongboxChangeMessage strongboxChangeMessage) {
+
+    }
+
+    @Override
+    public void choosableResourceHandler() {
+
+    }
+
+
 }

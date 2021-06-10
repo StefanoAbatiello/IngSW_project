@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 public class Controller {
 
-    private MainServer server;
+    private final MainServer server;
     private final Lobby lobby;
     private Game game;
     private VirtualClient actualPlayerTurn;
@@ -252,12 +252,13 @@ public class Controller {
                     for (int j = 0; j < 3; j++) {
                         if (upper[i][j].getId() == card) {
                             System.out.println("ho trovato la carta");
-                            DevCard cardToBuy = null;
+                            DevCard cardToBuy;
                             try {
                                 cardToBuy = game.getDevDeck().getCardFromId(card);
                             } catch (CardChosenNotValidException e) {
                                 System.err.println(e.getMessage());
                                 server.getClientFromId().get(id).getClientHandler().send(new LobbyMessage(e.getMessage()));
+                            return false;
                             }
                             System.out.println("mi sono preso la carta");
                             if (player.getPersonalBoard().removeResourcesfromBuy(cardToBuy.getRequirements())) {
@@ -287,7 +288,7 @@ public class Controller {
     }
 
     private boolean playerCardLevel(Player player, int card) {
-        DevCard devCard= null;
+        DevCard devCard;
         try {
             devCard = game.getDevDeck().getCardFromId(card);
         } catch (CardChosenNotValidException e) {
@@ -296,8 +297,7 @@ public class Controller {
         }
         int level=devCard.getLevel();
         if(level==1) {
-            if (player.getPersonalBoard().getDevCardSlot().getActiveCards().size() < 3)
-                return true;
+            return player.getPersonalBoard().getDevCardSlot().getActiveCards().size() < 3;
         }else {
                 for (DevCard card1 : player.getPersonalBoard().getDevCardSlot().getActiveCards())
                     if (card1.getLevel() == level - 1)
@@ -349,7 +349,9 @@ public class Controller {
         ArrayList<Resource> resourceArrayList=player.getPersonalBoard().getStrongBox().getStrongboxContent();
         resourceArrayList.addAll(player.getPersonalBoard().getWarehouseDepots().getResources());
         if(!player.getPersonalBoard().getSpecialShelves().isEmpty()) {
-            resourceArrayList.addAll(player.getPersonalBoard().getSpecialShelves().get(0).get().getSpecialSlots());
+            if(player.getPersonalBoard().getSpecialShelves().get(0).isPresent())
+                resourceArrayList.addAll(player.getPersonalBoard().getSpecialShelves().get(0).get().getSpecialSlots());
+            if(player.getPersonalBoard().getSpecialShelves().get(1).isPresent())
             resourceArrayList.addAll(player.getPersonalBoard().getSpecialShelves().get(1).get().getSpecialSlots());
         }
 
@@ -357,9 +359,9 @@ public class Controller {
         if (playerAction.isPresent())
             throw new ActionAlreadySetException("The player has already gone through with an action in their turn");
         else if (checkOwnerCards(cardProd,player)) {
-            ArrayList<Resource> totalProdIn = null;
+            ArrayList<Resource> totalProdIn;
             try {
-                totalProdIn = takeAllProdIn(id, cardProd, stringArrayToResArray(personalProdIn), player);
+                totalProdIn = takeAllProdIn(cardProd, stringArrayToResArray(personalProdIn), player);
             } catch (CardChosenNotValidException e) {
                 getHandlerFromPlayer(id).send(new LobbyMessage(e.getMessage()));
                 return false;
@@ -385,12 +387,12 @@ public class Controller {
             return true;
     }
 
-    private ArrayList<Resource> takeAllProdIn(int clientID, ArrayList<Integer> cardProd ,ArrayList<Resource> personalProdIn, Player player) throws CardChosenNotValidException {
+    private ArrayList<Resource> takeAllProdIn( ArrayList<Integer> cardProd ,ArrayList<Resource> personalProdIn, Player player) throws CardChosenNotValidException {
         ArrayList<Resource> totalProdIn = new ArrayList<>();
         ArrayList<DevCard> prodDevs = new ArrayList<>();
         ArrayList<LeadCard> prodLeads = new ArrayList<>();
         cardProd.stream().filter(integer -> integer > 0 && integer < 49).forEach(integer -> {
-            DevCard dev = null;
+            DevCard dev;
             try {
                 dev = game.getDevDeck().getCardFromId(integer);
             } catch (CardChosenNotValidException e) {
@@ -431,7 +433,7 @@ public class Controller {
         ArrayList<Resource> totalProdOut = new ArrayList<>();
         ArrayList<DevCard> prodDevs = new ArrayList<>();
         cardProd.stream().filter(integer -> integer > 0 && integer < 49).forEach(integer -> {
-            DevCard dev = null;
+            DevCard dev;
             try {
                 dev = game.getDevDeck().getCardFromId(integer);
             } catch (CardChosenNotValidException e) {
@@ -444,7 +446,7 @@ public class Controller {
                 ArrayList<Resource> prodOut = card.getProdOut();
                 totalProdOut.addAll(prodOut);
             });
-        int numofLead=cardProd.stream().filter(integer -> integer > 48).collect(Collectors.toList()).size();
+        int numofLead= (int) cardProd.stream().filter(integer -> integer > 48).count();
         if(numofLead==leadProdOut.size()){
             leadProdOut.forEach(resource -> totalProdOut.add(Resource.valueOf(resource)));
             game.getPlayers().get(id).getPersonalBoard().getFaithMarker().updatePosition();
@@ -462,15 +464,12 @@ public class Controller {
     private boolean checkOwnerCards(ArrayList<Integer> cardsId,Player player){
         ArrayList<Integer> playerCards= new ArrayList<>();
 
-        player.getPersonalBoard().getDevCardSlot().getDevCards().stream().forEach(card->{int id=card.getId();playerCards.add(id);});
-        player.getLeadCards().stream().forEach(card->{int id=card.getId();
+        player.getPersonalBoard().getDevCardSlot().getDevCards().forEach(card->{int id=card.getId();playerCards.add(id);});
+        player.getLeadCards().forEach(card->{int id=card.getId();
             if(card.isActive()&&(card.getAbility() instanceof LeadAbilityProduction))
                     playerCards.add(id);});
 
-        if(playerCards.containsAll(cardsId))
-            return true;
-        else
-            return false;
+        return playerCards.containsAll(cardsId);
 
 
 
@@ -566,7 +565,7 @@ public class Controller {
             }
         }
 
-        return result;
+        return !result;
     }
 
 
@@ -632,7 +631,9 @@ public class Controller {
                     }
                     if(!player.getPersonalBoard().getSpecialShelves().isEmpty()){
                         for(int i=3;i<5;i++) {
-                            Resource resource=player.getPersonalBoard().getSpecialShelves().get(i-3).get().getResourceType();
+                            Resource resource=Resource.CHOOSABLE;
+                            if(player.getPersonalBoard().getSpecialShelves().get(i-3).isPresent())
+                                resource=player.getPersonalBoard().getSpecialShelves().get(i-3).get().getResourceType();
                             player.getPersonalBoard().getSpecialShelves().remove(i-3);
                             System.out.println("DEBUG 3.3");
                             player.getPersonalBoard().getSpecialShelves().add(i-3, Optional.of(new SpecialShelf(resource)));
@@ -689,12 +690,12 @@ public class Controller {
         System.out.println("struttura mantenuta, controllo gli special shelf");
         if(!gameObj[3].isEmpty()) {
             System.out.println("controllo primo special shelf");
-            if (!checkSpecialShelf(stringArrayToResArray(gameObj[3]), id))
+            if (checkSpecialShelf(stringArrayToResArray(gameObj[3]), id))
                 return false;
         }
         if(!gameObj[4].isEmpty()){
                 System.out.println("controllo secondo special shelf");
-                if (!checkSpecialShelf(stringArrayToResArray(gameObj[4]), id))
+                if (checkSpecialShelf(stringArrayToResArray(gameObj[4]), id))
                     return false;
             }
         System.out.println("special shelf vuoti");
@@ -826,16 +827,21 @@ public class Controller {
         else if(lobby.getStateOfGame()==GameState.ONGOING) {
             String[][] simplifiedMarket = getSimplifiedMarket();
             System.out.println("market salvato");
+            getHandlerFromPlayer(id).send(new MarketChangeMessage(simplifiedMarket));
             int[][] devMatrix=getDevMatrix();
             System.out.println("devMatrix salvata");
+            getHandlerFromPlayer(id).send(new DevMatrixChangeMessage(devMatrix));
+
             for (Player p : game.getPlayers()) {
                 if (p.getName().equals(name)) {
                     ArrayList<String>[] warehouse = getSimplifiedWarehouse(p);
                     Map<Integer,Boolean> cardsId = getCardsId(p);
                     System.out.println("warehouse di " + name + " salvato");
+                    getHandlerFromPlayer(id).send(new WareHouseChangeMessage(warehouse));
+                    getHandlerFromPlayer(id).send(new CardIDChangeMessage(cardsId));
                     int faithPosition = p.getPersonalBoard().getFaithMarker().getFaithPosition();
                     System.out.println("messaggio costruito per " + name);
-                    server.getClientFromId().get(id).getClientHandler().send(new ReconnectionMessage(cardsId, warehouse, faithPosition, simplifiedMarket, devMatrix, getSimplifiedStrongbox(p)));
+                    getHandlerFromPlayer(id).send(new FaithPositionChangeMessage(faithPosition));
                 }
             }
         }
@@ -886,8 +892,8 @@ public class Controller {
         return devMatrix;
     }
 
-    private ArrayList<String>[] getSimplifiedWarehouse(Player p) {
-        ArrayList<String>[] warehouse = new ArrayList[5];
+    private ArrayList[] getSimplifiedWarehouse(Player p) {
+        ArrayList[] warehouse = new ArrayList[5];
         warehouse[0]=new ArrayList<>();
         warehouse[1]=new ArrayList<>();
         warehouse[2]=new ArrayList<>();
@@ -897,12 +903,8 @@ public class Controller {
         p.getPersonalBoard().getWarehouseDepots().getShelves()[1].getSlots().forEach(resource -> warehouse[1].add(String.valueOf(resource)));
         p.getPersonalBoard().getWarehouseDepots().getShelves()[2].getSlots().forEach(resource -> warehouse[2].add(String.valueOf(resource)));
         if(!p.getPersonalBoard().getSpecialShelves().isEmpty()) {
-            p.getPersonalBoard().getSpecialShelves().get(0).ifPresent(specialShelf -> {
-                specialShelf.getSpecialSlots().forEach(resource -> warehouse[3].add(String.valueOf(resource)));
-            });
-            p.getPersonalBoard().getSpecialShelves().get(1).ifPresent(specialShelf -> {
-                specialShelf.getSpecialSlots().forEach(resource -> warehouse[4].add(String.valueOf(resource)));
-            });
+            p.getPersonalBoard().getSpecialShelves().get(0).ifPresent(specialShelf -> specialShelf.getSpecialSlots().forEach(resource -> warehouse[3].add(String.valueOf(resource))));
+            p.getPersonalBoard().getSpecialShelves().get(1).ifPresent(specialShelf -> specialShelf.getSpecialSlots().forEach(resource -> warehouse[4].add(String.valueOf(resource))));
         }
         return warehouse;
     }

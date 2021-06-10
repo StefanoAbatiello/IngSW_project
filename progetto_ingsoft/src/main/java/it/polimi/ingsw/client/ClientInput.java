@@ -1,21 +1,19 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.messages.ActiveLeadAction;
 import it.polimi.ingsw.messages.DiscardLeadAction;
 import it.polimi.ingsw.messages.*;
 import it.polimi.ingsw.messages.answerMessages.NumOfPlayersAnswer;
-import it.polimi.ingsw.model.Resource;
 
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ClientInput implements Runnable{
 
-    private ClientCLI client;
+    private MainClient client;
     private Boolean mainAction;
 
-    public ClientInput(ClientCLI client) {
+    public ClientInput(MainClient client) {
         this.client = client;
         this.mainAction=false;
     }

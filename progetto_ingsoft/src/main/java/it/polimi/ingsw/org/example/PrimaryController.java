@@ -1,6 +1,6 @@
 package it.polimi.ingsw.org.example;
 
-import it.polimi.ingsw.ClientCLI;
+import it.polimi.ingsw.client.MainClient;
 import it.polimi.ingsw.messages.NickNameAction;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -46,7 +46,7 @@ public class PrimaryController implements GUIcontroller{
             port = Integer.parseInt(port_field.getText());
             ip = ip_field.getText();
 
-            ClientCLI clientCLI = new ClientCLI(ip, port, true);
+            MainClient mainClient = new MainClient(ip, port, true);
 
             GUIcontroller guIcontroller;
             gui.changeStage("Nickname.fxml");

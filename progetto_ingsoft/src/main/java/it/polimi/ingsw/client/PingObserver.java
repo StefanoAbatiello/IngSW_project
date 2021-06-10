@@ -1,14 +1,9 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.messages.PingMessage;
-import it.polimi.ingsw.messages.SerializedMessage;
 
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static java.lang.Thread.sleep;
 
@@ -20,9 +15,9 @@ public class PingObserver extends TimerTask {
     private static final int timerPeriod = 4000; // time in milliseconds
     private final int maxTimeoutNumber = 5;
     private int counterTimeout;
-    private final ClientCLI client;
+    private final MainClient client;
 
-    public PingObserver(ClientCLI client) {
+    public PingObserver(MainClient client) {
         this.started = false;
         this.client=client;
         counterTimeout=0;

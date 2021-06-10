@@ -1,5 +1,6 @@
 package it.polimi.ingsw;
 
+import it.polimi.ingsw.client.MainClient;
 import it.polimi.ingsw.org.example.GUI;
 import it.polimi.ingsw.server.MainServer;
 
