@@ -342,6 +342,17 @@ public class ClientInput implements Runnable{
                 System.out.println("you have not done a main action yet");
         }
 
+
+        //ChangeWhiteMarble:[first resource],[second resource]
+        //17-white marble ability
+        else if(input.startsWith("ChangeWhiteMarble")){
+            input=input.replace("ChangeWhiteMarble:","");
+            String[] resources=input.split(",");
+            for (String res: resources){
+
+            }
+        }
+
         else
             System.out.println("Input not valid, type again");
     }

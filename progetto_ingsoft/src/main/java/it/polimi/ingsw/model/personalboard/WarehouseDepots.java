@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.personalboard;
 
 import it.polimi.ingsw.exceptions.ResourceNotValidException;
+import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Resource;
 import it.polimi.ingsw.model.ResourceCreator;
 

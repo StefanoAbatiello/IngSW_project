@@ -1,12 +1,9 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.exceptions.AbilityAlreadySetException;
 import it.polimi.ingsw.exceptions.ActionAlreadySetException;
 import it.polimi.ingsw.exceptions.ResourceNotValidException;
-import it.polimi.ingsw.exceptions.WrongAbilityInCardException;
 import it.polimi.ingsw.model.cards.LeadCard;
 import it.polimi.ingsw.model.cards.LeadDeck;
-import it.polimi.ingsw.model.cards.cardExceptions.CardChosenNotValidException;
 import it.polimi.ingsw.model.cards.cardExceptions.playerLeadsNotEmptyException;
 import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.Test;

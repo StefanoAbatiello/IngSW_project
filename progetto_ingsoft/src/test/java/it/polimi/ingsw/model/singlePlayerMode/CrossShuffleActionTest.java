@@ -2,7 +2,6 @@ package it.polimi.ingsw.model.singlePlayerMode;
 
 import it.polimi.ingsw.model.SinglePlayer;
 import it.polimi.ingsw.model.cards.cardExceptions.playerLeadsNotEmptyException;
-import it.polimi.ingsw.model.personalboard.BlackCrossToken;
 
 import java.io.IOException;
 import java.util.ArrayList;

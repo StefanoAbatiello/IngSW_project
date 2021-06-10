@@ -5,5 +5,6 @@ public enum GameState {
     PREPARATION1,
     PREPARATION2,
     ONGOING,
+    MARKET,
     ENDED
 }

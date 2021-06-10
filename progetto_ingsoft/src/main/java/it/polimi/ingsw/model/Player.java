@@ -1,16 +1,14 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.exceptions.AbilityAlreadySetException;
 import it.polimi.ingsw.exceptions.ActionAlreadySetException;
-import it.polimi.ingsw.exceptions.WrongAbilityInCardException;
 import it.polimi.ingsw.model.Market.ResourceSupply;
-import it.polimi.ingsw.exceptions.ResourceNotValidException;
 import it.polimi.ingsw.model.cards.LeadCard;
 import it.polimi.ingsw.model.cards.cardExceptions.CardChosenNotValidException;
-import it.polimi.ingsw.model.cards.cardExceptions.InvalidActiveParameterException;
 import it.polimi.ingsw.model.personalboard.PersonalBoard;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Player implements Points{
     //TODO controllo commenti
@@ -133,6 +131,17 @@ public class Player implements Points{
 
     public ResourceSupply getResourceSupply() {
         return  resourceSupply;
+    }
+
+
+    public Map<Integer,Boolean> getCardsId() {
+        Map<Integer, Boolean> cardsId = new HashMap<>();
+        System.out.println("ho creato la mappa");
+        getLeadCards().forEach(leadCard -> cardsId.put(leadCard.getId(), leadCard.isActive()));
+        System.out.println("mi sono salvato gli id delle lead card");
+        getPersonalBoard().getDevCardSlot().getDevCards().forEach(devCard -> cardsId.put(devCard.getId(), devCard.isActive()));
+        System.out.println("mi sono salvato gli id delle dev card");
+        return cardsId;
     }
 
 }

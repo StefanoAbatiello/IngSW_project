@@ -122,4 +122,13 @@ public class MultiPlayer extends Game {
     public DevDeckMatrix getDevDeckMatrix() {
         return null;
     }
+
+    @Override
+    public void pointsGiveAway(Player player, int pointsGiven) {
+        players.forEach(p -> {
+            if(p!=player)
+                for (int i=0; i<pointsGiven; i++)
+                    p.getPersonalBoard().getFaithMarker().updatePosition();
+        });
+    }
 }

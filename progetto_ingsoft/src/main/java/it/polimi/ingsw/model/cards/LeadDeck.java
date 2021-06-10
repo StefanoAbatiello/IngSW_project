@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.cards;
 
-import it.polimi.ingsw.exceptions.WrongAbilityInCardException;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Resource;
 
@@ -27,21 +26,14 @@ public class LeadDeck implements Decks {
             Object obj = jsonP.parse(reader);
             JSONArray leadCardList = (JSONArray) obj;
             //Iterate over leadCard array
-            leadCardList.forEach(card-> {
-                try {
-                    parseLeadCard((JSONObject) card);
-                } catch (WrongAbilityInCardException e) {
-                    //TODO handle exception
-                    e.printStackTrace();
-                }
-            });
+            leadCardList.forEach(card->parseLeadCard((JSONObject) card));
     }
 
     /**
      * This method parse all the values of a leader card get from the JSON file in a java leader card
      * @param card is a JSONObject representing a leader card
      */
-    private void parseLeadCard(JSONObject card) throws WrongAbilityInCardException {
+    private void parseLeadCard(JSONObject card) {
         JSONObject leadCardObj = (JSONObject) card.get("LEADCARD");
 
         JSONObject jCardReq = (JSONObject) leadCardObj.get("CARDREQ");
@@ -65,23 +57,23 @@ public class LeadDeck implements Decks {
      * @param string represents the ability of this lead card
      * @param resource is the resources related to the ability
      * @return the new LeadAbility
-     * @throws WrongAbilityInCardException if
      */
     private LeadAbility createAbility(String string, Resource resource) {
         LeadAbility ability=null;
         switch (string) {
             case "WHITEMARBLE":
                 ability=new LeadAbilityWhiteMarble(resource);
+                break;
             case "PRODUCTION":
                 ability=new LeadAbilityProduction(resource);
+                break;
             case "SHELF":
                 ability=new LeadAbilityShelf(resource);
+                break;
             case "DISCOUNT":
                 ability=new LeadAbilityDiscount(resource);
-
         }
         return ability;
-        //throw new WrongAbilityInCardException("Error in the card construction");
     }
 
     /**

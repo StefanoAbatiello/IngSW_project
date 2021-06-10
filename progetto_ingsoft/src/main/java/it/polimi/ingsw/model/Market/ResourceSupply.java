@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.ResourceCreator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ResourceSupply implements ResourceCreator {
 
@@ -66,11 +67,27 @@ public class ResourceSupply implements ResourceCreator {
         return resources;
     }
 
-    public void discardResources(ArrayList<Resource> discardedResources) {
-        for (Resource res : discardedResources) {
+    /**
+     * This method removes all the resources left in supply
+     * @param discardedResources is the list of resources to discard
+     */
+    public int discardResources(ArrayList<Resource> discardedResources) {
+        AtomicInteger pointsGiven= new AtomicInteger();
+        for(Resource res:discardedResources)
             Arrays.stream(containers).forEach(container -> {
-                if (!container.isEmpty() && container.getResource() == res) container.takeResource();
+                if (!container.isEmpty() && container.getResource() == res) {container.takeResource(); pointsGiven.getAndIncrement();}
             });
+        return pointsGiven.get();
+    }
+
+    public boolean changeChoosable(Resource res) {
+        for(Container c:containers){
+            if (c.getResource()==Resource.CHOOSABLE){
+                c.takeResource();
+                c.fillContainer(res);
+                return true;
+            }
         }
+        return false;
     }
 }

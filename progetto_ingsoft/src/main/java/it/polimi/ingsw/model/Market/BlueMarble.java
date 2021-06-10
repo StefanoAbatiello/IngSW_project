@@ -19,7 +19,7 @@ public class BlueMarble implements MarketMarble{
 
     /**
      * this subclass override this method and put a shield in resourceSupply
-     * @param player      is a reference to the player who's playing
+     * @param player is a reference to the player who's playing
      * @return true if method putResourceInContainer works correctly
      */
     @Override

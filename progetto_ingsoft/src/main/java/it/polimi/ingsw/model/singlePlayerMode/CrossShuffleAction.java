@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model.singlePlayerMode;
 
 import it.polimi.ingsw.model.SinglePlayer;
-import it.polimi.ingsw.model.personalboard.BlackCrossToken;
+
 import java.util.*;
 
 public class CrossShuffleAction implements ActionToken {

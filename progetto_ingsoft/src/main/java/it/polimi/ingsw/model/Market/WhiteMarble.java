@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.Market;
 
 import it.polimi.ingsw.exceptions.FullSupplyException;
 import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.Resource;
 import it.polimi.ingsw.model.cards.LeadAbilityWhiteMarble;
 import it.polimi.ingsw.model.personalboard.FaithMarker;
 
@@ -23,32 +24,16 @@ public class WhiteMarble implements MarketMarble {
      * @return true if the player has a whiteMarbleAbility active and the storage of the corrispondent resourse is done correctly, false in other case
      */
     //TODO gestione della scelta di quale risorsa prendere se può scegliere tra due
-
     public boolean changeMarble(Player player) throws FullSupplyException {
-        /*if (!player.whiteMarbleAbility.isEmpty()) {
-            return ;
-        }*/
-        return false;
-    }
-
-    //TODO check new method with new idea of ability
-    /*public boolean changeMarble(FaithMarker faithMarker, Player player) throws FullSupplyException {
-        if (player.getAbility1().getActive() && player.getAbility2().getActive()) {
-            if (player.getAbility1() instanceof LeadAbilityWhiteMarble && player.getAbility2() instanceof LeadAbilityWhiteMarble)
-                //TODO case of choice
-                return true;
-        }else if(player.getAbility1().getActive()){
-            if(player.getAbility1() instanceof LeadAbilityWhiteMarble) {
-                ResourceSupply.putResourceInContainer(player.getAbility1().getAbilityResource());
-                return true;
-            }}else if(player.getAbility2().getActive()){
-            if(player.getAbility2() instanceof LeadAbilityWhiteMarble) {
-                ResourceSupply.putResourceInContainer(player.getAbility2().getAbilityResource());
-                return true;
-            }
+        if(player.getWhiteMarbleAbility().size() == 1) {
+            player.getResourceSupply().putResourceInContainer(player.getWhiteMarbleAbility().get(0));
+            return true;
+        }
+        if(player.getWhiteMarbleAbility().size() == 2){
+            player.getResourceSupply().putResourceInContainer(Resource.CHOOSABLE);
+            return true;
         }
         return false;
-    }*/
-
+    }
 
 }

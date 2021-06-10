@@ -88,7 +88,7 @@ public class Controller {
 
     //TODO
     /*private VirtualView createVirtualView() {
-        String[][] virtualMarket=game.getMarket().viewMarketBoard();
+        String[][] virtualMarket=game.getMarket().getSimplifiedMarket();
         int[][] virtualDevCards=new int[4][3];
         int k=0;
         for(int i=0;i<4;i++)
@@ -265,15 +265,15 @@ public class Controller {
                                 player.setAction(Action.BUYCARD);
                                 game.getDevDeckMatrix().buyCard(cardToBuy);
                                 System.out.println("ha comprato la carta, invio la nuova dev matrix");
-                                lobby.sendAll(new DevMatrixChangeMessage(getDevMatrix()));
+                                lobby.sendAll(new DevMatrixChangeMessage(game.getSimplifiedDevMatrix()));
                                 System.out.println("dev matrix inviata");
                                 player.getPersonalBoard().removeResources(cardToBuy.getRequirements());
-                                getHandlerFromPlayer(id).send(new WareHouseChangeMessage(getSimplifiedWarehouse(player)));
-                                getHandlerFromPlayer(id).send(new StrongboxChangeMessage(getSimplifiedStrongbox(player)));
+                                getHandlerFromPlayer(id).send(new WareHouseChangeMessage(player.getPersonalBoard().getSimplifiedWarehouse()));
+                                getHandlerFromPlayer(id).send(new StrongboxChangeMessage(player.getPersonalBoard().getSimplifiedStrongbox()));
                                 System.out.println("ho rimosso le risorse usate");
                                 player.getPersonalBoard().getDevCardSlot().overlap(cardToBuy, position);
                                 System.out.println("ho posizionato la carta");
-                                getHandlerFromPlayer(id).send(new CardIDChangeMessage(getCardsId(player)));
+                                getHandlerFromPlayer(id).send(new CardIDChangeMessage(player.getCardsId()));
                                 System.out.println("messaggio delle carte inviato");
                                 return true;
                             } else
@@ -325,17 +325,53 @@ public class Controller {
         }
         else {
             //TODO check fullSupplyException
+            lobby.setStateOfGame(GameState.MARKET);
             System.out.println("azione eseguibile");
             player.setAction(Action.TAKEFROMMARKET);
             game.getMarket().buyResources(gameObj, player);
-            String[][] simplifiedMarket = getSimplifiedMarket();
+            String[][] simplifiedMarket = game.getSimplifiedMarket();
             lobby.sendAll(new MarketChangeMessage(simplifiedMarket));
             System.out.println("risorse messe nel supply");
-            ArrayList<Resource> resSupply = player.getResourceSupply().getResources();
-            ArrayList<String> supply= (ArrayList<String>) resSupply.stream().map(resource-> Objects.toString(resource, null)).collect(Collectors.toList());
-            System.out.println("invio la richiesta di sistemare le risorse");
-            getHandlerFromPlayer(id).send(new ResourceInSupplyRequest(supply));
+            ArrayList<Resource> resSupply = player.getResourceSupply().viewResources();
+            if(resSupply.contains(Resource.CHOOSABLE)) {
+                int num=Collections.frequency(resSupply,Resource.CHOOSABLE);
+                getHandlerFromPlayer(id).send(new ChangeChoosableResourceRequest(num,"You can choose between "+player.getWhiteMarbleAbility().get(0)+" and "+player.getWhiteMarbleAbility().get(1)));
+            }else {
+                ArrayList<String> supply = (ArrayList<String>) resSupply.stream().map(resource -> Objects.toString(resource, null)).collect(Collectors.toList());
+                System.out.println("invio la richiesta di sistemare le risorse");
+                getHandlerFromPlayer(id).send(new ResourceInSupplyRequest(supply));
+            }
         }
+    }
+
+    public void checkChangeChooosable(int clientId,ArrayList<String> newRes){
+        String name=getActualPlayerTurn().getNickName();
+        Player player=game.getPlayers().get(0);
+        for(Player p:game.getPlayers()){
+            if (p.getName().equals(name))
+                player=p;
+        }
+        ArrayList<Resource> newResources=stringArrayToResArray(newRes);
+        ArrayList<Resource> resSupply = player.getResourceSupply().viewResources();
+        int num=Collections.frequency(resSupply,Resource.CHOOSABLE);
+        if(newResources.size()==num) {
+            for (Resource res : newResources) {
+                if (res == player.getWhiteMarbleAbility().get(0))
+                    player.getResourceSupply().changeChoosable(res);
+                else if (res == player.getWhiteMarbleAbility().get(1))
+                    player.getResourceSupply().changeChoosable(res);
+                else {
+                    server.getClientFromId().get(clientId).getClientHandler().send(new LobbyMessage("Choice not possible, please try again"));
+                    server.getClientFromId().get(clientId).getClientHandler().send(new ChangeChoosableResourceRequest(num, "You can choose between " + player.getWhiteMarbleAbility().get(0) + " and " + player.getWhiteMarbleAbility().get(1)));
+                    return;
+                }
+            }
+        }else{
+            server.getClientFromId().get(clientId).getClientHandler().send(new ChangeChoosableResourceRequest(num,"Too many resources choosen, please try again"));
+            return;
+        }
+        ArrayList<String> supply = (ArrayList<String>) resSupply.stream().map(resource -> Objects.toString(resource, null)).collect(Collectors.toList());
+        server.getClientFromId().get(clientId).getClientHandler().send(new ResourceInSupplyRequest(supply));
     }
 
     public boolean checkProduction(ArrayList<Integer> cardProd , ArrayList<String> personalProdIn, String personalProdOut, ArrayList<String> leadProdOut, int id) throws ActionAlreadySetException, ResourceNotValidException, CardNotOwnedByPlayerOrNotActiveException {
@@ -369,8 +405,8 @@ public class Controller {
                 player.setAction(Action.ACTIVATEPRODUCTION);
                 totalProdOut = takeAllProdOut(cardProd, stringArrayToResArray(personalProdIn), personalProdOut, leadProdOut, id);
                 player.getPersonalBoard().getStrongBox().addInStrongbox(totalProdOut);
-                getHandlerFromPlayer(id).send(new StrongboxChangeMessage(getSimplifiedStrongbox(player)));
-                getHandlerFromPlayer(id).send(new WareHouseChangeMessage(getSimplifiedWarehouse(player)));
+                getHandlerFromPlayer(id).send(new StrongboxChangeMessage(player.getPersonalBoard().getSimplifiedStrongbox()));
+                getHandlerFromPlayer(id).send(new WareHouseChangeMessage(player.getPersonalBoard().getSimplifiedWarehouse()));
                 return true;
             }
 
@@ -495,7 +531,7 @@ public class Controller {
                 } else {
                     System.out.println("puoi attivare la carta");
                     player.activateAbility(card);
-                    getHandlerFromPlayer(id).send(new CardIDChangeMessage(getCardsId(player)));
+                    getHandlerFromPlayer(id).send(new CardIDChangeMessage(player.getCardsId()));
                 }
             } catch (CardChosenNotValidException e) {
                 getHandlerFromPlayer(name).send(new LobbyMessage("You do not own the leadCard chosen"));
@@ -521,7 +557,7 @@ public class Controller {
                 } else {
                     System.out.println("puoi attivare la carta");
                     player.discardLead(card);
-                    getHandlerFromPlayer(id).send(new CardIDChangeMessage(getCardsId(player)));
+                    getHandlerFromPlayer(id).send(new CardIDChangeMessage(player.getCardsId()));
                 }
             } catch (CardChosenNotValidException e) {
                 getHandlerFromPlayer(name).send(new LobbyMessage("You do not own the leadCard chosen"));
@@ -580,7 +616,7 @@ public class Controller {
         System.out.println("mi sono salvato il player");
 
         if (gameObj.length <= 5){
-            System.out.println("DEBUG 1");
+            System.out.println("dimensione del nuovo warehouse valida");
             ResourceSupply supply= player.getResourceSupply();
             ArrayList<Resource> newRes= new ArrayList<>();
 
@@ -590,35 +626,19 @@ public class Controller {
 
             if(!supply.getResources().isEmpty())
                 allResources.addAll(supply.getResources());
-            System.out.println("DEBUG 2");
+            System.out.println("mi sono salvato le risorse del player in strongbox e in warehouse");
             if(!player.getPersonalBoard().getSpecialShelves().isEmpty()) {
                 for (int i = 0; i < 2; i++)
                     if (player.getPersonalBoard().getSpecialShelves().get(i).isPresent())
                         allResources.addAll(player.getPersonalBoard().getSpecialShelves().get(i).get().getSpecialSlots());
+                System.out.println("mi sono salvato le risorse del plat");
             }
-            System.out.println("DEBUG 3");
             allResources.removeIf(newRes::contains);
 
-            if(!allResources.isEmpty())
-                if(!supply.getResources().isEmpty()) {
-                    int num = 0;
-                    for (Resource res : allResources)
-                        if (supply.getResources().contains(res)) {
-                            supply.getResources().remove(res);
-                            num++;
-                        }
-                    if(supply.getResources().isEmpty())
-                        for (int i = 0; i < game.getPlayers().size(); i++)
-                            if (game.getPlayers().get(i) != player) {
-                                game.getPlayers().get(i).getPersonalBoard().getFaithMarker().updatePosition();
-                                lobby.getPlayers().get(i).getClientHandler().send(new LobbyMessage(player.getName() + " has discard " + num + "resources, you gained " + num + "faithpoints"));
-                            }
-                            else {
-                                getHandlerFromPlayer(id).send(new LobbyMessage("Resources chosen out of bound, please verify you put the right resources in your board"));
-                            }
-                }else{
-                    getHandlerFromPlayer(id).send(new LobbyMessage("Resources chosen out of bound, please verify you put the right resources in your board"));
-                }
+            if(!allResources.isEmpty()){
+                int pointsToGive =player.getResourceSupply().discardResources(allResources);
+                game.pointsGiveAway(player, pointsToGive);
+            }
 
             else{
                 if(checkShelfContent(gameObj,id)){
@@ -644,7 +664,7 @@ public class Controller {
                         }
                     }
                     System.out.println("DEBUG 3.6");
-                    getHandlerFromPlayer(id).send( new WareHouseChangeMessage(getSimplifiedWarehouse(player)));
+                    getHandlerFromPlayer(id).send( new WareHouseChangeMessage(player.getPersonalBoard().getSimplifiedWarehouse()));
                     System.out.println("DEBUG 3.7");
                 }else{
                     getHandlerFromPlayer(id).send(new LobbyMessage("Resources not valid in this disposition, please retry"));
@@ -653,23 +673,6 @@ public class Controller {
         }
         System.out.println("DEBUG 4");
     }
-
-
-/*
-    public void discardResourcesManager(ArrayList<Resource> discardedResources, Player player, int id) {
-        player.getResourceSupply().discardResources(discardedResources);
-            game.getPlayers().forEach(p->{if (!p.equals(player)) p.getPersonalBoard().getFaithMarker().updatePosition();});
-        for(Player p:game.getPlayers()) {
-            if (!p.equals(player)) {
-                for (Resource res : discardedResources) {
-                    p.getPersonalBoard().getFaithMarker().updatePosition();
-                }
-                int pos=p.getPersonalBoard().getFaithMarker().getFaithPosition();
-                server.getClientFromId().get(server.getIDFromName().get(p.getName())).getClientHandler().send((SerializedMessage) new PersonalBoardChangeMessage(pos));
-            }
-        }
-    }
-*/
 
     private boolean checkShelfContent(ArrayList<String>[] gameObj, int id) {
         System.out.println("controllo la disposione scelta");
@@ -729,21 +732,21 @@ public class Controller {
         lobby.setStateOfGame(GameState.ONGOING);
         actualPlayerTurn=lobby.getPlayers().get(0);
         System.out.println("sto creando il startingGameMessage");
-        String[][] simplifiedMarket =getSimplifiedMarket();
+        String[][] simplifiedMarket =game.getSimplifiedMarket();
         System.out.println("market salvato");
-        int[][] devMatrix=getDevMatrix();
+        int[][] devMatrix=game.getSimplifiedDevMatrix();
         System.out.println("devMatrix salvata");
         for(Player p:game.getPlayers()){
             String name=p.getName();
             System.out.println(name);
-            ArrayList<String>[] warehouse = getSimplifiedWarehouse(p);
+            ArrayList<String>[] warehouse = p.getPersonalBoard().getSimplifiedWarehouse();
 
-            Map<Integer,Boolean> cardsId =getCardsId(p);
+            Map<Integer,Boolean> cardsId =p.getCardsId();
             System.out.println("warehouse di " + name + " salvato");
             int faithPosition = p.getPersonalBoard().getFaithMarker().getFaithPosition();
             System.out.println("messaggio costruito per " + name);
             getHandlerFromPlayer(name).send(new StartingGameMessage(cardsId,warehouse,faithPosition, simplifiedMarket,devMatrix,"We are ready to start. it's turn of " +
-                    server.getNameFromId().get(actualPlayerTurn.getID()), getSimplifiedStrongbox(p)));
+                    server.getNameFromId().get(actualPlayerTurn.getID()), p.getPersonalBoard().getSimplifiedStrongbox()));
             System.out.println("messaggio inviato al player "+name);
         }
 
@@ -758,6 +761,11 @@ public class Controller {
         int actualIndex=0;
         for(Player player:game.getPlayers()){
             if (server.getNameFromId().get(id).equals(player.getName())){
+                ArrayList<Resource> resources=player.getResourceSupply().viewResources();
+                if(!resources.isEmpty()){
+                    int pointsToGive =player.getResourceSupply().discardResources(resources);
+                    game.pointsGiveAway(player, pointsToGive);
+                }
                 actualIndex=game.getPlayers().indexOf(player);
                 player.resetAction();
                 break;
@@ -774,7 +782,7 @@ public class Controller {
             //TODO gestione fine gioco
         } else{
             if(s.contains("Lorenzo has discarded two development card of color ")) {
-                lobby.sendAll(new DevMatrixChangeMessage(getDevMatrix()));
+                lobby.sendAll(new DevMatrixChangeMessage(game.getSimplifiedDevMatrix()));
             }
             lobby.sendAll(new LobbyMessage(s+", è di nuovo il tuo turno"));
         }
@@ -824,97 +832,20 @@ public class Controller {
             }
         }
         else if(lobby.getStateOfGame()==GameState.ONGOING) {
-            String[][] simplifiedMarket = getSimplifiedMarket();
+            String[][] simplifiedMarket = game.getSimplifiedMarket();
             System.out.println("market salvato");
-            int[][] devMatrix=getDevMatrix();
+            int[][] devMatrix= game.getSimplifiedDevMatrix();
             System.out.println("devMatrix salvata");
             for (Player p : game.getPlayers()) {
                 if (p.getName().equals(name)) {
-                    ArrayList<String>[] warehouse = getSimplifiedWarehouse(p);
-                    Map<Integer,Boolean> cardsId = getCardsId(p);
+                    ArrayList<String>[] warehouse = p.getPersonalBoard().getSimplifiedWarehouse();
+                    Map<Integer,Boolean> cardsId = p.getCardsId();
                     System.out.println("warehouse di " + name + " salvato");
                     int faithPosition = p.getPersonalBoard().getFaithMarker().getFaithPosition();
                     System.out.println("messaggio costruito per " + name);
-                    server.getClientFromId().get(id).getClientHandler().send(new ReconnectionMessage(cardsId, warehouse, faithPosition, simplifiedMarket, devMatrix, getSimplifiedStrongbox(p)));
+                    server.getClientFromId().get(id).getClientHandler().send(new ReconnectionMessage(cardsId, warehouse, faithPosition, simplifiedMarket, devMatrix, p.getPersonalBoard().getSimplifiedStrongbox()));
                 }
             }
         }
     }
-
-    private int[] getSimplifiedStrongbox(Player p){
-        int[] strongbox=new int[4];
-        ArrayList<Resource> resources=p.getPersonalBoard().getStrongBox().getStrongboxContent();
-        for (Resource resource:resources) {
-            switch (resource) {
-                case COIN:
-                    strongbox[0]++;
-                    break;
-                case SERVANT:
-                    strongbox[1]++;
-                    break;
-                case SHIELD:
-                    strongbox[2]++;
-                    break;
-                case STONE:
-                    strongbox[3]++;
-                    break;
-            }
-        }
-        return strongbox;
-    }
-
-    private String[][] getSimplifiedMarket() {
-        Market market = game.getMarket();
-        String[][] simplifiedMarket = new String[3][4];
-        for (int j = 0; j < 3; j++) {
-            for (int k = 0; k < 4; k++) {
-                simplifiedMarket[j][k] = market.getMarketBoard()[j][k].getColor();
-            }
-        }
-        return simplifiedMarket;
-    }
-
-    private  int[][] getDevMatrix(){
-        int[][] devMatrix = new int[4][3];
-        DevCard[][] matrix = game.getDevDeckMatrix().getUpperDevCardsOnTable();
-        System.out.println("mi sono salvato le carte acquistabili");
-        for (int j = 0; j < 4; j++) {
-            for (int k = 0; k < 3; k++) {
-                devMatrix[j][k] = matrix[j][k].getId();
-            }
-        }
-        return devMatrix;
-    }
-
-    private ArrayList<String>[] getSimplifiedWarehouse(Player p) {
-        ArrayList<String>[] warehouse = new ArrayList[5];
-        warehouse[0]=new ArrayList<>();
-        warehouse[1]=new ArrayList<>();
-        warehouse[2]=new ArrayList<>();
-        warehouse[3]=new ArrayList<>();
-        warehouse[4]=new ArrayList<>();
-        p.getPersonalBoard().getWarehouseDepots().getShelves()[0].getSlots().forEach(resource -> warehouse[0].add(String.valueOf(resource)));
-        p.getPersonalBoard().getWarehouseDepots().getShelves()[1].getSlots().forEach(resource -> warehouse[1].add(String.valueOf(resource)));
-        p.getPersonalBoard().getWarehouseDepots().getShelves()[2].getSlots().forEach(resource -> warehouse[2].add(String.valueOf(resource)));
-        if(!p.getPersonalBoard().getSpecialShelves().isEmpty()) {
-            p.getPersonalBoard().getSpecialShelves().get(0).ifPresent(specialShelf -> {
-                specialShelf.getSpecialSlots().forEach(resource -> warehouse[3].add(String.valueOf(resource)));
-            });
-            p.getPersonalBoard().getSpecialShelves().get(1).ifPresent(specialShelf -> {
-                specialShelf.getSpecialSlots().forEach(resource -> warehouse[4].add(String.valueOf(resource)));
-            });
-        }
-        return warehouse;
-    }
-
-    private Map<Integer,Boolean> getCardsId(Player p) {
-        Map<Integer, Boolean> cardsId = new HashMap<>();
-        System.out.println("ho creato la mappa");
-        p.getLeadCards().forEach(leadCard -> cardsId.put(leadCard.getId(), leadCard.isActive()));
-        System.out.println("mi sono salvato gli id delle lead card");
-        p.getPersonalBoard().getDevCardSlot().getDevCards().forEach(devCard -> cardsId.put(devCard.getId(), devCard.isActive()));
-        System.out.println("mi sono salvato gli id delle dev card");
-        return cardsId;
-    }
-
 }

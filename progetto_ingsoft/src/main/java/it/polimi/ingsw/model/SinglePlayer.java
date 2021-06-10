@@ -19,7 +19,7 @@ public class SinglePlayer extends Game{
     private LeadDeck leads;
     private DevDeck devDeck;
     private ArrayList<Player> player= new ArrayList<>();
-    private BlackCrossToken blackCrossToken;
+    private BlackCross blackCross;
 
     public  ArrayList<ActionToken> getTokensStack() {
         return tokensStack;
@@ -38,7 +38,7 @@ public class SinglePlayer extends Game{
         Collections.shuffle(tokensStack);
         matrix= new DevDeckMatrix();
         devDeck = matrix.getDeck();
-        blackCrossToken=new BlackCrossToken();
+        blackCross =new BlackCross();
         this.market=new Market();
         leads= new LeadDeck();
         leads.shuffle();
@@ -66,7 +66,7 @@ public class SinglePlayer extends Game{
      * @return true if Lorenzo's BlackCross has reached the end of Faith track
      */
     public boolean checkBlackCrossPosition(){
-        return blackCrossToken.getCrossPosition() >= 24;
+        return blackCross.getCrossPosition() >= 24;
     }
 
     /**
@@ -80,6 +80,11 @@ public class SinglePlayer extends Game{
         if(checkBlackCrossPosition()||checkEmptyLineInMatrix())
             return "Finished";
         return effect;
+    }
+
+    @Override
+    public void pointsGiveAway(Player player, int pointsGiven) {
+        blackCross.updateBlackCross(pointsGiven);
     }
 
     /**
@@ -135,20 +140,20 @@ public class SinglePlayer extends Game{
 
     @Override
     public boolean activePopeSpace(Player player) {
-        if((player.getPersonalBoard().getFaithMarker().getFaithPosition()==8 || blackCrossToken.getCrossPosition()==8) && isVC1active()) {
+        if((player.getPersonalBoard().getFaithMarker().getFaithPosition()==8 || blackCross.getCrossPosition()==8) && isVC1active()) {
 
             if(player.getPersonalBoard().getFaithMarker().isVaticanZone())
                 player.increaseFaithtrackPoints(2);
             setVC1active(false);
             return isVC1active();
         }
-        else if((player.getPersonalBoard().getFaithMarker().getFaithPosition()==16 || blackCrossToken.getCrossPosition()==16) && isVC2active()) {
+        else if((player.getPersonalBoard().getFaithMarker().getFaithPosition()==16 || blackCross.getCrossPosition()==16) && isVC2active()) {
             if(player.getPersonalBoard().getFaithMarker().isVaticanZone())
                 player.increaseFaithtrackPoints(3);
             setVC2active(false);
             return isVC2active();
         }
-        else if((player.getPersonalBoard().getFaithMarker().getFaithPosition()==24 || blackCrossToken.getCrossPosition()==24) && isVC3active()) {
+        else if((player.getPersonalBoard().getFaithMarker().getFaithPosition()==24 || blackCross.getCrossPosition()==24) && isVC3active()) {
             if(player.getPersonalBoard().getFaithMarker().isVaticanZone())
                 player.increaseFaithtrackPoints(4);
             setVC3active(false);
@@ -158,7 +163,7 @@ public class SinglePlayer extends Game{
             return true;
         }
 
-    public BlackCrossToken getBlackCrossToken(){return blackCrossToken;}
+    public BlackCross getBlackCrossToken(){return blackCross;}
 
     public Market getMarket() {
         return market;
