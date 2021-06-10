@@ -91,7 +91,7 @@ public class ConnectionServer implements Runnable{
         try {
             ServerSocket serverSocket=new ServerSocket(port);
             System.out.println("Socket Server started. Listening on port "+port+". Type \"quit\" to exit" );
-            new Thread(() -> timer.schedule(pingManager,timerInitialDelay,timerPeriod)).start();
+            executorService.submit(()->timer.schedule(pingManager,timerInitialDelay,timerPeriod));
             acceptConnections(serverSocket);
         } catch (IOException e) {
             System.err.println("Error during server socket creation");
@@ -106,4 +106,6 @@ public class ConnectionServer implements Runnable{
     public MainServer getServer() {
         return server;
     }
+
+
 }
