@@ -241,6 +241,14 @@ public class Lobby {
                 controller.turnUpdate();
             }
         }
+
+        //9-gestisco il cambio delle white marble
+        else if (input instanceof ChangeChoosableAction && server.getClientFromId().get(id).equals(controller.getActualPlayerTurn())){
+            if(stateOfGame==GameState.MARKET){
+                controller.checkChangeChooosable(id,((ChangeChoosableAction) input).getNewRes());
+            }
+        }
+
         else if(!server.getClientFromId().get(id).equals(controller.getActualPlayerTurn()))
             server.getClientFromId().get(id).getClientHandler().send(new LobbyMessage("Wait for your turn!"));
     }

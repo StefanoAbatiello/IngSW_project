@@ -129,7 +129,7 @@ public class GUI extends Application implements View {
     }
 
     @Override
-    public void choosableResourceHandler() {
+    public void choosableResourceHandler(ChangeChoosableResourceRequest input) {
 
     }
 

@@ -15,6 +15,6 @@ public interface View {
     void personalCardHandler(CardIDChangeMessage cardIDChangeMessage);
     void devMatrixHandler(DevMatrixChangeMessage devMatrixChangeMessage);
     void strongboxHandler(StrongboxChangeMessage strongboxChangeMessage);
-    void choosableResourceHandler();
+    void choosableResourceHandler(ChangeChoosableResourceRequest input);
 
 }

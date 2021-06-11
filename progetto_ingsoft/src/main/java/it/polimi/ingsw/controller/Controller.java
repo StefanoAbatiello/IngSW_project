@@ -344,7 +344,7 @@ public class Controller {
         }
     }
 
-    public void checkChangeChooosable(int clientId,ArrayList<String> newRes){
+    public void checkChangeChooosable(int clientId, ArrayList<String> newRes){
         String name=getActualPlayerTurn().getNickName();
         Player player=game.getPlayers().get(0);
         for(Player p:game.getPlayers()){

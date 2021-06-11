@@ -346,9 +346,11 @@ public class ClientInput implements Runnable{
         else if(input.startsWith("ChangeWhiteMarble")){
             input=input.replace("ChangeWhiteMarble:","");
             String[] resources=input.split(",");
+            ArrayList<String> newRes=new ArrayList<>();
             for (String res: resources){
-
+                newRes.add(res);
             }
+            client.send(new ChangeChoosableAction(newRes));
         }
 
         else

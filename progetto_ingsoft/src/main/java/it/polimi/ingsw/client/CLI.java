@@ -136,7 +136,9 @@ public class CLI implements View{
     }
 
     @Override
-    public void choosableResourceHandler() {
-
+    public void choosableResourceHandler(ChangeChoosableResourceRequest input) {
+        System.out.println("You have "+ input.getNum()+" CHOOSABLE resources");
+        System.out.println(input.getMessage());
+        System.out.println("Type \"ChangeWhiteMarble:[first resource],[second resource]\"");
     }
 }

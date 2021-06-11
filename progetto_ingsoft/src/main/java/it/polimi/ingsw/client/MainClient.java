@@ -211,6 +211,10 @@ public class MainClient implements Runnable, Sender {
             view.strongboxHandler((StrongboxChangeMessage) input);
         }
 
+        //15-gestione della richiesta di scegliere risorse con whitemarble
+        else if(input instanceof  ChangeChoosableResourceRequest){
+            view.choosableResourceHandler((ChangeChoosableResourceRequest) input);
+        }
     }
 
     public void disconnect() {
@@ -231,8 +235,8 @@ public class MainClient implements Runnable, Sender {
         return viewCLI;
     }
 
-    public static void main(String[] args) {
-        MainClient client = new MainClient("ciao",1,false);
+    public static void main(String[] args, boolean b) {
+        MainClient client = new MainClient(args[0],Integer.parseInt(args[1]),b);
         new Thread(client).start();
     }
 }

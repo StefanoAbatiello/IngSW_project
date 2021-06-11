@@ -22,9 +22,9 @@ public class App {
             if (input.equalsIgnoreCase("server"))
                 MainServer.main(args);
             else if (input.equalsIgnoreCase("client"))
-                MainClient.main(args);
+                MainClient.main(args,false);
             else if(input.equalsIgnoreCase("gui"))
-                GUI.main();
+                MainClient.main(args,true);
         } else
             System.exit(-1);
     }
