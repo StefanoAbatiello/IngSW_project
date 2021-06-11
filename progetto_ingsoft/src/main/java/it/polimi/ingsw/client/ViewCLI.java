@@ -16,7 +16,7 @@ public class ViewCLI {
     private int[] strongbox;
     private int faithPosition;
     private int[][] devMatrix;
-    private Map<Integer, ArrayList<String>[]> cardsFromId;
+    private final Map<Integer, ArrayList<String>[]> cardsFromId;
     private String[][] market;
 
     public void setLeadCardsId(Map<Integer,Boolean> leadCardsId) {
@@ -176,6 +176,7 @@ public class ViewCLI {
     }
 
     public void showLeadCard(int cardId) {
+        //System.out.println("a");[Debug]
         ArrayList<String>[] card = cardsFromId.get(cardId);
         System.out.println("ID: " + cardId);
         System.out.println("    Ability: " + card[0].get(0));

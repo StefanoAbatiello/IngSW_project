@@ -25,7 +25,6 @@ public class MainClient implements Runnable, Sender {
     private static ClientInput keyboardReader;
     private ViewCLI viewCLI;
     private ClientCardParser parser;
-    //private ExecutorService executors;
     private Timer timer;
     private boolean isgui;
     private static final int timerPeriod = 30000; // time in milliseconds
@@ -35,14 +34,13 @@ public class MainClient implements Runnable, Sender {
         this.ip = ip;
         this.port = port;
         parser = new ClientCardParser(this);
-        //executors= Executors.newCachedThreadPool();
         timer=new Timer();
         this.isgui=gui;
     }
 
     public void run() {
         try {
-
+            viewCLI = new ViewCLI();
             if(isgui){
                 view=new GUI();
                 GUI.main();
@@ -50,20 +48,18 @@ public class MainClient implements Runnable, Sender {
             else
             {
                 view=new CLI(parser,viewCLI);
-
             }
             socket = new Socket(ip, port);
             System.out.println("Connection established");
             socketIn = new ObjectInputStream(socket.getInputStream());
             socketOut = new ObjectOutputStream(socket.getOutputStream());
         }catch (IOException | NullPointerException e) {
+            System.err.println("Error in stream creation");
             disconnect();
         }
         keyboardReader = new ClientInput(this);
-        //executors.submit(keyboardReader);
         new Thread(keyboardReader).start();
         pingObserver = new PingObserver(this);
-        viewCLI = new ViewCLI();
         SerializedMessage input;
         try {
             while (true) {
@@ -72,7 +68,9 @@ public class MainClient implements Runnable, Sender {
                 actionHandler(input);
             }
         } catch (ClassNotFoundException | IOException | NullPointerException e) {
-            System.err.println("Connection closed");
+            System.err.println("Connection /closed");
+            System.err.println(e.getMessage());
+            e.printStackTrace();
             disconnect();
         }
     }

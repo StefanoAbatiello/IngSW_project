@@ -44,8 +44,10 @@ public class CLI implements View{
 
         System.out.println(input.getMessage() + "\n");
         ArrayList<Integer> leadCardsId = input.getLeadCardsId();
+        //System.out.println("mi sono salvato gli id");[Debug]
         for (int id : leadCardsId) {
             parser.takeLeadCardFromId(id);
+            //System.out.println("mi sono parsato la carta "+id);
             viewCLI.showLeadCard(id);
         }
         if(leadCardsId.size()>2) {
@@ -56,7 +58,7 @@ public class CLI implements View{
     @Override
     public void supplyHandler(ResourceInSupplyRequest input) {
         System.out.println("Now you have to place these new resources in warehouse:");
-        ((ResourceInSupplyRequest)input).getResources().forEach(System.out::println);
+        (input).getResources().forEach(System.out::println);
         System.out.println("Please Type: " +
                 "\"PutNewResources:[first Resource] in shelf [Shelf num - 0 to 2], " +
                 "[second Resource] in shelf [Shelf num - 0 to 2]...\"");
@@ -80,7 +82,7 @@ public class CLI implements View{
                 viewCLI.setFaithPosition(((PersonalBoardChangeMessage)input).getFaithPosition().get());
             }
             */
-        viewCLI.setWarehouse(((WareHouseChangeMessage)input).getWarehouse());
+        viewCLI.setWarehouse((input).getWarehouse());
     }
 
     @Override

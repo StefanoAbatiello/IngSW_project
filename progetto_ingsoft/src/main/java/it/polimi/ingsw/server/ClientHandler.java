@@ -95,6 +95,7 @@ public class ClientHandler implements Runnable, Sender {
              message = (SerializedMessage) inputStreamObj.readObject();
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("Client not reachable");
+            e.printStackTrace();
             active=false;
             message = new quitMessage();
         }
