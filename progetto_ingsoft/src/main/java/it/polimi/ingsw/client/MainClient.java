@@ -26,39 +26,46 @@ public class MainClient implements Runnable, Sender {
     private ViewCLI viewCLI;
     private ClientCardParser parser;
     private Timer timer;
-    private boolean isgui;
     private static final int timerPeriod = 30000; // time in milliseconds
 
 
-    public MainClient(String ip, int port, boolean gui) {
+    public MainClient(String ip, int port) {
         this.ip = ip;
         this.port = port;
         parser = new ClientCardParser(this);
         timer=new Timer();
-        this.isgui=gui;
+        this.viewCLI = new ViewCLI();
+        this.view=new CLI(parser,viewCLI);
+
+    }
+
+    public MainClient(String ip, int port,GUI gui) {
+        this.ip = ip;
+        this.port = port;
+        parser = new ClientCardParser(this);
+        timer=new Timer();
+        this.view=gui;
+        viewCLI = new ViewCLI();
+
     }
 
     public void run() {
         try {
-            viewCLI = new ViewCLI();
-            if(isgui){
-                view=new GUI();
-                GUI.main();
-            }
-            else
+            if(view instanceof CLI)
             {
-                view=new CLI(parser,viewCLI);
+                keyboardReader = new ClientInput(this);
+                new Thread(keyboardReader).start();
             }
             socket = new Socket(ip, port);
             System.out.println("Connection established");
             socketIn = new ObjectInputStream(socket.getInputStream());
             socketOut = new ObjectOutputStream(socket.getOutputStream());
+            System.out.println("stream created");
         }catch (IOException | NullPointerException e) {
             System.err.println("Error in stream creation");
             disconnect();
         }
-        keyboardReader = new ClientInput(this);
-        new Thread(keyboardReader).start();
+
         pingObserver = new PingObserver(this);
         SerializedMessage input;
         try {
@@ -233,8 +240,4 @@ public class MainClient implements Runnable, Sender {
         return viewCLI;
     }
 
-    public static void main(String[] args, boolean b) {
-        MainClient client = new MainClient(args[0],Integer.parseInt(args[1]),b);
-        new Thread(client).start();
-    }
 }

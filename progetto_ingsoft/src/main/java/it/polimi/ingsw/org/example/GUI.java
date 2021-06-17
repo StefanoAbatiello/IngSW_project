@@ -20,6 +20,8 @@ public class GUI extends Application implements View {
     private final String LOGIN="Login.fxml";
     private final String NICKNAME="Nickname.fxml";
     private final String BOARD="board.fxml";
+    private final String WAITING="waiting.fxml";
+    private final String NUMOFPLAYER="insert_num_of_player.fxml";
 
     private final HashMap<String,Scene> nameMapScene= new HashMap<>();
     private final HashMap<String,GUIcontroller> nameMapController= new HashMap<>();
@@ -31,11 +33,12 @@ public class GUI extends Application implements View {
         launch();
     }
 
+
     @Override
     public void start(Stage stage) {
         this.stage=stage;
 
-        List<String> fxmList = new ArrayList<>(Arrays.asList(LOGIN, NICKNAME,BOARD));
+        List<String> fxmList = new ArrayList<>(Arrays.asList(LOGIN, NICKNAME,BOARD,WAITING,NUMOFPLAYER));
         try {
             for (String path : fxmList) {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/org.example/" +path));
@@ -44,10 +47,9 @@ public class GUI extends Application implements View {
                 controller.setGui(this);
                 nameMapController.put(path, controller);
             }
-            currentscene=nameMapScene.get(LOGIN);
+            changeStage(LOGIN);
             stage.setTitle("Master of Renaissance");
-            stage.setScene(currentscene);
-            stage.show();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -75,12 +77,19 @@ public class GUI extends Application implements View {
 
     @Override
     public void nicknameHandler(NickNameAction nickNameAction) {
+        System.out.println("begin of nickname");
+        changeStage(NICKNAME);
+        System.out.println("change stage");
+        SetupController guicontroller = (SetupController) nameMapController.get(NICKNAME);
+        System.out.println("end controller setup");
+        guicontroller.setConfirmation(nickNameAction.getMessage());
+        System.out.println("end");
 
     }
 
     @Override
     public void numOfPlayerHandler(RequestNumOfPlayers requestNumOfPlayers) {
-
+        changeStage(NUMOFPLAYER);
     }
 
     @Override

@@ -1,19 +1,26 @@
 package it.polimi.ingsw.client;
 
+import it.polimi.ingsw.App;
 import it.polimi.ingsw.messages.*;
 import it.polimi.ingsw.messages.answerMessages.*;
+import javafx.application.Application;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Scanner;
 
-public class CLI implements View{
+public class CLI extends App implements View {
     private ClientCardParser parser;
     private ViewCLI viewCLI;
+    private static final Scanner scanner=new Scanner(System.in);
+
 
     public CLI(ClientCardParser clientCardParser,ViewCLI viewCLI) {
         parser=clientCardParser;
         this.viewCLI=viewCLI;
     }
+
+
 
     @Override
     public void nicknameHandler(NickNameAction input) {
@@ -142,5 +149,28 @@ public class CLI implements View{
         System.out.println("You have "+ input.getNum()+" CHOOSABLE resources");
         System.out.println(input.getMessage());
         System.out.println("Type \"ChangeWhiteMarble:[first resource],[second resource]\"");
+    }
+
+    public static void main() {
+        System.out.println("insert port,ip");
+        String input=scanner.nextLine();
+        input=input.replace(" ","");
+        String[] words=input.split(",");
+
+        try {
+            int port = Integer.parseInt(words[1]);
+            String ip = words[0];
+
+            if((port>=1024&&port<=65535)&&ip!=""){
+                MainClient mainClient = new MainClient(ip, port);
+                new Thread(mainClient).start();
+            }
+            else
+            {
+                System.out.println("port or id is not valid");
+            }
+        }catch (NumberFormatException e) {
+            System.out.println("NumberFormatException");
+        }
     }
 }

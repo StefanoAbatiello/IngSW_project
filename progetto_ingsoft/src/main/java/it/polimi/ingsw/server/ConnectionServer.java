@@ -74,6 +74,7 @@ public class ConnectionServer implements Runnable{
                 Socket socket= serverSocket.accept();
                 System.out.println("sto accettando la connessione di un client");//[Debug]
                 ClientHandler clientHandler=new ClientHandler(socket, server);
+                System.out.println("CH creato");
                 executorService.submit(clientHandler);
             }
             catch (IOException e){

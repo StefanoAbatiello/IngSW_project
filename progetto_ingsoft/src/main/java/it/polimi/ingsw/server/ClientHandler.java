@@ -58,12 +58,14 @@ public class ClientHandler implements Runnable, Sender {
         try {
             SerializedMessage message;
             do{
+                System.out.println("inizio do");
                 send(new NickNameAction("Please choose a nickname"));
                 message = streamReader();
                 if (message instanceof NickNameAction) {
                     nickNameHandler( message);
                 }
             }while(isActive() && !(clientID > 0));
+
             while (isActive()) {
                 System.out.println("aspetto un messaggio");//[Debug]
                 message = streamReader();
@@ -180,10 +182,10 @@ public class ClientHandler implements Runnable, Sender {
      */
     public synchronized void send(SerializedMessage message){
         try {
-            //System.out.println("sto inviando il messaggio");[Debug]
+            System.out.println("sto inviando il messaggio");
             outputStreamObj.writeObject(message);
             outputStreamObj.flush();
-            //System.out.println("messaggio inviato");[Debug]
+            System.out.println("messaggio inviato");
         } catch (IOException e) {
             System.err.println("client not reachable(send)");
             server.disconnectClient(clientID);

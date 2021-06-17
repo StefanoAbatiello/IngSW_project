@@ -1,5 +1,6 @@
 package it.polimi.ingsw;
 
+import it.polimi.ingsw.client.CLI;
 import it.polimi.ingsw.client.MainClient;
 import it.polimi.ingsw.org.example.GUI;
 import it.polimi.ingsw.server.MainServer;
@@ -22,9 +23,9 @@ public class App {
             if (input.equalsIgnoreCase("server"))
                 MainServer.main(args);
             else if (input.equalsIgnoreCase("client"))
-                MainClient.main(args,false);
+                CLI.main();
             else if(input.equalsIgnoreCase("gui"))
-                MainClient.main(args,true);
+                GUI.main();
         } else
             System.exit(-1);
     }

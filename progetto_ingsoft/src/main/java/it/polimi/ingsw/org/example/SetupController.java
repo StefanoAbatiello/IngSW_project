@@ -8,7 +8,7 @@ import javafx.scene.control.TextField;
 
 import java.io.IOException;
 
-public class PrimaryController implements GUIcontroller{
+public class SetupController implements GUIcontroller{
     @FXML
     TextField nickname_field;
     @FXML
@@ -28,50 +28,58 @@ public class PrimaryController implements GUIcontroller{
     }
 
     public static void setPort(int port) {
-        PrimaryController.port = port;
+        SetupController.port = port;
     }
 
     public static String getIp() {
         return ip;
     }
 
+    public void setConfirmation(String confirmation) {
+        this.confirmation.setText(confirmation);
+    }
+
     public static void setIp(String ip) {
-        PrimaryController.ip = ip;
+        SetupController.ip = ip;
     }
 
     @FXML
     public void setup_nickname() throws IOException {
-
         try {
             port = Integer.parseInt(port_field.getText());
             ip = ip_field.getText();
 
-            MainClient mainClient = new MainClient(ip, port, true);
-
-            GUIcontroller guIcontroller;
-            gui.changeStage("Nickname.fxml");
-            guIcontroller = (PrimaryController) gui.getControllerFromName("Nickname.fxml");
+            if((port>=1024&&port<=65535)&&ip!=""){
+                MainClient mainClient = new MainClient(ip, port, gui);
+                System.out.println("mainclient created");
+                new Thread(mainClient).start();
+            }
+            else
+            {
+                port_field.setText("");
+                confirmation.setText("Insert valid port number & ip");
+            }
         }catch (NumberFormatException e) {
             System.out.println(e.getMessage());
         }
 
+
+        //gui.changeStage("Nickname.fxml");
     }
 
     public void startgame() {
-
-        if(nickname_field.getText().equals("")){
-            confirmation.setText("Choose a valid nickname");
-        }
-        else
-        {
-            gui.getClientHandler().send(new NickNameAction(nickname_field.getText()));
-            //se il messaggio che ricevo è request num of player metto la schermata scegli numero, altrimenti metti nella schermata loading
-            gui.changeStage("board.fxml");
-        }
+        gui.getClientHandler().send(new NickNameAction(nickname_field.getText()));
+        //se il messaggio che ricevo è request num of player metto la schermata scegli numero, altrimenti metti nella schermata loading
     }
+
+
 
     @Override
     public void setGui(GUI gui) {
         this.gui=gui;
     }
 }
+
+/**
+ * confirmation.setText("Choose a valid nickname");
+ */
