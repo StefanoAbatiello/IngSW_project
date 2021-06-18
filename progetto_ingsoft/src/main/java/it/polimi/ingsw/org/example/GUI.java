@@ -5,6 +5,7 @@ import it.polimi.ingsw.messages.*;
 import it.polimi.ingsw.messages.answerMessages.*;
 import it.polimi.ingsw.server.ClientHandler;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -40,8 +41,9 @@ public class GUI extends Application implements View {
 
         List<String> fxmList = new ArrayList<>(Arrays.asList(LOGIN, NICKNAME,BOARD,WAITING,NUMOFPLAYER));
         try {
+
             for (String path : fxmList) {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org.example/" +path));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org.example/" + path));
                 nameMapScene.put(path, new Scene(loader.load()));
                 GUIcontroller controller = loader.getController();
                 controller.setGui(this);
@@ -50,10 +52,10 @@ public class GUI extends Application implements View {
             changeStage(LOGIN);
             stage.setTitle("Master of Renaissance");
 
-        } catch (IOException e) {
-            e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-    }
 
     public void changeStage(String s) {
 
@@ -77,13 +79,13 @@ public class GUI extends Application implements View {
 
     @Override
     public void nicknameHandler(NickNameAction nickNameAction) {
-        System.out.println("begin of nickname");
+        Platform.runLater(()->{System.out.println("begin of nickname");
         changeStage(NICKNAME);
         System.out.println("change stage");
         SetupController guicontroller = (SetupController) nameMapController.get(NICKNAME);
         System.out.println("end controller setup");
         guicontroller.setConfirmation(nickNameAction.getMessage());
-        System.out.println("end");
+        System.out.println("end");});
 
     }
 
