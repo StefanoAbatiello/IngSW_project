@@ -48,7 +48,7 @@ public class MainServer {
      */
     private int generateClientId(){
         int actualClientId=nextClientId;
-        nextLobbyId++;
+        nextClientId++;
         return actualClientId;
     }
 
@@ -210,7 +210,7 @@ public class MainServer {
      * @return true if the lobby is a single player game
      */
     private boolean isSinglePlayerLobby(Lobby lobby) {
-        return(lobby.getPlayers().size()+lobby.getSeatsAvailable())!=1;
+        return(lobby.getPlayers().size()+lobby.getSeatsAvailable())==1;
     }
 
 }

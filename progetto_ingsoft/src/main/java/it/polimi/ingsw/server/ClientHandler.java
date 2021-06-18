@@ -123,24 +123,25 @@ public class ClientHandler implements Runnable, Sender {
      */
     private synchronized boolean nickNameHandler(SerializedMessage message) {
         if (message instanceof NickNameAction) {
-                String nickname = ((NickNameAction) message).getMessage();
-                if (nickname != null) {
-                    clientID = server.checkNickName(nickname, this);
-                    if (clientID > 0) {
-                        pingObserver = new PongObserver(this);
-                        server.getConnectionServer().addPingObserver(pingObserver);
-                        //System.out.println("Ho creato il pongObserver");[Debug]
-                        if (!server.getLobbyFromClientID().containsKey(clientID) && !server.findEmptyLobby(clientID)) {
+            String nickname = ((NickNameAction) message).getMessage();
+            if (nickname != null && !nickname.equals("")) {
+                clientID = server.checkNickName(nickname, this);
+                if (clientID > 0) {
+                    pingObserver = new PongObserver(this);
+                    server.getConnectionServer().addPingObserver(pingObserver);
+                    //System.out.println("Ho creato il pongObserver");[Debug]
+                    if (!server.getLobbyFromClientID().containsKey(clientID))
+                        if (!server.findEmptyLobby(clientID)) {
                             send(new RequestNumOfPlayers("YOU ARE THE HOST OF A NEW LOBBY"
                                     + " CHOOSE HOW MANY PLAYERS YOU WANT TO CHALLENGE [0 to 3]"));
                         }
-                    } else if (clientID == -2) {
-                        send(new NickNameAction("Nickname already taken." + " Please choose another one:"));
-                    }
-                } else
-                    send(new LobbyMessage("Nickname not valid"));
-                return true;
-            }
+                } else if (clientID == -2) {
+                    send(new NickNameAction("Nickname already taken." + " Please choose another one:"));
+                }
+            } else
+                send(new LobbyMessage("Nickname not valid"));
+            return true;
+        }
         return false;
     }
 
