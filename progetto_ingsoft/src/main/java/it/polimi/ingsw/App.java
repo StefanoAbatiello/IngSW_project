@@ -3,6 +3,7 @@ package it.polimi.ingsw;
 import it.polimi.ingsw.client.CLI;
 import it.polimi.ingsw.client.MainClient;
 import it.polimi.ingsw.org.example.GUI;
+import it.polimi.ingsw.org.example.JavaFXMain;
 import it.polimi.ingsw.server.MainServer;
 
 import java.util.Scanner;
@@ -25,7 +26,7 @@ public class App {
             else if (input.equalsIgnoreCase("client"))
                 CLI.main();
             else if(input.equalsIgnoreCase("gui"))
-                GUI.main();
+                JavaFXMain.main();
         } else
             System.exit(-1);
     }
