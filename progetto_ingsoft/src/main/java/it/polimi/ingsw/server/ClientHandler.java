@@ -163,7 +163,7 @@ public class ClientHandler implements Runnable, Sender {
                     } else
                         send(new LobbyMessage("You are creating a new single player game"));
                     Lobby lobby = new Lobby(server.generateLobbyId(), num + 1, server);
-                    send(new LobbyMessage("Lobby created. Wait for the other players to join!"));
+                    send(new WaitingRoomAction("Lobby created. Wait for the other players to join!"));
                     System.out.println("Lobby di" + num + "giocatori creata con id: " + lobby.getLobbyID() + "." +
                             "inserisco l'host");//[Debug]
                     lobby.insertPlayer(clientID);

@@ -2,6 +2,8 @@ package it.polimi.ingsw.org.example;
 
 import it.polimi.ingsw.client.MainClient;
 import it.polimi.ingsw.messages.NickNameAction;
+import it.polimi.ingsw.messages.answerMessages.NumOfPlayersAnswer;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -19,6 +21,9 @@ public class SetupController implements GUIcontroller{
     Label confirmation;
     @FXML
     Label validation;
+    @FXML
+    TextField num_of_player;
+
     private GUI gui;
     private static  int port;
     private static String ip;
@@ -51,6 +56,7 @@ public class SetupController implements GUIcontroller{
 
             if((port>=1024&&port<=65535)&&ip!=""){
                 MainClient mainClient = new MainClient(ip, port, gui);
+                gui.setMainClient(mainClient);
                 System.out.println("mainclient created");
                 new Thread(mainClient).start();
             }
@@ -67,16 +73,23 @@ public class SetupController implements GUIcontroller{
         //gui.changeStage("Nickname.fxml");
     }
 
-    public void startgame() {
-        gui.getClientHandler().send(new NickNameAction(nickname_field.getText()));
-        //se il messaggio che ricevo è request num of player metto la schermata scegli numero, altrimenti metti nella schermata loading
-    }
-
 
 
     @Override
     public void setGui(GUI gui) {
         this.gui=gui;
+    }
+
+    public void waitingRoom(ActionEvent actionEvent) {
+        gui.getMainClient().send(new NumOfPlayersAnswer(Integer.parseInt(num_of_player.getText())));
+        //se il messaggio che ricevo è request num of player metto la schermata scegli numero, altrimenti metti nella schermata loading
+
+    }
+
+    public void sendNickname(ActionEvent actionEvent) {
+        gui.getMainClient().send(new NickNameAction(nickname_field.getText()));
+        //se il messaggio che ricevo è request num of player metto la schermata scegli numero, altrimenti metti nella schermata loading
+
     }
 }
 

@@ -3,6 +3,7 @@ package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.messages.LobbyMessage;
 import it.polimi.ingsw.messages.NickNameAction;
+import it.polimi.ingsw.messages.WaitingRoomAction;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -196,8 +197,11 @@ public class MainServer {
         for(Lobby lobby:lobbies) {
             if (!lobby.isLobbyFull() && lobby.getStateOfGame()==GameState.WAITING && !isSinglePlayerLobby(lobby)) {
                 System.out.println("c'è una lobby libera");//[Debug]
-                lobby.sendAll(new LobbyMessage(nameFromId.get(id) + " is entered in the lobby"));
+                lobby.sendAll(new LobbyMessage(nameFromId.get(id) + " has entered in the lobby"));
                 lobby.insertPlayer(id);
+                int lobbySpace=lobby.getPlayers().size() + lobby.getSeatsAvailable();
+                if(lobby.getSeatsAvailable()>1)
+                    clientFromId.get(id).getClientHandler().send(new WaitingRoomAction("You joined a new lobby for "+ lobbySpace + " players, please wait for other players"));
                 return true;
             }
         }

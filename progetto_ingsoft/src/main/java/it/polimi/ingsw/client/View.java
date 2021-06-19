@@ -6,6 +6,7 @@ import it.polimi.ingsw.messages.answerMessages.*;
 public interface View {
     void nicknameHandler(NickNameAction nickNameAction);
     void numOfPlayerHandler(RequestNumOfPlayers requestNumOfPlayers);
+    void waitingRoomHandler(WaitingRoomAction waitingRoomAction);
     void lobbyMessageHandler(LobbyMessage lobbyMessage);
     void initialResourceHandler(GetInitialResourcesAction initialResourcesAction);
     void leadCardHandler(LeaderCardDistribution leaderCardDistribution);

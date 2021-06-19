@@ -108,6 +108,11 @@ public class MainClient implements Runnable, Sender {
             view.lobbyMessageHandler((LobbyMessage) input);
         }
 
+       //3bis - gestisco waiting room message
+        else if (input instanceof WaitingRoomAction) {
+            view.waitingRoomHandler((WaitingRoomAction) input);
+        }
+
         //4-gestione dei messaggio di ping
         else if (input instanceof PingMessage) {
             //System.out.println("ho ricevuto un ping");[Debug]

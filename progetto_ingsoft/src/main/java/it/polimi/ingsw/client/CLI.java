@@ -47,6 +47,11 @@ public class CLI extends App implements View {
     }
 
     @Override
+    public void waitingRoomHandler(WaitingRoomAction input) {
+        System.out.println(input.getMessage());
+    }
+
+    @Override
     public void leadCardHandler(LeaderCardDistribution input) {
 
         System.out.println(input.getMessage() + "\n");

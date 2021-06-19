@@ -1,5 +1,6 @@
 package it.polimi.ingsw.org.example;
 
+import it.polimi.ingsw.client.MainClient;
 import it.polimi.ingsw.client.View;
 import it.polimi.ingsw.messages.*;
 import it.polimi.ingsw.messages.answerMessages.*;
@@ -28,7 +29,7 @@ public class GUI extends Application implements View {
     private final HashMap<String,GUIcontroller> nameMapController= new HashMap<>();
     private Scene currentscene;
     private Stage stage;
-    private ClientHandler clientHandler=null;
+    private MainClient client=null;
 
     public static void main() {
         launch();
@@ -69,12 +70,12 @@ public class GUI extends Application implements View {
         return nameMapController.get(s);
     }
 
-    public void setClientHandler(ClientHandler clientHandler) {
-        this.clientHandler = clientHandler;
+    public void setMainClient(MainClient client) {
+        this.client = client;
     }
 
-    public ClientHandler getClientHandler() {
-        return clientHandler;
+    public MainClient getMainClient() {
+        return client;
     }
 
     @Override
@@ -91,11 +92,29 @@ public class GUI extends Application implements View {
 
     @Override
     public void numOfPlayerHandler(RequestNumOfPlayers requestNumOfPlayers) {
-        changeStage(NUMOFPLAYER);
+        Platform.runLater(()->{System.out.println("begin of numplayers");
+            changeStage(NUMOFPLAYER);
+            System.out.println("change stage");
+            SetupController guicontroller = (SetupController) nameMapController.get(NUMOFPLAYER);
+            System.out.println("end controller setup");
+            guicontroller.setConfirmation(requestNumOfPlayers.getMessage());
+            System.out.println("end");});
+    }
+
+    //@Override
+    public void waitingRoomHandler(WaitingRoomAction waitingRoomAction) {
+        Platform.runLater(()->{System.out.println("waitingroom");
+            changeStage(WAITING);
+            System.out.println("change stage");
+            SetupController guicontroller = (SetupController) nameMapController.get(WAITING);
+            System.out.println("end controller setup");
+            guicontroller.setConfirmation(waitingRoomAction.getMessage());
+            System.out.println("end");});
     }
 
     @Override
     public void lobbyMessageHandler(LobbyMessage lobbyMessage) {
+
 
     }
 
