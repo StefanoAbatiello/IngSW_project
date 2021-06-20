@@ -57,9 +57,9 @@ public class ClientHandler implements Runnable, Sender {
     public void run() {
         try {
             SerializedMessage message;
+            send(new NickNameAction("Please choose a nickname"));
             do{
                 System.out.println("inizio do");
-                send(new NickNameAction("Please choose a nickname"));
                 message = streamReader();
                 if (message instanceof NickNameAction) {
                     nickNameHandler( message);
@@ -139,7 +139,7 @@ public class ClientHandler implements Runnable, Sender {
                     send(new NickNameAction("Nickname already taken." + " Please choose another one:"));
                 }
             } else
-                send(new LobbyMessage("Nickname not valid"));
+                send(new NickNameAction("Nickname not valid"));
             return true;
         }
         return false;

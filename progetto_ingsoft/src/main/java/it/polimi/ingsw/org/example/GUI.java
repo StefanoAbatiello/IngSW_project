@@ -87,7 +87,6 @@ public class GUI extends Application implements View {
         System.out.println("end controller setup");
         guicontroller.setConfirmation(nickNameAction.getMessage());
         System.out.println("end");});
-
     }
 
     @Override
