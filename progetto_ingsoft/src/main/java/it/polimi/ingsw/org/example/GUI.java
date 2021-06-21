@@ -26,6 +26,7 @@ public class GUI extends Application implements View {
     private final String WAITING="waiting.fxml";
     private final String NUMOFPLAYER="insert_num_of_player.fxml";
     private final String LEADCARDSCHOICE="leadcardschoice.fxml";
+    private final String INITIALRESOURCES="choiceresources.fxml";
 
 
     private final HashMap<String,Scene> nameMapScene= new HashMap<>();
@@ -43,7 +44,7 @@ public class GUI extends Application implements View {
     public void start(Stage stage) {
         this.stage=stage;
 
-        List<String> fxmList = new ArrayList<>(Arrays.asList(LOGIN, NICKNAME,BOARD,WAITING,NUMOFPLAYER,LEADCARDSCHOICE));
+        List<String> fxmList = new ArrayList<>(Arrays.asList(LOGIN, NICKNAME,BOARD,WAITING,NUMOFPLAYER,LEADCARDSCHOICE,INITIALRESOURCES));
         try {
 
             for (String path : fxmList) {
@@ -88,7 +89,7 @@ public class GUI extends Application implements View {
         System.out.println("change stage");
         SetupController guicontroller = (SetupController) nameMapController.get(NICKNAME);
         System.out.println("end controller setup");
-        guicontroller.setConfirmation(nickNameAction.getMessage());
+        guicontroller.setErrorLabel(nickNameAction.getMessage());
         System.out.println("end");});
     }
 
@@ -99,7 +100,7 @@ public class GUI extends Application implements View {
             System.out.println("change stage");
             SetupController guicontroller = (SetupController) nameMapController.get(NUMOFPLAYER);
             System.out.println("end controller setup");
-            guicontroller.setConfirmation(requestNumOfPlayers.getMessage());
+            guicontroller.setErrorLabel(requestNumOfPlayers.getMessage());
             System.out.println("end");});
     }
 
@@ -130,11 +131,6 @@ public class GUI extends Application implements View {
     }
 
     @Override
-    public void initialResourceHandler(GetInitialResourcesAction initialResourcesAction) {
-
-    }
-
-    @Override
     public void leadCardHandler(LeaderCardDistribution leaderCardDistribution) {
         Platform.runLater(()->{System.out.println("leadcardschoice");
             changeStage(LEADCARDSCHOICE);
@@ -147,7 +143,24 @@ public class GUI extends Application implements View {
     }
 
     @Override
+    public void initialResourceHandler(GetInitialResourcesAction initialResourcesAction) {
+        Platform.runLater(()->{System.out.println("leadcardschoice");
+            changeStage(INITIALRESOURCES);
+            System.out.println("change stage");
+            SetupController guicontroller = (SetupController) nameMapController.get(INITIALRESOURCES);
+            System.out.println("end controller game");
+            System.out.println("end");
+            guicontroller.setLabelResources(initialResourcesAction.getMessage());
+            guicontroller.setInitialRes(initialResourcesAction.getNumRes());
+
+        });
+    }
+
+
+
+    @Override
     public void supplyHandler(ResourceInSupplyRequest resource) {
+
 
     }
 

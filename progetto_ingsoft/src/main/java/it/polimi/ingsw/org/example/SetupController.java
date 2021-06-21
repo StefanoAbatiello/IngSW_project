@@ -1,6 +1,7 @@
 package it.polimi.ingsw.org.example;
 
 import it.polimi.ingsw.client.MainClient;
+import it.polimi.ingsw.messages.ChosenLeadMessage;
 import it.polimi.ingsw.messages.NickNameAction;
 import it.polimi.ingsw.messages.answerMessages.NumOfPlayersAnswer;
 import javafx.event.ActionEvent;
@@ -33,7 +34,7 @@ public class SetupController implements GUIcontroller {
     @FXML
     TextField port_field;
     @FXML
-    Label confirmation;
+    Label errorLabel;
     @FXML
     Label validation;
     @FXML
@@ -50,6 +51,8 @@ public class SetupController implements GUIcontroller {
     HBox hbox;
     @FXML
     Label labelLeads;
+    @FXML
+    Label initialResLabel;
 
     private GUI gui;
     private static int port;
@@ -69,8 +72,9 @@ public class SetupController implements GUIcontroller {
         return ip;
     }
 
-    public void setConfirmation(String confirmation) {
-        this.confirmation.setText(confirmation);
+    public void setErrorLabel(String confirmation) {
+        this.errorLabel.setText(confirmation);
+        this.nickname_field.setText("");
     }
 
     public static void setIp(String ip) {
@@ -90,7 +94,7 @@ public class SetupController implements GUIcontroller {
                 new Thread(mainClient).start();
             } else {
                 port_field.setText("");
-                confirmation.setText("Insert valid port number & ip");
+                errorLabel.setText("Insert valid port number & ip");
             }
         } catch (NumberFormatException e) {
             System.out.println(e.getMessage());
@@ -126,8 +130,8 @@ public class SetupController implements GUIcontroller {
             String imageId= (target.getId());
             selectedCards.add(Integer.parseInt(imageId));
             System.out.println(imageId);
-            target.setVisible(false);
-            ((BoardController)gui.getControllerFromName("board.fxml")).setLeads(target);
+            target.setOpacity(0.8);
+            //((BoardController)gui.getControllerFromName("board.fxml")).setLeads(target);
         }
         else
            labelLeads.setText("You already chose 2 leads, if you want to change click RETRY, else NEXT ");
@@ -156,10 +160,23 @@ public class SetupController implements GUIcontroller {
 
     public void leadsNext(){
         if(selectedCards.size()==2) {
+            gui.getMainClient().send(new ChosenLeadMessage(selectedCards));
+            gui.changeStage("waiting.fxml");
         }
         else
             labelLeads.setText("Please choose 2 leads before pressing NEXT.If you want to change your choice, click RETRY");
 
+
+    }
+
+    public void setLabelResources(String message) {
+        initialResLabel.setText(message);
+    }
+
+    public void setInitialRes(int numRes) {
+    }
+
+    public void select_resource(MouseEvent mouseEvent) {
 
     }
 }

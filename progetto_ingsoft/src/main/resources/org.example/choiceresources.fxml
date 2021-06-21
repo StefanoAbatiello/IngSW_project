@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.org.example.SetupController">
+   <children>
+      <HBox layoutX="43.0" layoutY="156.0" prefHeight="116.0" prefWidth="488.0">
+         <children>
+            <ImageView fx:id="coin" accessibleRole="BUTTON" fitHeight="124.0" fitWidth="142.0" onMouseClicked="#select_resource" pickOnBounds="true">
+               <image>
+                  <Image url="@coin.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="servant" accessibleRole="BUTTON" fitHeight="147.0" fitWidth="136.0" onMouseClicked="#select_resource" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@servant.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="shield" accessibleRole="BUTTON" fitHeight="138.0" fitWidth="105.0" onMouseClicked="#select_resource" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@shield.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="stone" accessibleRole="BUTTON" fitHeight="129.0" fitWidth="129.0" onMouseClicked="#select_resource" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@stone.png" />
+               </image>
+            </ImageView>
+         </children>
+      </HBox>
+      <Label fx:id="initialResLabel" layoutX="242.0" layoutY="35.0" prefHeight="64.0" prefWidth="129.0" text="SELECT 2 RESOURCES" textAlignment="CENTER" wrapText="true">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

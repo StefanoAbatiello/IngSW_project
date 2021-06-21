@@ -80,6 +80,7 @@ public class ClientInput implements Runnable{
 
         //5-choose which leader cards hold
         else if(input.startsWith("ChosenLeads:") && input.contains(",")){
+            //TODO check che ne scelga 2
             input=input.replace("ChosenLeads:","");
             ArrayList<Integer> chosenId = new ArrayList<>();
             String[] words= input.split(",");
