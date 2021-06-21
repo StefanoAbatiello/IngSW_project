@@ -3,7 +3,6 @@ package it.polimi.ingsw.client;
 import it.polimi.ingsw.App;
 import it.polimi.ingsw.messages.*;
 import it.polimi.ingsw.messages.answerMessages.*;
-import javafx.application.Application;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,6 +39,17 @@ public class CLI extends App implements View {
 
     }
 
+    @Override
+    public void gameSetupHandler(ViewCLI viewCLI, SerializedMessage input){
+        System.out.println("this is your personal board:");
+        viewCLI.showPersonalBoard();
+        System.out.println("\n \nthis is the market: ");
+        viewCLI.showMarket();
+        System.out.println("\n \nthis are the buyable development cards: ");
+        viewCLI.showDevMatrix();
+        System.out.println(((StartingGameMessage)input).getMessage());
+        System.out.println("Type \"ShowActions\" to see commands");
+    }
     @Override
     public void initialResourceHandler(GetInitialResourcesAction input) {
         System.out.println(input.getMessage());
