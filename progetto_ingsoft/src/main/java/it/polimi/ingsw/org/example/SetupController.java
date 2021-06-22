@@ -87,7 +87,7 @@ public class SetupController implements GUIcontroller {
 
     public void setErrorLabel(String confirmation) {
         this.errorLabel.setText(confirmation);
-        this.nickname_field.setText("");
+
     }
 
     public static void setIp(String ip) {
@@ -206,29 +206,31 @@ public class SetupController implements GUIcontroller {
                 errorLabel.setText("You have already chosen "+initialRes+ "resources, if you want to change click RETRY, else NEXT ");
         }
 
-    public void selectShelf1(MouseEvent mouseEvent) {
+    public void selectShelf1() {
+        System.out.println("sono qui");
         selectedShelf.add(1);
-        for(Node res:hbox.getChildren())
+        for(Node res:hboxRes.getChildren())
             res.setMouseTransparent(false);
         shelfMenu.setVisible(false);
-         }
-    public void selectShelf2(MouseEvent mouseEvent) {
+        System.out.println("finito");
+    }
+    public void selectShelf2() {
         selectedShelf.add(2);
-        for(Node res:hbox.getChildren())
+        for(Node res:hboxRes.getChildren())
             res.setMouseTransparent(false);
         shelfMenu.setVisible(false);
 
     }
-    public void selectShelf3(MouseEvent mouseEvent) {
+    public void selectShelf3() {
         selectedShelf.add(3);
-        for(Node res:hbox.getChildren())
+        for(Node res:hboxRes.getChildren())
             res.setMouseTransparent(false);
         shelfMenu.setVisible(false);
 
     }
 
 
-    public void retryRes(MouseEvent mouseEvent) {
+    public void retryRes() {
         selectedRes.clear();
         selectedShelf.clear();
         countRes=0;
