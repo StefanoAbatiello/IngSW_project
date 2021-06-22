@@ -2,6 +2,7 @@ package it.polimi.ingsw.org.example;
 
 import it.polimi.ingsw.client.MainClient;
 import it.polimi.ingsw.messages.ChosenLeadMessage;
+import it.polimi.ingsw.messages.InitialResourceMessage;
 import it.polimi.ingsw.messages.NickNameAction;
 import it.polimi.ingsw.messages.answerMessages.NumOfPlayersAnswer;
 import javafx.event.ActionEvent;
@@ -9,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuButton;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -52,13 +54,24 @@ public class SetupController implements GUIcontroller {
     @FXML
     Label labelLeads;
     @FXML
+    Label labelRes;
+    @FXML
+    HBox hboxRes;
+    @FXML
     Label initialResLabel;
+    @FXML
+    MenuButton shelfMenu;
 
     private GUI gui;
     private static int port;
     private static String ip;
     private ArrayList<Integer> selectedCards = new ArrayList<>();
+    private ArrayList<String> selectedRes = new ArrayList<>();
+    private ArrayList<Integer> selectedShelf = new ArrayList<>();
+
     private int countLeads=0;
+    private int initialRes;
+    private int countRes=0;
 
     public static int getPort() {
         return port;
@@ -134,7 +147,7 @@ public class SetupController implements GUIcontroller {
             //((BoardController)gui.getControllerFromName("board.fxml")).setLeads(target);
         }
         else
-           labelLeads.setText("You already chose 2 leads, if you want to change click RETRY, else NEXT ");
+           errorLabel.setText("You already chose 2 leads, if you want to change click RETRY, else NEXT ");
     }
     public void setLeads(ArrayList<Integer> cards){
         int card;
@@ -164,23 +177,75 @@ public class SetupController implements GUIcontroller {
             gui.changeStage("waiting.fxml");
         }
         else
-            labelLeads.setText("Please choose 2 leads before pressing NEXT.If you want to change your choice, click RETRY");
+            errorLabel.setText("Please choose 2 leads before pressing NEXT.If you want to change your choice, click RETRY");
 
 
     }
 
     public void setLabelResources(String message) {
-        initialResLabel.setText(message);
+        errorLabel.setText(message);
     }
 
     public void setInitialRes(int numRes) {
+        initialRes=numRes;
     }
 
     public void select_resource(MouseEvent mouseEvent) {
+            if(countRes<initialRes){
+                countRes++;
+                for(Node res:hboxRes.getChildren())
+                    res.setMouseTransparent(true);
+                ImageView target= (ImageView) mouseEvent.getTarget();
+                String imageId= (target.getId());
+                selectedRes.add(imageId);
+                System.out.println(imageId);
+                shelfMenu.setVisible(true);
+                //((BoardController)gui.getControllerFromName("board.fxml")).setLeads(target);
+            }
+            else
+                errorLabel.setText("You have already chosen "+initialRes+ "resources, if you want to change click RETRY, else NEXT ");
+        }
+
+    public void selectShelf1(MouseEvent mouseEvent) {
+        selectedShelf.add(1);
+        for(Node res:hbox.getChildren())
+            res.setMouseTransparent(false);
+        shelfMenu.setVisible(false);
+         }
+    public void selectShelf2(MouseEvent mouseEvent) {
+        selectedShelf.add(2);
+        for(Node res:hbox.getChildren())
+            res.setMouseTransparent(false);
+        shelfMenu.setVisible(false);
+
+    }
+    public void selectShelf3(MouseEvent mouseEvent) {
+        selectedShelf.add(3);
+        for(Node res:hbox.getChildren())
+            res.setMouseTransparent(false);
+        shelfMenu.setVisible(false);
+
+    }
+
+
+    public void retryRes(MouseEvent mouseEvent) {
+        selectedRes.clear();
+        selectedShelf.clear();
+        countRes=0;
+    }
+
+    public void resNext(){
+        if(selectedRes.size()==initialRes && selectedShelf.size()==initialRes) {
+            for(int i=0;i<initialRes;i++)
+                gui.getMainClient().send(new InitialResourceMessage(selectedRes.get(i),selectedShelf.get(i)));
+            gui.changeStage("waiting.fxml");
+        }
+        else
+            errorLabel.setText("Please choose 2 leads before pressing NEXT.If you want to change your choice, click RETRY");
+
 
     }
 }
-
 /**
  * confirmation.setText("Choose a valid nickname");
  */
