@@ -1,16 +1,17 @@
 package it.polimi.ingsw.model.singlePlayerMode;
 
 import it.polimi.ingsw.model.SinglePlayer;
-
 import java.util.*;
 
 public class CrossShuffleAction implements ActionToken {
 
-    private final String effect="Lorenzo receives one faith point";
-    private final SinglePlayer sP;
+    /**
+     * this is a reference to the game mode
+     */
+    private final SinglePlayer singlePlayer;
 
     public CrossShuffleAction(SinglePlayer singlePlayer){
-        this.sP=singlePlayer;
+        this.singlePlayer =singlePlayer;
     }
 
     /**
@@ -19,8 +20,8 @@ public class CrossShuffleAction implements ActionToken {
     @Override
     public String applyEffect(ArrayList<ActionToken> tokensStack){
         Collections.shuffle(tokensStack);
-        sP.getBlackCrossToken().updateBlackCross(1);
-        return effect;
+        singlePlayer.getBlackCrossToken().updateBlackCross(1);
+        return "Lorenzo receives one faith point";
     }
 
 }
