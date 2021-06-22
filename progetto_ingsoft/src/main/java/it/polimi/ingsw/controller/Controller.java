@@ -85,23 +85,7 @@ public class Controller {
         }
         //return createVirtualView();
     }
-
-    //TODO
-    /*private VirtualView createVirtualView() {
-        String[][] virtualMarket=game.getMarket().getSimplifiedMarket();
-        int[][] virtualDevCards=new int[4][3];
-        int k=0;
-        for(int i=0;i<4;i++)
-            for(int j=0;j<3;j++) {
-                virtualDevCards[i][j] = k;
-                k++;
-            }
-        ArrayList<Integer> virtualFaithPos=new ArrayList<>();
-        for(Player player:game.getPlayers())
-            virtualFaithPos.add(player.getPersonalBoard().getFaithMarker().getFaithPosition());
-        return new VirtualView(virtualMarket,virtualDevCards,virtualFaithPos);
-        }//TODO dai le risorse e le 4 carte + scelta 2 carte
-     */
+    
 
     public boolean checkAllPlayersChooseLeads(){
         System.out.println("controllo se tutti hanno scelto le leads");

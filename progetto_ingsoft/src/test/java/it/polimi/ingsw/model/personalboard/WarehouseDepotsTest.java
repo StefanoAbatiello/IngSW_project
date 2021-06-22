@@ -37,6 +37,6 @@ class WarehouseDepotsTest {
         WarehouseDepots warehouseDepots = new WarehouseDepots();
         warehouseDepots.addinShelf(0, Resource.COIN);
 
-        assertThrows(ResourceNotValidException.class,()->warehouseDepots.getResource(Resource.SHIELD));
+        assertThrows(ResourceNotValidException.class,()->warehouseDepots.showResource(Resource.SHIELD));
     }*/
 }

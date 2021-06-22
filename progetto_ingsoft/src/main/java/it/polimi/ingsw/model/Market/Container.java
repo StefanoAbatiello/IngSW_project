@@ -54,7 +54,7 @@ public class Container {
     /**
      * @return the type of resource stored in this container
      */
-    public Resource getResource(){
+    public Resource showResource(){
         return resource;
     }
 }

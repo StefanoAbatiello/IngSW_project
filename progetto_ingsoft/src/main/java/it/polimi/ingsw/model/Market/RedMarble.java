@@ -8,6 +8,9 @@ public class RedMarble implements MarketMarble {
 
     private final String color="RED";
 
+    /**
+     * @return marble's color
+     */
     @Override
     public String getColor() {
         return color;
@@ -15,7 +18,7 @@ public class RedMarble implements MarketMarble {
 
     /**
      * this subclass overrides this method and give a faith point to the player
-     * @param player      is a reference to the player
+     * @param player is a reference to the player who is taking this marble
      * @return true if faithMarker is updated correctly
      */
     @Override

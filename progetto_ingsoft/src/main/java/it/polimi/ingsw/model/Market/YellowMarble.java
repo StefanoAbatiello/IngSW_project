@@ -19,7 +19,7 @@ public class YellowMarble implements MarketMarble {
 
     /**
      * this subclass override this method and put a coin in resourceSupply
-     * @param player      is a reference to the player who's playing
+     * @param player is a reference to the player who is taking this marble
      * @return true if method putResourceInContainer works correctly
      */
     @Override

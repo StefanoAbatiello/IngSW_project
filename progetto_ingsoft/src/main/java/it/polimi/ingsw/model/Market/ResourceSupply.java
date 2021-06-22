@@ -52,7 +52,7 @@ public class ResourceSupply implements ResourceCreator {
      */
     public ArrayList<Resource> viewResources() {
         ArrayList<Resource> resources = new ArrayList<>();
-        Arrays.stream(containers).forEach(container ->{if (!container.isEmpty()) resources.add(container.getResource());});
+        Arrays.stream(containers).forEach(container ->{if (!container.isEmpty()) resources.add(container.showResource());});
         return resources;
     }
 
@@ -75,14 +75,14 @@ public class ResourceSupply implements ResourceCreator {
         AtomicInteger pointsGiven= new AtomicInteger();
         for(Resource res:discardedResources)
             Arrays.stream(containers).forEach(container -> {
-                if (!container.isEmpty() && container.getResource() == res) {container.takeResource(); pointsGiven.getAndIncrement();}
+                if (!container.isEmpty() && container.showResource() == res) {container.takeResource(); pointsGiven.getAndIncrement();}
             });
         return pointsGiven.get();
     }
 
     public boolean changeChoosable(Resource res) {
         for(Container c:containers){
-            if (c.getResource()==Resource.CHOOSABLE){
+            if (c.showResource()==Resource.CHOOSABLE){
                 c.takeResource();
                 c.fillContainer(res);
                 return true;

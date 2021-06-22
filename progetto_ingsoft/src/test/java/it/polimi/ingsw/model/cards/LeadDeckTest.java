@@ -34,7 +34,7 @@ class LeadDeckTest {
         assertEquals(card.getPoints(), wantedCard.getPoints());
         assertEquals(card.getAbility().getClass(), wantedCard.getAbility().getClass());
         assertEquals(card.getAbility().getAbilityResource(), wantedCard.getAbility().getAbilityResource());
-        //since the empty Hashmap creates some problems in the getResource, it will be tested in other tests in the single card
+        //since the empty Hashmap creates some problems in the showResource, it will be tested in other tests in the single card
         assertEquals(card.getDevCardRequired(), wantedCard.getDevCardRequired());
     }
 

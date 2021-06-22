@@ -89,6 +89,11 @@ public class DevDeckMatrix {
                     }
             }
         }
+        int[][] matrice=new int[3][4];
+        for (int i=0;i<matrice.length;i++)
+            for(int j=0;j< matrice[i].length;j++)
+                System.out.println(matrice[i][j]);
+
         return false;
     }
 

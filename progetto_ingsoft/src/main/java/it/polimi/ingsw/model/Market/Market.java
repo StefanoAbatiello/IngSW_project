@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model.Market;
 
 import it.polimi.ingsw.exceptions.FullSupplyException;
-import it.polimi.ingsw.exceptions.NotAcceptableSelectorException;
 import it.polimi.ingsw.model.Player;
 import java.util.*;
 
@@ -62,8 +61,7 @@ public class Market {
     /**
      * @param selector is an integer number to indicate which column or line the player has chosen
      * @param p is a reference to actual player
-     * @return a boolean to indicate if the purchase is done or not
-     * @throws NotAcceptableSelectorException if the selector received is negative or greater than 6
+     * @return marketTray modified by the purchase action
      */
     public  MarketMarble[][] buyResources(int selector, Player p) throws FullSupplyException {
         if(selector<=2) {
