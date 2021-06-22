@@ -21,7 +21,7 @@ class PlayerTest {
         ArrayList<Resource> prodInput=new ArrayList<>();
         prodInput.add(Resource.SERVANT);
         prodInput.add(Resource.SHIELD);
-        player.getPersonalBoard().getWarehouseDepots().addinShelf(0, Resource.SERVANT);
+        player.getPersonalBoard().getWarehouseDepots().addInShelf(0, Resource.SERVANT);
         player.getPersonalBoard().getStrongBox().addInStrongbox(prodInput);
         assertEquals(Resource.COIN,player.doBasicProduction(prodInput,Resource.COIN));
     }
@@ -33,7 +33,7 @@ class PlayerTest {
         ArrayList<Resource> prodInput=new ArrayList<>();
         prodInput.add(Resource.SERVANT);
         prodInput.add(Resource.SHIELD);
-        player.getPersonalBoard().getWarehouseDepots().addinShelf(0, Resource.SERVANT);
+        player.getPersonalBoard().getWarehouseDepots().addInShelf(0, Resource.SERVANT);
         assertThrows(ResourceNotValidException.class,()-> player.doBasicProduction(prodInput,Resource.COIN));
     }*/
 

@@ -1,44 +1,53 @@
 package it.polimi.ingsw.model.personalboard;
 
-import it.polimi.ingsw.exceptions.ResourceNotValidException;
-import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Resource;
 import it.polimi.ingsw.model.ResourceCreator;
-
 import java.util.ArrayList;
 
 public class WarehouseDepots implements ResourceCreator {
 
 
-    private Shelf shelves[]=new Shelf[3];
-
+    /**
+     * is the structure where the Resources are stored
+     */
+    private final Shelf[] shelves =new Shelf[3];
 
     public WarehouseDepots(){
         for(int i=0;i<shelves.length;i++)
             shelves[i]=new Shelf(shelves.length-i);
     }
 
+    /**
+     * @return the entire structure of Warehouse depots
+     */
     public Shelf[] getShelves() {
         return shelves;
     }
 
+
     /**
-     * @return shelf at floor i
+     * @param i is the Shelf level where the player wants to put the Resources
+     * @param resources is the list of Resources that have to be added
+     * @return the entire structure of Warehouse
      */
-    public Shelf addinShelf(int i, ArrayList<Resource> resources) {
+    public Shelf addInShelf(int i, ArrayList<Resource> resources) {
         shelves[i].getSlots().addAll(resources);
         return shelves[i];
 
     }
 
-    public Shelf addinShelf(int i, Resource resource) {
+    /**
+     * @param i is the Shelf level where the player wants to put the Resources
+     * @param resource is the Resource that has to be added
+     * @return the entire structure of Warehouse
+     */
+    public Shelf addInShelf(int i, Resource resource) {
         shelves[i].getSlots().add(resource);
         return shelves[i];
-
     }
 
     /**
-     * return a specific resource and remove it from player's warehouse
+     * @return a specific resource and remove it from player's warehouse
      */
     public Resource getResource(Resource resource) {
         for (Shelf shelf : shelves) {
@@ -55,16 +64,16 @@ public class WarehouseDepots implements ResourceCreator {
         return null;
     }
 
-    @Override
     /**
      * @return all resources that are in Warehouse in every shelf
      */
+    @Override
     public ArrayList<Resource> getResources(){
-        ArrayList<Resource> allres=new ArrayList<>();
+        ArrayList<Resource> allRes =new ArrayList<>();
         for (Shelf shelf : shelves) {
-            allres.addAll(shelf.getResources());
+            allRes.addAll(shelf.getResources());
         }
-        return allres;
+        return allRes;
     }
 
 }

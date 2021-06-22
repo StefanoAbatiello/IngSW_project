@@ -1,22 +1,30 @@
 package it.polimi.ingsw.model.personalboard;
 
-import it.polimi.ingsw.exceptions.InvalidSlotException;
 import it.polimi.ingsw.model.Points;
 import it.polimi.ingsw.model.cards.DevCard;
-
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class DevCardSlot implements Points {
+
+    /**
+     * this is the structure where development card are set
+     */
     private final ArrayList<DevCard>[] slot;
+
+    /**
+     * this is a support ArrayList which contain al the active cards(the ones with the highest level)
+     */
     private final ArrayList<DevCard> ActiveCards;
+
+    /**
+     * this is the amount of points gained from the cards bought
+     */
     private int VictoryPoints;
 
     public DevCardSlot() {
         this.slot = new ArrayList[3];
-        slot[0]=new ArrayList<>();
-        slot[1]=new ArrayList<>();
-        slot[2]=new ArrayList<>();
+        for (int i=0;i<3;i++)
+            slot[i]=new ArrayList<>();
         ActiveCards=new ArrayList<>();
         VictoryPoints=0;
     }
@@ -29,6 +37,9 @@ public class DevCardSlot implements Points {
         return slot;
     }
 
+    /**
+     * @return an Arraylist containing all player's development cards
+     */
     public ArrayList<DevCard> getDevCards(){
         ArrayList<DevCard> cards= new ArrayList<>();
         for(int i=0;i<3;i++)
@@ -36,12 +47,10 @@ public class DevCardSlot implements Points {
         return cards;
     }
 
-
     /**
      * @param devCard is the card that is added in slot
      * @param slotID is the selected row
-     * @return slot after overlapped devcard, if it is possible
-     * @throws InvalidSlotException if selected slot is not between 0 and 2
+     * @return slot after overlapped development card, if it is possible
      */
     public ArrayList<DevCard>[] overlap(DevCard devCard, int slotID)  {
         for(int row=0;row<3;row++){
@@ -63,17 +72,15 @@ public class DevCardSlot implements Points {
     }
 
     /**
-     * @return only active cards in game
+     * @return an ArrayList containing only active cards in game
      */
     public ArrayList<DevCard> getActiveCards() {
         for(int i=0;i<=2;i++){
-                Iterator<DevCard> iterator = slot[i].iterator();
-                while (iterator.hasNext()) {
-                    DevCard dev= iterator.next();
-                    if (dev.isActive())
-                        ActiveCards.add(dev);
-                }
+            for (DevCard dev : slot[i]) {
+                if (dev.isActive())
+                    ActiveCards.add(dev);
             }
+        }
         return ActiveCards;
     }
 
@@ -84,7 +91,7 @@ public class DevCardSlot implements Points {
     public int getPoints(){
         for (int i=0;i<=2;i++){
                 for(DevCard dev:slot[i])
-                       VictoryPoints = (int) (VictoryPoints + dev.getPoints());
+                       VictoryPoints = (VictoryPoints + dev.getPoints());
         }
         return VictoryPoints;
     }

@@ -52,7 +52,7 @@ public class DevDeck implements ResourceGeneratorFromJSON, Decks{
                 ((Long) devCardObj.get("LEVEL")).intValue(),
                 requirements,
                 prodIn,
-                prodOut,(long) devCardObj.get("FAITHPOINT")
+                prodOut,((Long) devCardObj.get("FAITHPOINT")).intValue()
         );
         devCards.add(newDevCard);
 

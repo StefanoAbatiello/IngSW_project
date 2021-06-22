@@ -1,63 +1,83 @@
 package it.polimi.ingsw.model.personalboard;
 
-import it.polimi.ingsw.model.Game;
-import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Points;
 
-
 public class FaithMarker implements Points {
+
+    /**
+     * this is the position of the faith marker in faith track
+     */
     private int faithPosition;
-    private boolean invaticanzone;
+
+    /**
+     * this boolean indicates if the cross is in a Vatican zone
+     */
+    private boolean inVaticanZone;
+
+    /**
+     * this is the amount of points gained from the faith track
+     */
     private int points;
 
+        public FaithMarker( ) {
+        this.faithPosition = 0;
+        this.inVaticanZone = false;
+    }
 
-
-
+    /**
+     * @return the position of faith marker
+     */
     public int getFaithPosition() {
         return faithPosition;
     }
 
-    public FaithMarker( ) {
-        this.faithPosition = 0;
-        this.invaticanzone = false;
-    }
 
     /**
-     * @return true if faith marker position is in vatican zone
+     * @return reset faith marker position, then return true
      */
-
    public boolean reset(){
        faithPosition = 0;
        return true;
    }
+
+    /**
+     * @return true if this faith marker is in a Vatican zone
+     */
     public boolean isVaticanZone(){
-        if ((getFaithPosition()>=5 && getFaithPosition()<=8) || (getFaithPosition()>=12 && getFaithPosition()<=16)|| (getFaithPosition()>=19 && getFaithPosition()<=24))
-            invaticanzone =true;
-        else
-            invaticanzone = false;
-        return invaticanzone;
+        inVaticanZone = (getFaithPosition() >= 5 && getFaithPosition() <= 8) || (getFaithPosition() >= 12 && getFaithPosition() <= 16) || (getFaithPosition() >= 19 && getFaithPosition() <= 24);
+        return inVaticanZone;
     }
 
     /**
      * @return points according to current faith position
      */
     public int setPoints(){
-        if (faithPosition==3)
-            points=1;
-        else if(faithPosition==6)
-            points=2;
-        else if(faithPosition==9)
-            points=4;
-        else if(faithPosition==12)
-            points=6;
-        else if(faithPosition==15)
-            points=9;
-        else if(faithPosition==18)
-            points=12;
-        else if(faithPosition==21)
-            points=16;
-        else if(faithPosition==24)
-            points=20;
+        switch (faithPosition) {
+            case 3:
+                points = 1;
+                break;
+            case 6:
+                points = 2;
+                break;
+            case 9:
+                points = 4;
+                break;
+            case 12:
+                points = 6;
+                break;
+            case 15:
+                points = 9;
+                break;
+            case 18:
+                points = 12;
+                break;
+            case 21:
+                points = 16;
+                break;
+            case 24:
+                points = 20;
+                break;
+        }
         return points;
     }
 

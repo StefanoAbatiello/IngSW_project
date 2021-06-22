@@ -12,21 +12,21 @@ class WarehouseDepotsTest {
     void addValidResourceInShelf() throws ResourceNotValidException {
         WarehouseDepots warehouseDepots = new WarehouseDepots();
 
-        assertFalse(warehouseDepots.addinShelf(0, Resource.COIN).getResources().isEmpty());
+        assertFalse(warehouseDepots.addInShelf(0, Resource.COIN).getResources().isEmpty());
     }
 
     //TODO controller test
     /*@Test
     void addNotValidResourceInShelf() throws ResourceNotValidException {
         WarehouseDepots warehouseDepots = new WarehouseDepots();
-        warehouseDepots.addinShelf(0, Resource.COIN);
-        assertThrows(ResourceNotValidException.class, () -> warehouseDepots.addinShelf(0, Resource.SHIELD));
+        warehouseDepots.addInShelf(0, Resource.COIN);
+        assertThrows(ResourceNotValidException.class, () -> warehouseDepots.addInShelf(0, Resource.SHIELD));
     }*/
 
     @Test
     void getValidResource() throws ResourceNotValidException {
         WarehouseDepots warehouseDepots = new WarehouseDepots();
-        warehouseDepots.addinShelf(0, Resource.COIN);
+        warehouseDepots.addInShelf(0, Resource.COIN);
 
         assertEquals(Resource.COIN, warehouseDepots.getResource(Resource.COIN));
     }
@@ -35,7 +35,7 @@ class WarehouseDepotsTest {
     /*@Test
     void getNotValidResource() throws ResourceNotValidException {
         WarehouseDepots warehouseDepots = new WarehouseDepots();
-        warehouseDepots.addinShelf(0, Resource.COIN);
+        warehouseDepots.addInShelf(0, Resource.COIN);
 
         assertThrows(ResourceNotValidException.class,()->warehouseDepots.showResource(Resource.SHIELD));
     }*/

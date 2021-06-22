@@ -223,7 +223,7 @@ public class Controller {
         System.out.println("mi sono salvato lo shelf richiesto");
         if(((shelf.isShelfAvailability()) && (resource.equals(shelf.getResourceType()))) || shelf.getSlots().isEmpty()) {
             System.out.println("è possibile inserire la risorsa nello shef");
-            player.getPersonalBoard().getWarehouseDepots().addinShelf(position, resource);
+            player.getPersonalBoard().getWarehouseDepots().addInShelf(position, resource);
             return true;
         //TODO eccezione se tutte sono piene
         }else {
@@ -270,7 +270,7 @@ public class Controller {
                             return false;
                             }
                             System.out.println("mi sono preso la carta");
-                            if (player.getPersonalBoard().removeResourcesfromBuy(cardToBuy.getRequirements())) {
+                            if (player.getPersonalBoard().removeResourcesFromBuy(cardToBuy.getRequirements())) {
                                 System.out.println("ha le risorse necessarie");
                                 player.setAction(Action.BUYCARD);
                                 game.getDevDeckMatrix().buyCard(cardToBuy);
@@ -656,7 +656,7 @@ public class Controller {
                             player.getPersonalBoard().getWarehouseDepots().getShelves()[i] = new Shelf(i + 1);
                             System.out.println("DEBUG 3.2");
                         }else
-                            player.getPersonalBoard().getWarehouseDepots().addinShelf(i, stringArrayToResArray(gameObj[i]));
+                            player.getPersonalBoard().getWarehouseDepots().addInShelf(i, stringArrayToResArray(gameObj[i]));
                     }
                     if(!player.getPersonalBoard().getSpecialShelves().isEmpty()){
                         for(int i=3;i<5;i++) {
@@ -668,7 +668,7 @@ public class Controller {
                             player.getPersonalBoard().getSpecialShelves().add(i-3, Optional.of(new SpecialShelf(resource)));
                             if(!gameObj[i].isEmpty()) {
                                 System.out.println("DEBUG 3.4");
-                                player.getPersonalBoard().getWarehouseDepots().addinShelf(i, stringArrayToResArray(gameObj[i]));
+                                player.getPersonalBoard().getWarehouseDepots().addInShelf(i, stringArrayToResArray(gameObj[i]));
                                 System.out.println("DEBUG 3.5");
                             }
                         }

@@ -1,13 +1,23 @@
 package it.polimi.ingsw.model.personalboard;
 
 import it.polimi.ingsw.model.Resource;
-
 import java.util.ArrayList;
 
 public class SpecialShelf {
-    private Resource resourceType;
-    private ArrayList<Resource> specialSlots;
-    private boolean spShelfAvailability;
+
+    /**
+     * this attribute stands for the type of Resources stored in this Special Shelf
+     */
+    private final Resource resourceType;
+
+    /**
+     * this is the structure where Resources are stored
+     */
+    private final ArrayList<Resource> specialSlots;
+
+    /**
+     * this boolean is true when the player can use this Special Shelf
+     */
     private boolean spActive;
 
     public SpecialShelf(Resource resourceType) {
@@ -17,13 +27,10 @@ public class SpecialShelf {
     }
 
     /**
-     * @return true if there is enough space in order to store resources in specialshelf
+     * @return true if there is enough space in order to store resources in Special Shelf
      */
     public boolean isSpShelfAvailability() {
-        if(specialSlots.size()<2)
-            spShelfAvailability=true;
-        else spShelfAvailability=false;
-        return spShelfAvailability;
+        return specialSlots.size() < 2;
     }
 
     /**
@@ -35,10 +42,10 @@ public class SpecialShelf {
 
     /**
      * @param resource is the resource that will be added
-     * @return new dispositon of special slots only in case of special shelf availability and compatibility with resource indicated in the card
+     * @return new disposition of special slots only in case of special shelf availability and compatibility with resource indicated in the card
      */
     public ArrayList<Resource> addResources(Resource resource){
-        if(isSpShelfAvailability()&& resource ==resourceType){
+        if(isSpShelfAvailability() && resource == resourceType){
             specialSlots.add(resource);
         }
         return specialSlots;

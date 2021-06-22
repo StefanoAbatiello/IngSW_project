@@ -2,6 +2,9 @@ package it.polimi.ingsw.model.personalboard;
 
 public class BlackCross {
 
+    /**
+     * this is the position of the black cross in faith track
+     */
     private int crossPosition;
 
     public BlackCross() {

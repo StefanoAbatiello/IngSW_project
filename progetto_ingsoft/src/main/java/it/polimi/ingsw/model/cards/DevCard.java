@@ -42,7 +42,7 @@ public class DevCard implements Cards{
     /**
      *This attribute represents the number of faithPoint as output of the card production
      */
-    private final long faithPoint;
+    private final int faithPoint;
     /**
      *This attribute represents if a card is active in order to use its production
      */
@@ -61,7 +61,7 @@ public class DevCard implements Cards{
      * @param prodOut is the list of Resources that the player receives from production
      * @param faithPoint is the number of faith point that the player receives from production
      */
-    public DevCard(int id, int points, String color, int level, ArrayList<Resource> requirements, ArrayList<Resource> prodIn, ArrayList<Resource> prodOut, long faithPoint) {
+    public DevCard(int id, int points, String color, int level, ArrayList<Resource> requirements, ArrayList<Resource> prodIn, ArrayList<Resource> prodOut, int faithPoint) {
         this.id=id;
         this.points= points;
         this.color = color;
@@ -76,7 +76,7 @@ public class DevCard implements Cards{
         return id;
     }
 
-    public long getPoints() {
+    public int getPoints() {
         return points;
     }
 
@@ -100,7 +100,7 @@ public class DevCard implements Cards{
         return prodOut;
     }
 
-    public long getFaithPoint() {
+    public int getFaithPoint() {
         return faithPoint;
     }
 

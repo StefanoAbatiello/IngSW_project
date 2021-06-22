@@ -1,26 +1,25 @@
 package it.polimi.ingsw.model.personalboard;
 
-import it.polimi.ingsw.exceptions.ResourceNotValidException;
-import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Resource;
-
 import java.util.ArrayList;
 
 public class StrongBox {
-    private ArrayList<Resource> strongboxContent;
-    private boolean resourceInStrongbox;
+
+    /**
+     * this is the structure where the Resources are stored
+     */
+    private final ArrayList<Resource> strongboxContent;
 
     public StrongBox() {
         this.strongboxContent = new ArrayList<>();
-        this.resourceInStrongbox = false;
     }
 
     /**
+     * @param resources is the List of Resources to add in Strongbox
      * @return strongbox after adding resources
      */
     public ArrayList<Resource> addInStrongbox(ArrayList<Resource> resources) {
-        for(Resource res: resources)
-            strongboxContent.add(res);
+        strongboxContent.addAll(resources);
         return strongboxContent;
     }
 
@@ -30,7 +29,5 @@ public class StrongBox {
     public ArrayList<Resource> getStrongboxContent() {
         return strongboxContent;
     }
-
-
 
 }
