@@ -112,6 +112,7 @@ public class Lobby {
         System.out.println("sono nell'handler della lobby");
         //1-gestisco la scelta del giocatore di quali leader card tenere
         if(input instanceof ChosenLeadMessage){
+            //TODO check che siano solo due nel messaggio CLI
             System.out.println("sto leggendo il ChosenLeadMessage");
             if(stateOfGame==GameState.PREPARATION1) {
                 int firstId, secondId;
@@ -143,7 +144,8 @@ public class Lobby {
                         controller.startGame();
                     }
                 } catch (ResourceNotValidException e) {
-                    server.getClientFromId().get(id).getClientHandler().send(new GetInitialResourcesAction("You choose a not valid resource or shelf"));
+                    VirtualClient client =server.getClientFromId().get(id);
+                    server.getClientFromId().get(id).getClientHandler().send(new GetInitialResourcesAction("You choose a not valid resource or shelf", controller.askPlayerInitialResources(actualPlayers.indexOf(client))));
                 }
 
             }

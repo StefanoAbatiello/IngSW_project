@@ -155,14 +155,7 @@ public class MainClient implements Runnable, Sender {
             viewCLI.setLeadCardsId(((StartingGameMessage)input).getPersonalCardId());
             viewCLI.setFaithPosition(((StartingGameMessage)input).getFaithPosition());
             viewCLI.setMarket(((StartingGameMessage)input).getMarket());
-            System.out.println("this is your personal board:");
-            viewCLI.showPersonalBoard();
-            System.out.println("\n \nthis is the market: ");
-            viewCLI.showMarket();
-            System.out.println("\n \nthis are the buyable development cards: ");
-            viewCLI.showDevMatrix();
-            System.out.println(((StartingGameMessage)input).getMessage());
-            System.out.println("Type \"ShowActions\" to see commands");
+            view.gameSetupHandler(viewCLI,input);
         }
 
         //8-gestione del salvataggio e della stampa della situazione della partta dopo la riconnessione

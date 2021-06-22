@@ -16,6 +16,6 @@
       <TextField fx:id="nickname_field" layoutX="241.0" layoutY="168.0" />
       <Label layoutX="164.0" layoutY="172.0" text="Insert here:" />
       <Button fx:id="nicknamebutton" layoutX="278.0" layoutY="278.0" mnemonicParsing="false" onAction="#sendNickname" text="Next " />
-      <Label fx:id="errorLabel" layoutX="50.0" layoutY="114.0" prefHeight="17.0" prefWidth="520.0" text="Label" textAlignment="CENTER" visible="false" wrapText="true" />
+      <Label fx:id="errorLabel" layoutX="50.0" layoutY="114.0" prefHeight="17.0" prefWidth="520.0" text="Label" textAlignment="CENTER" visible="true" wrapText="true" />
    </children>
 </Pane>

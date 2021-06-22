@@ -9,14 +9,14 @@
 <?import javafx.scene.text.Font?>
 
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.org.example.SetupController">
    <children>
-      <Label layoutX="226.0" layoutY="46.0" text="CHOICE LEADS CARDS" textAlignment="CENTER" wrapText="true">
+      <Label fx:id="labelLeads" layoutX="226.0" layoutY="46.0" text="CHOICE LEADS CARDS" textAlignment="CENTER" wrapText="true">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
       </Label>
-      <HBox layoutX="8.0" layoutY="95.0" prefHeight="228.0" prefWidth="583.0">
+      <HBox fx:id="hbox" layoutX="8.0" layoutY="95.0" prefHeight="228.0" prefWidth="583.0">
          <children>
             <ImageView fx:id="card1" accessibleRole="BUTTON" fitHeight="229.0" fitWidth="136.0" onMouseClicked="#select_card" pickOnBounds="true">
                <image>
@@ -40,7 +40,9 @@
             </ImageView>
          </children>
       </HBox>
-      <Button layoutX="264.0" layoutY="351.0" mnemonicParsing="false" text="Next" />
-      <Button layoutX="534.0" layoutY="21.0" mnemonicParsing="false" text="Retry" />
+      <Button layoutX="264.0" layoutY="351.0" mnemonicParsing="false" text="Next" onMouseClicked="#leadsNext"/>
+      <Button layoutX="534.0" layoutY="21.0" mnemonicParsing="false" text="Retry" onMouseClicked="#retry"/>
+      <Label fx:id="errorLabel" layoutX="18.0" layoutY="95.0" prefHeight="17.0" prefWidth="559.0" text="Label" visible="true" />
+
    </children>
 </AnchorPane>

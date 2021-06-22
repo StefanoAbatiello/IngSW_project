@@ -17,5 +17,5 @@ public interface View {
     void devMatrixHandler(DevMatrixChangeMessage devMatrixChangeMessage);
     void strongboxHandler(StrongboxChangeMessage strongboxChangeMessage);
     void choosableResourceHandler(ChangeChoosableResourceRequest input);
-
+    void gameSetupHandler(ViewCLI viewCLI, SerializedMessage input);
 }

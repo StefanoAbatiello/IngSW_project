@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.org.example.SetupController">
+   <children>
+      <HBox fx:id="hboxRes" layoutX="43.0" layoutY="156.0" prefHeight="116.0" prefWidth="488.0">
+         <children>
+            <ImageView fx:id="coin" accessibleRole="BUTTON" fitHeight="124.0" fitWidth="142.0" onMouseClicked="#select_resource" pickOnBounds="true">
+               <image>
+                  <Image url="@coin.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="servant" accessibleRole="BUTTON" fitHeight="147.0" fitWidth="136.0" onMouseClicked="#select_resource" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@servant.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="shield" accessibleRole="BUTTON" fitHeight="138.0" fitWidth="105.0" onMouseClicked="#select_resource" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@shield.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="stone" accessibleRole="BUTTON" fitHeight="129.0" fitWidth="129.0" onMouseClicked="#select_resource" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@stone.png" />
+               </image>
+            </ImageView>
+         </children>
+      </HBox>
+      <Label fx:id="initialResLabel" layoutX="242.0" layoutY="35.0" prefHeight="64.0" prefWidth="129.0" text="SELECT INITIAL RESOURCES" textAlignment="CENTER" wrapText="true">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Label>
+      <Button layoutX="534.0" layoutY="21.0" mnemonicParsing="false" text="Retry" onMouseClicked="#retryRes"/>
+      <Button layoutX="264.0" layoutY="351.0" mnemonicParsing="false" text="Next" onMouseClicked="#resNext"/>
+      <MenuButton fx:id="shelfMenu" layoutX="277.0" layoutY="110.0" mnemonicParsing="false" text="choose shelf" visible="false">
+         <items>
+            <MenuItem fx:id="shelf1" mnemonicParsing="false" onAction="#selectShelf1" text="shelf 1" />
+            <MenuItem fx:id="shelf2" mnemonicParsing="false" onAction="#selectShelf2" text="shelf2" />
+            <MenuItem fx:id="shelf3" mnemonicParsing="false" onAction="#selectShelf3" text="shelf3" />
+         </items>
+      </MenuButton>
+      <Label fx:id="errorLabel" layoutX="18.0" layoutY="95.0" prefHeight="17.0" prefWidth="559.0" text="Label" visible="true" />
+
+   </children>
+</AnchorPane>

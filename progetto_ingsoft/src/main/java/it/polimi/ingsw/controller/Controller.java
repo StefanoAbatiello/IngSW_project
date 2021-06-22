@@ -142,6 +142,31 @@ public class Controller {
     }
     //TODO popeSpace control
 
+    //TODO integro due metodi seguenti, semplifico il primo sfruttando il secondo
+    public void askInitialResources() {
+        if(game.getPlayers().size()>1) {
+            lobby.setStateOfGame(GameState.PREPARATION2);
+            //lobby.getPlayers().get(0).getClientHandler().send(new GetInitialResourcesAction("Wait until other players have chosen initial resources",askPlayerInitialResources(0)));
+            lobby.getPlayers().get(1).getClientHandler().send(new GetInitialResourcesAction("You can choose 1 initial resource",askPlayerInitialResources(1)));
+            if(game.getPlayers().size()>2)
+                lobby.getPlayers().get(2).getClientHandler().send(new GetInitialResourcesAction(
+                        "You can choose 1 initial resource, you will receive a faith point also",askPlayerInitialResources(2)));
+            if(game.getPlayers().size()>3)
+                lobby.getPlayers().get(3).getClientHandler().send(new GetInitialResourcesAction(
+                        "You can choose 2 initial resources, you will receive a faith point also",askPlayerInitialResources(3)));
+        }else
+            startGame();
+    }
+
+    public int askPlayerInitialResources(int playerNum){
+        if (playerNum==0)
+            return 0;
+        else if(playerNum==1||playerNum==2)
+            return 1;
+        else
+            return 2;
+    }
+
     public boolean checkInitialResources() {
         System.out.println("sto controllando se gli altri giocatori hanno scelto le risorse");
         boolean result = true;
@@ -162,7 +187,7 @@ public class Controller {
                     System.out.println("il giocatore " + i + "aveva il warehouse pieno");
                     game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().clear();
                     System.out.println("warehouse pulita, invio nuovamente la richiesta della risorse iniziale");
-                    lobby.getPlayers().get(i).getClientHandler().send(new GetInitialResourcesAction("You have more resources than the ones permitted, please resend your initial resources:  "));
+                    lobby.getPlayers().get(i).getClientHandler().send(new GetInitialResourcesAction("You have more resources than the ones permitted, please resend your initial resources:  ",1));
                     System.out.println("messaggio inviato");
                     result = false;
                 } else if (game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().size() == 0) {
@@ -174,7 +199,7 @@ public class Controller {
                     System.out.println("il giocatore " + i + "aveva il warehouse pieno");
                     game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().clear();
                     System.out.println("warehouse pulita, invio nuovamente la richiesta della risorse iniziale");
-                    lobby.getPlayers().get(i).getClientHandler().send(new GetInitialResourcesAction("You have more resources than the ones permitted, please resend your initial resources:  "));
+                    lobby.getPlayers().get(i).getClientHandler().send(new GetInitialResourcesAction("You have more resources than the ones permitted, please resend your initial resources:  ",2));
                     System.out.println("messaggio inviato");
                     result = false;
                 } else if (game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().size() < 2) {
@@ -705,20 +730,6 @@ public class Controller {
         return true;
     }
 
-    public void askInitialResources() {
-        if(game.getPlayers().size()>1) {
-            lobby.setStateOfGame(GameState.PREPARATION2);
-            lobby.getPlayers().get(0).getClientHandler().send(new GetInitialResourcesAction("Wait until other players have chosen initial resources"));
-            lobby.getPlayers().get(1).getClientHandler().send(new GetInitialResourcesAction("You can choose 1 initial resource"));
-            if(game.getPlayers().size()>2)
-                lobby.getPlayers().get(2).getClientHandler().send(new GetInitialResourcesAction(
-                        "You can choose 1 initial resource, you will receive a faith point also"));
-            if(game.getPlayers().size()>3)
-                lobby.getPlayers().get(3).getClientHandler().send(new GetInitialResourcesAction(
-                    "You can choose 2 initial resources, you will receive a faith point also"));
-        }else
-            startGame();
-    }
 
     private ClientHandler getHandlerFromPlayer(String name){
         int id = server.getIDFromName().get(name);
@@ -822,13 +833,13 @@ public class Controller {
                     if (index == 0)
                         lobby.getPlayers().get(0).getClientHandler().send(new LobbyMessage("Wait until other players have chosen initial resources"));
                     else if (index == 1)
-                        lobby.getPlayers().get(1).getClientHandler().send(new GetInitialResourcesAction("You can choose 1 initial resource"));
+                        lobby.getPlayers().get(1).getClientHandler().send(new GetInitialResourcesAction("You can choose 1 initial resource",1));
                     else if (index == 2)
                         lobby.getPlayers().get(2).getClientHandler().send(new GetInitialResourcesAction(
-                                "You can choose 1 initial resource, you will receive a faith point also"));
+                                "You can choose 1 initial resource, you will receive a faith point also",1));
                     else
                         lobby.getPlayers().get(3).getClientHandler().send(new GetInitialResourcesAction(
-                                "You can choose 2 initial resources, you will receive a faith point also"));
+                                "You can choose 2 initial resources, you will receive a faith point also",2));
                 }
             }
         }

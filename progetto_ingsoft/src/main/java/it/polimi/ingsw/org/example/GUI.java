@@ -2,6 +2,7 @@ package it.polimi.ingsw.org.example;
 
 import it.polimi.ingsw.client.MainClient;
 import it.polimi.ingsw.client.View;
+import it.polimi.ingsw.client.ViewCLI;
 import it.polimi.ingsw.messages.*;
 import it.polimi.ingsw.messages.answerMessages.*;
 import it.polimi.ingsw.server.ClientHandler;
@@ -24,6 +25,9 @@ public class GUI extends Application implements View {
     private final String BOARD="board.fxml";
     private final String WAITING="waiting.fxml";
     private final String NUMOFPLAYER="insert_num_of_player.fxml";
+    private final String LEADCARDSCHOICE="leadcardschoice.fxml";
+    private final String INITIALRESOURCES="choiceresources.fxml";
+
 
     private final HashMap<String,Scene> nameMapScene= new HashMap<>();
     private final HashMap<String,GUIcontroller> nameMapController= new HashMap<>();
@@ -40,7 +44,7 @@ public class GUI extends Application implements View {
     public void start(Stage stage) {
         this.stage=stage;
 
-        List<String> fxmList = new ArrayList<>(Arrays.asList(LOGIN, NICKNAME,BOARD,WAITING,NUMOFPLAYER));
+        List<String> fxmList = new ArrayList<>(Arrays.asList(LOGIN, NICKNAME,BOARD,WAITING,NUMOFPLAYER,LEADCARDSCHOICE,INITIALRESOURCES));
         try {
 
             for (String path : fxmList) {
@@ -85,7 +89,7 @@ public class GUI extends Application implements View {
         System.out.println("change stage");
         SetupController guicontroller = (SetupController) nameMapController.get(NICKNAME);
         System.out.println("end controller setup");
-        guicontroller.setConfirmation(nickNameAction.getMessage());
+        guicontroller.setErrorLabel(nickNameAction.getMessage());
         System.out.println("end");});
     }
 
@@ -96,7 +100,7 @@ public class GUI extends Application implements View {
             System.out.println("change stage");
             SetupController guicontroller = (SetupController) nameMapController.get(NUMOFPLAYER);
             System.out.println("end controller setup");
-            guicontroller.setConfirmation(requestNumOfPlayers.getMessage());
+            guicontroller.setErrorLabel(requestNumOfPlayers.getMessage());
             System.out.println("end");});
     }
 
@@ -107,7 +111,6 @@ public class GUI extends Application implements View {
             System.out.println("change stage");
             SetupController guicontroller = (SetupController) nameMapController.get(WAITING);
             System.out.println("end controller setup");
-            guicontroller.setConfirmation(waitingRoomAction.getMessage());
             System.out.println("end");});
     }
 
@@ -118,17 +121,46 @@ public class GUI extends Application implements View {
     }
 
     @Override
-    public void initialResourceHandler(GetInitialResourcesAction initialResourcesAction) {
-
+    public void gameSetupHandler(ViewCLI viewCLI, SerializedMessage input){
+        Platform.runLater(()->{System.out.println("gameSetup");
+            changeStage(BOARD);
+            System.out.println("change stage");
+            GameController guicontroller = (GameController) nameMapController.get(BOARD);
+            System.out.println("end controller game");
+            System.out.println("end");});
     }
 
     @Override
     public void leadCardHandler(LeaderCardDistribution leaderCardDistribution) {
-
+        Platform.runLater(()->{System.out.println("leadcardschoice");
+            changeStage(LEADCARDSCHOICE);
+            System.out.println("change stage");
+            SetupController guicontroller = (SetupController) nameMapController.get(LEADCARDSCHOICE);
+            System.out.println("end controller game");
+            System.out.println("end");
+            guicontroller.setLeads(leaderCardDistribution.getLeadCardsId());
+        });
     }
 
     @Override
+    public void initialResourceHandler(GetInitialResourcesAction initialResourcesAction) {
+        Platform.runLater(()->{System.out.println("leadcardschoice");
+            changeStage(INITIALRESOURCES);
+            System.out.println("change stage");
+            SetupController guicontroller = (SetupController) nameMapController.get(INITIALRESOURCES);
+            System.out.println("end controller game");
+            System.out.println("end");
+            guicontroller.setLabelResources(initialResourcesAction.getMessage());
+            guicontroller.setInitialRes(initialResourcesAction.getNumRes());
+
+        });
+    }
+
+
+
+    @Override
     public void supplyHandler(ResourceInSupplyRequest resource) {
+
 
     }
 
