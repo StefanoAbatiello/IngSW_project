@@ -18,4 +18,5 @@ public interface View {
     void strongboxHandler(StrongboxChangeMessage strongboxChangeMessage);
     void choosableResourceHandler(ChangeChoosableResourceRequest input);
     void gameSetupHandler(ViewCLI viewCLI, SerializedMessage input);
+    void setViewCLI(ViewCLI viewCLI);
 }

@@ -53,8 +53,7 @@ public class SetupController implements GUIcontroller {
     HBox hbox;
     @FXML
     Label labelLeads;
-    @FXML
-    Label labelRes;
+
     @FXML
     HBox hboxRes;
     @FXML

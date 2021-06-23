@@ -35,7 +35,8 @@ public class MainClient implements Runnable, Sender {
         parser = new ClientCardParser(this);
         timer=new Timer();
         this.viewCLI = new ViewCLI();
-        this.view=new CLI(parser,viewCLI);
+        this.view=new CLI(parser);
+        view.setViewCLI(viewCLI);
 
     }
 
@@ -46,7 +47,7 @@ public class MainClient implements Runnable, Sender {
         timer=new Timer();
         this.view=gui;
         viewCLI = new ViewCLI();
-
+        view.setViewCLI(viewCLI);
     }
 
     public void run() {
@@ -189,7 +190,7 @@ public class MainClient implements Runnable, Sender {
             view.supplyHandler((ResourceInSupplyRequest) input);
             }
 
-        //10-gestione dell'aggiurnamento del market
+        //10-gestione dell'aggiornamento del market
         else if(input instanceof MarketChangeMessage){
             view.marketHandler((MarketChangeMessage) input);
         }

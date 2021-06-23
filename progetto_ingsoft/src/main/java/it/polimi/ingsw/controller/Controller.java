@@ -759,6 +759,7 @@ public class Controller {
         System.out.println("sto creando il startingGameMessage");
         String[][] simplifiedMarket =game.getSimplifiedMarket();
         System.out.println("market salvato");
+        lobby.sendAll(new MarketChangeMessage(simplifiedMarket));
         int[][] devMatrix=game.getSimplifiedDevMatrix();
         System.out.println("devMatrix salvata");
         for(Player p:game.getPlayers()){

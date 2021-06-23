@@ -14,9 +14,8 @@ public class CLI extends App implements View {
     private static final Scanner scanner=new Scanner(System.in);
 
 
-    public CLI(ClientCardParser clientCardParser,ViewCLI viewCLI) {
+    public CLI(ClientCardParser clientCardParser) {
         parser=clientCardParser;
-        this.viewCLI=viewCLI;
     }
 
 
@@ -187,5 +186,10 @@ public class CLI extends App implements View {
         }catch (NumberFormatException e) {
             System.out.println("NumberFormatException");
         }
+    }
+
+    @Override
+    public void setViewCLI(ViewCLI viewCLI) {
+        this.viewCLI = viewCLI;
     }
 }
