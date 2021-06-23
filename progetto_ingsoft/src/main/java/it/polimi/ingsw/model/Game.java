@@ -9,11 +9,20 @@ import it.polimi.ingsw.model.cards.DevDeckMatrix;
 import java.util.ArrayList;
 
 public abstract class  Game {
+
     /**
      * This attribute represent the first vatican zone and its state
      */
     private boolean VC1active;
+
+    /**
+     * This attribute represent the second vatican zone and its state
+     */
     private boolean VC2active;
+
+    /**
+     * This attribute represent the third vatican zone and its state
+     */
     private boolean VC3active;
 
     public boolean setVC1active(boolean VC1active) {
@@ -43,6 +52,10 @@ public abstract class  Game {
         return VC3active;
     }
 
+    /**
+     * @param player is the player who activates the pope meeting
+     * @return false if the player who activates the pope meeting was the first to reach this faith position, true otherwise
+     */
     abstract boolean activePopeSpace(Player player);
 
     public abstract Market getMarket();
@@ -57,6 +70,9 @@ public abstract class  Game {
         return "";
     }
 
+    /**
+     * @return a simplified version of the development cards that can be purchased
+     */
     public int[][] getSimplifiedDevMatrix(){
         int[][] devMatrix = new int[4][3];
         DevCard[][] matrix = getDevDeckMatrix().getUpperDevCardsOnTable();
@@ -69,6 +85,9 @@ public abstract class  Game {
         return devMatrix;
     }
 
+    /**
+     * @return a simplified version of the Resource market
+     */
     public String[][] getSimplifiedMarket(){
         String[][] market=new String[3][4];
         for(int i=0;i<3;i++)
@@ -78,5 +97,9 @@ public abstract class  Game {
         return market;
     }
 
+    /**
+     * @param player is the player who give away faith points
+     * @param pointsGiven is the number of faith points to give away
+     */
     public abstract void pointsGiveAway(Player player, int pointsGiven);
 }

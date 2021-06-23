@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.Market;
 import it.polimi.ingsw.exceptions.FullSupplyException;
 import it.polimi.ingsw.model.Resource;
 import it.polimi.ingsw.model.ResourceCreator;
+import it.polimi.ingsw.model.cards.cardExceptions.NoSuchRequirementException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,7 +62,7 @@ public class ResourceSupply implements ResourceCreator {
      * @return an Arraylist of the Resources stored in ResourceSupply
      */
     @Override
-    public ArrayList<Resource> getResources() {
+    public ArrayList<Resource> getResources() throws NoSuchRequirementException {
         ArrayList<Resource> resources = new ArrayList<>();
         Arrays.stream(containers).forEach(container ->{if (!container.isEmpty()) resources.add(container.takeResource());});
         return resources;

@@ -5,35 +5,71 @@ import it.polimi.ingsw.model.Market.ResourceSupply;
 import it.polimi.ingsw.model.cards.LeadCard;
 import it.polimi.ingsw.model.cards.cardExceptions.CardChosenNotValidException;
 import it.polimi.ingsw.model.personalboard.PersonalBoard;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Player implements Points{
-    //TODO controllo commenti
-    private int points;
+
+    /**
+     * this are the points of the player
+     */
+    private int points=0;
+
+    /**
+     * this is the player's Personal board
+     */
     private final PersonalBoard personalBoard;
-    private int faithtrackPoints=0;
+
+    /**
+     * this are the points gained from the position of Faith marker
+     */
+    private int faithTrackPoints =0;
+
+    /**
+     * this is the list of leader card
+     */
     private ArrayList<LeadCard> leadCards=new ArrayList<>();
+
+    /**
+     * this is an array of the kind of Resources related to the production ability
+     */
     private final ArrayList<Resource> productionAbility=new ArrayList<>();
+
+    /**
+     * this is an array of the kind of Resources related to the discount ability
+     */
     private final ArrayList<Resource> discountAbility=new ArrayList<>();
+
+    /**
+     * this is an array of the kind of Resources related to the white marble ability
+     */
     private final ArrayList<Resource> whiteMarbleAbility=new ArrayList<>();
+
+    /**
+     * this is the player's Resource supply
+     */
     private final ResourceSupply resourceSupply = new ResourceSupply();
+
+    /**
+     * this the action made by the player in a turn
+     */
     private Action action;
+
+    /**
+     * this is player's nickname
+     */
     private final String name;
 
     public Player(String username) {
         name=username;
-        this.points = 0;
         //System.out.println("creo la personalboard di "+ username); [Debug]
         this.personalBoard = new PersonalBoard();
         //System.out.println("personalBoard creata"); [Debug]
     }
 
+    /**
+     * reset the action made in this turn by the player
+     */
     public void resetAction(){action=null;}
-
-    //TODO penso metodi in game che chiamano strategy,penso a costruttore di ability
 
     public ArrayList<Resource> getProductionAbility() {
         return productionAbility;
@@ -47,6 +83,10 @@ public class Player implements Points{
         return whiteMarbleAbility;
     }
 
+    /**
+     * @param card this is the Leader card activated
+     * @return true after activating the card ability
+     */
     public boolean activateAbility(LeadCard card)  {
            card.getAbility().activeAbility(this);
            card.setActive();
@@ -70,7 +110,8 @@ public class Player implements Points{
     public int getPoints(){
         return points;
     }
-    public int setPoints ( int points){
+
+    public int setPoints (int points){
         this.points += points;
         return this.points;
     }
@@ -79,16 +120,14 @@ public class Player implements Points{
         return personalBoard;
     }
 
-    public int getFaithtrackPoints() {
-        return faithtrackPoints;
+    public int getFaithTrackPoints() {
+        return faithTrackPoints;
     }
 
-    public int increaseFaithtrackPoints ( int faithtrackpoints){
-        this.faithtrackPoints += faithtrackpoints;
-        return this.faithtrackPoints;
+    public int increaseFaithTrackPoints(int faithTrackpoints){
+        this.faithTrackPoints += faithTrackpoints;
+        return this.faithTrackPoints;
     }
-
-
 
     public String getPotentialResource(String potentialResource) {
         return potentialResource;
@@ -102,25 +141,40 @@ public class Player implements Points{
         this.leadCards= leadCards;
     }
 
-    //TODO check tests
+    /**
+     * @param card1 is the first card chosen by player
+     * @param card2 is the second card chosen by player
+     * @return true after discarding the cards not chosen
+     */
     public boolean choose2Leads(int card1, int  card2)  {
         leadCards.removeIf(card -> card.getId() != card1 && card.getId() != card2);
              return true;
         }
 
+    /**
+     * @param card is the card to discard
+     * @return true after discarding the card
+     */
     public boolean discardLead(LeadCard card){
         leadCards.remove(card);
         return true;
     }
 
-
-//TODO ragionare su abilità e pattern
-
+    /**
+     * @param resources is the list of Resources chosen by the player to activate the basic production
+     * @param potentialResource is the Resource chosen by the player as product of the basic production
+     * @return the produced Resource
+     */
     public Resource doBasicProduction (ArrayList<Resource> resources,Resource potentialResource) {
         getPersonalBoard().removeResources(resources);
         return potentialResource;
     }
 
+    /**
+     * @param id is the id of the Leader card searched
+     * @return the Leader card searched
+     * @throws CardChosenNotValidException if the player doesn't own the Leader card searched
+     */
     public LeadCard getCardFromId(int id) throws CardChosenNotValidException {
         for(LeadCard card: leadCards) {
             if (card.getId() == id)
@@ -134,6 +188,9 @@ public class Player implements Points{
     }
 
 
+    /**
+     * @return a Map where the cards (both Leader and Development) id are the kay and the values are a boolean indicating if the card is active
+     */
     public Map<Integer,Boolean> getCardsId() {
         Map<Integer, Boolean> cardsId = new HashMap<>();
         System.out.println("ho creato la mappa");

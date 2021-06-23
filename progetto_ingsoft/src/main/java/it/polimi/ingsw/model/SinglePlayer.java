@@ -13,21 +13,47 @@ import java.util.Collections;
 
 public class SinglePlayer extends Game{
 
+    /**
+     * this is the list of Lorenzo's tokens
+     */
     private final ArrayList<ActionToken> tokensStack =new ArrayList<>();
-    private Market market;
-    private DevDeckMatrix matrix;
-    private LeadDeck leads;
-    private DevDeck devDeck;
-    private ArrayList<Player> player= new ArrayList<>();
-    private BlackCross blackCross;
+
+    /**
+     * this is the Resource market of this game
+     */
+    private final Market market;
+
+    /**
+     * this is the matrix of Development cards of this game
+     */
+    private final DevDeckMatrix matrix;
+
+    /**
+     * this is the deck of all Leader cards
+     */
+    private final LeadDeck leads;
+
+    /**
+     * this is the deck of all Development cards
+     */
+    private final DevDeck devDeck;
+
+    /**
+     * this is the list of players in game
+     */
+    private final ArrayList<Player> player= new ArrayList<>();
+
+    /**
+     * this is the Lorenzo's cross
+     */
+    private final BlackCross blackCross;
 
     public  ArrayList<ActionToken> getTokensStack() {
         return tokensStack;
     }
 
-    public SinglePlayer(String username) throws playerLeadsNotEmptyException, FileNotFoundException, IOException, ParseException {
-        Player singlePlayer= new Player(username);
-        this.player.add(singlePlayer);
+    public SinglePlayer(String username) throws playerLeadsNotEmptyException, IOException, ParseException {
+        this.player.add(new Player(username));
         tokensStack.add(new CrossShuffleAction(this));
         tokensStack.add(new DoubleCrossAction(this));
         tokensStack.add(new DoubleCrossAction(this));
@@ -82,6 +108,10 @@ public class SinglePlayer extends Game{
         return effect;
     }
 
+    /**
+     * @param player      is the player who give away faith points
+     * @param pointsGiven is the number of faith points to give away
+     */
     @Override
     public void pointsGiveAway(Player player, int pointsGiven) {
         blackCross.updateBlackCross(pointsGiven);
@@ -138,24 +168,29 @@ public class SinglePlayer extends Game{
         return false;
     }
 
+
+    /**
+     * @param player is the player who activates the pope meeting
+     * @return false if the player who activates the pope meeting was the first to reach this faith position, true otherwise
+     */
     @Override
     public boolean activePopeSpace(Player player) {
         if((player.getPersonalBoard().getFaithMarker().getFaithPosition()==8 || blackCross.getCrossPosition()==8) && isVC1active()) {
 
             if(player.getPersonalBoard().getFaithMarker().isVaticanZone())
-                player.increaseFaithtrackPoints(2);
+                player.increaseFaithTrackPoints(2);
             setVC1active(false);
             return isVC1active();
         }
         else if((player.getPersonalBoard().getFaithMarker().getFaithPosition()==16 || blackCross.getCrossPosition()==16) && isVC2active()) {
             if(player.getPersonalBoard().getFaithMarker().isVaticanZone())
-                player.increaseFaithtrackPoints(3);
+                player.increaseFaithTrackPoints(3);
             setVC2active(false);
             return isVC2active();
         }
         else if((player.getPersonalBoard().getFaithMarker().getFaithPosition()==24 || blackCross.getCrossPosition()==24) && isVC3active()) {
             if(player.getPersonalBoard().getFaithMarker().isVaticanZone())
-                player.increaseFaithtrackPoints(4);
+                player.increaseFaithTrackPoints(4);
             setVC3active(false);
             return isVC3active();
         }
@@ -167,10 +202,6 @@ public class SinglePlayer extends Game{
 
     public Market getMarket() {
         return market;
-    }
-
-    public LeadDeck getLeads() {
-        return leads;
     }
 
     public DevDeck getDevDeck() {

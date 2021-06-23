@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.personalboard;
 
-import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.MultiPlayer;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.cards.cardExceptions.playerLeadsNotEmptyException;
@@ -49,7 +48,7 @@ class FaithMarkerTest {
         user.add("b");
         user.add("c");
         user.add("d");
-        MultiPlayer game=new MultiPlayer(user,4);
+        MultiPlayer game=new MultiPlayer(user);
 
         for(int i=0;i<8;i++)
             game.getPlayers().get(0).getPersonalBoard().getFaithMarker().updatePosition();
@@ -76,14 +75,14 @@ class FaithMarkerTest {
         user.add("b");
         user.add("c");
         user.add("d");
-        MultiPlayer game=new MultiPlayer(user,4);
+        MultiPlayer game=new MultiPlayer(user);
 
         for(int i=0;i<8;i++)
             game.getPlayers().get(0).getPersonalBoard().getFaithMarker().updatePosition();
 
         game.activePopeSpace(game.getPlayers().get(0));
-        assertEquals(2,game.getPlayers().get(0).getFaithtrackPoints());
-        assertEquals(0,game.getPlayers().get(1).getFaithtrackPoints());
+        assertEquals(2,game.getPlayers().get(0).getFaithTrackPoints());
+        assertEquals(0,game.getPlayers().get(1).getFaithTrackPoints());
 
     }
 
@@ -105,7 +104,7 @@ class FaithMarkerTest {
         user.add("b");
         user.add("c");
         user.add("d");
-        MultiPlayer game=new MultiPlayer (user,4);
+        MultiPlayer game=new MultiPlayer (user);
 
         for(int i=0;i<8;i++)
             game.getPlayers().get(0).getPersonalBoard().getFaithMarker().updatePosition();

@@ -2,6 +2,8 @@ package it.polimi.ingsw.model.personalboard;
 
 import it.polimi.ingsw.model.Resource;
 import it.polimi.ingsw.model.ResourceCreator;
+import it.polimi.ingsw.model.cards.cardExceptions.NoSuchRequirementException;
+
 import java.util.ArrayList;
 
 public class Shelf implements ResourceCreator {
@@ -63,7 +65,7 @@ public class Shelf implements ResourceCreator {
      * @return all resources contained on this shelf
      */
     @Override
-    public ArrayList<Resource> getResources() {
+    public ArrayList<Resource> getResources() throws NoSuchRequirementException {
         return slots;
     }
 

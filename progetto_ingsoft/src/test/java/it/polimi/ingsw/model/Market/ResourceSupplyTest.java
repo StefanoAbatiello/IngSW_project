@@ -18,7 +18,11 @@ class ResourceSupplyTest {
         supply.putResourceInContainer(Resource.SHIELD);
         ArrayList<Resource> resources=new ArrayList<>();
         resources.add(Resource.SHIELD);
-        assertEquals(resources, supply.getResources());
+        try {
+            assertEquals(resources, supply.getResources());
+        } catch (it.polimi.ingsw.model.cards.cardExceptions.NoSuchRequirementException e) {
+            e.printStackTrace();
+        }
     }
 
     /*
@@ -48,7 +52,11 @@ class ResourceSupplyTest {
         resources.add(Resource.SERVANT);
         resources.add(Resource.SHIELD);
         resources.add(Resource.STONE);
-        assertEquals(resources,supply.getResources());
+        try {
+            assertEquals(resources,supply.getResources());
+        } catch (it.polimi.ingsw.model.cards.cardExceptions.NoSuchRequirementException e) {
+            e.printStackTrace();
+        }
     }
 
     /*
@@ -61,9 +69,17 @@ class ResourceSupplyTest {
         supply.putResourceInContainer(Resource.SERVANT);
         supply.putResourceInContainer(Resource.SHIELD);
         supply.putResourceInContainer(Resource.STONE);
-        supply.getResources();
+        try {
+            supply.getResources();
+        } catch (it.polimi.ingsw.model.cards.cardExceptions.NoSuchRequirementException e) {
+            e.printStackTrace();
+        }
         ArrayList<Resource> resources=new ArrayList<>();
-        assertEquals(resources,supply.getResources());
+        try {
+            assertEquals(resources,supply.getResources());
+        } catch (it.polimi.ingsw.model.cards.cardExceptions.NoSuchRequirementException e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -54,7 +54,11 @@ class MarketTest {
                 resources.add(Resource.COIN);
         }
         market.buyResources(selector, p);
-        assertEquals(resources, p.getResourceSupply().getResources());
+        try {
+            assertEquals(resources, p.getResourceSupply().getResources());
+        } catch (it.polimi.ingsw.model.cards.cardExceptions.NoSuchRequirementException e) {
+            e.printStackTrace();
+        }
     }
 
     /*
@@ -79,7 +83,11 @@ class MarketTest {
                 resources.add(Resource.COIN);
         }
         market.buyResources(selector, p);
-        assertEquals(resources, p.getResourceSupply().getResources());
+        try {
+            assertEquals(resources, p.getResourceSupply().getResources());
+        } catch (it.polimi.ingsw.model.cards.cardExceptions.NoSuchRequirementException e) {
+            e.printStackTrace();
+        }
     }
 
     /*

@@ -61,7 +61,7 @@ public class Controller {
                 System.out.println(name);
             try {
                 System.out.println("creo partita multiPlayer");
-                game=new MultiPlayer(playersName, lobby.getPlayers().size());
+                game=new MultiPlayer(playersName);
                 //TODO creo mappa id-player
                 System.out.println("partita multiPlayer creata");
             } catch (playerLeadsNotEmptyException e) {
@@ -161,34 +161,50 @@ public class Controller {
                 System.out.println("strongbox pulita");
             }
             if (i == 0) {
-                if (game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().size()>0) {
-                    System.out.println("il primo giocatore ha il warehouse pieno");
-                    game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().clear();
-                    System.out.println("warehouse pulita");
+                try {
+                    if (game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().size()>0) {
+                        System.out.println("il primo giocatore ha il warehouse pieno");
+                        game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().clear();
+                        System.out.println("warehouse pulita");
+                    }
+                } catch (NoSuchRequirementException e) {
+                    e.printStackTrace();
                 }
             } else if (i == 1 || i == 2) {
-                if (game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().size() > 1) {
-                    System.out.println("il giocatore " + i + "aveva il warehouse pieno");
-                    game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().clear();
-                    System.out.println("warehouse pulita, invio nuovamente la richiesta della risorse iniziale");
-                    lobby.getPlayers().get(i).getClientHandler().send(new GetInitialResourcesAction("You have more resources than the ones permitted, please resend your initial resources:  ",1));
-                    System.out.println("messaggio inviato");
-                    result = false;
-                } else if (game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().size() == 0) {
-                    System.out.println("il giocatore " + i + " deve ancora scegliere la risorsa iniziale");
-                    result = false;
+                try {
+                    if (game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().size() > 1) {
+                        System.out.println("il giocatore " + i + "aveva il warehouse pieno");
+                        game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().clear();
+                        System.out.println("warehouse pulita, invio nuovamente la richiesta della risorse iniziale");
+                        lobby.getPlayers().get(i).getClientHandler().send(new GetInitialResourcesAction("You have more resources than the ones permitted, please resend your initial resources:  ",1));
+                        System.out.println("messaggio inviato");
+                        result = false;
+                    } else if (game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().size() == 0) {
+                        System.out.println("il giocatore " + i + " deve ancora scegliere la risorsa iniziale");
+                        result = false;
+                    }
+                } catch (NoSuchRequirementException e) {
+                    e.printStackTrace();
                 }
             } else if (i == 3) {
-                if (game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().size() > 2) {
-                    System.out.println("il giocatore " + i + "aveva il warehouse pieno");
-                    game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().clear();
-                    System.out.println("warehouse pulita, invio nuovamente la richiesta della risorse iniziale");
-                    lobby.getPlayers().get(i).getClientHandler().send(new GetInitialResourcesAction("You have more resources than the ones permitted, please resend your initial resources:  ",2));
-                    System.out.println("messaggio inviato");
-                    result = false;
-                } else if (game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().size() < 2) {
-                    System.out.println("il giocatore " + i + " deve ancora scegliere la risorsa iniziale");
-                    result = false;
+                try {
+                    if (game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().size() > 2) {
+                        System.out.println("il giocatore " + i + "aveva il warehouse pieno");
+                        try {
+                            game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().clear();
+                        } catch (NoSuchRequirementException e) {
+                            e.printStackTrace();
+                        }
+                        System.out.println("warehouse pulita, invio nuovamente la richiesta della risorse iniziale");
+                        lobby.getPlayers().get(i).getClientHandler().send(new GetInitialResourcesAction("You have more resources than the ones permitted, please resend your initial resources:  ",2));
+                        System.out.println("messaggio inviato");
+                        result = false;
+                    } else if (game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().getResources().size() < 2) {
+                        System.out.println("il giocatore " + i + " deve ancora scegliere la risorsa iniziale");
+                        result = false;
+                    }
+                } catch (NoSuchRequirementException e) {
+                    e.printStackTrace();
                 }
             }
             if (i == 0 || i == 1) {
@@ -392,7 +408,11 @@ public class Controller {
                 player=p;
         }
         ArrayList<Resource> resourceArrayList=player.getPersonalBoard().getStrongBox().getStrongboxContent();
-        resourceArrayList.addAll(player.getPersonalBoard().getWarehouseDepots().getResources());
+        try {
+            resourceArrayList.addAll(player.getPersonalBoard().getWarehouseDepots().getResources());
+        } catch (NoSuchRequirementException e) {
+            e.printStackTrace();
+        }
         if(!player.getPersonalBoard().getSpecialShelves().isEmpty()) {
             if(player.getPersonalBoard().getSpecialShelves().get(0).isPresent())
                 resourceArrayList.addAll(player.getPersonalBoard().getSpecialShelves().get(0).get().getSpecialSlots());
@@ -630,10 +650,19 @@ public class Controller {
 
             for (ArrayList<String> strings : gameObj) newRes.addAll(stringArrayToResArray(strings));
 
-            ArrayList<Resource> allResources=player.getPersonalBoard().getWarehouseDepots().getResources();
+            ArrayList<Resource> allResources= null;
+            try {
+                allResources = player.getPersonalBoard().getWarehouseDepots().getResources();
+            } catch (NoSuchRequirementException e) {
+                e.printStackTrace();
+            }
 
-            if(!supply.getResources().isEmpty())
-                allResources.addAll(supply.getResources());
+            try {
+                if(!supply.getResources().isEmpty())
+                    allResources.addAll(supply.getResources());
+            } catch (NoSuchRequirementException e) {
+                e.printStackTrace();
+            }
             System.out.println("mi sono salvato le risorse del player in strongbox e in warehouse");
             if(!player.getPersonalBoard().getSpecialShelves().isEmpty()) {
                 for (int i = 0; i < 2; i++)
