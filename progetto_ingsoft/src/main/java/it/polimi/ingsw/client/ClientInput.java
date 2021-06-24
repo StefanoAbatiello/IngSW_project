@@ -6,6 +6,8 @@ import it.polimi.ingsw.messages.*;
 import it.polimi.ingsw.messages.answerMessages.NumOfPlayersAnswer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class ClientInput implements Runnable{
@@ -60,22 +62,28 @@ public class ClientInput implements Runnable{
         }
 
         //4-choose initial resource
-        else if(input.startsWith("InitialResource:") && input.contains("inshelf:")){
+        else if(input.startsWith("InitialResource:") && input.contains("inshelf")){
             input= input.replace("InitialResource:","").toUpperCase();
-            String resource= "";
-            String[] words=input.split("INSHELF:");
-            resource=words[0];
-            try {
-                int shelfNum = Integer.parseInt(words[1]);
-                if(shelfNum>=0 && shelfNum<=2) {
-                    client.send(new InitialResourceMessage(resource, shelfNum));
-                }else
-                    System.out.println("Index of shelf not valid. Please type again" +
-                        "\"InitialResource:[COIN/SERVANT/SHIELD/STONE] in shelf:[shef number]\"");
-            } catch (NumberFormatException e){
-                System.out.println("Command not valid. Please type again" +
-                        "\"InitialResource:[COIN/SERVANT/SHIELD/STONE] in shelf:[shef number]\"");
+            Map<Integer,Integer> shelves=new HashMap<>();
+            Map<Integer,String> resources=new HashMap<>();
+            String[] commands=input.split(";");
+            for(int i=0;i<commands.length;i++) {
+                String[] words = commands[i].split("INSHELF");
+                String resource = words[0];
+                try {
+                    int shelfNum = Integer.parseInt(words[1]);
+                    if (shelfNum >= 0 && shelfNum <= 2) {
+                        shelves.put(i,shelfNum);
+                        resources.put(i,resource);
+                    } else {
+                        System.out.println("Index of shelf not valid. Please type again");
+                        return;
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Command not valid. Please type again");
+                }
             }
+            client.send(new InitialResourceMessage(resources, shelves));
         }
 
         //5-choose which leader cards hold

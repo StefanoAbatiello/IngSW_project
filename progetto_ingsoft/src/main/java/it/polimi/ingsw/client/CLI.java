@@ -52,7 +52,11 @@ public class CLI extends App implements View {
     @Override
     public void initialResourceHandler(GetInitialResourcesAction input) {
         System.out.println(input.getMessage());
-        System.out.println("Type \"InitialResource:[COIN/SERVANT/SHIELD/STONE] in shelf:[shef number]\"");
+        int resNum=input.getNumRes();
+        if(resNum==2)
+            System.out.println("Type \"InitialResource:[COIN/SERVANT/SHIELD/STONE] in shelf[shelf number];[COIN/SERVANT/SHIELD/STONE] in shelf[shelf number]\"");
+        else
+            System.out.println("Type \"InitialResource:[COIN/SERVANT/SHIELD/STONE] in shelf[shelf number]\"");
     }
 
     @Override

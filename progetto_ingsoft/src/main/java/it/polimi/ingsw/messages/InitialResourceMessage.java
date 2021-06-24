@@ -1,20 +1,22 @@
 package it.polimi.ingsw.messages;
 
+import java.util.Map;
+
 public class InitialResourceMessage implements SerializedMessage {
 
-    private String resource;
-    private int shelfNum;
+    private Map<Integer,String> resource;
+    private Map<Integer,Integer> shelfNum;
 
-    public InitialResourceMessage(String resource, int shelfNum) {
+    public InitialResourceMessage(Map<Integer,String> resource, Map<Integer,Integer> shelfNum) {
         this.resource=resource;
         this.shelfNum=shelfNum;
     }
 
-    public String getResource() {
+    public Map<Integer,String> getResource() {
         return resource;
     }
 
-    public int getShelfNum() {
+    public Map<Integer,Integer> getShelfNum() {
         return shelfNum;
     }
 }

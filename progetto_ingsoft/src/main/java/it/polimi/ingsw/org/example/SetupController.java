@@ -26,6 +26,8 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class SetupController implements GUIcontroller {
@@ -237,8 +239,13 @@ public class SetupController implements GUIcontroller {
 
     public void resNext(){
         if(selectedRes.size()==initialRes && selectedShelf.size()==initialRes) {
-            for(int i=0;i<initialRes;i++)
-                gui.getMainClient().send(new InitialResourceMessage(selectedRes.get(i),selectedShelf.get(i)));
+            Map<Integer, String> resources= new HashMap<>();
+            Map<Integer, Integer> shelves=new HashMap<>();
+            for(int i=0;i<initialRes;i++){
+                resources.put(i,selectedRes.get(i));
+                shelves.put(i,selectedShelf.get(i));
+            }
+            gui.getMainClient().send(new InitialResourceMessage(resources,shelves));
             gui.changeStage("waiting.fxml");
         }
         else

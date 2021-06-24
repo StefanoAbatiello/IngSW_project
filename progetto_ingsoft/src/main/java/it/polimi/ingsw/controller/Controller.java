@@ -243,18 +243,19 @@ public class Controller {
      */
     public boolean checkInitialResources() {
         System.out.println("sto controllando se gli altri giocatori hanno scelto le risorse");
+        boolean result=true;
         for (int i = 0; i < game.getPlayers().size(); i++) {
             String name= game.getPlayers().get(i).getName();
             System.out.println("sto controllando "+name);
             if (!checkPlayerWarehouse(i)) {
                 System.out.println("non ha ancora scelto le risorse initiali");
-                return false;
-            }
-            System.out.println(name+" ha il giusto numero di risorse");
+                result=false;
+            } else
+                System.out.println(name+" ha il giusto numero di risorse");
             checkPlayerInitialFaithMarker(i);
             System.out.println("faithmarker sistemato");
         }
-        return true;
+        return result;
     }
 
     /**
@@ -265,8 +266,8 @@ public class Controller {
         Player player = getPlayerFromId(getHandlerFromPlayerPosition(i).getClientId());
         int position = player.getPersonalBoard().getFaithMarker().getFaithPosition();
         System.out.println("mi sono salvato la sua posizione");
-        if (position > playerInitialFaithPoint(i)) {
-            System.out.println("ha ricevuto più punti del dovuto");
+        if (position != playerInitialFaithPoint(i)) {
+            System.out.println("ha ricevuto uno sbagliato numero di faith points");
             position = player.getPersonalBoard().getFaithMarker().reset();
             System.out.println("ho resettato il faithmarker");
             while (position < playerInitialFaithPoint(i)) {
@@ -285,16 +286,18 @@ public class Controller {
         Player player=getPlayerFromId(getHandlerFromPlayerPosition(i).getClientId());
         ArrayList<Resource> resources=player.getPersonalBoard().getWarehouseDepots().getResources();
         System.out.println("mi sono salvato tutte le sue risorse");
-        if (resources.size()> playerInitialResources(i)) {
-            System.out.println("ha più risorse in più del dovuto");
-            game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().clear();
-            System.out.println("ho pulito il suo warehouse");
-            if (i!=0 && server.isClientOnline(game.getPlayers().get(i).getName())) {
-                System.out.println("gli chiedo di scegliere nuovamente");
-                getHandlerFromPlayerPosition(i).send(new GetInitialResourcesAction("You have more resources than the ones permitted, please resend your initial resources:  ", playerInitialResources(i)));
+        if (resources.size()!= playerInitialResources(i) ) {
+            if (resources.size()>0) {
+                System.out.println("ha scelto un numero sbagliato di risorse");
+                game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().clear();
+                System.out.println("ho pulito il suo warehouse");
+                if (i != 0 && server.isClientOnline(game.getPlayers().get(i).getName())) {
+                    System.out.println("gli chiedo di scegliere nuovamente");
+                    getHandlerFromPlayerPosition(i).send(new GetInitialResourcesAction("You have choose an incorrect number of resources, please resend your initial resources:  ", playerInitialResources(i)));
+                }
             }return false;
         }
-        else return resources.size() == playerInitialResources(i);
+        else return true;
     }
 
     /**

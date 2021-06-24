@@ -152,12 +152,14 @@ public class Lobby {
         else if(input instanceof InitialResourceMessage){
             if(stateOfGame==GameState.PREPARATION2){
                 System.out.println("sto leggendo il InitialResourceMessage");
-                Resource resource=Resource.valueOf(((InitialResourceMessage)input).getResource());
-                int shelfNum=((InitialResourceMessage)input).getShelfNum();
+                Map<Integer,String> resources=((InitialResourceMessage)input).getResource();
+                Map<Integer,Integer> shelves=((InitialResourceMessage)input).getShelfNum();
                 System.out.println("ho letto il messaggio");
                 try {
-                    controller.checkInsertResourcePosition(id, shelfNum, resource);
-                    System.out.println("la risorsa è stata depositata");
+                    for (int i=0;i<resources.size();i++)
+                        controller.checkInsertResourcePosition(id, shelves.get(i), Resource.valueOf(resources.get(i)));
+                    System.out.println("le risorse sono state depositate");
+                    server.getClientFromId().get(id).getClientHandler().send(new LobbyMessage("Resource put in the warehouse"));
                     if(controller.checkInitialResources()){
                         System.out.println("tutti i giocatori hanno scelto le risorse iniziali");
                         controller.startGame();
