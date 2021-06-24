@@ -91,6 +91,10 @@ public class SetupController implements GUIcontroller {
 
     }
 
+    public ArrayList<Integer> getSelectedCards() {
+        return selectedCards;
+    }
+
     public static void setIp(String ip) {
         SetupController.ip = ip;
     }
@@ -145,8 +149,9 @@ public class SetupController implements GUIcontroller {
             selectedCards.add(Integer.parseInt(imageId));
             System.out.println(imageId);
             target.setOpacity(0.8);
-            //((BoardController)gui.getControllerFromName("board.fxml")).setLeads(target);
         }
+        else if(countLeads==2)
+            ((BoardController)gui.getControllerFromName("board.fxml")).setLeads(selectedCards);
         else
            errorLabel.setText("You already chose 2 leads, if you want to change click RETRY, else NEXT ");
     }
@@ -156,6 +161,7 @@ public class SetupController implements GUIcontroller {
             card = cards.get(0);
             ((ImageView) image).setImage(new Image("org.example/leadcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-" + card + "-1.png"));
             image.setId(String.valueOf(card));
+
             cards.remove(0);
         }
     }

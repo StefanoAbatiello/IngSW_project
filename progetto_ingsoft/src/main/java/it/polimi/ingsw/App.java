@@ -26,7 +26,7 @@ public class App {
             else if (input.equalsIgnoreCase("client"))
                 CLI.main();
             else if(input.equalsIgnoreCase("gui"))
-                JavaFXMain.main();
+                GUI.main();
         } else
             System.exit(-1);
     }

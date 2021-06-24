@@ -53,7 +53,7 @@ public class GUI extends Application implements View {
         try {
 
             for (String path : fxmList) {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org.example/" + path));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org.example/fxml/" + path));
                 nameMapScene.put(path, new Scene(loader.load()));
                 GUIcontroller controller = loader.getController();
                 controller.setGui(this);
@@ -125,6 +125,13 @@ public class GUI extends Application implements View {
 
     @Override
     public void lobbyMessageHandler(LobbyMessage lobbyMessage) {
+        Platform.runLater(()->{
+            Alert alert=new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText("INFO GAME");
+            alert.setHeight(10);
+            alert.setContentText(lobbyMessage.getMessage());
+            alert.showAndWait();
+        });
 
 
     }
@@ -135,6 +142,8 @@ public class GUI extends Application implements View {
             changeStage(BOARD);
             System.out.println("change stage");
             BoardController guicontroller = (BoardController) nameMapController.get(BOARD);
+            SetupController leadscontroller = (SetupController) nameMapController.get(LEADCARDSCHOICE);
+            guicontroller.setLeads(leadscontroller.getSelectedCards());
             System.out.println("end controller game");
             System.out.println("end");});
     }
