@@ -8,9 +8,13 @@ import it.polimi.ingsw.messages.answerMessages.*;
 import it.polimi.ingsw.server.ClientHandler;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.Event;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,15 +31,17 @@ public class GUI extends Application implements View {
     private final String NUMOFPLAYER="insert_num_of_player.fxml";
     private final String LEADCARDSCHOICE="leadcardschoice.fxml";
     private final String INITIALRESOURCES="choiceresources.fxml";
-
+    private final String MARKETBOARD="provabiglia.fxml";
 
     private final HashMap<String,Scene> nameMapScene= new HashMap<>();
     private final HashMap<String,GUIcontroller> nameMapController= new HashMap<>();
     private Scene currentscene;
     private Stage stage;
     private MainClient client=null;
+    private ViewCLI viewCLI;
 
     public static void main() {
+
         launch();
     }
 
@@ -43,8 +49,7 @@ public class GUI extends Application implements View {
     @Override
     public void start(Stage stage) {
         this.stage=stage;
-
-        List<String> fxmList = new ArrayList<>(Arrays.asList(LOGIN, NICKNAME,BOARD,WAITING,NUMOFPLAYER,LEADCARDSCHOICE,INITIALRESOURCES));
+        List<String> fxmList = new ArrayList<>(Arrays.asList(LOGIN, NICKNAME,BOARD,WAITING,NUMOFPLAYER,LEADCARDSCHOICE,INITIALRESOURCES,MARKETBOARD));
         try {
 
             for (String path : fxmList) {
@@ -56,11 +61,15 @@ public class GUI extends Application implements View {
             }
             changeStage(LOGIN);
             stage.setTitle("Master of Renaissance");
-
+            stage.getScene().getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, this::closeWindowEvent);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+
+    private void closeWindowEvent(WindowEvent t) {
+        getMainClient().disconnect();
+    }
 
     public void changeStage(String s) {
 
@@ -125,7 +134,7 @@ public class GUI extends Application implements View {
         Platform.runLater(()->{System.out.println("gameSetup");
             changeStage(BOARD);
             System.out.println("change stage");
-            GameController guicontroller = (GameController) nameMapController.get(BOARD);
+            BoardController guicontroller = (BoardController) nameMapController.get(BOARD);
             System.out.println("end controller game");
             System.out.println("end");});
     }
@@ -166,6 +175,15 @@ public class GUI extends Application implements View {
 
     @Override
     public void marketHandler(MarketChangeMessage marketChangeMessage) {
+        Platform.runLater(()->{System.out.println("market");
+
+            System.out.println("change stage");
+            MarketController guicontroller = (MarketController) nameMapController.get(MARKETBOARD);
+            System.out.println("end controller game");
+            System.out.println("end");
+            viewCLI.setMarket(marketChangeMessage.getMarket());
+            guicontroller.changeMarket(marketChangeMessage.getMarket());
+        });
 
     }
 
@@ -194,5 +212,8 @@ public class GUI extends Application implements View {
 
     }
 
+    public void setViewCLI(ViewCLI viewCLI) {
+        this.viewCLI = viewCLI;
+    }
 
 }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.org.example.SetupController">
+   <children>
+      <Label fx:id="validation" layoutX="196.0" layoutY="73.0" text="Insert IP address &amp; port">
+         <font>
+            <Font name="Droid Sans Bold" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="74.0" layoutY="134.0" text="IP ADDRESS:">
+         <font>
+            <Font name="System Bold Italic" size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="75.0" layoutY="268.0" text="PORT:">
+         <font>
+            <Font name="System Bold Italic" size="12.0" />
+         </font>
+      </Label>
+      <TextField fx:id="ip_field" layoutX="151.0" layoutY="130.0" />
+      <TextField fx:id="port_field" layoutX="151.0" layoutY="264.0" />
+      <Button fx:id="setupbutton" layoutX="273.0" layoutY="318.0" mnemonicParsing="false" onAction="#setup_nickname" text="Submit" />
+      <Label layoutX="202.0" layoutY="40.0" text="Welcome in Master of Renaissance" textFill="#ff0707">
+         <font>
+            <Font name="Comic Sans MS" size="12.0" />
+         </font>
+      </Label>
+   </children>
+</Pane>

@@ -791,6 +791,7 @@ Player player=getPlayerInTurn();
         System.out.println("l'actual player turn è "+actualPlayerTurn.getNickName());
         String[][] simplifiedMarket =game.getSimplifiedMarket();
         System.out.println("market salvato");
+        lobby.sendAll(new MarketChangeMessage(simplifiedMarket));
         int[][] devMatrix=game.getSimplifiedDevMatrix();
         System.out.println("devMatrix salvata");
         for(Player p:game.getPlayers()){

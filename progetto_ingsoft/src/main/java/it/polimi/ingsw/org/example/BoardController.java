@@ -1,5 +1,6 @@
 package it.polimi.ingsw.org.example;
 
+import javafx.event.ActionEvent;
 import javafx.scene.image.ImageView;
 
 public class BoardController implements GUIcontroller{
@@ -11,5 +12,9 @@ public class BoardController implements GUIcontroller{
     }
 
     public void setLeads(ImageView target) {
+    }
+
+    public void showMarket(ActionEvent actionEvent) {
+        gui.changeStage("provabiglia.fxml");
     }
 }
