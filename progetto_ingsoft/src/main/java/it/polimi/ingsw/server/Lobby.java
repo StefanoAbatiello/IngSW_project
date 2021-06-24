@@ -8,23 +8,25 @@ import it.polimi.ingsw.model.Resource;
 import it.polimi.ingsw.model.cards.cardExceptions.*;
 
 import java.util.ArrayList;
-import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Lobby {
     private final MainServer server;
     private final int lobbyID;
     private int seatsAvailable;
     //TODO ottimizzare id e virtual client negli usi
-    private ArrayList<VirtualClient> actualPlayers;
+    private final Map<VirtualClient,Integer> positionFromClient;
+    private final Map<Integer,VirtualClient> clientFromPosition;
     private GameState stateOfGame;
     private final Controller controller;
-    private VirtualView virtualVew;
 
     public Lobby(int lobbyID, int seatsAvailable, MainServer server){
         this.stateOfGame=GameState.WAITING;
         this.lobbyID=lobbyID;
         this.seatsAvailable = seatsAvailable;
-        this.actualPlayers= new ArrayList<>();
+        this.positionFromClient = new HashMap<>();
+        this.clientFromPosition =new HashMap<>();
         this.server=server;
         controller=new Controller(this,this.server);
     }
@@ -46,16 +48,30 @@ public class Lobby {
     }
 
     public void sendAll(SerializedMessage message) {
-        for(VirtualClient player:actualPlayers){
+        for(VirtualClient player: positionFromClient.keySet()){
             player.getClientHandler().send(message);
         }
+    }
+
+    public Map<Integer, VirtualClient> getClientFromPosition() {
+        return clientFromPosition;
+    }
+
+
+    public ArrayList<String> getPlayersName(){
+        System.out.println("mi sto salvando i nomi dei giocatori");
+        ArrayList<String> playersName = new ArrayList<>();
+        for (VirtualClient client : clientFromPosition.values()) {
+            playersName.add(client.getNickName());
+        }
+        return  playersName;
     }
 
     public int getSeatsAvailable() {
         return seatsAvailable;
     }
 
-    public ArrayList<VirtualClient> reinsertPlayer(int id) {
+    public Map<VirtualClient,Integer> reinsertPlayer(int id) {
         System.out.println("sto reinserendo il player nella lobby");
         String name=server.getNameFromId().get(id);
         if(getStateOfGame()==GameState.PREPARATION1||getStateOfGame()==GameState.PREPARATION2||getStateOfGame()==GameState.ONGOING){
@@ -65,49 +81,52 @@ public class Lobby {
             controller.sendInfoOfgame(id,name);
         } else{
             System.out.println("la partita non è ancora iniziata. Inserisco il giocatore con ultimo");
-            actualPlayers.add(server.getClientFromId().get(id));
+            int position=positionFromClient.size();
+            positionFromClient.put(server.getClientFromId().get(id), position);
+            clientFromPosition.put(position,server.getClientFromId().get(id));
             this.seatsAvailable--;
             if (isLobbyFull())
                 controller.startGame();
         }
         server.getClientFromId().get(id).giveLobby(server.getLobbyFromClientID().get(id));
         System.out.println("ho inserito il giocatore nella lobby");
-        return actualPlayers;
+        return positionFromClient;
     }
 
-    public ArrayList<VirtualClient> insertPlayer(int id) {
-            actualPlayers.add(server.getClientFromId().get(id));
-            server.getClientFromId().get(id).giveLobby(this);
-            server.getLobbyFromClientID().put(id,this);
-            this.seatsAvailable--;
-            if(isLobbyFull()) {
-                System.out.println("numero di giocatori raggiunto, inizia la partita!!!");
-                sendAll(new LobbyMessage("number of players reached, the game can start!!!"));
-                controller.createGame();
-            }
-            return actualPlayers;
+    public Map<VirtualClient,Integer> insertPlayer(int id) {
+        int position=positionFromClient.size();
+        positionFromClient.put(server.getClientFromId().get(id), position);
+        clientFromPosition.put(position,server.getClientFromId().get(id));
+        server.getClientFromId().get(id).giveLobby(this);
+        server.getLobbyFromClientID().put(id,this);
+        this.seatsAvailable--;
+        if(isLobbyFull()) {
+            System.out.println("numero di giocatori raggiunto, inizia la partita!!!");
+            sendAll(new LobbyMessage("number of players reached, the game can start!!!"));
+            controller.createGame();
+        }
+        return positionFromClient;
     }
 
 
-    public ArrayList<VirtualClient> getPlayers() {
-        return actualPlayers;
+    public Map<VirtualClient,Integer> getPositionFromClient() {
+        return positionFromClient;
     }
 
-    public ArrayList<VirtualClient> removePlayer(VirtualClient player) {
+    public Map<VirtualClient,Integer> removePlayer(VirtualClient player) {
         if(stateOfGame==GameState.ONGOING) {
             if (player.equals(controller.getActualPlayerTurn())) {
                 controller.turnUpdate();
             }
         }
-        actualPlayers.remove(player);
+        clientFromPosition.remove(positionFromClient.get(player));
+        positionFromClient.remove(player);
         seatsAvailable++;
-        return actualPlayers;
+        return positionFromClient;
     }
 
 //TODO nel clientHandler stampo "azione giocatore n:" e il risultato di tale azione
     public synchronized void actionHandler(SerializedMessage input, int id) {
-        //TODO ragiono su inizializzazione
-        //TODO ragiono su oggetti che passa il client
         Object gameObj;
         System.out.println("sono nell'handler della lobby");
         //1-gestisco la scelta del giocatore di quali leader card tenere
@@ -145,7 +164,7 @@ public class Lobby {
                     }
                 } catch (ResourceNotValidException e) {
                     VirtualClient client =server.getClientFromId().get(id);
-                    server.getClientFromId().get(id).getClientHandler().send(new GetInitialResourcesAction("You choose a not valid resource or shelf", controller.askPlayerInitialResources(actualPlayers.indexOf(client))));
+                    server.getClientFromId().get(id).getClientHandler().send(new GetInitialResourcesAction("You choose a not valid resource or shelf", controller.playerInitialResources(positionFromClient.get(client))));
                 }
 
             }
@@ -211,7 +230,7 @@ public class Lobby {
                         //result = new ActionAnswer("produzioni effettuate \n(carte: " + cardProd + "\npersonal:"+personalProdIn+" )");
                     }
                 } catch (ActionAlreadySetException actionAlreadySetException) {
-                    actualPlayers.get(id).getClientHandler().send(new LobbyMessage("Actions already set for this player"));
+                    controller.getActualPlayerTurn().getClientHandler().send(new LobbyMessage("Actions already set for this player"));
                 } catch (CardNotOwnedByPlayerOrNotActiveException e) {
                     e.printStackTrace();
                 } catch (ResourceNotValidException e) {
@@ -253,5 +272,12 @@ public class Lobby {
 
         else if(!server.getClientFromId().get(id).equals(controller.getActualPlayerTurn()))
             server.getClientFromId().get(id).getClientHandler().send(new LobbyMessage("Wait for your turn!"));
+    }
+
+    /**
+     * @return the number of online players belonging to this lobby
+     */
+    public int playersOnline() {
+        return (int) clientFromPosition.values().stream().filter(client -> server.isClientOnline(client.getID())).count();
     }
 }

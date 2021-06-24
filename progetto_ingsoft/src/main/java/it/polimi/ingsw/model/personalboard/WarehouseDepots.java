@@ -53,20 +53,13 @@ public class WarehouseDepots implements ResourceCreator {
      */
     public Resource getResource(Resource resource) {
         for (Shelf shelf : shelves) {
-            try {
                 for (Resource resource1 : shelf.getResources()) {
                     if (resource == resource1) {
-                        shelf.getResources().remove(resource1);
-                        getResources().remove(resource);
+                        shelf.getResources().remove(resource);
                         return resource;
                     }
                 }
-            } catch (NoSuchRequirementException e) {
-                e.printStackTrace();
-            }
         }
-        //TODO controllo eccezione, potrebbe essere inutile poichè nel controller prima vedo se ho risorse e poi rimuovo
-        //throw new ResourceNotValidException();
         return null;
     }
 
@@ -74,7 +67,7 @@ public class WarehouseDepots implements ResourceCreator {
      * @return all resources that are in Warehouse in every shelf
      */
     @Override
-    public ArrayList<Resource> getResources() throws NoSuchRequirementException {
+    public ArrayList<Resource> getResources()  {
         ArrayList<Resource> allRes =new ArrayList<>();
         for (Shelf shelf : shelves) {
             allRes.addAll(shelf.getResources());
@@ -82,4 +75,9 @@ public class WarehouseDepots implements ResourceCreator {
         return allRes;
     }
 
+    public void clear() {
+        for (Shelf shelf : shelves) {
+            shelf.removeAllRes();
+        }
+    }
 }

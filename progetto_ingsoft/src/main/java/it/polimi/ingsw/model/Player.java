@@ -201,4 +201,13 @@ public class Player implements Points{
         return cardsId;
     }
 
+    /**
+     * @return an Arraylist of the id held by the Player
+     */
+    public ArrayList<Integer> getLeadCardsId() {
+        ArrayList<Integer> leaderId=new ArrayList<>();
+        for (LeadCard card:leadCards)
+            leaderId.add(card.getId());
+        return leaderId;
+    }
 }

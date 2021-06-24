@@ -33,11 +33,10 @@ public class FaithMarker implements Points {
 
 
     /**
-     * @return reset faith marker position, then return true
+     * @return reset faith marker position, then return the starting position
      */
-   public boolean reset(){
-       faithPosition = 0;
-       return true;
+   public int reset(){
+       return faithPosition = 0;
    }
 
     /**

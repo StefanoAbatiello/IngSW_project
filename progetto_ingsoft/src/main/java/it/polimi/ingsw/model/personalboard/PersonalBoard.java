@@ -83,12 +83,8 @@ public class PersonalBoard {
     public boolean removeResourcesFromBuy(ArrayList<Resource> resourceArrayList){
         boolean result = false;
         List<Resource> personalResources = null;
-        try {
-            personalResources = Stream.concat(
-                    getWarehouseDepots().getResources().stream(), getStrongBox().getStrongboxContent().stream()).collect(Collectors.toList());
-        } catch (it.polimi.ingsw.model.cards.cardExceptions.NoSuchRequirementException e) {
-            e.printStackTrace();
-        }
+        personalResources = Stream.concat(
+                getWarehouseDepots().getResources().stream(), getStrongBox().getStrongboxContent().stream()).collect(Collectors.toList());
         for(Resource resource: resourceArrayList){
             if (personalResources.contains(resource)) {
                 result = true;
@@ -106,20 +102,16 @@ public class PersonalBoard {
      */
     public ArrayList<Resource> removeResources(ArrayList<Resource> resources)  {
         for(Resource resource:resources){
-            try {
-                if(warehouseDepots.getResources().contains(resource)){
-                    warehouseDepots.getResources().remove(resource);
-                }
-                else if(!specialShelves.isEmpty()) {
-                    for(int i=0; i<2;i++) {
-                        if (specialShelves.get(i).isPresent())
-                            specialShelves.get(i).get().getSpecialSlots().remove(resource);
-                    }
-                }
-                else strongBox.getStrongboxContent().remove(resource);
-            } catch (it.polimi.ingsw.model.cards.cardExceptions.NoSuchRequirementException e) {
-                e.printStackTrace();
+            if(warehouseDepots.getResources().contains(resource)){
+                warehouseDepots.getResources().remove(resource);
             }
+            else if(!specialShelves.isEmpty()) {
+                for(int i=0; i<2;i++) {
+                    if (specialShelves.get(i).isPresent())
+                        specialShelves.get(i).get().getSpecialSlots().remove(resource);
+                }
+            }
+            else strongBox.getStrongboxContent().remove(resource);
         }
         return resources;
     }

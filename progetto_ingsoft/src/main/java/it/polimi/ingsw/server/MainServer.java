@@ -179,9 +179,22 @@ public class MainServer {
      * @param id the id of the client to check
      * @return true if the client checked is logged
      */
-    private boolean isClientOnline(int id) {
+    public boolean isClientOnline(int id) {
         if (clientFromId.containsKey(id)) {
-            System.out.println("l'utente " + id + "è online. Il nuovo utente deve cambiare nickname");//[Debug]
+            System.out.println("l'utente " + id + "è online");//[Debug]
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param name the name of the client to check
+     * @return true if the client checked is logged
+     */
+    public boolean isClientOnline(String name) {
+        int id=getIDFromName().get(name);
+        if (clientFromId.containsKey(id)) {
+            System.out.println("l'utente " + id + "è online");//[Debug]
             return true;
         }
         return false;
@@ -199,7 +212,7 @@ public class MainServer {
                 System.out.println("c'è una lobby libera");//[Debug]
                 lobby.sendAll(new LobbyMessage(nameFromId.get(id) + " has entered in the lobby"));
                 lobby.insertPlayer(id);
-                int lobbySpace=lobby.getPlayers().size() + lobby.getSeatsAvailable();
+                int lobbySpace=lobby.getClientFromPosition().size() + lobby.getSeatsAvailable();
                 if(lobby.getSeatsAvailable()>1)
                     clientFromId.get(id).getClientHandler().send(new WaitingRoomAction("You joined a new lobby for "+ lobbySpace + " players, please wait for other players"));
                 return true;
@@ -214,7 +227,7 @@ public class MainServer {
      * @return true if the lobby is a single player game
      */
     private boolean isSinglePlayerLobby(Lobby lobby) {
-        return(lobby.getPlayers().size()+lobby.getSeatsAvailable())==1;
+        return(lobby.getClientFromPosition().size()+lobby.getSeatsAvailable())==1;
     }
 
 }

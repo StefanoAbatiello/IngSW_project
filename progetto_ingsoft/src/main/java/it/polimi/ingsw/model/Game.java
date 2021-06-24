@@ -102,4 +102,6 @@ public abstract class  Game {
      * @param pointsGiven is the number of faith points to give away
      */
     public abstract void pointsGiveAway(Player player, int pointsGiven);
+
+    public abstract Player getPlayerFromName(String name);
 }

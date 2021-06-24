@@ -8,7 +8,6 @@ import it.polimi.ingsw.model.cards.LeadDeck;
 import it.polimi.ingsw.model.cards.cardExceptions.playerLeadsNotEmptyException;
 import org.json.simple.parser.ParseException;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -126,4 +125,21 @@ public class MultiPlayer extends Game {
                     p.getPersonalBoard().getFaithMarker().updatePosition();
         });
     }
+
+    /**
+     * @param name is the name of the player searched
+     * @return the player searched
+     */
+    @Override
+    public Player getPlayerFromName(String name) {
+        if (players.get(0).getName().equals(name)) {
+            return players.get(0);
+        } else if (players.get(1).getName().equals(name)) {
+            return players.get(1);
+        } else if (players.get(2).getName().equals(name)) {
+            return players.get(2);
+        } else
+            return players.get(3);
+    }
+
 }

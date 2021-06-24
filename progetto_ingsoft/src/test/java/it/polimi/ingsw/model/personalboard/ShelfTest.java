@@ -26,11 +26,7 @@ class ShelfTest {
         shelf.addResources(Resource.SHIELD);
         shelf.addResources(Resource.SHIELD);
 
-        try {
-            assertEquals(2,shelf.getResources().size());
-        } catch (it.polimi.ingsw.model.cards.cardExceptions.NoSuchRequirementException e) {
-            e.printStackTrace();
-        }
+        assertEquals(2,shelf.getResources().size());
 
     }
 
@@ -41,16 +37,8 @@ class ShelfTest {
         shelf.addResources(Resource.SHIELD);
         shelf.addResources(Resource.SHIELD);
 
-        try {
-            assertEquals(Resource.SHIELD,shelf.getResources().get(0));
-        } catch (it.polimi.ingsw.model.cards.cardExceptions.NoSuchRequirementException e) {
-            e.printStackTrace();
-        }
-        try {
-            assertEquals(Resource.SHIELD,shelf.getResources().get(1));
-        } catch (it.polimi.ingsw.model.cards.cardExceptions.NoSuchRequirementException e) {
-            e.printStackTrace();
-        }
+        assertEquals(Resource.SHIELD,shelf.getResources().get(0));
+        assertEquals(Resource.SHIELD,shelf.getResources().get(1));
 
     }
 }

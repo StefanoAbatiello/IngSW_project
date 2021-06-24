@@ -6,7 +6,7 @@ import it.polimi.ingsw.model.cards.cardExceptions.playerLeadsNotEmptyException;
 import it.polimi.ingsw.model.personalboard.*;
 import it.polimi.ingsw.model.singlePlayerMode.*;
 import org.json.simple.parser.ParseException;
-import java.io.FileNotFoundException;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,7 +41,7 @@ public class SinglePlayer extends Game{
     /**
      * this is the list of players in game
      */
-    private final ArrayList<Player> player= new ArrayList<>();
+    private final ArrayList<Player> players = new ArrayList<>();
 
     /**
      * this is the Lorenzo's cross
@@ -53,7 +53,7 @@ public class SinglePlayer extends Game{
     }
 
     public SinglePlayer(String username) throws playerLeadsNotEmptyException, IOException, ParseException {
-        this.player.add(new Player(username));
+        this.players.add(new Player(username));
         tokensStack.add(new CrossShuffleAction(this));
         tokensStack.add(new DoubleCrossAction(this));
         tokensStack.add(new DoubleCrossAction(this));
@@ -68,11 +68,11 @@ public class SinglePlayer extends Game{
         this.market=new Market();
         leads= new LeadDeck();
         leads.shuffle();
-        leads.giveToPlayer(player.get(0));
+        leads.giveToPlayer(players.get(0));
 
     }
     public ArrayList<Player>  getPlayers() {
-        return this.player;
+        return this.players;
     }
 
     /**
@@ -109,7 +109,7 @@ public class SinglePlayer extends Game{
     }
 
     /**
-     * @param player      is the player who give away faith points
+     * @param player      is the players who give away faith points
      * @param pointsGiven is the number of faith points to give away
      */
     @Override
@@ -170,8 +170,8 @@ public class SinglePlayer extends Game{
 
 
     /**
-     * @param player is the player who activates the pope meeting
-     * @return false if the player who activates the pope meeting was the first to reach this faith position, true otherwise
+     * @param player is the players who activates the pope meeting
+     * @return false if the players who activates the pope meeting was the first to reach this faith position, true otherwise
      */
     @Override
     public boolean activePopeSpace(Player player) {
@@ -211,5 +211,21 @@ public class SinglePlayer extends Game{
     @Override
     public DevDeckMatrix getDevDeckMatrix() {
         return matrix;
+    }
+
+    /**
+     * @param name is the name of the players searched
+     * @return the players searched
+     */
+    @Override
+    public Player getPlayerFromName(String name) {
+        if (players.get(0).getName().equals(name)) {
+            return players.get(0);
+        } else if (players.get(1).getName().equals(name)) {
+            return players.get(1);
+        } else if (players.get(2).getName().equals(name)) {
+            return players.get(2);
+        } else
+            return players.get(3);
     }
 }

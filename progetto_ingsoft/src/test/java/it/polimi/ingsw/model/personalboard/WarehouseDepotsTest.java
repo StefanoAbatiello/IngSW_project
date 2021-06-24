@@ -12,11 +12,7 @@ class WarehouseDepotsTest {
     void addValidResourceInShelf() throws ResourceNotValidException {
         WarehouseDepots warehouseDepots = new WarehouseDepots();
 
-        try {
-            assertFalse(warehouseDepots.addInShelf(0, Resource.COIN).getResources().isEmpty());
-        } catch (it.polimi.ingsw.model.cards.cardExceptions.NoSuchRequirementException e) {
-            e.printStackTrace();
-        }
+        assertFalse(warehouseDepots.addInShelf(0, Resource.COIN).getResources().isEmpty());
     }
 
     //TODO controller test
