@@ -53,7 +53,7 @@ public class GUI extends Application implements View {
         try {
 
             for (String path : fxmList) {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org.example/" + path));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org.example/fxml/" + path));
                 nameMapScene.put(path, new Scene(loader.load()));
                 GUIcontroller controller = loader.getController();
                 controller.setGui(this);

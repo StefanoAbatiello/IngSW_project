@@ -142,48 +142,7 @@ public class MainClient implements Runnable, Sender {
         }
 
         //7-gestione del salvataggio e della stampa della situazione iniziale della partita
-        else if(input instanceof StartingGameMessage){
-            ArrayList<String>[] warehouse=((StartingGameMessage)input).getWarehouse();
-            viewCLI.setWarehouse(warehouse);
-            viewCLI.setStrongbox(((StartingGameMessage)input).getStrongbox());
-            int[][] devMatrix=((StartingGameMessage)input).getDevMatrix();
-            viewCLI.setDevMatrix(devMatrix);
-            for(int i=0;i<4;i++) {
-                for (int j = 0; j < 3; j++) {
-                    parser.takeDevCardFromId(devMatrix[i][j]);
-                }
-            }
-            viewCLI.setLeadCardsId(((StartingGameMessage)input).getPersonalCardId());
-            viewCLI.setFaithPosition(((StartingGameMessage)input).getFaithPosition());
-            viewCLI.setMarket(((StartingGameMessage)input).getMarket());
-            view.gameSetupHandler(viewCLI,input);
-        }
-
-        //8-gestione del salvataggio e della stampa della situazione della partta dopo la riconnessione
-        else if(input instanceof ReconnectionMessage){
-            viewCLI.setWarehouse(((ReconnectionMessage)input).getWarehouse());
-            viewCLI.setStrongbox(((ReconnectionMessage)input).getStrongbox());
-            int[][] devMatrix=((ReconnectionMessage)input).getDevMatrix();
-            viewCLI.setDevMatrix(devMatrix);
-            //CLI.matrixParser(devMatrix, parser);
-            Map<Integer,Boolean> leadcardsId = new HashMap<>();
-            ((ReconnectionMessage)input).getCardsId().keySet().stream().filter(integer -> integer>48 && integer<65).forEach(card->{parser.takeLeadCardFromId(card);
-                leadcardsId.put(card,((ReconnectionMessage)input).getCardsId().get(card));});
-            viewCLI.setLeadCardsId(leadcardsId);
-            Map<Integer,Boolean> devcardsId= new HashMap<>();
-            ((ReconnectionMessage)input).getCardsId().keySet().stream().filter(integer -> integer>0 && integer<49).forEach(card->{parser.takeDevCardFromId(card);
-                devcardsId.put(card,((ReconnectionMessage)input).getCardsId().get(card));});
-            viewCLI.setDevCardsId(devcardsId);
-            viewCLI.setFaithPosition(((ReconnectionMessage)input).getFaithposition());
-            viewCLI.setMarket(((ReconnectionMessage)input).getSimplifiedMarket());
-            System.out.println("this is your personal board:");
-            viewCLI.showPersonalBoard();
-            System.out.println("\n \nthis is the market: ");
-            viewCLI.showMarket();
-            System.out.println("\n \nthis are the development cards buyable: ");
-            viewCLI.showDevMatrix();
-            System.out.println("Type \"ShowActions\" to see commands");
-        }
+        else if(input instanceof StartingGameMessage){}
 
         //9-gestione della richiesta di sistemazione delle nuove risorse nel supply
         else if(input instanceof ResourceInSupplyRequest){

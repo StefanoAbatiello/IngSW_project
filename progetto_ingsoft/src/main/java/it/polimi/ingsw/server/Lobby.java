@@ -78,7 +78,7 @@ public class Lobby {
             System.out.println("la partita è già iniziata");
             controller.insertPlayerInOrder(id,name);
             this.seatsAvailable--;
-            controller.sendInfoOfgame(id,name);
+            controller.sendInfoOfGame(id);
         } else{
             System.out.println("la partita non è ancora iniziata. Inserisco il giocatore con ultimo");
             int position=positionFromClient.size();
@@ -142,7 +142,11 @@ public class Lobby {
                     System.out.println("carte scelte");
                     if (controller.checkAllPlayersChooseLeads()) {
                         System.out.println("tutti hanno scelto le lead cards");
-                        controller.askInitialResources();
+                        int playersNum=positionFromClient.size();
+                        if(playersNum>1 && playersOnline()>1) {
+                            controller.askInitialResources(server.getClientFromId().get(id));
+                        }else
+                            controller.startGame();
                     }
                 }
             }

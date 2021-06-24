@@ -91,20 +91,21 @@ public class Controller {
      * otherwise a multi player mode
      */
     public void createGame(){
-        lobby.sendAll(new LobbyMessage("The game is starting"));
+        //lobby.sendAll(new LobbyMessage("The game is starting"));[Debug]
         lobby.setStateOfGame(GameState.PREPARATION1);
         try{
             if(lobby.getPositionFromClient().size()==1) {
-                System.out.println("creo partita singlePlayer");//[Debug]
+                //System.out.println("creo partita singlePlayer");[Debug]
                 game = new SinglePlayer(lobby.getPlayersName().get(0));
-                System.out.println("partita singlePlayer creata");//[Debug]
+                //System.out.println("partita singlePlayer creata");[Debug]
             }else {
                 //System.out.println("creo partita multiPlayer");[Debug]
                 game=new MultiPlayer(lobby.getPlayersName());
                 //System.out.println("partita multiPlayer creata");[Debug]
                 //TODO gestisco le eccezioni
             }
-            notifyLeadCardDistributed();
+            for(VirtualClient client: lobby.getClientFromPosition().values())
+                notifyLeadCardDistributed(client);
         } catch (playerLeadsNotEmptyException | IOException | ParseException e) {
             e.printStackTrace();
         }
@@ -113,15 +114,12 @@ public class Controller {
     /**
      * advise each Player of the Leader cards he received
      */
-    private void notifyLeadCardDistributed(){
-        int i=0;
-        for(VirtualClient client: lobby.getClientFromPosition().values()) {
-            ArrayList<Integer> leaderId = new ArrayList<>();
-            for (LeadCard card : game.getPlayers().get(i).getLeadCards())
-                leaderId.add(card.getId());
-            client.getClientHandler().send(new LeaderCardDistribution(leaderId, "Please choose 2 leader card to hold"));
-            i++;
-        }
+    private void notifyLeadCardDistributed(VirtualClient client){
+        int i=lobby.getPositionFromClient().get(client);
+        ArrayList<Integer> leaderId = new ArrayList<>();
+        for (LeadCard card : game.getPlayers().get(i).getLeadCards())
+            leaderId.add(card.getId());
+        client.getClientHandler().send(new LeaderCardDistribution(leaderId, "Please choose 2 leader card to hold"));
     }
 
 
@@ -149,7 +147,7 @@ public class Controller {
     public boolean check2Leads(int id, int card1, int card2){
         //System.out.println("controllo gli id");[Debug]
         Player player = getPlayerFromId(id);
-        if(!LeaderCardChosenYet(player)) {
+        if(!leaderCardChosenYet(player)) {
             if (checkLeadsIdChosen(player,card1,card2)){
                 getHandlerFromPlayer(id).send(new LobbyMessage("Leader cards picked correctly, now wait the other players"));
                 //System.out.println("gli id scelti vanno bene");[Debug]
@@ -173,7 +171,7 @@ public class Controller {
      * @param player is the player to whom I have to check the number of Leader cards
      * @return true if he has only two Leader cards
      */
-    private boolean LeaderCardChosenYet(Player player){
+    private boolean leaderCardChosenYet(Player player){
         return player.getLeadCards().size()==2;
     }
 
@@ -193,26 +191,21 @@ public class Controller {
     /**
      * if the game is a single player mode this method start the game,
      * otherwise advise the players that they can take some initial Resources
+     * @param client is the client who has to choose the initial Resource
      */
-    public void askInitialResources() {
-        ArrayList<Player> players = game.getPlayers();
-        if(players.size()>1 && lobby.playersOnline()>1) {
-            lobby.setStateOfGame(GameState.PREPARATION2);
-            if(server.isClientOnline(players.get(0).getName())) {
-                getHandlerFromPlayerPosition(0).send(new LobbyMessage("Wait until other players have chosen initial resources"));
-            }if(server.isClientOnline(players.get(1).getName())) {
-                getHandlerFromPlayerPosition(1).send(new GetInitialResourcesAction("You can choose 1 initial resource", 1));
-            }if(players.size()>2 && server.isClientOnline(players.get(2).getName())) {
-                getHandlerFromPlayerPosition(2).send(new GetInitialResourcesAction(
-                        "You can choose 1 initial resource, you will receive a faith point also", 1));
-                players.get(2).getPersonalBoard().getFaithMarker().updatePosition();
-            }if(players.size()>3 && server.isClientOnline(players.get(3).getName())) {
-                getHandlerFromPlayerPosition(3).send(new GetInitialResourcesAction(
-                        "You can choose 2 initial resources, you will receive a faith point also", 2));
-                players.get(3).getPersonalBoard().getFaithMarker().updatePosition();
+    public void askInitialResources(VirtualClient client) {
+        lobby.setStateOfGame(GameState.PREPARATION2);
+        if (server.isClientOnline(client.getNickName())) {
+            int position = lobby.getPositionFromClient().get(client);
+            if (position == 0)
+                getHandlerFromPlayerPosition(position).send(new LobbyMessage("Wait until other players have chosen initial resources"));
+            else {
+                int num = playerInitialResources(position);
+                getHandlerFromPlayerPosition(position).send(new GetInitialResourcesAction("You can choose " + num + " initial resource", num));
+                if (position > 2)
+                    getHandlerFromPlayerPosition(position).send(new LobbyMessage("you will receive a Faith point also"));
             }
-        }else
-            startGame();
+        }
     }
 
     /**
@@ -242,18 +235,18 @@ public class Controller {
      * and have received the correct number of Faith points
      */
     public boolean checkInitialResources() {
-        System.out.println("sto controllando se gli altri giocatori hanno scelto le risorse");
+        //System.out.println("sto controllando se gli altri giocatori hanno scelto le risorse");[Debug]
         boolean result=true;
         for (int i = 0; i < game.getPlayers().size(); i++) {
             String name= game.getPlayers().get(i).getName();
-            System.out.println("sto controllando "+name);
+            //System.out.println("sto controllando "+name);[Debug]
             if (!checkPlayerWarehouse(i)) {
-                System.out.println("non ha ancora scelto le risorse initiali");
+                //System.out.println("non ha ancora scelto le risorse initiali");[Debug]
                 result=false;
             } else
-                System.out.println(name+" ha il giusto numero di risorse");
+                //System.out.println(name+" ha il giusto numero di risorse");[Debug]
             checkPlayerInitialFaithMarker(i);
-            System.out.println("faithmarker sistemato");
+            //System.out.println("faithmarker sistemato");[Debug]
         }
         return result;
     }
@@ -262,16 +255,16 @@ public class Controller {
      * @param i is the position of the player
      */
     private void checkPlayerInitialFaithMarker(int i) {
-        System.out.println("controllo il suo faithmarker");
+        //System.out.println("controllo il suo faithmarker");[Debug]
         Player player = getPlayerFromId(getHandlerFromPlayerPosition(i).getClientId());
         int position = player.getPersonalBoard().getFaithMarker().getFaithPosition();
-        System.out.println("mi sono salvato la sua posizione");
+        //System.out.println("mi sono salvato la sua posizione");[Debug]
         if (position != playerInitialFaithPoint(i)) {
-            System.out.println("ha ricevuto uno sbagliato numero di faith points");
+            //System.out.println("ha ricevuto uno sbagliato numero di faith points");[Debug]
             position = player.getPersonalBoard().getFaithMarker().reset();
-            System.out.println("ho resettato il faithmarker");
+            //System.out.println("ho resettato il faithmarker");[Debug]
             while (position < playerInitialFaithPoint(i)) {
-                System.out.println("gli sto assegnando un punto");
+                //System.out.println("gli sto assegnando un punto");[Debug]
                 player.getPersonalBoard().getFaithMarker().updatePosition();
             }
         }
@@ -282,17 +275,17 @@ public class Controller {
      * @return true if he has choose the correct number of resources yet
      */
     private boolean checkPlayerWarehouse(int i){
-        System.out.println("sto controllando il suo warehouse");
+        //System.out.println("sto controllando il suo warehouse");[Debug]
         Player player=getPlayerFromId(getHandlerFromPlayerPosition(i).getClientId());
         ArrayList<Resource> resources=player.getPersonalBoard().getWarehouseDepots().getResources();
-        System.out.println("mi sono salvato tutte le sue risorse");
+        //System.out.println("mi sono salvato tutte le sue risorse");[Debug]
         if (resources.size()!= playerInitialResources(i) ) {
             if (resources.size()>0) {
-                System.out.println("ha scelto un numero sbagliato di risorse");
+                //System.out.println("ha scelto un numero sbagliato di risorse");[Debug]
                 game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().clear();
-                System.out.println("ho pulito il suo warehouse");
+                //System.out.println("ho pulito il suo warehouse");[Debug]
                 if (i != 0 && server.isClientOnline(game.getPlayers().get(i).getName())) {
-                    System.out.println("gli chiedo di scegliere nuovamente");
+                    //System.out.println("gli chiedo di scegliere nuovamente");[Debug]
                     getHandlerFromPlayerPosition(i).send(new GetInitialResourcesAction("You have choose an incorrect number of resources, please resend your initial resources:  ", playerInitialResources(i)));
                 }
             }return false;
@@ -785,36 +778,79 @@ Player player=getPlayerInTurn();
         return true;
     }
 
+    /**
+     * this method summarise the initial situation of the game and send to all player those info
+     */
     public void startGame() {
+        //System.out.println("sono nello start game");[Debug]
         lobby.setStateOfGame(GameState.ONGOING);
-        System.out.println("sono nello start game");
         actualPlayerTurn=lobby.getClientFromPosition().get(0);
-        System.out.println("sto creando il startingGameMessage");
-        System.out.println("l'actual player turn è "+actualPlayerTurn.getID());
-        System.out.println("l'actual player turn è "+actualPlayerTurn.getNickName());
-        String[][] simplifiedMarket =game.getSimplifiedMarket();
-        System.out.println("market salvato");
-        lobby.sendAll(new MarketChangeMessage(simplifiedMarket));
-        int[][] devMatrix=game.getSimplifiedDevMatrix();
-        System.out.println("devMatrix salvata");
         for(Player p:game.getPlayers()){
             String name=p.getName();
             if (server.isClientOnline(name)) {
-                System.out.println(name);
-                ArrayList<String>[] warehouse = p.getPersonalBoard().getSimplifiedWarehouse();
-                Map<Integer, Boolean> cardsId = p.getCardsId();
-                System.out.println("warehouse di " + name + " salvato");
-                int faithPosition = p.getPersonalBoard().getFaithMarker().getFaithPosition();
-                System.out.println("mi sono salvato il faith marker");
-                //int[] simplifiedStrongbox=p.getPersonalBoard().getSimplifiedStrongbox();
-                System.out.println("messaggio costruito per " + name);
-                getHandlerFromPlayer(name).send(new LobbyMessage("ciao"));
-                getHandlerFromPlayer(name).send(new StartingGameMessage(cardsId, warehouse, faithPosition, simplifiedMarket, devMatrix, "We are ready to start. it's turn of " /*+
-                        server.getNameFromId().get(actualPlayerTurn.getID())*/,p.getPersonalBoard().getSimplifiedStrongbox() ));
-                System.out.println("messaggio inviato al player " + name);
+                sendMarketInfo(p);
+                sendDevCardMatrixInfo(p);
+                sendWarehouseInfo(p);
+                sendPlayerCardsInfo(p);
+                sendFaithMarkerPosition(p);
+                sendStrongboxInfo(p);
             }
         }
+        lobby.sendAll(new StartingGameMessage());
+    }
 
+    /**
+     * this method summarise the composition of the Player's Strongbox and send it to the player
+     * @param p is the Player who need the info of his Strongbox
+     */
+    private void sendStrongboxInfo(Player p) {
+        ClientHandler handler=getHandlerFromPlayer(p.getName());
+        handler.send(new StrongboxChangeMessage(p.getPersonalBoard().getSimplifiedStrongbox()));
+    }
+
+    /**
+     * this method pick the position of the Player's Faith marker and send it to the player
+     * @param p is the Player who need the info of his Faith marker
+     */
+    private void sendFaithMarkerPosition(Player p) {
+        ClientHandler handler=getHandlerFromPlayer(p.getName());
+        handler.send(new FaithPositionChangeMessage(p.getPersonalBoard().getFaithMarker().getFaithPosition()));
+    }
+
+    /**
+     * this method pick the id of the Player's cards and send them to the player
+     * @param p is the Player who need the info of his cards
+     */
+    private void sendPlayerCardsInfo(Player p) {
+        ClientHandler handler=getHandlerFromPlayer(p.getName());
+        handler.send(new CardIDChangeMessage(p.getCardsId()));
+    }
+
+    /**
+     * this method summarise the composition of the Player's Warehouse and send it to the player
+     * @param p is the Player who need the info of his Warehouse
+     */
+    private void sendWarehouseInfo(Player p) {
+        ClientHandler handler=getHandlerFromPlayer(p.getName());
+        handler.send(new WareHouseChangeMessage(p.getPersonalBoard().getSimplifiedWarehouse()));
+    }
+
+    /**
+     * this method summarise the composition of the Development cards matrix and send it to all players
+     * @param p is the Player who need the info of the Development cards Matrix
+     */
+    private void sendDevCardMatrixInfo(Player p) {
+        ClientHandler handler=getHandlerFromPlayer(p.getName());
+        handler.send(new DevMatrixChangeMessage(game.getSimplifiedDevMatrix()));
+    }
+
+    /**
+     * this method summarise the composition of the Resource market and send it to all players
+     * @param p is the Player who need the info of the Resource Market
+     */
+    private void sendMarketInfo(Player p) {
+        ClientHandler handler=getHandlerFromPlayer(p.getName());
+        handler.send(new MarketChangeMessage(game.getSimplifiedMarket()));
     }
 
     public VirtualClient getActualPlayerTurn() {
@@ -822,24 +858,10 @@ Player player=getPlayerInTurn();
     }
 
     public void turnUpdate() {
-        int id=actualPlayerTurn.getID();
-        int actualIndex=0;
-        for(Player player:game.getPlayers()){
-            if (server.getNameFromId().get(id).equals(player.getName())){
-                ArrayList<Resource> resources=player.getResourceSupply().viewResources();
-                if(!resources.isEmpty()){
-                    int pointsToGive =player.getResourceSupply().discardResources(resources);
-                    game.pointsGiveAway(player, pointsToGive);
-                }
-                actualIndex=game.getPlayers().indexOf(player);
-                player.resetAction();
-                break;
-            }
-        }
-        actualIndex=(actualIndex+1)%(game.getPlayers().size());
-        String name=game.getPlayers().get(actualIndex).getName();
-        id=server.getIDFromName().get(name);
-        actualPlayerTurn=server.getClientFromId().get(id);
+        String name=actualPlayerTurn.getNickName();
+        Player player=game.getPlayerFromName(name);
+        finishPlayerTurn(player);
+        changeActualPlayerTurn();
         String s =game.draw();
         if(s.isEmpty()) {
             lobby.sendAll(new LobbyMessage("è il turno di " + server.getNameFromId().get(actualPlayerTurn.getID())));
@@ -853,6 +875,33 @@ Player player=getPlayerInTurn();
         }
     }
 
+    private void changeActualPlayerTurn() {
+        int actualIndex=lobby.getPositionFromClient().get(actualPlayerTurn);
+        do {
+            actualIndex=(actualIndex+1)%(game.getPlayers().size());
+        }
+        while(!lobby.getClientFromPosition().containsKey(actualIndex));
+        actualPlayerTurn=lobby.getClientFromPosition().get(actualIndex);
+    }
+
+    /**
+     * this method check if there is something not concluded and in case terminate it
+     * @param player is the player who is terminating his turn
+     */
+    private void finishPlayerTurn(Player player) {
+        player.resetAction();
+        ArrayList<Resource> resources=player.getResourceSupply().viewResources();
+        if(!resources.isEmpty()){
+            int pointsToGive =player.getResourceSupply().discardResources(resources);
+            game.pointsGiveAway(player, pointsToGive);
+        }
+    }
+
+    /**
+     * this method insert the reconnected client in the correct position in game
+     * @param id is the id of the client reconnected
+     * @param name is the name of the client reconnected
+     */
     public void insertPlayerInOrder(int id, String name) {
         ArrayList<String> names;
         names= (ArrayList<String>) game.getPlayers().stream().map(Player::getName).collect(Collectors.toList());
@@ -861,60 +910,35 @@ Player player=getPlayerInTurn();
         lobby.getClientFromPosition().put(position,server.getClientFromId().get(id));
     }
 
-    public void sendInfoOfgame(int id, String name) {
-        if(lobby.getStateOfGame()==GameState.WAITING){
-            server.getClientFromId().get(id).getClientHandler().send(new LobbyMessage("Welcome back. " +
+    /**
+     * this method send all the info of the game to the client reconnected based on the game phase
+     * @param id is the id of the client reconnected
+     */
+    public void sendInfoOfGame(int id) {
+        if (lobby.getStateOfGame() == GameState.WAITING) {
+            getHandlerFromPlayer(id).send(new LobbyMessage("Welcome back. " +
                     "We are waiting for other " + lobby.getSeatsAvailable() + " players"));
-        }else if(lobby.getStateOfGame()==GameState.PREPARATION1) {
-            for (Player p : game.getPlayers()) {
-                if (p.getName().equals(name)) {
-                    ArrayList<Integer> cardsId = new ArrayList<>();
-                    p.getLeadCards().forEach(leadCard -> cardsId.add(leadCard.getId()));
-                    if (cardsId.size() > 2)
-                        server.getClientFromId().get(id).getClientHandler().send(new LeaderCardDistribution(cardsId,
-                                "Please choose 2 leader card to hold"));
-                    else
-                        server.getClientFromId().get(id).getClientHandler().send(new LeaderCardDistribution(cardsId,
-                                "You have chosen this cards"));
-                }
-            }
-        }else if(lobby.getStateOfGame()==GameState.PREPARATION2){
-            for (Player p : game.getPlayers()) {
-                if (p.getName().equals(name)) {
-                    int index = game.getPlayers().indexOf(p);
-                    if (index == 0)
-                        lobby.getClientFromPosition().get(0).getClientHandler().send(new LobbyMessage("Wait until other players have chosen initial resources"));
-                    else if (index == 1)
-                        lobby.getClientFromPosition().get(1).getClientHandler().send(new GetInitialResourcesAction("You can choose 1 initial resource",1));
-                    else if (index == 2)
-                        lobby.getClientFromPosition().get(2).getClientHandler().send(new GetInitialResourcesAction(
-                                "You can choose 1 initial resource, you will receive a faith point also",1));
-                    else
-                        lobby.getClientFromPosition().get(3).getClientHandler().send(new GetInitialResourcesAction(
-                                "You can choose 2 initial resources, you will receive a faith point also",2));
-                }
-            }
-        }
-        else if(lobby.getStateOfGame()==GameState.ONGOING) {
-            String[][] simplifiedMarket = game.getSimplifiedMarket();
-            System.out.println("market salvato");
-            getHandlerFromPlayer(id).send(new MarketChangeMessage(simplifiedMarket));
-            int[][] devMatrix= game.getSimplifiedDevMatrix();
-            System.out.println("devMatrix salvata");
-            getHandlerFromPlayer(id).send(new DevMatrixChangeMessage(devMatrix));
-
-            for (Player p : game.getPlayers()) {
-                if (p.getName().equals(name)) {
-                    ArrayList<String>[] warehouse = p.getPersonalBoard().getSimplifiedWarehouse();
-                    Map<Integer,Boolean> cardsId = p.getCardsId();
-                    System.out.println("warehouse di " + name + " salvato");
-                    getHandlerFromPlayer(id).send(new WareHouseChangeMessage(warehouse));
-                    getHandlerFromPlayer(id).send(new CardIDChangeMessage(cardsId));
-                    int faithPosition = p.getPersonalBoard().getFaithMarker().getFaithPosition();
-                    System.out.println("messaggio costruito per " + name);
-                    getHandlerFromPlayer(id).send(new FaithPositionChangeMessage(faithPosition));
-                }
-            }
+        } else if (lobby.getStateOfGame() == GameState.PREPARATION1) {
+            if (leaderCardChosenYet(getPlayerFromId(id)))
+                notifyLeadCardDistributed(server.getClientFromId().get(id));
+            else
+                getHandlerFromPlayer(id).send(new LobbyMessage("You have Chosen your Leader cards yet"));
+        } else if (lobby.getStateOfGame() == GameState.PREPARATION2) {
+            if (!checkPlayerWarehouse(lobby.getPositionFromClient().get(server.getClientFromId().get(id)))) {
+                askInitialResources(server.getClientFromId().get(id));
+                checkPlayerInitialFaithMarker(lobby.getPositionFromClient().get(server.getClientFromId().get(id)));
+            }else
+                getHandlerFromPlayer(id).send(new LobbyMessage("You have Chosen your initial Resource yet"));
+        } else if (lobby.getStateOfGame() == GameState.ONGOING) {
+            Player p=getPlayerFromId(id);
+            sendMarketInfo(p);
+            sendDevCardMatrixInfo(p);
+            sendWarehouseInfo(p);
+            sendPlayerCardsInfo(p);
+            sendFaithMarkerPosition(p);
+            sendStrongboxInfo(p);
+            getHandlerFromPlayer(id).send(new StartingGameMessage());
         }
     }
 }
+
