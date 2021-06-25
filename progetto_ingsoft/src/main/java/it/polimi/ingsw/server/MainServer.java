@@ -116,17 +116,17 @@ public class MainServer {
      */
     public void disconnectClient(int clientId) {
         ClientHandler clientHandler = getClientFromId().get(clientId).getClientHandler();
+        //clientHandler.closeStream();
         clientHandler.getPingObserver().setActive(false);
         ConnectionServer.removePingObserver(clientHandler.getPingObserver());
+        clientFromId.remove(clientId);
+        clientHandler.setActive(false);
+        System.out.println(nameFromId.get(clientId) + " is disconnected");//[Debug]
         if(lobbyFromClientID.containsKey(clientId)) {
             Lobby lobby=lobbyFromClientID.get(clientId);
             lobby.removePlayer(clientFromId.get(clientId));
-            lobby.sendAll(new LobbyMessage(nameFromId.get(clientId)+" left the game"));
         }
-        clientFromId.remove(clientId);
-        clientHandler.setActive(false);
-        String name = nameFromId.get(clientId);
-        System.out.println(name + " is disconnected");//[Debug]
+        lobbyFromClientID.remove(clientId);
     }
 
     /**
@@ -210,7 +210,6 @@ public class MainServer {
         for(Lobby lobby:lobbies) {
             if (!lobby.isLobbyFull() && lobby.getStateOfGame()==GameState.WAITING && !isSinglePlayerLobby(lobby)) {
                 System.out.println("c'è una lobby libera");//[Debug]
-                lobby.sendAll(new LobbyMessage(nameFromId.get(id) + " has entered in the lobby"));
                 lobby.insertPlayer(id);
                 int lobbySpace=lobby.getClientFromPosition().size() + lobby.getSeatsAvailable();
                 if(lobby.getSeatsAvailable()>1)

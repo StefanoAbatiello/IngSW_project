@@ -120,11 +120,11 @@ public class Controller {
                 //System.out.println("creo partita multiPlayer");[Debug]
                 game=new MultiPlayer(lobby.getPlayersName());
                 //System.out.println("partita multiPlayer creata");[Debug]
-                //TODO gestisco le eccezioni
             }
             for(VirtualClient client: lobby.getClientFromPosition().values())
                 notifyLeadCardDistributed(client);
         } catch (playerLeadsNotEmptyException | IOException | ParseException e) {
+            //TODO gestisco le eccezioni
             e.printStackTrace();
         }
     }
@@ -167,7 +167,7 @@ public class Controller {
         Player player = getPlayerFromId(id);
         if(!leaderCardChosenYet(player)) {
             if (checkLeadsIdChosen(player,card1,card2)){
-                getHandlerFromPlayer(id).send(new LobbyMessage("Leader cards picked correctly, now wait the other players"));
+                getHandlerFromPlayer(id).send(new LobbyMessage("Leader cards picked correctly"));
                 //System.out.println("gli id scelti vanno bene");[Debug]
                 return  player.choose2Leads(card1, card2);
             }else {
@@ -220,8 +220,10 @@ public class Controller {
             else {
                 int num = playerInitialResources(position);
                 getHandlerFromPlayerPosition(position).send(new GetInitialResourcesAction("You can choose " + num + " initial resource", num));
-                if (position > 2)
+                if (position >= 2) {
                     getHandlerFromPlayerPosition(position).send(new LobbyMessage("you will receive a Faith point also"));
+                    getPlayerFromId(client.getID()).getPersonalBoard().getFaithMarker().updatePosition();
+                }
             }
         }
     }
@@ -259,12 +261,13 @@ public class Controller {
             String name= game.getPlayers().get(i).getName();
             //System.out.println("sto controllando "+name);[Debug]
             if (!checkPlayerStartingWarehouse(i)) {
-                //System.out.println("non ha ancora scelto le risorse initiali");[Debug]
+                System.out.println(name+" non ha ancora scelto le risorse initiali");//[Debug]
                 result=false;
-            } else
-                //System.out.println(name+" ha il giusto numero di risorse");[Debug]
-            checkPlayerInitialFaithMarker(i);
-            //System.out.println("faithmarker sistemato");[Debug]
+            } else {
+                System.out.println(name + " ha il giusto numero di risorse");//[Debug]
+                checkPlayerInitialFaithMarker(i);
+                System.out.println(name+": faithmarker ok");//[Debug]
+            }
         }
         return result;
     }
@@ -275,14 +278,13 @@ public class Controller {
     private void checkPlayerInitialFaithMarker(int i) {
         //System.out.println("controllo il suo faithmarker");[Debug]
         Player player = getPlayerFromId(getHandlerFromPlayerPosition(i).getClientId());
-        int position = player.getPersonalBoard().getFaithMarker().getFaithPosition();
         //System.out.println("mi sono salvato la sua posizione");[Debug]
-        if (position != playerInitialFaithPoint(i)) {
-            //System.out.println("ha ricevuto uno sbagliato numero di faith points");[Debug]
-            position = player.getPersonalBoard().getFaithMarker().reset();
+        if (player.getPersonalBoard().getFaithMarker().getFaithPosition() != playerInitialFaithPoint(i)) {
+            System.out.println("ha ricevuto uno sbagliato numero di faith points");//[Debug]
+            player.getPersonalBoard().getFaithMarker().reset();
             //System.out.println("ho resettato il faithmarker");[Debug]
-            while (position < playerInitialFaithPoint(i)) {
-                //System.out.println("gli sto assegnando un punto");[Debug]
+            while (player.getPersonalBoard().getFaithMarker().getFaithPosition() < playerInitialFaithPoint(i)) {
+                System.out.println("gli sto assegnando un punto");//[Debug]
                 player.getPersonalBoard().getFaithMarker().updatePosition();
             }
         }
@@ -855,7 +857,9 @@ public class Controller {
      */
     private void sendStrongboxInfo(Player p) {
         ClientHandler handler=getHandlerFromPlayer(p.getName());
+        System.out.println("mando strongbox");
         handler.send(new StrongboxChangeMessage(p.getPersonalBoard().getSimplifiedStrongbox()));
+        System.out.println("strongbox mandato");
     }
 
     /**
@@ -864,7 +868,9 @@ public class Controller {
      */
     private void sendFaithMarkerPosition(Player p) {
         ClientHandler handler=getHandlerFromPlayer(p.getName());
+        System.out.println("mando faith position");
         handler.send(new FaithPositionChangeMessage(p.getPersonalBoard().getFaithMarker().getFaithPosition()));
+        System.out.println("faith position mandato");
     }
 
     /**
@@ -907,21 +913,28 @@ public class Controller {
         return actualPlayerTurn;
     }
 
+    /**
+     * this method handles the end of the Player's turn
+     */
     public void turnUpdate() {
-        String name=actualPlayerTurn.getNickName();
-        Player player=game.getPlayerFromName(name);
-        finishPlayerTurn(player);
-        changeActualPlayerTurn();
-        String s =game.draw();
-        if(s.isEmpty()) {
-            lobby.sendAll(new LobbyMessage("è il turno di " + server.getNameFromId().get(actualPlayerTurn.getID())));
-        }else if(s.equalsIgnoreCase("finished")) {
-            //TODO gestione fine gioco
-        } else{
-            if(s.contains("Lorenzo has discarded two development card of color ")) {
-                lobby.sendAll(new DevMatrixChangeMessage(game.getSimplifiedDevMatrix()));
+        if (!lobby.getClientFromPosition().values().isEmpty()) {
+            String name = actualPlayerTurn.getNickName();
+            Player player = game.getPlayerFromName(name);
+            finishPlayerTurn(player);
+            changeActualPlayerTurn();
+            String s = game.draw();
+            if (s.isEmpty()) {
+                lobby.sendAll(new LobbyMessage("è il turno di " + server.getNameFromId().get(actualPlayerTurn.getID())));
+            } else if (s.equalsIgnoreCase("finished")) {
+                //TODO gestione fine gioco
+            } else {
+                if (lobby.playersOnline() > 0) {
+                    if (s.contains("Lorenzo has discarded two development card of color ")) {
+                        lobby.sendAll(new DevMatrixChangeMessage(game.getSimplifiedDevMatrix()));
+                    }
+                    lobby.sendAll(new LobbyMessage(s + ", è di nuovo il tuo turno"));
+                }
             }
-            lobby.sendAll(new LobbyMessage(s+", è di nuovo il tuo turno"));
         }
     }
 

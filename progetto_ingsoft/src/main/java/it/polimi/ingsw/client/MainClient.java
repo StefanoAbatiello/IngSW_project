@@ -76,9 +76,7 @@ public class MainClient implements Runnable, Sender {
                 actionHandler(input);
             }
         } catch (ClassNotFoundException | IOException | NullPointerException e) {
-            System.err.println("Connection /closed");
-            System.err.println(e.getMessage());
-            e.printStackTrace();
+            System.err.println("Connection closed");
             disconnect();
         }
     }
@@ -142,7 +140,9 @@ public class MainClient implements Runnable, Sender {
         }
 
         //7-gestione del salvataggio e della stampa della situazione iniziale della partita
-        else if(input instanceof StartingGameMessage){}
+        else if(input instanceof StartingGameMessage){
+            view.gameSetupHandler(viewCLI,input);
+        }
 
         //9-gestione della richiesta di sistemazione delle nuove risorse nel supply
         else if(input instanceof ResourceInSupplyRequest){

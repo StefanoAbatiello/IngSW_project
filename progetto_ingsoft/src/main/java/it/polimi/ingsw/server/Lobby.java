@@ -47,7 +47,7 @@ public class Lobby {
     }
 
     public void sendAll(SerializedMessage message) {
-        for(VirtualClient player: positionFromClient.keySet()){
+        for(VirtualClient player: clientFromPosition.values()){
             player.getClientHandler().send(message);
         }
     }
@@ -101,7 +101,6 @@ public class Lobby {
         this.seatsAvailable--;
         if(isLobbyFull()) {
             System.out.println("numero di giocatori raggiunto, inizia la partita!!!");
-            sendAll(new LobbyMessage("number of players reached, the game can start!!!"));
             controller.createGame();
         }
         return positionFromClient;
@@ -113,14 +112,17 @@ public class Lobby {
     }
 
     public Map<VirtualClient,Integer> removePlayer(VirtualClient player) {
+
+        clientFromPosition.remove(positionFromClient.get(player));
+        positionFromClient.remove(player);
+        if (clientFromPosition.size()>0)
+            sendAll(new LobbyMessage(player.getNickName() +" left the game"));
+        seatsAvailable++;
         if(stateOfGame==GameState.ONGOING) {
             if (player.equals(controller.getActualPlayerTurn())) {
                 controller.turnUpdate();
             }
         }
-        clientFromPosition.remove(positionFromClient.get(player));
-        positionFromClient.remove(player);
-        seatsAvailable++;
         return positionFromClient;
     }
 
@@ -141,7 +143,8 @@ public class Lobby {
                         System.out.println("tutti hanno scelto le lead cards");
                         int playersNum=positionFromClient.size();
                         if(playersNum>1 && playersOnline()>1) {
-                            controller.askInitialResources(server.getClientFromId().get(id));
+                            for(VirtualClient client:clientFromPosition.values())
+                            controller.askInitialResources(client);
                         }else
                             controller.startGame();
                     }

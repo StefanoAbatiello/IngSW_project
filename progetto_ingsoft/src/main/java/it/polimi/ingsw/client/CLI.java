@@ -46,7 +46,6 @@ public class CLI extends App implements View {
         viewCLI.showMarket();
         System.out.println("\n \nthis are the buyable development cards: ");
         viewCLI.showDevMatrix();
-        System.out.println(((StartingGameMessage)input).getMessage());
         System.out.println("Type \"ShowActions\" to see commands");
     }
     @Override

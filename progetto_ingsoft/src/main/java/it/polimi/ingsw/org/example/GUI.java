@@ -114,9 +114,8 @@ public class GUI extends Application implements View {
             System.out.println("end");});
     }
 
-    //@Override
     public void waitingRoomHandler(WaitingRoomAction waitingRoomAction) {
-        Platform.runLater(()->{System.out.println("waitingroom");
+        Platform.runLater(()->{System.out.println("waiting room");
             changeStage(WAITING);
             System.out.println("change stage");
             SetupController guicontroller = (SetupController) nameMapController.get(WAITING);

@@ -70,9 +70,7 @@ public class ClientHandler implements Runnable, Sender {
                 System.out.println("aspetto un messaggio");//[Debug]
                 message = streamReader();
                 System.out.println("ho ricevuto un messaggio da "+ server.getNameFromId().get(clientID));//[Debug]
-                if(message instanceof NickNameAction)
-                    send(new LobbyMessage("Action not valid now"));
-                else if(!pingHandler(message) && !playersNumberHandler(message)){
+                if(!pingHandler(message) && !playersNumberHandler(message) && !quitHandler(message)){
                     if (!server.getLobbyFromClientID().containsKey(clientID) || server.getLobbyFromClientID().get(clientID).getStateOfGame()==GameState.WAITING || server.getLobbyFromClientID().get(clientID).getStateOfGame()==GameState.ENDED)
                         send(new LobbyMessage("Action not valid now"));
                     else
@@ -88,6 +86,14 @@ public class ClientHandler implements Runnable, Sender {
         }
     }
 
+    private boolean quitHandler(SerializedMessage message) {
+        if(message instanceof QuitMessage){
+            server.disconnectClient(clientID);
+            return true;
+        }
+        return false;
+    }
+
     /**
      * @return try to read a message from input stream of the socket
      */
@@ -97,9 +103,8 @@ public class ClientHandler implements Runnable, Sender {
              message = (SerializedMessage) inputStreamObj.readObject();
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("Client not reachable");
-            e.printStackTrace();
             active=false;
-            message = new quitMessage();
+            return new QuitMessage();
         }
         return message;
     }
@@ -158,10 +163,6 @@ public class ClientHandler implements Runnable, Sender {
                 if (num < 0 || num > 3)
                     send(new RequestNumOfPlayers("Number of Player not valid. Please type a valid number [0 to 3]"));
                 else {
-                    if (num != 0) {
-                        send(new LobbyMessage("You are creating a new lobby with other " + num + " players"));
-                    } else
-                        send(new LobbyMessage("You are creating a new single player game"));
                     Lobby lobby = new Lobby(server.generateLobbyId(), num + 1, server);
                     send(new WaitingRoomAction("Lobby created. Wait for the other players to join!"));
                     System.out.println("Lobby di" + num + "giocatori creata con id: " + lobby.getLobbyID() + "." +
@@ -204,6 +205,18 @@ public class ClientHandler implements Runnable, Sender {
 
     public Socket getSocket() {
         return this.socket;
+    }
+
+    public void closeStream() {
+        try {
+            inputStreamObj.close();
+        } catch (IOException ignored) {
+        }
+        try {
+            outputStreamObj.close();
+        } catch (IOException ignored) {
+
+        }
     }
 }
 
