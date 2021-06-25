@@ -352,7 +352,7 @@ public class Controller {
                             return false;
                             }
                             System.out.println("mi sono preso la carta");
-                            if (player.getPersonalBoard().removeResourcesFromBuy(cardToBuy.getRequirements())) {
+                            if (player.getPersonalBoard().checkResourcesForUsages(cardToBuy.getRequirements())) {
                                 System.out.println("ha le risorse necessarie");
                                 player.setAction(Action.BUYCARD);
                                 game.getDevDeckMatrix().buyCard(cardToBuy);
@@ -457,15 +457,7 @@ public class Controller {
 
     public boolean checkProduction(ArrayList<Integer> cardProd , ArrayList<String> personalProdIn, String personalProdOut, ArrayList<String> leadProdOut, int id) throws ActionAlreadySetException, ResourceNotValidException, CardNotOwnedByPlayerOrNotActiveException {
         //TODO cosa manda client, produzione personale e leader da controllare
-Player player=getPlayerInTurn();
-        ArrayList<Resource> resourceArrayList=player.getPersonalBoard().getStrongBox().getStrongboxContent();
-            resourceArrayList.addAll(player.getPersonalBoard().getWarehouseDepots().getResources());
-       if(!player.getPersonalBoard().getSpecialShelves().isEmpty()) {
-            if(player.getPersonalBoard().getSpecialShelves().get(0).isPresent())
-                resourceArrayList.addAll(player.getPersonalBoard().getSpecialShelves().get(0).get().getSpecialSlots());
-            if(player.getPersonalBoard().getSpecialShelves().get(1).isPresent())
-            resourceArrayList.addAll(player.getPersonalBoard().getSpecialShelves().get(1).get().getSpecialSlots());
-        }
+        Player player=getPlayerInTurn();
 
         Optional<Action> playerAction = Optional.ofNullable(player.getAction());
         if (playerAction.isPresent())
@@ -479,8 +471,9 @@ Player player=getPlayerInTurn();
                 return false;
             }
             ArrayList<Resource> totalProdOut;
-            if(checkResourcePlayer(totalProdIn, player)) {
+            if(player.getPersonalBoard().checkResourcesForUsages(totalProdIn)) {
                 player.setAction(Action.ACTIVATEPRODUCTION);
+                player.getPersonalBoard().removeResources(totalProdIn);
                 totalProdOut = takeAllProdOut(cardProd, stringArrayToResArray(personalProdIn), personalProdOut, leadProdOut, id);
                 player.getPersonalBoard().getStrongBox().addInStrongbox(totalProdOut);
                 getHandlerFromPlayer(id).send(new StrongboxChangeMessage(player.getPersonalBoard().getSimplifiedStrongbox()));
@@ -491,12 +484,6 @@ Player player=getPlayerInTurn();
         }
 
         return false;
-    }
-
-
-    private boolean checkResourcePlayer(ArrayList<Resource> totalProdIn, Player player) {
-       player.getPersonalBoard().removeResources(totalProdIn);
-            return true;
     }
 
     private ArrayList<Resource> takeAllProdIn( ArrayList<Integer> cardProd ,ArrayList<Resource> personalProdIn, Player player) throws CardChosenNotValidException {
@@ -588,12 +575,7 @@ Player player=getPlayerInTurn();
     }
 
     public void checkLeadActivation(int gameObj, int id) {
-        String name = getActualPlayerTurn().getNickName();
-        Player player = game.getPlayers().get(0);
-        for (Player p : game.getPlayers()) {
-            if (p.getName().equals(name))
-                player = p;
-        }
+        Player player= getPlayerFromId(id);
         System.out.println("mi sono salvato il player");
         if (gameObj < 48 || gameObj > 64) {
             getHandlerFromPlayer(id).send(new LobbyMessage("LeadCard ID not valid"));
@@ -605,8 +587,12 @@ Player player=getPlayerInTurn();
                     getHandlerFromPlayer(id).send(new LobbyMessage("This leadCard is already active"));
                 } else {
                     System.out.println("puoi attivare la carta");
-                    player.activateAbility(card);
-                    getHandlerFromPlayer(id).send(new CardIDChangeMessage(player.getCardsId()));
+                    if(requirementsLeadCheck(card,player)) {
+                        player.activateAbility(card);
+                        getHandlerFromPlayer(id).send(new CardIDChangeMessage(player.getCardsId()));
+                    }else
+                        getHandlerFromPlayer(id).send(new LobbyMessage("Missing requirements to activate this lead"));
+
                 }
             } catch (CardChosenNotValidException e) {
                 getHandlerFromPlayer(id).send(new LobbyMessage("You do not own the leadCard chosen"));
@@ -640,8 +626,47 @@ Player player=getPlayerInTurn();
         }
     }
 
-    //ogni posizione dell'array indica un piano
-    //TODO anche con special shelf
+    private boolean requirementsLeadCheck(LeadCard card, Player player ){
+        System.out.println("dentro reqCheck");
+        if(!card.getResources().isEmpty()) {
+            System.out.println("!card.getResources().isEmpty()");
+            if (player.getPersonalBoard().checkResourcesForUsages(card.getResources())) {
+                player.getPersonalBoard().removeResources(card.getResources());
+                return true;
+            } else
+                return false;
+        }else{
+            System.out.println("else debug");
+            return cardsReqLeadCheck(card, player);
+
+        }
+
+    }
+
+    private boolean cardsReqLeadCheck(LeadCard card, Player player){
+        boolean result=false;
+        ArrayList<DevCard> playerDev= player.getPersonalBoard().getDevCardSlot().getDevCards();
+        if(card.getDevCardRequired().keySet().contains(1)) {
+            System.out.println("if(card.getDevCardRequired().keySet().contains(1))");
+            ArrayList<String> playerDevsColors = new ArrayList<>();
+            playerDev.forEach(dev -> {
+                String color = dev.getColor();
+                playerDevsColors.add(color);
+            });
+            for (String color : card.getDevCardRequired().get(1)) {
+                result = false;
+                if (playerDevsColors.contains(color)) {
+                    playerDevsColors.remove(color);
+                    result = true;
+                }
+            }
+        }else {
+            for (DevCard dev : playerDev)
+                if (dev.getColor().equals(card.getDevCardRequired().get(2).get(0)) && dev.getLevel() == 2)
+                    result = true;
+        }
+        return result;
+    }
 
     private ArrayList<Resource> stringArrayToResArray(ArrayList<String> gameObj){
         ArrayList<Resource> allRes = new ArrayList<>();

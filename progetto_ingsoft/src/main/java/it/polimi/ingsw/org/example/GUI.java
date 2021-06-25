@@ -99,6 +99,7 @@ public class GUI extends Application implements View {
         SetupController guicontroller = (SetupController) nameMapController.get(NICKNAME);
         System.out.println("end controller setup");
         guicontroller.setErrorLabel(nickNameAction.getMessage());
+        guicontroller.setEmptyTextFieldName();
         System.out.println("end");});
     }
 

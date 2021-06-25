@@ -51,7 +51,7 @@ public class WarehouseDepots implements ResourceCreator {
     /**
      * @return a specific resource and remove it from player's warehouse
      */
-    public Resource getResource(Resource resource) {
+    public Resource removeResource(Resource resource) {
         for (Shelf shelf : shelves) {
                 for (Resource resource1 : shelf.getResources()) {
                     if (resource == resource1) {
@@ -80,4 +80,5 @@ public class WarehouseDepots implements ResourceCreator {
             shelf.removeAllRes();
         }
     }
+
 }

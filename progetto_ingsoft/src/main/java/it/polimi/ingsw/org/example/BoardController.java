@@ -15,6 +15,7 @@ import javafx.stage.Window;
 
 import java.util.ArrayList;
 import java.util.Optional;
+import javafx.scene.input.MouseEvent;
 
 public class BoardController implements GUIcontroller{
     @FXML

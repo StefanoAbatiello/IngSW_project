@@ -88,7 +88,10 @@ public class SetupController implements GUIcontroller {
 
     public void setErrorLabel(String confirmation) {
         this.errorLabel.setText(confirmation);
+    }
 
+    public void setEmptyTextFieldName(){
+        this.nickname_field.setText("");
     }
 
     public ArrayList<Integer> getSelectedCards() {
@@ -155,6 +158,7 @@ public class SetupController implements GUIcontroller {
         else
            errorLabel.setText("You already chose 2 leads, if you want to change click RETRY, else NEXT ");
     }
+
     public void setLeads(ArrayList<Integer> cards){
         int card;
         for(Node image: hbox.getChildren()) {
@@ -171,7 +175,7 @@ public class SetupController implements GUIcontroller {
        ArrayList<Integer> cardsId= new ArrayList<>();
         for(Node image:hbox.getChildren()) {
             cardsId.add(Integer.parseInt(image.getId()));
-            image.setVisible(true);
+            image.setOpacity(1.0);
         }
         selectedCards.clear();
         countLeads=0;
@@ -204,6 +208,7 @@ public class SetupController implements GUIcontroller {
                     res.setMouseTransparent(true);
                 ImageView target= (ImageView) mouseEvent.getTarget();
                 String imageId= (target.getId());
+                target.setOpacity(0.8);
                 selectedRes.add(imageId);
                 System.out.println(imageId);
                 shelfMenu.setVisible(true);
@@ -216,22 +221,28 @@ public class SetupController implements GUIcontroller {
     public void selectShelf1() {
         System.out.println("sono qui");
         selectedShelf.add(1);
-        for(Node res:hboxRes.getChildren())
+        for(Node res:hboxRes.getChildren()){
             res.setMouseTransparent(false);
+            res.setOpacity(1.0);
+        }
         shelfMenu.setVisible(false);
         System.out.println("finito");
     }
     public void selectShelf2() {
         selectedShelf.add(2);
-        for(Node res:hboxRes.getChildren())
+        for(Node res:hboxRes.getChildren()){
             res.setMouseTransparent(false);
+            res.setOpacity(1.0);
+             }
         shelfMenu.setVisible(false);
 
     }
     public void selectShelf3() {
         selectedShelf.add(3);
-        for(Node res:hboxRes.getChildren())
+        for(Node res:hboxRes.getChildren()){
             res.setMouseTransparent(false);
+            res.setOpacity(1.0);
+        }
         shelfMenu.setVisible(false);
 
     }
