@@ -80,12 +80,31 @@ public class PersonalBoard {
      * @param resourceArrayList are resources that we want check if they are in warehouse or in strongbox
      * @return true if resources are contained , false otherwise
      */
-    public boolean removeResourcesFromBuy(ArrayList<Resource> resourceArrayList){
-        boolean result = false;
-        List<Resource> personalResources = null;
-        personalResources = Stream.concat(
+    public boolean checkResourcesForUsages(ArrayList<Resource> resourceArrayList){
+        //TODO da scrivere con la concat
+        boolean result=false;
+        ArrayList<Resource> boardResources=new ArrayList<>();
+        Collections.copy(boardResources,strongBox.getStrongboxContent());
+        resourceArrayList.addAll(warehouseDepots.getResources());
+        if(!specialShelves.isEmpty()) {
+            if(specialShelves.get(0).isPresent())
+                resourceArrayList.addAll(specialShelves.get(0).get().getSpecialSlots());
+            if(specialShelves.get(1).isPresent())
+                resourceArrayList.addAll(specialShelves.get(1).get().getSpecialSlots());
+        }
+        for(Resource resource: resourceArrayList){
+            result=false;
+            if (boardResources.contains(resource)) {
+                result = true;
+                boardResources.remove(resource);
+            }
+        }
+        return result;
+        /*boolean result= false;
+        List<Resource> personalResources = Stream.concat(
                 getWarehouseDepots().getResources().stream(), getStrongBox().getStrongboxContent().stream()).collect(Collectors.toList());
         for(Resource resource: resourceArrayList){
+            result=false;
             if (personalResources.contains(resource)) {
                 result = true;
                 personalResources.remove(resource);
@@ -93,7 +112,7 @@ public class PersonalBoard {
             else
                 return result;
         }
-        return result;
+        return result;*/
     }
     //TODO controllare se servono entrambi i metodi
     /**
@@ -103,11 +122,11 @@ public class PersonalBoard {
     public ArrayList<Resource> removeResources(ArrayList<Resource> resources)  {
         for(Resource resource:resources){
             if(warehouseDepots.getResources().contains(resource)){
-                warehouseDepots.getResources().remove(resource);
+                warehouseDepots.removeResource(resource);
             }
             else if(!specialShelves.isEmpty()) {
                 for(int i=0; i<2;i++) {
-                    if (specialShelves.get(i).isPresent())
+                    if (specialShelves.get(i).isPresent() && specialShelves.get(i).get().getResourceType().equals(resource))
                         specialShelves.get(i).get().getSpecialSlots().remove(resource);
                 }
             }

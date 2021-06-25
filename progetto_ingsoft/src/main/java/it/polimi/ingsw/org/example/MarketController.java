@@ -88,36 +88,10 @@ public class MarketController implements GUIcontroller{
     public void changeMarket(String[][] info){
         for (int i=0;i<3;i++){
             for(int j=0;j<4;j++){
-                if(info[i][j].equalsIgnoreCase("BLUE")){
-                    Circle circle=new Circle(24);
-                    circle.setFill(Color.BLUE);
-                    market.add(circle,j,i);
-                }
-                else if(info[i][j].equalsIgnoreCase("GREY")) {
-                    Circle circle = new Circle(24);
-                    circle.setFill(Color.GRAY);
-                    market.add(circle, j, i);
-                }
-                else if(info[i][j].equalsIgnoreCase("PURPLE")) {
-                    Circle circle = new Circle(24);
-                    circle.setFill(Color.PURPLE);
-                    market.add(circle, j, i);
-                }
-                else if(info[i][j].equalsIgnoreCase("YELLOW")) {
-                    Circle circle = new Circle(24);
-                    circle.setFill(Color.YELLOW);
-                    market.add(circle, j, i);
-                }
-                else if(info[i][j].equalsIgnoreCase("RED")) {
-                    Circle circle = new Circle(24);
-                    circle.setFill(Color.RED);
-                    market.add(circle, j, i);
-                }
-                else if(info[i][j].equalsIgnoreCase("WHITE")) {
-                    Circle circle = new Circle(24);
-                    circle.setFill(Color.WHITESMOKE);
-                    market.add(circle, j, i);
-                }
+                Circle circle=new Circle(24);
+                circle.setFill(Color.web(info[i][j]));
+                market.add(circle,j,i);
+
             }
         }
     }

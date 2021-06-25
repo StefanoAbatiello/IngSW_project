@@ -28,7 +28,7 @@ class WarehouseDepotsTest {
         WarehouseDepots warehouseDepots = new WarehouseDepots();
         warehouseDepots.addInShelf(0, Resource.COIN);
 
-        assertEquals(Resource.COIN, warehouseDepots.getResource(Resource.COIN));
+        assertEquals(Resource.COIN, warehouseDepots.removeResource(Resource.COIN));
     }
 
     //TODO controller test

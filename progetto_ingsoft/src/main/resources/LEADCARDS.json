@@ -6,8 +6,7 @@
       "ABILITY": "DISCOUNT",
       "RESOURCE": "SERVANT",
       "RESOURCEREQ":{},
-      "CARDREQ": {"LEVEL": 1, "COLOR":["YELLOW","GREEN"]},
-      "IMAGE": "org.example/leadcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-49-1.png"
+      "CARDREQ": {"LEVEL": 1, "COLOR":["YELLOW","GREEN"]}
     }
   },
   {
@@ -17,9 +16,7 @@
       "ABILITY": "DISCOUNT",
       "RESOURCE": "SHIELD",
       "RESOURCEREQ":{},
-      "CARDREQ": { "LEVEL": 1, "COLOR":["BLUE","PURPLE"]},
-      "IMAGE": "org.example/leadcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-50-1.png"
-
+      "CARDREQ": { "LEVEL": 1, "COLOR":["BLUE","PURPLE"]}
     }
   },
   {
@@ -29,9 +26,7 @@
       "ABILITY": "DISCOUNT",
       "RESOURCE": "STONE",
       "RESOURCEREQ":{},
-      "CARDREQ": {"LEVEL": 1, "COLOR":["PURPLE","GREEN"]},
-      "IMAGE": "org.example/leadcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-51-1.png"
-
+      "CARDREQ": {"LEVEL": 1, "COLOR":["PURPLE","GREEN"]}
     }
   },
   {
@@ -41,9 +36,7 @@
       "ABILITY": "DISCOUNT",
       "RESOURCE": "COIN",
       "RESOURCEREQ":{},
-      "CARDREQ": { "LEVEL": 1, "COLOR":["YELLOW","PURPLE"]},
-      "IMAGE": "org.example/leadcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-52-1.png"
-
+      "CARDREQ": { "LEVEL": 1, "COLOR":["YELLOW","PURPLE"]}
     }
   },
   {
@@ -53,9 +46,7 @@
       "ABILITY": "SHELF",
       "RESOURCE": "STONE",
       "RESOURCEREQ": {"NUM": 5, "KIND":"COIN"},
-      "CARDREQ": {},
-      "IMAGE": "org.example/leadcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-53-1.png"
-
+      "CARDREQ": {}
     }
   },
   {
@@ -65,9 +56,7 @@
       "ABILITY": "SHELF",
       "RESOURCE": "SERVANT",
       "RESOURCEREQ": {"NUM": 5, "KIND":"STONE"},
-      "CARDREQ": {},
-      "IMAGE": "org.example/leadcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-54-1.png"
-
+      "CARDREQ": {}
     }
   },
   {
@@ -77,9 +66,7 @@
       "ABILITY": "SHELF",
       "RESOURCE": "SHIELD",
       "RESOURCEREQ": {"NUM": 5, "KIND":"SERVANT"},
-      "CARDREQ": {},
-      "IMAGE": "org.example/leadcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-55-1.png"
-
+      "CARDREQ": {}
     }
   },
   {
@@ -89,9 +76,7 @@
       "ABILITY": "DISCOUNT",
       "RESOURCE": "COIN",
       "RESOURCEREQ": {"NUM": 5, "KIND":"SHIELD"},
-      "CARDREQ": {},
-      "IMAGE": "org.example/leadcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-56-1.png"
-
+      "CARDREQ": {}
     }
   },
   {
@@ -101,9 +86,7 @@
       "ABILITY": "WHITEMARBLE",
       "RESOURCE": "SERVANT",
       "RESOURCEREQ":{},
-      "CARDREQ": {"LEVEL": 1, "COLOR":["YELLOW","YELLOW","BLUE"]},
-      "IMAGE": "org.example/leadcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-57-1.png"
-
+      "CARDREQ": {"LEVEL": 1, "COLOR":["YELLOW","YELLOW","BLUE"]}
     }
   },
   {
@@ -114,9 +97,7 @@
       "RESOURCE": "SHIELD",
       "RESOURCEREQ":{},
       "CARDREQ":
-      {"LEVEL": 1, "COLOR":["GREEN","GREEN","PURPLE"]},
-      "IMAGE": "org.example/leadcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-58-1.png"
-
+      {"LEVEL": 1, "COLOR":["GREEN","GREEN","PURPLE"]}
     }
   },
   {
@@ -127,9 +108,7 @@
       "RESOURCE": "STONE",
       "RESOURCEREQ":{},
       "CARDREQ":
-      {"LEVEL": 1, "COLOR":["YELLOW","BLUE","BLUE"]},
-      "IMAGE": "org.example/leadcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-59-1.png"
-
+      {"LEVEL": 1, "COLOR":["YELLOW","BLUE","BLUE"]}
     }
   },
   {
@@ -140,9 +119,7 @@
       "RESOURCE": "COIN",
       "RESOURCEREQ":{},
       "CARDREQ":
-      {"LEVEL": 1, "COLOR":["PURPLE","PURPLE","GREEN"]},
-      "IMAGE": "org.example/leadcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-60-1.png"
-
+      {"LEVEL": 1, "COLOR":["PURPLE","PURPLE","GREEN"]}
     }
   },
   {
@@ -152,9 +129,7 @@
       "ABILITY": "PRODUCTION",
       "RESOURCE": "SHIELD",
       "RESOURCEREQ":{},
-      "CARDREQ": {"LEVEL": 2, "COLOR":["YELLOW"]},
-      "IMAGE": "org.example/leadcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-61-1.png"
-
+      "CARDREQ": {"LEVEL": 2, "COLOR":["YELLOW"]}
     }
   },
   {
@@ -164,9 +139,7 @@
       "ABILITY": "PRODUCTION",
       "RESOURCE": "SERVANT",
       "RESOURCEREQ":{},
-      "CARDREQ": {"LEVEL": 2, "COLOR":["BLUE"]},
-      "IMAGE": "org.example/leadcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-62-1.png"
-
+      "CARDREQ": {"LEVEL": 2, "COLOR":["BLUE"]}
     }
   },
   {
@@ -176,9 +149,7 @@
       "ABILITY": "PRODUCTION",
       "RESOURCE": "STONE",
       "RESOURCEREQ":{},
-      "CARDREQ": {"LEVEL": 2, "COLOR":["PURPLE"]},
-      "IMAGE": "org.example/leadcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-63-1.png"
-
+      "CARDREQ": {"LEVEL": 2, "COLOR":["PURPLE"]}
     }
   },
   {
@@ -188,9 +159,7 @@
       "ABILITY": "PRODUCTION",
       "RESOURCE": "COIN",
       "RESOURCEREQ":{},
-      "CARDREQ": {"LEVEL": 2, "COLOR":["GREEN"]},
-      "IMAGE": "org.example/leadcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-64-1.png"
-
+      "CARDREQ": {"LEVEL": 2, "COLOR":["GREEN"]}
     }
   }
 ]

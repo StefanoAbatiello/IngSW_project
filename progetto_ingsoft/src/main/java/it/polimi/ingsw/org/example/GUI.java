@@ -99,6 +99,7 @@ public class GUI extends Application implements View {
         SetupController guicontroller = (SetupController) nameMapController.get(NICKNAME);
         System.out.println("end controller setup");
         guicontroller.setErrorLabel(nickNameAction.getMessage());
+        guicontroller.setEmptyTextFieldName();
         System.out.println("end");});
     }
 
@@ -125,6 +126,13 @@ public class GUI extends Application implements View {
 
     @Override
     public void lobbyMessageHandler(LobbyMessage lobbyMessage) {
+        Platform.runLater(()->{
+            Alert alert=new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText("INFO GAME");
+            alert.setHeight(10);
+            alert.setContentText(lobbyMessage.getMessage());
+            alert.showAndWait();
+        });
 
 
     }
@@ -135,6 +143,8 @@ public class GUI extends Application implements View {
             changeStage(BOARD);
             System.out.println("change stage");
             BoardController guicontroller = (BoardController) nameMapController.get(BOARD);
+            SetupController leadscontroller = (SetupController) nameMapController.get(LEADCARDSCHOICE);
+            guicontroller.setLeads(leadscontroller.getSelectedCards());
             System.out.println("end controller game");
             System.out.println("end");});
     }
