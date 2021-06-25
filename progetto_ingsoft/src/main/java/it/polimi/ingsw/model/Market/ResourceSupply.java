@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.Market;
 
-import it.polimi.ingsw.exceptions.FullSupplyException;
 import it.polimi.ingsw.model.Resource;
 import it.polimi.ingsw.model.ResourceCreator;
 import it.polimi.ingsw.model.cards.cardExceptions.NoSuchRequirementException;
@@ -38,14 +37,14 @@ public class ResourceSupply implements ResourceCreator {
      * @param resource is the Resource to store in container
      * @return a boolean to indicate if storing has been done or not
      */
-    public Resource putResourceInContainer(Resource resource) throws FullSupplyException {
+    public boolean putResourceInContainer(Resource resource) {
         for (Container container : containers) {
             if (container.isEmpty()) {
                 container.fillContainer(resource);
-                return resource;
+                return true;
             }
         }
-        throw new FullSupplyException("Il supply è pieno, non è possibile inserire nuove risorse");
+        return false;
     }
 
     /**
@@ -81,6 +80,10 @@ public class ResourceSupply implements ResourceCreator {
         return pointsGiven.get();
     }
 
+    /**
+     * @param res is the resource wanted by the Player
+     * @return true if the change is done correctly
+     */
     public boolean changeChoosable(Resource res) {
         for(Container c:containers){
             if (c.showResource()==Resource.CHOOSABLE){
@@ -90,5 +93,12 @@ public class ResourceSupply implements ResourceCreator {
             }
         }
         return false;
+    }
+
+    /**
+     * this method clear the supply from old resources
+     */
+    public void emptySupply() {
+        Arrays.stream(containers).forEach(Container::takeResource);
     }
 }

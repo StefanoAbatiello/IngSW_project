@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model.Market;
 
 
-import it.polimi.ingsw.exceptions.FullSupplyException;
 import it.polimi.ingsw.model.Player;
 
 public interface MarketMarble {
@@ -16,7 +15,7 @@ public interface MarketMarble {
      * @param player is a reference to the player who is taking this marble
      * @return a boolean that indicate if the method worked or not
      */
-    boolean changeMarble(Player player) throws FullSupplyException;
+    boolean changeMarble(Player player);
 
 }
 

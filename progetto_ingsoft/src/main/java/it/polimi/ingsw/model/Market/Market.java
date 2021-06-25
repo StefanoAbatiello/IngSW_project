@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.Market;
 
-import it.polimi.ingsw.exceptions.FullSupplyException;
 import it.polimi.ingsw.model.Player;
 import java.util.*;
 
@@ -63,7 +62,8 @@ public class Market {
      * @param p is a reference to actual player
      * @return marketTray modified by the purchase action
      */
-    public  MarketMarble[][] buyResources(int selector, Player p) throws FullSupplyException {
+    public  MarketMarble[][] buyResources(int selector, Player p) {
+        p.getResourceSupply().emptySupply();
         if(selector<=2) {
             for (int i = 0; i < 4; i++)
                 marketTray[selector][i].changeMarble(p);

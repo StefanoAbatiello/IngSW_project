@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.Market;
 
-import it.polimi.ingsw.exceptions.FullSupplyException;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Resource;
 
@@ -23,7 +22,7 @@ public class WhiteMarble implements MarketMarble {
      * @param player is a reference to the player
      * @return true if the player has a whiteMarbleAbility active and the storage of the corrispondent resourse is done correctly, false in other case
      */
-    public boolean changeMarble(Player player) throws FullSupplyException {
+    public boolean changeMarble(Player player) {
         if(player.getWhiteMarbleAbility().size() == 1) {
             player.getResourceSupply().putResourceInContainer(player.getWhiteMarbleAbility().get(0));
             return true;

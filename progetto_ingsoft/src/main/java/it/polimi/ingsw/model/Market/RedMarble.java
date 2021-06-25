@@ -1,8 +1,6 @@
 package it.polimi.ingsw.model.Market;
 
-import it.polimi.ingsw.exceptions.FullSupplyException;
 import it.polimi.ingsw.model.Player;
-import it.polimi.ingsw.model.personalboard.FaithMarker;
 
 public class RedMarble implements MarketMarble {
 
@@ -22,7 +20,7 @@ public class RedMarble implements MarketMarble {
      * @return true if faithMarker is updated correctly
      */
     @Override
-    public boolean changeMarble(Player player) throws FullSupplyException {
+    public boolean changeMarble(Player player) {
         int position=player.getPersonalBoard().getFaithMarker().getFaithPosition();
         return player.getPersonalBoard().getFaithMarker().updatePosition() == position + 1;
     }

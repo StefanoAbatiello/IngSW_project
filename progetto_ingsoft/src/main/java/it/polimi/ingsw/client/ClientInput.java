@@ -119,7 +119,6 @@ public class ClientInput implements Runnable{
                     "\"DiscardLeadCard:[Card id]\"");
             System.out.println("# Reorganize warehouse depots:" +
                     "\"ReorganizeResources:\"");
-            //TODO ideare comando di sistemazione delle risorse
             System.out.println("# Shows my personal board:" +
                     "\"ShowPersonalBoard\"");
             System.out.println("# Show market: " +
@@ -193,7 +192,6 @@ public class ClientInput implements Runnable{
         }
 
         //DoProductions:Cards:[card1ID,card2ID,...];personalIn:[Resource1,Resource2];personalOut:[Resource];LeadOut:[Resource...]\""
-        //TODO ideare gestione della scelta delle produzioni
         //10-request to activate productions
         else if(input.startsWith("DoProductions")&&input.contains("Cards")&&input.contains("personalIn")&&input.contains("personalOut")&&input.contains("LeadOut")){
             if (!mainAction) {

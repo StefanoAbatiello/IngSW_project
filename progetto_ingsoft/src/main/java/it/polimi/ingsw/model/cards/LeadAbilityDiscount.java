@@ -18,7 +18,6 @@ public class LeadAbilityDiscount extends LeadAbility{
 
     }
 
-    //TODO check discount in controller
 
 
 }

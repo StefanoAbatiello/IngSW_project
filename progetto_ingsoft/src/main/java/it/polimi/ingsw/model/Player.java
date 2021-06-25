@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.cards.LeadCard;
 import it.polimi.ingsw.model.cards.cardExceptions.CardChosenNotValidException;
 import it.polimi.ingsw.model.personalboard.PersonalBoard;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Player implements Points{
 
@@ -187,6 +188,10 @@ public class Player implements Points{
         return  resourceSupply;
     }
 
+    public ArrayList<String> getSimplifiedSupply() {
+        ArrayList<Resource> resSupply=resourceSupply.viewResources();
+        return (ArrayList<String>) resSupply.stream().map(resource -> Objects.toString(resource, null)).collect(Collectors.toList());
+    }
 
     /**
      * @return a Map where the cards (both Leader and Development) id are the kay and the values are a boolean indicating if the card is active
@@ -202,7 +207,7 @@ public class Player implements Points{
     }
 
     /**
-     * @return an Arraylist of the id held by the Player
+     * @return an Arraylist of the id of Leader cards held by the Player
      */
     public ArrayList<Integer> getLeadCardsId() {
         ArrayList<Integer> leaderId=new ArrayList<>();

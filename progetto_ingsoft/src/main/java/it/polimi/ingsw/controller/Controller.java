@@ -10,7 +10,6 @@ import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.cards.cardExceptions.*;
 import org.json.simple.parser.ParseException;
-
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -83,6 +82,25 @@ public class Controller {
     private ClientHandler getHandlerFromPlayer(String name){
         int id=server.getIDFromName().get(name);
         return server.getClientFromId().get(id).getClientHandler();
+    }
+
+    /**
+     * @param player is the Player to check
+     * @return true if the Player has done an action in this turn yet
+     */
+    private boolean checkActionDoneYet(Player player){
+        Optional<Action> playerAction= Optional.ofNullable(player.getAction());
+        return playerAction.isPresent();
+    }
+
+    /**
+     * @param resources is the ArrayList of Resources to change in ArrayList of Strings
+     * @return the correspondent ArrayList of Strings
+     */
+    private ArrayList<String> resArrayToStringArray(ArrayList<Resource> resources) {
+        ArrayList<String> result=new ArrayList<>();
+        resources.forEach(resource -> result.add(resource.toString()));
+        return result;
     }
 
     /**
@@ -240,7 +258,7 @@ public class Controller {
         for (int i = 0; i < game.getPlayers().size(); i++) {
             String name= game.getPlayers().get(i).getName();
             //System.out.println("sto controllando "+name);[Debug]
-            if (!checkPlayerWarehouse(i)) {
+            if (!checkPlayerStartingWarehouse(i)) {
                 //System.out.println("non ha ancora scelto le risorse initiali");[Debug]
                 result=false;
             } else
@@ -272,9 +290,9 @@ public class Controller {
 
     /**
      * @param i is the position of the player
-     * @return true if he has choose the correct number of resources yet
+     * @return true if the Player has chosen the correct number of resources yet
      */
-    private boolean checkPlayerWarehouse(int i){
+    private boolean checkPlayerStartingWarehouse(int i){
         //System.out.println("sto controllando il suo warehouse");[Debug]
         Player player=getPlayerFromId(getHandlerFromPlayerPosition(i).getClientId());
         ArrayList<Resource> resources=player.getPersonalBoard().getWarehouseDepots().getResources();
@@ -313,8 +331,7 @@ public class Controller {
         }
     }
 
-    //TODO methods actions
-    //TODO creo mappa
+    //TODO check discount in controller
     public boolean checkBuy(int card, int id, int position) throws CardNotOnTableException, ResourceNotValidException, InvalidSlotException, ActionAlreadySetException {
         Player player=getPlayerInTurn();
         Optional<Action> playerAction= Optional.ofNullable(player.getAction());
@@ -390,62 +407,70 @@ public class Controller {
         return false;
     }
 
-    public void checkMarket(int gameObj, int id) throws NotAcceptableSelectorException, FullSupplyException, ActionAlreadySetException {
+
+    /**
+     * @param index is the index of the market wanted by the Player
+     * @param id is the id of the Player
+     * @throws ActionAlreadySetException if the Player has done an action in this turn already
+     * @throws NotAcceptableSelectorException if the Player has chosen a selector <0 or >6
+     */
+    public void checkMarket(int index, int id) throws ActionAlreadySetException, NotAcceptableSelectorException {
         Player player=getPlayerInTurn();
-        System.out.println("controllo se il giocatore ha già eseguito un'azione principale");
-        Optional<Action> playerAction= Optional.ofNullable(player.getAction());
-        if(playerAction.isPresent()){
-            System.out.println("azione principale già eseguita");
-            getHandlerFromPlayer(id).send(new LobbyMessage("The player has already gone through with an action in their turn"));
-        }
-        else if(gameObj <0||gameObj>6) {
-            System.out.println("Coordinata non valida");
-            getHandlerFromPlayer(id).send(new LobbyMessage("Selector out of range : " + gameObj));
-        }
-        else {
-            //TODO check fullSupplyException
+        if (checkActionDoneYet(player)){
+            throw new ActionAlreadySetException("You have already gone through with an action in this turn");
+        } else if(index <0 || index >6) {
+            throw new NotAcceptableSelectorException("Index out of range : " + index);
+        } else {
             lobby.setStateOfGame(GameState.MARKET);
-            System.out.println("azione eseguibile");
             player.setAction(Action.TAKEFROMMARKET);
-            game.getMarket().buyResources(gameObj, player);
-            String[][] simplifiedMarket = game.getSimplifiedMarket();
-            lobby.sendAll(new MarketChangeMessage(simplifiedMarket));
-            System.out.println("risorse messe nel supply");
-            ArrayList<Resource> resSupply = player.getResourceSupply().viewResources();
-            if(resSupply.contains(Resource.CHOOSABLE)) {
-                int num=Collections.frequency(resSupply,Resource.CHOOSABLE);
-                getHandlerFromPlayer(id).send(new ChangeChoosableResourceRequest(num,"You can choose between "+player.getWhiteMarbleAbility().get(0)+" and "+player.getWhiteMarbleAbility().get(1)));
+            game.getMarket().buyResources(index, player);
+            lobby.sendAll(new MarketChangeMessage(game.getSimplifiedMarket()));
+            ArrayList<String> resSupply = player.getSimplifiedSupply();
+            int num=Collections.frequency(resSupply,"CHOOSABLE");
+            if(num>0) {
+                getHandlerFromPlayer(id).send(new ChangeChoosableResourceRequest(num, resArrayToStringArray(player.getWhiteMarbleAbility()),
+                        "You can choose between this Resources"));
             }else {
-                ArrayList<String> supply = (ArrayList<String>) resSupply.stream().map(resource -> Objects.toString(resource, null)).collect(Collectors.toList());
-                System.out.println("invio la richiesta di sistemare le risorse");
-                getHandlerFromPlayer(id).send(new ResourceInSupplyRequest(supply));
+                getHandlerFromPlayer(id).send(new ResourceInSupplyRequest(resSupply));
             }
         }
     }
 
-    public void checkChangeChooosable(int clientId, ArrayList<String> newRes){
+    /**
+     * @param newResources is the list of String indicating the Resources wanted by the player
+     * @param player is the player who wants to change the resources
+     * @return true if all the Choosable Resources are changed in valid Resources
+     */
+    public boolean checkChangeResource(ArrayList<Resource> newResources, Player player){
+        for (Resource res : newResources) {
+            if (res == player.getWhiteMarbleAbility().get(0))
+                player.getResourceSupply().changeChoosable(res);
+            else if (res == player.getWhiteMarbleAbility().get(1))
+                player.getResourceSupply().changeChoosable(res);
+            else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * this method check if the Resources sent by the player are valid
+     * @param clientId is the id or the player
+     * @param newRes is the list of String indicating the Resources wanted by the player
+     */
+    public void ChangeChoosable(int clientId, ArrayList<String> newRes){
         Player player=getPlayerInTurn();
         ArrayList<Resource> newResources=stringArrayToResArray(newRes);
-        ArrayList<Resource> resSupply = player.getResourceSupply().viewResources();
-        int num=Collections.frequency(resSupply,Resource.CHOOSABLE);
-        if(newResources.size()==num) {
-            for (Resource res : newResources) {
-                if (res == player.getWhiteMarbleAbility().get(0))
-                    player.getResourceSupply().changeChoosable(res);
-                else if (res == player.getWhiteMarbleAbility().get(1))
-                    player.getResourceSupply().changeChoosable(res);
-                else {
-                    server.getClientFromId().get(clientId).getClientHandler().send(new LobbyMessage("Choice not possible, please try again"));
-                    server.getClientFromId().get(clientId).getClientHandler().send(new ChangeChoosableResourceRequest(num, "You can choose between " + player.getWhiteMarbleAbility().get(0) + " and " + player.getWhiteMarbleAbility().get(1)));
-                    return;
-                }
-            }
-        }else{
-            server.getClientFromId().get(clientId).getClientHandler().send(new ChangeChoosableResourceRequest(num,"Too many resources choosen, please try again"));
-            return;
+        int num=Collections.frequency(player.getResourceSupply().viewResources(),Resource.CHOOSABLE);
+        if(newResources.size()==num && checkChangeResource(newResources,player)) {
+            server.getClientFromId().get(clientId).getClientHandler().send(new ResourceInSupplyRequest(player.getSimplifiedSupply()));
+        } else{
+            num=Collections.frequency(player.getResourceSupply().viewResources(),Resource.CHOOSABLE);
+            getHandlerFromPlayer(clientId).send(new LobbyMessage("Action not valid"));
+            getHandlerFromPlayer(clientId).send(new ChangeChoosableResourceRequest(num, resArrayToStringArray(player.getWhiteMarbleAbility()),
+                    "You can choose between this Resources"));
         }
-        ArrayList<String> supply = (ArrayList<String>) resSupply.stream().map(resource -> Objects.toString(resource, null)).collect(Collectors.toList());
-        server.getClientFromId().get(clientId).getClientHandler().send(new ResourceInSupplyRequest(supply));
     }
 
     public boolean checkProduction(ArrayList<Integer> cardProd , ArrayList<String> personalProdIn, String personalProdOut, ArrayList<String> leadProdOut, int id) throws ActionAlreadySetException, ResourceNotValidException, CardNotOwnedByPlayerOrNotActiveException {
@@ -875,6 +900,9 @@ Player player=getPlayerInTurn();
         }
     }
 
+    /**
+     * this method establish who is the next Player
+     */
     private void changeActualPlayerTurn() {
         int actualIndex=lobby.getPositionFromClient().get(actualPlayerTurn);
         do {
@@ -914,7 +942,7 @@ Player player=getPlayerInTurn();
      * this method send all the info of the game to the client reconnected based on the game phase
      * @param id is the id of the client reconnected
      */
-    public void sendInfoOfGame(int id) {
+    public void sendInfoAfterReconnection(int id) {
         if (lobby.getStateOfGame() == GameState.WAITING) {
             getHandlerFromPlayer(id).send(new LobbyMessage("Welcome back. " +
                     "We are waiting for other " + lobby.getSeatsAvailable() + " players"));
@@ -924,7 +952,7 @@ Player player=getPlayerInTurn();
             else
                 getHandlerFromPlayer(id).send(new LobbyMessage("You have Chosen your Leader cards yet"));
         } else if (lobby.getStateOfGame() == GameState.PREPARATION2) {
-            if (!checkPlayerWarehouse(lobby.getPositionFromClient().get(server.getClientFromId().get(id)))) {
+            if (!checkPlayerStartingWarehouse(lobby.getPositionFromClient().get(server.getClientFromId().get(id)))) {
                 askInitialResources(server.getClientFromId().get(id));
                 checkPlayerInitialFaithMarker(lobby.getPositionFromClient().get(server.getClientFromId().get(id)));
             }else

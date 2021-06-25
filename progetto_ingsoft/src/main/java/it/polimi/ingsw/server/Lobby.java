@@ -15,7 +15,6 @@ public class Lobby {
     private final MainServer server;
     private final int lobbyID;
     private int seatsAvailable;
-    //TODO ottimizzare id e virtual client negli usi
     private final Map<VirtualClient,Integer> positionFromClient;
     private final Map<Integer,VirtualClient> clientFromPosition;
     private GameState stateOfGame;
@@ -78,7 +77,7 @@ public class Lobby {
             System.out.println("la partita è già iniziata");
             controller.insertPlayerInOrder(id,name);
             this.seatsAvailable--;
-            controller.sendInfoOfGame(id);
+            controller.sendInfoAfterReconnection(id);
         } else{
             System.out.println("la partita non è ancora iniziata. Inserisco il giocatore con ultimo");
             int position=positionFromClient.size();
@@ -125,13 +124,11 @@ public class Lobby {
         return positionFromClient;
     }
 
-//TODO nel clientHandler stampo "azione giocatore n:" e il risultato di tale azione
     public synchronized void actionHandler(SerializedMessage input, int id) {
         Object gameObj;
         System.out.println("sono nell'handler della lobby");
         //1-gestisco la scelta del giocatore di quali leader card tenere
         if(input instanceof ChosenLeadMessage){
-            //TODO check che siano solo due nel messaggio CLI
             System.out.println("sto leggendo il ChosenLeadMessage");
             if(stateOfGame==GameState.PREPARATION1) {
                 int firstId, secondId;
@@ -187,10 +184,8 @@ public class Lobby {
                     if (controller.checkBuy(cardID, id, slot)) {
                         //result = new ActionAnswer("carta" + gameObj + "comprata");
                     }
-                } catch (ActionAlreadySetException e) {
-                    controller.getActualPlayerTurn().getClientHandler().send(new LobbyMessage("Actions already set for this player"));
-                } catch (InvalidSlotException e) {
-                    controller.getActualPlayerTurn().getClientHandler().send(new LobbyMessage("Invalid Slot"));
+                } catch (ActionAlreadySetException | InvalidSlotException e) {
+                    controller.getActualPlayerTurn().getClientHandler().send(new LobbyMessage(e.getMessage()));
                 } catch (ResourceNotValidException e) {
                     e.printStackTrace();
                 } catch (CardNotOnTableException e) {
@@ -207,12 +202,9 @@ public class Lobby {
                 try {
                     System.out.println("controllo se è possibile eseguire la richiesta");
                     controller.checkMarket(selector, id);
-                } catch (NotAcceptableSelectorException e) {
-                    server.getClientFromId().get(id).getClientHandler().send(new LobbyMessage("Coordinate not valid, please chose another one"));
-                } catch (FullSupplyException e) {
-                    e.printStackTrace();
-                } catch (ActionAlreadySetException actionAlreadySetException) {
-                    server.getClientFromId().get(id).getClientHandler().send(new LobbyMessage("Main action done yet"));                }
+                } catch (ActionAlreadySetException | NotAcceptableSelectorException e) {
+                    server.getClientFromId().get(id).getClientHandler().send(new LobbyMessage(e.getMessage()));
+                }
             }
         }
 
@@ -272,7 +264,7 @@ public class Lobby {
         //9-gestisco il cambio delle white marble
         else if (input instanceof ChangeChoosableAction && server.getClientFromId().get(id).equals(controller.getActualPlayerTurn())){
             if(stateOfGame==GameState.MARKET){
-                controller.checkChangeChooosable(id,((ChangeChoosableAction) input).getNewRes());
+                controller.ChangeChoosable(id,((ChangeChoosableAction) input).getNewRes());
             }
         }
 

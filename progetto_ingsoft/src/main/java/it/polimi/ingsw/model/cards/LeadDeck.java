@@ -123,7 +123,6 @@ public class LeadDeck implements Decks {
      * @return true if the player's lead card array has been fulfill without problems
      * @throws playerLeadsNotEmptyException if the player already has the cards in their array
      */
-//TODO set abilities/controlla eccezioni/test quante carte do al player
     public boolean giveToPlayer(Player player) throws playerLeadsNotEmptyException{
         if(player.getLeadCards().isEmpty()){
             ArrayList<LeadCard> playerLeads= new ArrayList<>();
