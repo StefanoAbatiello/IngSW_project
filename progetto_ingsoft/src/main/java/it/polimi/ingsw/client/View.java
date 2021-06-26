@@ -19,4 +19,5 @@ public interface View {
     void choosableResourceHandler(ChangeChoosableResourceRequest input);
     void gameSetupHandler(ViewCLI viewCLI, SerializedMessage input);
     void setViewCLI(ViewCLI viewCLI);
+    void faithPositionHandler(FaithPositionChangeMessage message);
 }

@@ -195,4 +195,9 @@ public class CLI extends App implements View {
     public void setViewCLI(ViewCLI viewCLI) {
         this.viewCLI = viewCLI;
     }
+
+    @Override
+    public void faithPositionHandler(FaithPositionChangeMessage message) {
+
+    }
 }

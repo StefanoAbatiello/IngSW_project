@@ -174,6 +174,10 @@ public class GUI extends Application implements View {
         });
     }
 
+    public void faithPositionHandler(FaithPositionChangeMessage message){
+        BoardController boardController=(BoardController) nameMapController.get(BOARD);
+        boardController.uploadPosition(message.getFaithPosition());
+    }
 
 
     @Override

@@ -427,6 +427,7 @@ public class Controller {
             player.setAction(Action.TAKEFROMMARKET);
             game.getMarket().buyResources(index, player);
             lobby.sendAll(new MarketChangeMessage(game.getSimplifiedMarket()));
+            getHandlerFromPlayer(id).send(new FaithPositionChangeMessage(player.getPersonalBoard().getFaithMarker().getFaithPosition()));
             ArrayList<String> resSupply = player.getSimplifiedSupply();
             int num=Collections.frequency(resSupply,"CHOOSABLE");
             if(num>0) {
