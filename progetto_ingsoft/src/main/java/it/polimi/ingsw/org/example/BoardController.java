@@ -1,5 +1,6 @@
 package it.polimi.ingsw.org.example;
 
+import it.polimi.ingsw.client.ViewCLI;
 import it.polimi.ingsw.messages.ActiveLeadAction;
 import it.polimi.ingsw.messages.DiscardLeadAction;
 import javafx.event.ActionEvent;
@@ -10,10 +11,13 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Window;
 
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Optional;
 import javafx.scene.input.MouseEvent;
 
@@ -21,6 +25,13 @@ public class BoardController implements GUIcontroller{
     @FXML
     VBox leadsBox;
     private GUI gui;
+    @FXML
+    ImageView shelf1;
+    @FXML
+    HBox shelf2;
+    @FXML
+    HBox shelf3;
+
 
     @Override
     public void setGui(GUI gui) {
@@ -38,7 +49,7 @@ public class BoardController implements GUIcontroller{
         }
     }
 
-    public void showMarket(ActionEvent actionEvent) {
+    public void showMarket() {
         gui.changeStage("provabiglia.fxml");
     }
 
@@ -62,4 +73,44 @@ public class BoardController implements GUIcontroller{
         });
 
     }
+
+    public void setRes(ArrayList<String> selectedRes, ArrayList<Integer> selectedShelf) {
+        ImageView selshelf = new ImageView();
+        for(int i=0;i<selectedRes.size();i++){
+            if(selectedShelf.get(i)==1){
+                selshelf=shelf1;
+            }
+            else if (selectedShelf.get(i)==2){
+                selshelf=(ImageView) shelf2.getChildren().get(0);
+            }
+            else if (selectedShelf.get(i)==3){
+                selshelf=(ImageView) shelf3.getChildren().get(0);
+            }
+            selshelf.setImage(new Image("org.example/images/"+selectedRes.get(i).toLowerCase(Locale.ROOT)+".png"));
+                /*if(selectedRes.get(i).equalsIgnoreCase("COIN"))
+                    shelf1.setImage(new Image("/org.example/images/coin.png"));
+                else if(selectedRes.get(i).equalsIgnoreCase("SHIELD"))
+                    shelf1.setImage(new Image("/org.example/images/shield.png"));
+                else if(selectedRes.get(i).equalsIgnoreCase("SERVANT"))
+                    shelf1.setImage(new Image("/org.example/images/servant.png"));
+                else if(selectedRes.get(i).equalsIgnoreCase("STONE"))
+                    shelf1.setImage(new Image("/org.example/images/stone.png"));
+            }
+            else if(selectedShelf.get(i)==2){
+                ImageView img= (ImageView) shelf2.getChildren().get(0);
+                img.setImage(new Image());
+            }
+                         */
+
+        }
+    }
+
+
+    public void buyCard(MouseEvent mouseEvent) {
+    }
+
+    public void showDevMatrix(ActionEvent actionEvent) {
+        gui.changeStage("devMatrix.fxml");
+    }
+
 }

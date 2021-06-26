@@ -143,7 +143,7 @@ public class SetupController implements GUIcontroller {
 
     }
 
-    //TODO
+
     public void select_card(MouseEvent mouseEvent) {
         if(countLeads<2){
             countLeads++;
@@ -212,7 +212,6 @@ public class SetupController implements GUIcontroller {
                 selectedRes.add(imageId);
                 System.out.println(imageId);
                 shelfMenu.setVisible(true);
-                //((BoardController)gui.getControllerFromName("board.fxml")).setLeads(target);
             }
             else
                 errorLabel.setText("You have already chosen "+initialRes+ "resources, if you want to change click RETRY, else NEXT ");
@@ -227,6 +226,8 @@ public class SetupController implements GUIcontroller {
         }
         shelfMenu.setVisible(false);
         System.out.println("finito");
+        ((BoardController)gui.getControllerFromName("board.fxml")).setRes(selectedRes,selectedShelf);
+
     }
     public void selectShelf2() {
         selectedShelf.add(2);
@@ -235,6 +236,8 @@ public class SetupController implements GUIcontroller {
             res.setOpacity(1.0);
              }
         shelfMenu.setVisible(false);
+        ((BoardController)gui.getControllerFromName("board.fxml")).setRes(selectedRes,selectedShelf);
+
 
     }
     public void selectShelf3() {
@@ -244,6 +247,7 @@ public class SetupController implements GUIcontroller {
             res.setOpacity(1.0);
         }
         shelfMenu.setVisible(false);
+        ((BoardController)gui.getControllerFromName("board.fxml")).setRes(selectedRes,selectedShelf);
 
     }
 

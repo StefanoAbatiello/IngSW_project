@@ -5,11 +5,8 @@ import it.polimi.ingsw.client.View;
 import it.polimi.ingsw.client.ViewCLI;
 import it.polimi.ingsw.messages.*;
 import it.polimi.ingsw.messages.answerMessages.*;
-import it.polimi.ingsw.server.ClientHandler;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.Event;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -32,6 +29,7 @@ public class GUI extends Application implements View {
     private final String LEADCARDSCHOICE="leadcardschoice.fxml";
     private final String INITIALRESOURCES="choiceresources.fxml";
     private final String MARKETBOARD="provabiglia.fxml";
+    private final String DEVMATRIX="devMatrix.fxml";
 
     private final HashMap<String,Scene> nameMapScene= new HashMap<>();
     private final HashMap<String,GUIcontroller> nameMapController= new HashMap<>();
@@ -49,7 +47,7 @@ public class GUI extends Application implements View {
     @Override
     public void start(Stage stage) {
         this.stage=stage;
-        List<String> fxmList = new ArrayList<>(Arrays.asList(LOGIN, NICKNAME,BOARD,WAITING,NUMOFPLAYER,LEADCARDSCHOICE,INITIALRESOURCES,MARKETBOARD));
+        List<String> fxmList = new ArrayList<>(Arrays.asList(LOGIN, NICKNAME,BOARD,WAITING,NUMOFPLAYER,LEADCARDSCHOICE,INITIALRESOURCES,MARKETBOARD,DEVMATRIX));
         try {
 
             for (String path : fxmList) {
@@ -133,7 +131,6 @@ public class GUI extends Application implements View {
             alert.showAndWait();
         });
 
-
     }
 
     @Override
@@ -141,11 +138,14 @@ public class GUI extends Application implements View {
         Platform.runLater(()->{System.out.println("gameSetup");
             changeStage(BOARD);
             System.out.println("change stage");
-            BoardController guicontroller = (BoardController) nameMapController.get(BOARD);
+            BoardController boardController = (BoardController) nameMapController.get(BOARD);
             SetupController leadscontroller = (SetupController) nameMapController.get(LEADCARDSCHOICE);
-            guicontroller.setLeads(leadscontroller.getSelectedCards());
+            DevMatrixController devscontroller = (DevMatrixController) nameMapController.get(DEVMATRIX);
+            boardController.setLeads(leadscontroller.getSelectedCards());
+            devscontroller.setDevMatrix(viewCLI);
             System.out.println("end controller game");
             System.out.println("end");});
+
     }
 
     @Override
