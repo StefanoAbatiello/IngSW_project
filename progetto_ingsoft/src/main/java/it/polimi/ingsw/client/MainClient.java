@@ -180,6 +180,11 @@ public class MainClient implements Runnable, Sender {
         else if(input instanceof  ChangeChoosableResourceRequest){
             view.choosableResourceHandler((ChangeChoosableResourceRequest) input);
         }
+
+        //16- gestione del faithposition
+        else if(input instanceof FaithPositionChangeMessage){
+            view.faithPositionHandler((FaithPositionChangeMessage) input);
+        }
     }
 
     public void disconnect() {
