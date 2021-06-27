@@ -110,11 +110,12 @@ public class SinglePlayer extends Game{
 
     /**
      * @param player      is the players who give away faith points
-     * @param pointsGiven is the number of faith points to give away
+     * @return
      */
     @Override
-    public void pointsGiveAway(Player player, int pointsGiven) {
-        blackCross.updateBlackCross(pointsGiven);
+    public int faithPointsGiveAway(Player player) {
+        blackCross.updateBlackCross(1);
+        return activePopeSpace(player);
     }
 
     /**
@@ -171,31 +172,31 @@ public class SinglePlayer extends Game{
 
     /**
      * @param player is the players who activates the pope meeting
-     * @return false if the players who activates the pope meeting was the first to reach this faith position, true otherwise
+     * @return the number of the pope meeting activated(1, 2 or 3), otherwise return 0
      */
     @Override
-    public boolean activePopeSpace(Player player) {
+    public int activePopeSpace(Player player) {
         if((player.getPersonalBoard().getFaithMarker().getFaithPosition()==8 || blackCross.getCrossPosition()==8) && isVC1active()) {
 
             if(player.getPersonalBoard().getFaithMarker().isVaticanZone())
                 player.increaseFaithTrackPoints(2);
             setVC1active(false);
-            return isVC1active();
+            return 1;
         }
         else if((player.getPersonalBoard().getFaithMarker().getFaithPosition()==16 || blackCross.getCrossPosition()==16) && isVC2active()) {
             if(player.getPersonalBoard().getFaithMarker().isVaticanZone())
                 player.increaseFaithTrackPoints(3);
             setVC2active(false);
-            return isVC2active();
+            return 2;
         }
         else if((player.getPersonalBoard().getFaithMarker().getFaithPosition()==24 || blackCross.getCrossPosition()==24) && isVC3active()) {
             if(player.getPersonalBoard().getFaithMarker().isVaticanZone())
                 player.increaseFaithTrackPoints(4);
             setVC3active(false);
-            return isVC3active();
+            return 3;
         }
         else
-            return true;
+            return 0;
         }
 
     public BlackCross getBlackCrossToken(){return blackCross;}

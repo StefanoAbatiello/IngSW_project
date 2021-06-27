@@ -104,6 +104,16 @@ public class Controller {
     }
 
     /**
+     * @param resources is the ArrayList of Strings to change in ArrayList of Resources
+     * @return the correspondent ArrayList of Resources
+     */
+    private ArrayList<Resource> stringArrayToResArray(ArrayList<String> resources){
+        ArrayList<Resource> allRes = new ArrayList<>();
+        resources.forEach(res->allRes.add(Resource.valueOf(res)));
+        return allRes;
+    }
+
+    /**
      * this method creates the game,
      * if there is only one player in lobby it will be a Single player mode
      * otherwise a multi player mode
@@ -130,6 +140,27 @@ public class Controller {
     }
 
     /**
+     * this method summarise the initial situation of the game and send to all player those info
+     */
+    public void startGame() {
+        //System.out.println("sono nello start game");[Debug]
+        lobby.setStateOfGame(GameState.ONGOING);
+        actualPlayerTurn=lobby.getClientFromPosition().get(0);
+        for(Player p:game.getPlayers()){
+            String name=p.getName();
+            if (server.isClientOnline(name)) {
+                sendMarketInfo(p);
+                sendDevCardMatrixInfo(p);
+                sendWarehouseInfo(p);
+                sendPlayerCardsInfo(p);
+                sendFaithMarkerPosition(p);
+                sendStrongboxInfo(p);
+            }
+        }
+        lobby.sendAll(new StartingGameMessage());
+    }
+
+    /**
      * advise each Player of the Leader cards he received
      */
     private void notifyLeadCardDistributed(VirtualClient client){
@@ -139,7 +170,6 @@ public class Controller {
             leaderId.add(card.getId());
         client.getClientHandler().send(new LeaderCardDistribution(leaderId, "Please choose 2 leader card to hold"));
     }
-
 
     /**
      * @return true if all the Players in game have chosen their Leader cards
@@ -221,8 +251,9 @@ public class Controller {
                 int num = playerInitialResources(position);
                 getHandlerFromPlayerPosition(position).send(new GetInitialResourcesAction("You can choose " + num + " initial resource", num));
                 if (position >= 2) {
-                    getHandlerFromPlayerPosition(position).send(new LobbyMessage("you will receive a Faith point also"));
-                    getPlayerFromId(client.getID()).getPersonalBoard().getFaithMarker().updatePosition();
+                    ClientHandler handler=getHandlerFromPlayerPosition(position);
+                    handler.send(new LobbyMessage("you will receive a Faith point also"));
+                    getPlayerFromId(handler.getClientId()).getPersonalBoard().getFaithMarker().updatePosition();
                 }
             }
         }
@@ -589,9 +620,6 @@ public class Controller {
                     playerCards.add(id);});
 
         return playerCards.containsAll(cardsId);
-
-
-
     }
 
     public void checkLeadActivation(int gameObj, int id) {
@@ -688,13 +716,6 @@ public class Controller {
         return result;
     }
 
-    private ArrayList<Resource> stringArrayToResArray(ArrayList<String> gameObj){
-        ArrayList<Resource> allRes = new ArrayList<>();
-        //me lo trasformo in un array di risorse
-        gameObj.forEach(res->allRes.add(Resource.valueOf(res)));
-        return allRes;
-    }
-
     private boolean checkSpecialShelf(ArrayList<Resource> specialRes, int id) {
         Player player = game.getPlayers().get(id);
         boolean result= false;
@@ -725,13 +746,25 @@ public class Controller {
         return !result;
     }
 
-    public void checkPositionOfResources(ArrayList<String>[] gameObj, int id){
-        String name=getActualPlayerTurn().getNickName();
-        Player player=game.getPlayers().get(0);
-        for(Player p:game.getPlayers()){
-            if (p.getName().equals(name))
-                player=p;
+    /**
+     * @param player is the player who gives away faith points
+     * @param pointsToGive is the number of faith points to give away
+     */
+    public void faithPointsGiveAwayHandler(Player player, int pointsToGive){
+        for (int i=0; i<pointsToGive;i++) {
+            int meetingNumber = game.faithPointsGiveAway(player);
+            lobby.getClientFromPosition().values().forEach(client->{
+                int faithPosition=getPlayerFromId(client.getID()).getPersonalBoard().getFaithMarker().getFaithPosition();
+                client.getClientHandler().send(new FaithPositionChangeMessage(faithPosition));
+                    }
+            );
+            if (meetingNumber > 0 && meetingNumber < 4)
+                lobby.sendAll(new ActivePopeMeetingMessage(meetingNumber));
         }
+    }
+
+    public void checkPositionOfResources(ArrayList<String>[] gameObj, int id){
+        Player player=getPlayerFromId(id);
         System.out.println("mi sono salvato il player");
 
         if (gameObj.length <= 5){
@@ -760,8 +793,7 @@ public class Controller {
             allResources.removeIf(newRes::contains);
 
             if(!allResources.isEmpty()){
-                int pointsToGive =player.getResourceSupply().discardResources(allResources);
-                game.pointsGiveAway(player, pointsToGive);
+                faithPointsGiveAwayHandler(player,player.getResourceSupply().discardResources(allResources));
             }
 
             else{
@@ -828,27 +860,6 @@ public class Controller {
             }
         System.out.println("special shelf vuoti");
         return true;
-    }
-
-    /**
-     * this method summarise the initial situation of the game and send to all player those info
-     */
-    public void startGame() {
-        //System.out.println("sono nello start game");[Debug]
-        lobby.setStateOfGame(GameState.ONGOING);
-        actualPlayerTurn=lobby.getClientFromPosition().get(0);
-        for(Player p:game.getPlayers()){
-            String name=p.getName();
-            if (server.isClientOnline(name)) {
-                sendMarketInfo(p);
-                sendDevCardMatrixInfo(p);
-                sendWarehouseInfo(p);
-                sendPlayerCardsInfo(p);
-                sendFaithMarkerPosition(p);
-                sendStrongboxInfo(p);
-            }
-        }
-        lobby.sendAll(new StartingGameMessage());
     }
 
     /**
@@ -958,8 +969,7 @@ public class Controller {
         player.resetAction();
         ArrayList<Resource> resources=player.getResourceSupply().viewResources();
         if(!resources.isEmpty()){
-            int pointsToGive =player.getResourceSupply().discardResources(resources);
-            game.pointsGiveAway(player, pointsToGive);
+            faithPointsGiveAwayHandler(player,player.getResourceSupply().discardResources(resources));
         }
     }
 

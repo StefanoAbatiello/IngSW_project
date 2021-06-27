@@ -70,6 +70,7 @@ public class ResourceSupply implements ResourceCreator {
     /**
      * This method removes all the resources left in supply
      * @param discardedResources is the list of resources to discard
+     * @return the number of Faith points ti give to other player
      */
     public int discardResources(ArrayList<Resource> discardedResources) {
         AtomicInteger pointsGiven= new AtomicInteger();

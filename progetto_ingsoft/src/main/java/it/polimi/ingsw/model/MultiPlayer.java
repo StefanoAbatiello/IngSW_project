@@ -10,6 +10,7 @@ import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MultiPlayer extends Game {
 
@@ -71,32 +72,33 @@ public class MultiPlayer extends Game {
 
     /**
      * @param playerInput is the player who activates the pope meeting
-     * @return false if the player who activates the pope meeting was the first to reach this faith position, true otherwise
+     * @return the number of the pope meeting activated(1, 2 or 3), otherwise return 0
      */
-    public boolean activePopeSpace(Player playerInput) {
+    @Override
+    public int activePopeSpace(Player playerInput) {
         if(playerInput.getPersonalBoard().getFaithMarker().getFaithPosition()==8 && isVC1active()) {
             players.stream().filter(player ->
                     player.getPersonalBoard().getFaithMarker().isVaticanZone()).forEach(player ->
                         player.increaseFaithTrackPoints(2));
             setVC1active(false);
-            return isVC1active();
+            return 1;
         }
         else if(playerInput.getPersonalBoard().getFaithMarker().getFaithPosition()==16 && isVC2active()) {
             players.stream().filter(player ->
                     player.getPersonalBoard().getFaithMarker().isVaticanZone()).forEach(player ->
                         player.increaseFaithTrackPoints(3));
             setVC2active(false);
-            return isVC2active();
+            return 2;
         }
         else if(playerInput.getPersonalBoard().getFaithMarker().getFaithPosition()==24 && isVC3active()) {
             players.stream().filter(player ->
                     player.getPersonalBoard().getFaithMarker().isVaticanZone()).forEach(player ->
                         player.increaseFaithTrackPoints(4));
             setVC3active(false);
-            return isVC3active();
+            return 3;
         }
         else
-            return true;
+            return 0;
     }
 
 
@@ -115,15 +117,21 @@ public class MultiPlayer extends Game {
 
     /**
      * @param player      is the player who give away faith points
-     * @param pointsGiven is the number of faith points to give away
+     * @return
      */
     @Override
-    public void pointsGiveAway(Player player, int pointsGiven) {
+    public int faithPointsGiveAway(Player player) {
+        AtomicInteger result= new AtomicInteger(0);
         players.forEach(p -> {
-            if(p!=player)
-                for (int i=0; i<pointsGiven; i++)
-                    p.getPersonalBoard().getFaithMarker().updatePosition();
+            if (p != player)
+                p.getPersonalBoard().getFaithMarker().updatePosition();
         });
+        players.forEach(p -> {
+            int position=p.getPersonalBoard().getFaithMarker().getFaithPosition();
+            if (position==8 || position==16 || position== 24)
+                result.set(activePopeSpace(p));
+        });
+        return result.get();
     }
 
     /**

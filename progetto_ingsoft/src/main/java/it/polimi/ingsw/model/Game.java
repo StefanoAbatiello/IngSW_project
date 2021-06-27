@@ -54,9 +54,9 @@ public abstract class  Game {
 
     /**
      * @param player is the player who activates the pope meeting
-     * @return false if the player who activates the pope meeting was the first to reach this faith position, true otherwise
+     * @return the number of the pope meeting activated(1, 2 or 3), otherwise return 0
      */
-    abstract boolean activePopeSpace(Player player);
+    public abstract int activePopeSpace(Player player);
 
     public abstract Market getMarket();
 
@@ -98,10 +98,11 @@ public abstract class  Game {
     }
 
     /**
+     * this method give a Faith point to all other player, then check if one of them reaches a Pope meeting
      * @param player is the player who give away faith points
-     * @param pointsGiven is the number of faith points to give away
+     * @return the number of the pope meeting activated(1, 2 or 3), otherwise if none is activated return 0
      */
-    public abstract void pointsGiveAway(Player player, int pointsGiven);
+    public abstract int faithPointsGiveAway(Player player);
 
     public abstract Player getPlayerFromName(String name);
 }

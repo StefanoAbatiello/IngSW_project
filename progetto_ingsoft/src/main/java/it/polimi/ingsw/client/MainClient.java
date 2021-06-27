@@ -123,6 +123,8 @@ public class MainClient implements Runnable, Sender {
                 try{
                     timer.schedule(pingObserver, 0, timerPeriod);
                 } catch (IllegalStateException e) {
+                    System.out.println(e.getMessage());
+                    e.printStackTrace();
                     System.out.println("timer scheduled yet");
                 }
                 //System.out.println("pongObserver partito");[Debug]
@@ -192,6 +194,7 @@ public class MainClient implements Runnable, Sender {
         } catch (IOException | NullPointerException e) {
             System.err.println("Socket closed yet");
         }
+        System.exit(-1);
     }
 
     public ViewCLI getViewCLI() {

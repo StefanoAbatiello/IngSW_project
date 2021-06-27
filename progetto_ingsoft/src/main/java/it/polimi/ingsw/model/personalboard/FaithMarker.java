@@ -52,30 +52,21 @@ public class FaithMarker implements Points {
      */
     public int setPoints(){
         switch (faithPosition) {
-            case 3:
-                points = 1;
-                break;
-            case 6:
-                points = 2;
-                break;
-            case 9:
-                points = 4;
-                break;
-            case 12:
-                points = 6;
-                break;
-            case 15:
-                points = 9;
-                break;
-            case 18:
-                points = 12;
-                break;
-            case 21:
-                points = 16;
-                break;
-            case 24:
-                points = 20;
-                break;
+            case 3 :points = 1;
+            break;
+            case 6 : points = 2;
+            break;
+            case 9 : points = 4;
+            break;
+            case 12 : points = 6;
+            break;
+            case 15 : points = 9;
+            break;
+            case 18 : points = 12;
+            break;
+            case 21 : points = 16;
+            break;
+            case 24 : points = 20;
         }
         return points;
     }
