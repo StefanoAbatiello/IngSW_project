@@ -185,6 +185,10 @@ public class MainClient implements Runnable, Sender {
         else if(input instanceof FaithPositionChangeMessage){
             view.faithPositionHandler((FaithPositionChangeMessage) input);
         }
+
+        else if(input instanceof ActivePopeMeetingMessage){
+            System.out.println("è è avvenuto il pope meeting "+((ActivePopeMeetingMessage) input).getMeetingNumber());
+        }
     }
 
     public void disconnect() {

@@ -19,11 +19,7 @@ class YellowMarbleTest {
         marble.changeMarble(p);
         ArrayList<Resource> resources=new ArrayList<>();
         resources.add(Resource.COIN);
-        try {
-            assertEquals(resources,p.getResourceSupply().getResources());
-        } catch (it.polimi.ingsw.model.cards.cardExceptions.NoSuchRequirementException e) {
-            e.printStackTrace();
-        }
+        assertEquals(resources,p.getResourceSupply().getResources());
     }
 
 }

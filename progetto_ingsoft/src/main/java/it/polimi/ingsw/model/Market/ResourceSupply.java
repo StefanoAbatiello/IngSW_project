@@ -61,7 +61,7 @@ public class ResourceSupply implements ResourceCreator {
      * @return an Arraylist of the Resources stored in ResourceSupply
      */
     @Override
-    public ArrayList<Resource> getResources() throws NoSuchRequirementException {
+    public ArrayList<Resource> getResources() {
         ArrayList<Resource> resources = new ArrayList<>();
         Arrays.stream(containers).forEach(container ->{if (!container.isEmpty()) resources.add(container.takeResource());});
         return resources;

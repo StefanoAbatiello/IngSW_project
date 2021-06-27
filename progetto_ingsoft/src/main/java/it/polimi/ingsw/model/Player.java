@@ -172,14 +172,15 @@ public class Player implements Points{
     }
 
     /**
-     * @param id is the id of the Leader card searched
+     * @param cardId is the id of the Leader card searched
      * @return the Leader card searched
      * @throws CardChosenNotValidException if the player doesn't own the Leader card searched
      */
-    public LeadCard getCardFromId(int id) throws CardChosenNotValidException {
+    public LeadCard getCardFromId(int cardId) throws CardChosenNotValidException {
         for(LeadCard card: leadCards) {
-            if (card.getId() == id)
+            if (card.getId() == cardId) {
                 return card;
+            }
         }
         throw new CardChosenNotValidException("You have not this card");
     }

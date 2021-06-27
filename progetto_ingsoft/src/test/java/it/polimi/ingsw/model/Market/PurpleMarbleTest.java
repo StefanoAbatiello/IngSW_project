@@ -13,17 +13,13 @@ class PurpleMarbleTest {
     this Test is implemented to check if a PurpleMarble in changed correctly
      */
     @Test
-    void changeMarbleTest() throws FullSupplyException {
+    void changeMarbleTest() {
         PurpleMarble marble=new PurpleMarble();
         Player p = new Player("0");
         marble.changeMarble(p);
         ArrayList<Resource> resources=new ArrayList<>();
         resources.add(Resource.SERVANT);
-        try {
-            assertEquals(resources,p.getResourceSupply().getResources());
-        } catch (it.polimi.ingsw.model.cards.cardExceptions.NoSuchRequirementException e) {
-            e.printStackTrace();
-        }
+        assertEquals(resources,p.getResourceSupply().getResources());
     }
 
 }

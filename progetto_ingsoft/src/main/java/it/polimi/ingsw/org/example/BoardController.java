@@ -116,31 +116,26 @@ public class BoardController implements GUIcontroller{
     }
 
 
-    public void uploadPosition(int newPosition){
-        final int shift=25;
+    public void uploadPosition(int newPosition) {
+        final int shift = 25;
 
-        if(newPosition==0){
+        if (newPosition == 0) {
             croce.setLayoutX(18);
             croce.setLayoutY(115);
+        } else if (newPosition > 0 && newPosition <= 2) {
+            croce.setLayoutX(croce.getLayoutX() + shift);
+        } else if (newPosition <= 4) {
+            croce.setLayoutY(croce.getLayoutY() + shift);
+        } else if (newPosition <= 9) {
+            croce.setLayoutX(croce.getLayoutX() + shift);
+        } else if (newPosition <= 11) {
+            croce.setLayoutY(croce.getLayoutY() - shift);
+        } else if (newPosition <= 16)
+            croce.setLayoutX(croce.getLayoutX() + shift);
+        else if (newPosition <= 18) {
+            croce.setLayoutY(croce.getLayoutY() + shift);
+        } else if (newPosition <= 24) {
+            croce.setLayoutX(croce.getLayoutX() + shift);
         }
-        else if(newPosition>0 && newPosition<=2){
-            croce.setLayoutX(croce.getLayoutX()+shift);
-        }
-        else if(newPosition<=4){
-            croce.setLayoutY(croce.getLayoutY()+shift);
-        }
-        else if(newPosition<=9){
-            croce.setLayoutX(croce.getLayoutX()+shift);
-        }
-        else if(newPosition<=11){
-            croce.setLayoutY(croce.getLayoutY()-shift);
-        }
-        else if(newPosition<=16)
-            croce.setLayoutX(croce.getLayoutX()+shift);
-        else if(newPosition<=18)
-            croce.setLayoutY(croce.getLayoutY()+shift);
-        else if(newPosition<=24)
-            croce.setLayoutX(croce.getLayoutX()+shift);
     }
-
 }

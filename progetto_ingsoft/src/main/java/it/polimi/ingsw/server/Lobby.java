@@ -112,7 +112,6 @@ public class Lobby {
     }
 
     public Map<VirtualClient,Integer> removePlayer(VirtualClient player) {
-
         clientFromPosition.remove(positionFromClient.get(player));
         positionFromClient.remove(player);
         if (clientFromPosition.size()>0)
