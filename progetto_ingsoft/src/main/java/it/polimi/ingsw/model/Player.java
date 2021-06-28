@@ -63,7 +63,7 @@ public class Player implements Points{
     public Player(String username) {
         name=username;
         //System.out.println("creo la personalboard di "+ username); [Debug]
-        this.personalBoard = new PersonalBoard();
+        this.personalBoard = new PersonalBoard(this);
         //System.out.println("personalBoard creata"); [Debug]
     }
 
@@ -176,19 +176,57 @@ public class Player implements Points{
      * @return the Leader card searched
      * @throws CardChosenNotValidException if the player doesn't own the Leader card searched
      */
-    public LeadCard getCardFromId(int cardId) throws CardChosenNotValidException {
+    public LeadCard getLeadCardFromId(int cardId) throws CardChosenNotValidException {
         for(LeadCard card: leadCards) {
             if (card.getId() == cardId) {
                 return card;
             }
         }
-        throw new CardChosenNotValidException("You have not this card");
+        throw new CardChosenNotValidException("You do not own the leadCard chosen");
     }
 
     public ResourceSupply getResourceSupply() {
         return  resourceSupply;
     }
 
+    /**
+     * @return an ArrayList of Resources stored in Player's Special Shelf
+     */
+    public ArrayList<Resource> getSpecialShelfResources() {
+        ArrayList<Resource> resources=new ArrayList<>();
+        for (int i = 0; i < 2; i++)
+            if (personalBoard.getSpecialShelves().get(i).isPresent())
+                resources.addAll(personalBoard.getSpecialShelves().get(i).get().getSpecialSlots());
+        return resources;
+    }
+
+    /**
+     * @return an ArrayList of Resources stored in Player's Supply
+     */
+    public ArrayList<Resource> getSupplyResources() {
+        ArrayList<Resource> resources=new ArrayList<>();
+        if(!resourceSupply.getResources().isEmpty())
+            resources.addAll(resourceSupply.viewResources());
+        return resources;
+    }
+
+    /**
+     * @return an ArrayList of Resources stored in Player's Strongbox
+     */
+    public ArrayList<Resource> getStrongboxResources() {
+        return new ArrayList<>(personalBoard.getStrongBox().getStrongboxContent());
+    }
+
+    /**
+     * @return an ArrayList of Resources stored in Player's Warehouse
+     */
+    public ArrayList<Resource> getWarehouseResources() {
+        return new ArrayList<>(personalBoard.getWarehouseDepots().getResources());
+    }
+
+    /**
+     * @return a simplified version of the Player's Supply
+     */
     public ArrayList<String> getSimplifiedSupply() {
         ArrayList<Resource> resSupply=resourceSupply.viewResources();
         return (ArrayList<String>) resSupply.stream().map(resource -> Objects.toString(resource, null)).collect(Collectors.toList());

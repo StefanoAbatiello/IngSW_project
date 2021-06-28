@@ -20,12 +20,12 @@ public class DevDeckMatrix {
     /**
      *This attribute is a reference to the whole deck of development card
      */
-    private DevDeck deck;
+    private final DevDeck deck;
 
     /**
      * This constructor creates a matrix and dispose the cards on the table, divided in little decks of 4 cards each, dived by color and level
      */
-    public DevDeckMatrix () throws FileNotFoundException, IOException, ParseException {
+    public DevDeckMatrix () throws IOException, ParseException {
         deck = new DevDeck();
         ArrayList<DevCard> greenCards = deck.createLittleDecks("GREEN");
         ArrayList<DevCard> yellowCards = deck.createLittleDecks("YELLOW");
@@ -77,7 +77,6 @@ public class DevDeckMatrix {
      *This method gives the possibility to get a card from the matrix
      * @param cardToBuy the dev card that who calls the method wants to buy
      * @return the dev card that the caller wants to buy, if the card is present
-     * @throws CardNotOnTableException the card wanted is not present on the game table
      */
     public boolean buyCard ( DevCard cardToBuy) {
         for(int i=0;i<4;i++){
@@ -89,14 +88,23 @@ public class DevDeckMatrix {
                     }
             }
         }
-        int[][] matrice=new int[3][4];
-        for (int i=0;i<matrice.length;i++)
-            for(int j=0;j< matrice[i].length;j++)
-                System.out.println(matrice[i][j]);
-
         return false;
     }
 
-
+    /**
+     * @param cardId is the id of the Development card searched
+     * @return the Development card searched
+     * @throws CardNotOnTableException if the Development card searched is not present in the upper level of the matrix
+     */
+    public DevCard findCardInMatrix(int cardId) throws CardNotOnTableException{
+        DevCard[][] upper = getUpperDevCardsOnTable();
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (upper[i][j].getId() == cardId)
+                    return upper[i][j];
+            }
+        }
+        throw new CardNotOnTableException("Error: card not found on table");
+    }
 }
 

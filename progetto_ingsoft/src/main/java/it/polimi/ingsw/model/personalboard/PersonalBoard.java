@@ -1,11 +1,13 @@
 package it.polimi.ingsw.model.personalboard;
 
+import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Resource;
 import java.util.*;
 import java.util.stream.*;
 
 public class PersonalBoard {
 
+    private final Player player;
     /**
      * this the player's Faith marker
      */
@@ -33,8 +35,10 @@ public class PersonalBoard {
 
     /**
      * create personal board with its component
+     * @param player is the Player who own this PersonalBoard
      */
-    public PersonalBoard(){
+    public PersonalBoard(Player player){
+        this.player = player;
         //System.out.println("creo il faithmarker");[Debug]
         faithMarker=new FaithMarker();
         //System.out.println("faithmarker creato, creo warehousedepots");[Debug]
@@ -77,44 +81,21 @@ public class PersonalBoard {
     }
 
     /**
-     * @param resourceArrayList are resources that we want check if they are in warehouse or in strongbox
-     * @return true if resources are contained , false otherwise
+     * @param requiredResources are resources that we want check if they are in warehouse or in strongbox
+     * @param playersResources is the ArrayList of resources where check if there are the required Resources
+     * @return true if resources are contained, false otherwise
      */
-    public boolean checkResourcesForUsages(ArrayList<Resource> resourceArrayList){
-        //TODO da scrivere con la concat
-        boolean result=false;
-        ArrayList<Resource> boardResources=new ArrayList<>();
-        Collections.copy(boardResources,strongBox.getStrongboxContent());
-        resourceArrayList.addAll(warehouseDepots.getResources());
-        if(!specialShelves.isEmpty()) {
-            if(specialShelves.get(0).isPresent())
-                resourceArrayList.addAll(specialShelves.get(0).get().getSpecialSlots());
-            if(specialShelves.get(1).isPresent())
-                resourceArrayList.addAll(specialShelves.get(1).get().getSpecialSlots());
-        }
-        for(Resource resource: resourceArrayList){
-            result=false;
-            if (boardResources.contains(resource)) {
-                result = true;
-                boardResources.remove(resource);
+    public boolean checkResourcesForUsages(ArrayList<Resource> requiredResources, ArrayList<Resource> playersResources){
+        for(Resource resource: requiredResources){
+            if (playersResources.contains(resource)) {
+                playersResources.remove(resource);
+            }else {
+                return false;
             }
         }
-        return result;
-        /*boolean result= false;
-        List<Resource> personalResources = Stream.concat(
-                getWarehouseDepots().getResources().stream(), getStrongBox().getStrongboxContent().stream()).collect(Collectors.toList());
-        for(Resource resource: resourceArrayList){
-            result=false;
-            if (personalResources.contains(resource)) {
-                result = true;
-                personalResources.remove(resource);
-            }
-            else
-                return result;
-        }
-        return result;*/
+        return true;
     }
-    //TODO controllare se servono entrambi i metodi
+
     /**
      * @param resources are that to delete
      * @return all resources to delete

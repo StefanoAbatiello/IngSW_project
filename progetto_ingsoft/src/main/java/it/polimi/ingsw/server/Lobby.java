@@ -183,15 +183,9 @@ public class Lobby {
                 int slot = ((BuyCardAction) input).getSlot();
                 System.out.println("card "+ cardID + " in slot "+slot);
                 try {
-                    if (controller.checkBuy(cardID, id, slot)) {
-                        //result = new ActionAnswer("carta" + gameObj + "comprata");
-                    }
-                } catch (ActionAlreadySetException | InvalidSlotException e) {
+                     controller.checkBuy(cardID, id, slot);
+                } catch (ActionAlreadySetException | InvalidSlotException | CardNotOnTableException | ResourceNotValidException e) {
                     controller.getActualPlayerTurn().getClientHandler().send(new LobbyMessage(e.getMessage()));
-                } catch (ResourceNotValidException e) {
-                    e.printStackTrace();
-                } catch (CardNotOnTableException e) {
-                    e.printStackTrace();
                 }
             }
         }

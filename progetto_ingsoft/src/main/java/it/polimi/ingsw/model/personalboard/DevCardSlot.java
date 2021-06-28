@@ -72,7 +72,7 @@ public class DevCardSlot implements Points {
     }
 
     /**
-     * @return an ArrayList containing only active cards in game
+     * @return an ArrayList containing only active cards owned by Player
      */
     public ArrayList<DevCard> getActiveCards() {
         for(int i=0;i<=2;i++){

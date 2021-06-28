@@ -362,80 +362,86 @@ public class Controller {
         }
     }
 
-    //TODO check discount in controller
-    public boolean checkBuy(int card, int id, int position) throws CardNotOnTableException, ResourceNotValidException, InvalidSlotException, ActionAlreadySetException {
-        Player player=getPlayerInTurn();
-        Optional<Action> playerAction= Optional.ofNullable(player.getAction());
-        if(playerAction.isPresent())
-            throw new ActionAlreadySetException("The player has already gone through with an action in their turn");
-        else if(position<0||position>2)
-            throw new InvalidSlotException();
+    /**
+     * @param cardId is the id of the Development card that the Player wishes to buy
+     * @param clientId is the id of the Client who wants to buy this card
+     * @param position is the position where the Client wants to put the new card
+     * @throws CardNotOnTableException if the Development card searched is not present in the upper level of the matrix
+     * @throws ResourceNotValidException if the Player has not the required Resources to buy the card
+     * @throws InvalidSlotException if the position chosen is not valid
+     * @throws ActionAlreadySetException is the Player has already gone through with an action in this turn
+     */
+    public void checkBuy(int cardId, int clientId, int position) throws CardNotOnTableException, ResourceNotValidException, InvalidSlotException, ActionAlreadySetException {
+        Player player = getPlayerInTurn();
+        Optional<Action> playerAction = Optional.ofNullable(player.getAction());
+        if (playerAction.isPresent())
+            throw new ActionAlreadySetException("You has already gone through with an action in this turn");
         else {
             System.out.println("ho controllato l'azione e la posizione scelta");
-            DevCard[][] upper;
-            if(playerCardLevel(player, card)) {
-                upper = game.getDevDeckMatrix().getUpperDevCardsOnTable();
-                for (int i = 0; i < 4; i++) {
-                    for (int j = 0; j < 3; j++) {
-                        System.out.println(upper[i][j].getId());
-                    }
-                }
-                for (int i = 0; i < 4; i++) {
-                    for (int j = 0; j < 3; j++) {
-                        if (upper[i][j].getId() == card) {
-                            System.out.println("ho trovato la carta");
-                            DevCard cardToBuy;
-                            try {
-                                cardToBuy = game.getDevDeck().getCardFromId(card);
-                            } catch (CardChosenNotValidException e) {
-                                System.err.println(e.getMessage());
-                                server.getClientFromId().get(id).getClientHandler().send(new LobbyMessage(e.getMessage()));
-                            return false;
-                            }
-                            System.out.println("mi sono preso la carta");
-                            if (player.getPersonalBoard().checkResourcesForUsages(cardToBuy.getRequirements())) {
-                                System.out.println("ha le risorse necessarie");
-                                player.setAction(Action.BUYCARD);
-                                game.getDevDeckMatrix().buyCard(cardToBuy);
-                                System.out.println("ha comprato la carta, invio la nuova dev matrix");
-                                lobby.sendAll(new DevMatrixChangeMessage(game.getSimplifiedDevMatrix()));
-                                System.out.println("dev matrix inviata");
-                                player.getPersonalBoard().removeResources(cardToBuy.getRequirements());
-                                getHandlerFromPlayer(id).send(new WareHouseChangeMessage(player.getPersonalBoard().getSimplifiedWarehouse()));
-                                getHandlerFromPlayer(id).send(new StrongboxChangeMessage(player.getPersonalBoard().getSimplifiedStrongbox()));
-                                System.out.println("ho rimosso le risorse usate");
-                                player.getPersonalBoard().getDevCardSlot().overlap(cardToBuy, position);
-                                System.out.println("ho posizionato la carta");
-                                getHandlerFromPlayer(id).send(new CardIDChangeMessage(player.getCardsId()));
-                                System.out.println("messaggio delle carte inviato");
-                                return true;
-                            } else
-                                throw new ResourceNotValidException("The player does not have enough resources to go through with the action");
-                        }
-                    }
-                }
+            if (playerCardLevel(player, cardId, position)) {
+                DevCard cardToBuy = game.getDevDeckMatrix().findCardInMatrix(cardId);
+                ArrayList<Resource> boardResources = new ArrayList<>(player.getStrongboxResources());
+                boardResources.addAll(player.getWarehouseResources());
+                boardResources.addAll(player.getSpecialShelfResources());
+                ArrayList<Resource> requirements = getDevCardRequirements(player,cardToBuy);
+                if (player.getPersonalBoard().checkResourcesForUsages(requirements, boardResources)) {
+                    player.setAction(Action.BUYCARD);
+                    game.getDevDeckMatrix().buyCard(cardToBuy);
+                    player.getPersonalBoard().removeResources(cardToBuy.getRequirements());
+                    player.getPersonalBoard().getDevCardSlot().overlap(cardToBuy, position);
+                    sendWarehouseInfo(player);
+                    sendStrongboxInfo(player);
+                    sendPlayerCardsInfo(player);
+                    for (Player player1:game.getPlayers())
+                        sendDevCardMatrixInfo(player1);
+                } else
+                    throw new ResourceNotValidException("The player does not have enough resources to go through with the action");
             }
-                throw new CardNotOnTableException("Error: card not found on table");
         }
     }
 
-    private boolean playerCardLevel(Player player, int card) {
-        DevCard devCard;
-        try {
-            devCard = game.getDevDeck().getCardFromId(card);
-        } catch (CardChosenNotValidException e) {
-            System.err.println(e.getMessage());
-            return false;
+    /**
+     * @param player is the Player who wants to get buy the Development card
+     * @param cardToBuy is the card the Player wats to buy
+     * @return the ArrayList of resources required to by this card, considering the potential discount ability
+     */
+    private ArrayList<Resource> getDevCardRequirements(Player player, DevCard cardToBuy) {
+        ArrayList<Resource> requirements=new ArrayList<>(cardToBuy.getRequirements());
+        if (!player.getDiscountAbility().isEmpty()){
+            requirements.remove(player.getDiscountAbility().get(0));
+            if (player.getDiscountAbility().size()>1)
+                requirements.remove(player.getDiscountAbility().get(1));
         }
-        int level=devCard.getLevel();
-        if(level==1) {
-            return player.getPersonalBoard().getDevCardSlot().getActiveCards().size() < 3;
-        }else {
-                for (DevCard card1 : player.getPersonalBoard().getDevCardSlot().getActiveCards())
-                    if (card1.getLevel() == level - 1)
-                        return true;
-       }
-        return false;
+        return requirements;
+    }
+
+    /**
+     * @param player is the Player who want to buy this Development card
+     * @param cardId is the id of the desired Development card
+     * @param position is the number of the slot where the Player wish to put the new Development card
+     * @throws InvalidSlotException if the position chosen is negative or >2
+     * @return true if the position chosen is valid, false otherwise
+     */
+    private boolean playerCardLevel(Player player, int cardId, int position) throws InvalidSlotException {
+        if (position>=0 && position<=2) {
+            DevCard wantedCard;
+            try {
+                wantedCard = game.getDevDeck().getCardFromId(cardId);
+            } catch (CardChosenNotValidException e) {
+                return false;
+            }
+            int newCardLevel = wantedCard.getLevel();
+            int numActiveCards = player.getPersonalBoard().getDevCardSlot().getActiveCards().size();
+            if (newCardLevel == 1) {
+                return numActiveCards < 3;
+            } else {
+                int lastIndex = player.getPersonalBoard().getDevCardSlot().getSlot()[position].size() - 1;
+                DevCard card = player.getPersonalBoard().getDevCardSlot().getSlot()[position].get(lastIndex);
+                return card.getLevel() == newCardLevel - 1;
+            }
+        }
+        else
+            throw new InvalidSlotException();
     }
 
 
@@ -524,7 +530,9 @@ public class Controller {
                 return false;
             }
             ArrayList<Resource> totalProdOut;
-            if(player.getPersonalBoard().checkResourcesForUsages(totalProdIn)) {
+            ArrayList<Resource> playersResources =new ArrayList<>(player.getWarehouseResources());
+            playersResources.addAll(player.getSpecialShelfResources());
+            if(player.getPersonalBoard().checkResourcesForUsages(totalProdIn, playersResources)) {
                 player.setAction(Action.ACTIVATEPRODUCTION);
                 player.getPersonalBoard().removeResources(totalProdIn);
                 totalProdOut = takeAllProdOut(cardProd, stringArrayToResArray(personalProdIn), personalProdOut, leadProdOut, id);
@@ -557,7 +565,7 @@ public class Controller {
         cardProd.stream().filter(integer -> integer > 48 && integer < 65).forEach(integer -> {
             LeadCard lead = null;
             try {
-                lead = player.getCardFromId(integer);
+                lead = player.getLeadCardFromId(integer);
             } catch (CardChosenNotValidException e) {
                 correctLead.set(false);
             }
@@ -597,7 +605,13 @@ public class Controller {
         prodDevs.forEach(card -> {
                 ArrayList<Resource> prodOut = card.getProdOut();
                 totalProdOut.addAll(prodOut);
-            });
+                for (int i=card.getFaithPoint();i>0;i--) {
+                    getPlayerFromId(id).getPersonalBoard().getFaithMarker().updatePosition();
+                    int popeMeeting=game.activePopeSpace(getPlayerFromId(id));
+                    if (popeMeeting>0 && popeMeeting<4)
+                        lobby.sendAll(new ActivePopeMeetingMessage(popeMeeting));
+                }
+        });
         int numofLead= (int) cardProd.stream().filter(integer -> integer > 48).count();
         if(numofLead==leadProdOut.size()){
             leadProdOut.forEach(resource -> totalProdOut.add(Resource.valueOf(resource)));
@@ -624,97 +638,109 @@ public class Controller {
         return playerCards.containsAll(cardsId);
     }
 
-    public void checkLeadActivation(int gameObj, int id) {
-        Player player= getPlayerFromId(id);
-        System.out.println("mi sono salvato il player");
-        if (gameObj < 48 || gameObj > 64) {
-            getHandlerFromPlayer(id).send(new LobbyMessage("LeadCard ID not valid"));
+    /**
+     * this method handles the activation action of a Leader card
+     * @param cardId is the Leader card id that the player wants to discard
+     * @param clientId is the id of the Client
+     */
+    public void checkLeadActivation(int cardId, int clientId) {
+        Player player= getPlayerFromId(clientId);
+        if (cardId < 48 || cardId > 64) {
+            getHandlerFromPlayer(clientId).send(new LobbyMessage("LeadCard Id not valid"));
         } else {
-            System.out.println("mi hai passato l'id di una lead");
             try {
-                LeadCard card = player.getCardFromId(gameObj);
+                LeadCard card = player.getLeadCardFromId(cardId);
                 if (card.isActive()) {
-                    getHandlerFromPlayer(id).send(new LobbyMessage("This leadCard is already active"));
+                    getHandlerFromPlayer(clientId).send(new LobbyMessage("This leadCard is already active"));
                 } else {
-                    System.out.println("puoi attivare la carta");
                     if(requirementsLeadCheck(card,player)) {
                         player.activateAbility(card);
-                        getHandlerFromPlayer(id).send(new CardIDChangeMessage(player.getCardsId()));
+                        getHandlerFromPlayer(clientId).send(new CardIDChangeMessage(player.getCardsId()));
                     }else
-                        getHandlerFromPlayer(id).send(new LobbyMessage("Missing requirements to activate this lead"));
-
+                        getHandlerFromPlayer(clientId).send(new LobbyMessage("Missing requirements to activate this lead"));
                 }
             } catch (CardChosenNotValidException e) {
-                getHandlerFromPlayer(id).send(new LobbyMessage("You do not own the leadCard chosen"));
+                getHandlerFromPlayer(clientId).send(new LobbyMessage(e.getMessage()));
             }
         }
     }
 
+    /**
+     * this method handles the discard action of a Leader card and give a points to all other players
+     * @param cardId is the Leader card id that the player wants to discard
+     * @param clientId is the id of the Client
+     */
     public void checkDiscardLead(int cardId, int clientId) {
         Player player=getPlayerFromId(clientId);
-        System.out.println("mi sono salvato il player");
         if (cardId < 48 || cardId > 64) {
             getHandlerFromPlayer(clientId).send(new LobbyMessage("LeadCard id not valid"));
         } else {
-            System.out.println("mi ha passato l'id di una lead");
             try {
-                LeadCard card = player.getCardFromId(cardId);
+                LeadCard card = player.getLeadCardFromId(cardId);
                 if (card.isActive()) {
                     getHandlerFromPlayer(clientId).send(new LobbyMessage("This leadCard is already active"));
                 } else {
-                    System.out.println("puoi scartare la carta");
                     player.discardLead(card);
                     getHandlerFromPlayer(clientId).send(new CardIDChangeMessage(player.getCardsId()));
                     faithPointsGiveAwayHandler(player,1);
                 }
             } catch (CardChosenNotValidException e) {
-                getHandlerFromPlayer(clientId).send(new LobbyMessage("You do not own the leadCard chosen"));
+                getHandlerFromPlayer(clientId).send(new LobbyMessage(e.getMessage()));
             }
         }
     }
 
+    /**
+     * @param card is the Leader card that the Player wants to activate
+     * @param player is the Player who wants to activate the Leader card
+     * @return true if the Player has the Developments cards or the Resources required to activate the Leader card
+     */
     private boolean requirementsLeadCheck(LeadCard card, Player player ){
-        System.out.println("dentro reqCheck");
         if(!card.getResources().isEmpty()) {
-            System.out.println("!card.getResources().isEmpty()");
-            if (player.getPersonalBoard().checkResourcesForUsages(card.getResources())) {
+            ArrayList<Resource> playersResources =new ArrayList<>(player.getStrongboxResources());
+            playersResources.addAll(player.getWarehouseResources());
+            playersResources.addAll(player.getSpecialShelfResources());
+            if (player.getPersonalBoard().checkResourcesForUsages(card.getResources(), playersResources)) {
                 player.getPersonalBoard().removeResources(card.getResources());
                 return true;
             } else
                 return false;
         }else{
-            System.out.println("else debug");
             return cardsReqLeadCheck(card, player);
-
         }
-
     }
 
+    /**
+     * @param card is the Leader card that the Player wants to activate
+     * @param player is the Player who wants to activate the Leader card
+     * @return true if the player has the Development cards required to activate the Leader cards
+     */
     private boolean cardsReqLeadCheck(LeadCard card, Player player){
-        boolean result=false;
         ArrayList<DevCard> playerDev= player.getPersonalBoard().getDevCardSlot().getDevCards();
-        if(card.getDevCardRequired().keySet().contains(1)) {
-            System.out.println("if(card.getDevCardRequired().keySet().contains(1))");
+        if(card.getDevCardRequired().containsKey(1)) {
             ArrayList<String> playerDevsColors = new ArrayList<>();
-            playerDev.forEach(dev -> {
-                String color = dev.getColor();
-                playerDevsColors.add(color);
-            });
+            playerDev.forEach(dev -> playerDevsColors.add(dev.getColor()));
             for (String color : card.getDevCardRequired().get(1)) {
-                result = false;
-                if (playerDevsColors.contains(color)) {
+                if (playerDevsColors.contains(color))
                     playerDevsColors.remove(color);
-                    result = true;
-                }
+                else
+                    return false;
             }
+            return true;
         }else {
-            for (DevCard dev : playerDev)
+            for (DevCard dev : playerDev) {
                 if (dev.getColor().equals(card.getDevCardRequired().get(2).get(0)) && dev.getLevel() == 2)
-                    result = true;
+                    return true;
+            }
+            return false;
         }
-        return result;
     }
 
+    /**
+     * @param specialRes is the ArrayList of the Resources put by th Player in the Special Shelves
+     * @param player is the player to whom this method checks the Special Shelves
+     * @return true if the Resources are put in a valid position
+     */
     private boolean checkSpecialShelf(ArrayList<Resource> specialRes, Player player) {
         boolean result= false;
         if (specialRes.size() > 2) {
@@ -791,9 +817,9 @@ public class Controller {
      * @return an Arraylist of the Resources remained in the Player's Supply
      */
     private ArrayList<Resource> checkWarehouseDimension(ArrayList<String>[] newWarehouse, Player player) {
-        ArrayList<Resource> allResources = getSupplyResources(player);
-        allResources.addAll(getWarehouseResources(player));
-        allResources.addAll(getSpecialShelfResources(player));
+        ArrayList<Resource> allResources = player.getSupplyResources();
+        allResources.addAll(player.getWarehouseResources());
+        allResources.addAll(player.getSpecialShelfResources());
         ArrayList<Resource> newRes= new ArrayList<>();
         for (ArrayList<String> strings : newWarehouse)
             newRes.addAll(stringArrayToResArray(strings));
@@ -837,44 +863,6 @@ public class Controller {
                 }
             }
         }
-    }
-
-    /**
-     * @param player is the player to whom take the resources
-     * @return an ArrayList of Resources stored in Player's Special Shelf
-     */
-    private ArrayList<Resource> getSpecialShelfResources(Player player) {
-        ArrayList<Resource> resources=new ArrayList<>();
-        for (int i = 0; i < 2; i++)
-            if (player.getPersonalBoard().getSpecialShelves().get(i).isPresent())
-                resources.addAll(player.getPersonalBoard().getSpecialShelves().get(i).get().getSpecialSlots());
-        return resources;
-    }
-
-    /**
-     * @param player is the player to whom take the resources
-     * @return an ArrayList of Resources stored in Player's Supply
-     */
-    private ArrayList<Resource> getSupplyResources(Player player) {
-        if(!player.getResourceSupply().getResources().isEmpty())
-            return player.getResourceSupply().getResources();
-        return new ArrayList<>();
-    }
-
-    /**
-     * @param player is the player to whom take the resources
-     * @return an ArrayList of Resources stored in Player's Strongbox
-     */
-    private ArrayList<Resource> getStrongboxResources(Player player) {
-        return player.getPersonalBoard().getStrongBox().getStrongboxContent();
-    }
-
-    /**
-     * @param player is the player to whom take the resources
-     * @return an ArrayList of Resources stored in Player's Warehouse
-     */
-    private ArrayList<Resource> getWarehouseResources(Player player) {
-        return player.getPersonalBoard().getWarehouseDepots().getResources();
     }
 
     /**
