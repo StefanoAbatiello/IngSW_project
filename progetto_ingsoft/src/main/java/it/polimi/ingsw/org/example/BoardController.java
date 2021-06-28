@@ -76,37 +76,6 @@ public class BoardController implements GUIcontroller{
 
     }
 
-    public void setRes(ArrayList<String> selectedRes, ArrayList<Integer> selectedShelf) {
-        ImageView selshelf = new ImageView();
-        for(int i=0;i<selectedRes.size();i++){
-            if(selectedShelf.get(i)==1){
-                selshelf=shelf1;
-            }
-            else if (selectedShelf.get(i)==2){
-                selshelf=(ImageView) shelf2.getChildren().get(0);
-            }
-            else if (selectedShelf.get(i)==3){
-                selshelf=(ImageView) shelf3.getChildren().get(0);
-            }
-            selshelf.setImage(new Image("org.example/images/"+selectedRes.get(i).toLowerCase(Locale.ROOT)+".png"));
-                /*if(selectedRes.get(i).equalsIgnoreCase("COIN"))
-                    shelf1.setImage(new Image("/org.example/images/coin.png"));
-                else if(selectedRes.get(i).equalsIgnoreCase("SHIELD"))
-                    shelf1.setImage(new Image("/org.example/images/shield.png"));
-                else if(selectedRes.get(i).equalsIgnoreCase("SERVANT"))
-                    shelf1.setImage(new Image("/org.example/images/servant.png"));
-                else if(selectedRes.get(i).equalsIgnoreCase("STONE"))
-                    shelf1.setImage(new Image("/org.example/images/stone.png"));
-            }
-            else if(selectedShelf.get(i)==2){
-                ImageView img= (ImageView) shelf2.getChildren().get(0);
-                img.setImage(new Image());
-            }
-                         */
-
-        }
-    }
-
 
     public void buyCard(MouseEvent mouseEvent) {
     }
@@ -136,6 +105,23 @@ public class BoardController implements GUIcontroller{
             croce.setLayoutY(croce.getLayoutY() + shift);
         } else if (newPosition <= 24) {
             croce.setLayoutX(croce.getLayoutX() + shift);
+        }
+    }
+
+    public void setWareHouse(ViewCLI viewCLI) {
+        if(!viewCLI.getWarehouse()[0].isEmpty())
+            shelf1.setImage(new Image("org.example/images/"+viewCLI.getWarehouse()[0].get(0)+".png"));
+        System.out.println(viewCLI.getWarehouse()[0]);
+
+        for(int i=0;i<viewCLI.getWarehouse()[1].size();i++){
+            System.out.println(viewCLI.getWarehouse()[1]);
+            ImageView image= (ImageView) shelf2.getChildren().get(i);
+            image.setImage(new Image("org.example/images/"+viewCLI.getWarehouse()[1].get(i)+".png"));
+        }
+        for(int i=0;i<viewCLI.getWarehouse()[2].size();i++){
+            System.out.println(viewCLI.getWarehouse()[2]);
+            ImageView image= (ImageView) shelf2.getChildren().get(i);
+            image.setImage(new Image("org.example/images/"+viewCLI.getWarehouse()[2].get(i)+".png"));
         }
     }
 }

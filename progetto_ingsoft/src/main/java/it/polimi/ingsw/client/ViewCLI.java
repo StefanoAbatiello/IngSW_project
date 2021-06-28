@@ -35,10 +35,6 @@ public class ViewCLI {
         this.market = market;
     }
 
-    public void setDevCardsId(Map<Integer, Boolean> devCardsId) {
-        this.devCardsId = devCardsId;
-    }
-
     public ViewCLI() {
         devCardsId=new HashMap<>();
         leadCardsId=new HashMap<>();
@@ -47,10 +43,9 @@ public class ViewCLI {
             strongbox[i]=0;
         faithPosition=0;
         devMatrix=new int[4][3];
-        for (int i=0;i<4;i++)
-            for (int j=0; j<3; j++) {
-                devMatrix[i][j] = i + j;
-            }
+        warehouse=new ArrayList[5];
+        for(int i=0;i<warehouse.length;i++)
+            warehouse[i]=new ArrayList<>();
         cardsFromId = new HashMap<>();
         market=new String[3][4];
     }

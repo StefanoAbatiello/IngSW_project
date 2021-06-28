@@ -100,13 +100,7 @@ public class CLI extends App implements View {
 
     @Override
     public void warehouseHandler(WareHouseChangeMessage input) {
-        System.out.println("Your warehouse is changed:");
-            /*
-            if(((PersonalBoardChangeMessage)input).getFaithPosition().isPresent()){
-                viewCLI.setFaithPosition(((PersonalBoardChangeMessage)input).getFaithPosition().get());
-            }
-            */
-        viewCLI.setWarehouse((input).getWarehouse());
+
     }
 
     @Override

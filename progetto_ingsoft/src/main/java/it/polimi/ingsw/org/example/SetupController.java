@@ -226,7 +226,6 @@ public class SetupController implements GUIcontroller {
         }
         shelfMenu.setVisible(false);
         System.out.println("finito");
-        ((BoardController)gui.getControllerFromName("board.fxml")).setRes(selectedRes,selectedShelf);
 
     }
     public void selectShelf2() {
@@ -236,7 +235,6 @@ public class SetupController implements GUIcontroller {
             res.setOpacity(1.0);
              }
         shelfMenu.setVisible(false);
-        ((BoardController)gui.getControllerFromName("board.fxml")).setRes(selectedRes,selectedShelf);
 
 
     }
@@ -247,7 +245,6 @@ public class SetupController implements GUIcontroller {
             res.setOpacity(1.0);
         }
         shelfMenu.setVisible(false);
-        ((BoardController)gui.getControllerFromName("board.fxml")).setRes(selectedRes,selectedShelf);
 
     }
 
