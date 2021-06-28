@@ -31,6 +31,7 @@ public class GUI extends Application implements View {
     private final String MARKETBOARD="provabiglia.fxml";
     private final String DEVMATRIX="devMatrix.fxml";
     private final String ZOOMCARD="zoomedCard.fxml";
+    private final String SUPPLY="supply.fxml";
 
     private final HashMap<String,Scene> nameMapScene= new HashMap<>();
     private final HashMap<String,GUIcontroller> nameMapController= new HashMap<>();
@@ -44,15 +45,11 @@ public class GUI extends Application implements View {
         launch();
     }
 
-    public Stage getStage(){
-        return stage;
-    }
-
 
     @Override
     public void start(Stage stage) {
         this.stage=stage;
-        List<String> fxmList = new ArrayList<>(Arrays.asList(LOGIN, NICKNAME,BOARD,WAITING,NUMOFPLAYER,LEADCARDSCHOICE,INITIALRESOURCES,MARKETBOARD,DEVMATRIX,ZOOMCARD));
+        List<String> fxmList = new ArrayList<>(Arrays.asList(LOGIN, NICKNAME,BOARD,WAITING,NUMOFPLAYER,LEADCARDSCHOICE,INITIALRESOURCES,MARKETBOARD,DEVMATRIX,SUPPLY,ZOOMCARD));
         try {
 
             for (String path : fxmList) {
@@ -180,14 +177,22 @@ public class GUI extends Application implements View {
     }
 
     public void faithPositionHandler(FaithPositionChangeMessage message){
-        BoardController boardController=(BoardController) nameMapController.get(BOARD);
-        boardController.uploadPosition(message.getFaithPosition());
+        Platform.runLater(()->{
+            BoardController boardController=(BoardController) nameMapController.get(BOARD);
+            boardController.uploadPosition(message.getFaithPosition());
+        });
     }
 
 
     @Override
     public void supplyHandler(ResourceInSupplyRequest resource) {
-
+        Platform.runLater(()->{
+            System.out.println("Inizio Supply");
+            changeStage(SUPPLY);
+            SupplyController supplyController=(SupplyController) nameMapController.get(SUPPLY);
+            supplyController.setSupply(resource.getResources());
+            System.out.println("Fine Supply");
+        });
 
     }
 
@@ -207,7 +212,10 @@ public class GUI extends Application implements View {
 
     @Override
     public void warehouseHandler(WareHouseChangeMessage wareHouseChangeMessage) {
-
+        System.out.println("Your warehouse is changed:");
+        viewCLI.setWarehouse((wareHouseChangeMessage).getWarehouse());
+        BoardController boardController= (BoardController) getControllerFromName(BOARD);
+        boardController.setWareHouse(viewCLI);
     }
 
     @Override
@@ -235,4 +243,7 @@ public class GUI extends Application implements View {
         this.viewCLI = viewCLI;
     }
 
+    public ViewCLI getViewCLI() {
+        return viewCLI;
+    }
 }

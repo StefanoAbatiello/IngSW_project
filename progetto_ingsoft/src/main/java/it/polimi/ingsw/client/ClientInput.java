@@ -268,7 +268,13 @@ public class ClientInput implements Runnable{
         //12-request of put new resources in warehouse
         else if(input.startsWith("PutNewResources:")){
             input=input.replace("PutNewResources:","").toUpperCase();
-            String[] commands = input.split(",");
+            String[] commands;
+            if (input.contains(","))
+                commands = input.split(",");
+            else {
+                commands= new String[1];
+                commands[0]=input;
+            }
             int dim=client.getViewCLI().getWarehouse().length;
             System.out.println("mi faccio una copia del warehouse");
             ArrayList<String>[] warehouse=new ArrayList[dim];
@@ -288,18 +294,22 @@ public class ClientInput implements Runnable{
                 if(command.contains("INSHELF")) {
                     String[] word = command.split("INSHELF");
                     System.out.println("ho separato il comando");
-                    int shelfNum=Integer.parseInt(word[1]);
-                    if ((word[0].equalsIgnoreCase("COIN")||
-                            word[0].equalsIgnoreCase("SERVANT")||
-                            word[0].equalsIgnoreCase("SHIELD")||
-                            word[0].equalsIgnoreCase("STONE")) && shelfNum<dim && shelfNum>=0){
-                        System.out.println("input valido: "+word[0]+" "+shelfNum);
-                        warehouse[shelfNum].add(word[0]);
-                        warehouse[shelfNum].forEach(string->System.out.println("on shelf "+ shelfNum+" ["+string+"]"));
-                        System.out.println("input salvato");
-                    }else{
+                    try {
+                        int shelfNum = Integer.parseInt(word[1]);
+                        if ((word[0].equalsIgnoreCase("COIN") ||
+                                word[0].equalsIgnoreCase("SERVANT") ||
+                                word[0].equalsIgnoreCase("SHIELD") ||
+                                word[0].equalsIgnoreCase("STONE")) && shelfNum < dim && shelfNum >= 0) {
+                            System.out.println("input valido: " + word[0] + " " + shelfNum);
+                            warehouse[shelfNum].add(word[0]);
+                            warehouse[shelfNum].forEach(string -> System.out.println("on shelf " + shelfNum + " [" + string + "]"));
+                            System.out.println("input salvato");
+                        } else {
+                            System.out.println("Input not valid, please type again");
+                            return;
+                        }
+                    }catch (NumberFormatException e){
                         System.out.println("Input not valid, please type again");
-                        return;
                     }
                 }else {
                     System.out.println("Input not valid, please type again");
