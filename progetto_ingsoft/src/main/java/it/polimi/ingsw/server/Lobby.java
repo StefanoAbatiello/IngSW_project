@@ -206,7 +206,7 @@ public class Lobby {
         //6-gestisco il posizionamento delle nuove risorse prese dal supply
         else if(input instanceof ResourceInSupplyAction && server.getClientFromId().get(id).equals(controller.getActualPlayerTurn())){
             System.out.println("è una richiesta di posizionare le nuove risorse");
-            if(stateOfGame==GameState.ONGOING){
+            if(stateOfGame==GameState.MARKET){
                controller.checkPositionOfResources(((ResourceInSupplyAction)input).getWarehouse(),id);
             }
         }

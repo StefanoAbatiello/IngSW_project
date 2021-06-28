@@ -797,12 +797,17 @@ public class Controller {
     public void checkPositionOfResources(ArrayList<String>[] newWarehouse, int id){
         Player player=getPlayerFromId(id);
         if (newWarehouse.length <= 5){
+            System.out.println("dimensione adeguata");
             if(checkShelfContent(newWarehouse,player)){
+                System.out.println("disposizione del nuovo warehouse valida");
                 ArrayList<Resource> remainingRes=checkWarehouseDimension(newWarehouse,player);
+                System.out.println("mi sono salvato le risorse da scartare");
                 if(!remainingRes.isEmpty()){
                     faithPointsGiveAwayHandler(player,player.getResourceSupply().discardResources(remainingRes));
+                    System.out.println("ho donato i faith point delle risorse scartate");
                 }
                 setWarehouseNewDisposition(newWarehouse,player);
+                System.out.println("mando la nuova disposizione del warehouse");
                 getHandlerFromPlayer(id).send( new WareHouseChangeMessage(player.getPersonalBoard().getSimplifiedWarehouse()));
             }else{
                 getHandlerFromPlayer(id).send(new WareHouseChangeMessage(player.getPersonalBoard().getSimplifiedWarehouse()));
@@ -818,20 +823,27 @@ public class Controller {
      */
     private ArrayList<Resource> checkWarehouseDimension(ArrayList<String>[] newWarehouse, Player player) {
         ArrayList<Resource> allResources = player.getSupplyResources();
+        System.out.println("mi sono salvato le risorse nel supply");
         allResources.addAll(player.getWarehouseResources());
+        System.out.println("mi sono salvato le risorse del warehouse");
         allResources.addAll(player.getSpecialShelfResources());
+        System.out.println("mi sono salvato le risorse degli special shelf");
         ArrayList<Resource> newRes= new ArrayList<>();
         for (ArrayList<String> strings : newWarehouse)
             newRes.addAll(stringArrayToResArray(strings));
+        System.out.println("mi sono salvato tutte le risorse mandate del client");
         for (int i=0;i<allResources.size();i++){
             for (int j=0;j<newRes.size();j++){
                 if (newRes.get(j).equals(allResources.get(i))){
+                    System.out.println("risorsa corrispondente trovata");
                     allResources.remove(i);
                     newRes.remove(j);
                     break;
                 }
             }
         }
+        System.out.println("queste sono le risorse da scartare");
+        allResources.forEach(resource -> System.out.println(resource.toString()));
         return allResources;
     }
 
@@ -841,11 +853,16 @@ public class Controller {
      */
     private void setWarehouseNewDisposition(ArrayList<String>[] newWarehouse, Player player) {
         for(int i=0;i<3;i++) {
+            System.out.println("scaffale "+i);
             if(newWarehouse[i].isEmpty()) {
-                player.getPersonalBoard().getWarehouseDepots().getShelves()[i] = new Shelf(i + 1);
+                System.out.println("svuoto scaffale");
+                player.getPersonalBoard().getWarehouseDepots().getShelves()[i].removeAllRes();
+                System.out.println("scaffale svuotato");
             }else {
+                System.out.println("cambio le risorse che ci sono su questo scaffale");
                 player.getPersonalBoard().getWarehouseDepots().getShelves()[i].removeAllRes();
                 player.getPersonalBoard().getWarehouseDepots().addInShelf(i, stringArrayToResArray(newWarehouse[i]));
+                System.out.println("risorse posizionate");
             }
         }
         if(!player.getPersonalBoard().getSpecialShelves().isEmpty()){
@@ -860,6 +877,7 @@ public class Controller {
                 }
             }
         }
+
     }
 
     /**
@@ -868,20 +886,27 @@ public class Controller {
      * @return true if the disposition is valid, false otherwise
      */
     private boolean checkShelfContent(ArrayList<String>[] newWarehouse, Player player) {
+        System.out.println("controllo la disposizione del nuovo warehouse");
         for(int i=0; i<3;i++) {
             if (newWarehouse[i].size() <= i + 1) {
+                System.out.println("dimensione dello scaffale adeguta");
                 for (int j = 0; j < newWarehouse[i].size() - 1; j++) {
-                    if (!newWarehouse[i].get(j).equals(newWarehouse[i].get(j + 1)))
+                    if (!newWarehouse[i].get(j).equals(newWarehouse[i].get(j + 1))) {
+                        System.out.println("due risorse diverse su uno stesso scaffale");
                         return false;
+                    }
                 }
+                System.out.println("scaffale "+i+" ben organizzato");
             } else
                 return false;
         }
         if(!newWarehouse[3].isEmpty()) {
+            System.out.println("ha messo risorse nel primo specialshelf");
             if (!checkSpecialShelf(stringArrayToResArray(newWarehouse[3]), player))
                 return false;
         }
         if(!newWarehouse[4].isEmpty()){
+            System.out.println("ha messo risorse nel secondo specialshelf");
             return checkSpecialShelf(stringArrayToResArray(newWarehouse[4]), player);
         }
         return true;

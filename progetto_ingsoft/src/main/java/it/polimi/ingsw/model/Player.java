@@ -194,10 +194,14 @@ public class Player implements Points{
      */
     public ArrayList<Resource> getSpecialShelfResources() {
         ArrayList<Resource> resources=new ArrayList<>();
-        for (int i = 0; i < 2; i++)
-            if (personalBoard.getSpecialShelves().get(i).isPresent())
+        for (int i = 0; i < 2; i++) {
+            System.out.println("controllo lo special chelf "+i);
+            if (!personalBoard.getSpecialShelves().isEmpty() && personalBoard.getSpecialShelves().get(i).isPresent()) {
+                System.out.println("è presente");
                 resources.addAll(personalBoard.getSpecialShelves().get(i).get().getSpecialSlots());
-        return resources;
+                System.out.println("ho preso le risorse contenute");
+            }
+        }return resources;
     }
 
     /**

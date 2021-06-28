@@ -13,7 +13,7 @@ public class SpecialShelf {
     /**
      * this is the structure where Resources are stored
      */
-    private final ArrayList<Resource> specialSlots;
+    private final ArrayList<Resource> specialSlots=new ArrayList<>();
 
     /**
      * this boolean is true when the player can use this Special Shelf
@@ -23,7 +23,6 @@ public class SpecialShelf {
     public SpecialShelf(Resource resourceType) {
         this.resourceType=resourceType;
         spActive=true;
-        specialSlots=new ArrayList<>();
     }
 
     /**
