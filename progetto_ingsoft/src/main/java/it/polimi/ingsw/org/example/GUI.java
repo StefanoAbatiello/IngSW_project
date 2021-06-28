@@ -30,6 +30,7 @@ public class GUI extends Application implements View {
     private final String INITIALRESOURCES="choiceresources.fxml";
     private final String MARKETBOARD="provabiglia.fxml";
     private final String DEVMATRIX="devMatrix.fxml";
+    private final String ZOOMCARD="zoomedCard.fxml";
 
     private final HashMap<String,Scene> nameMapScene= new HashMap<>();
     private final HashMap<String,GUIcontroller> nameMapController= new HashMap<>();
@@ -43,11 +44,15 @@ public class GUI extends Application implements View {
         launch();
     }
 
+    public Stage getStage(){
+        return stage;
+    }
+
 
     @Override
     public void start(Stage stage) {
         this.stage=stage;
-        List<String> fxmList = new ArrayList<>(Arrays.asList(LOGIN, NICKNAME,BOARD,WAITING,NUMOFPLAYER,LEADCARDSCHOICE,INITIALRESOURCES,MARKETBOARD,DEVMATRIX));
+        List<String> fxmList = new ArrayList<>(Arrays.asList(LOGIN, NICKNAME,BOARD,WAITING,NUMOFPLAYER,LEADCARDSCHOICE,INITIALRESOURCES,MARKETBOARD,DEVMATRIX,ZOOMCARD));
         try {
 
             for (String path : fxmList) {
@@ -210,9 +215,10 @@ public class GUI extends Application implements View {
 
     }
 
+    //TODO controllo se necessario override o metodo comune
     @Override
     public void devMatrixHandler(DevMatrixChangeMessage devMatrixChangeMessage) {
-
+    viewCLI.setDevMatrix(devMatrixChangeMessage.getDevMatrix());
     }
 
     @Override
