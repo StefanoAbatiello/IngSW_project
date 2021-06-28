@@ -466,6 +466,8 @@ public class Controller {
                 lobby.sendAll(new ActivePopeMeetingMessage(popeMeeting));
             lobby.sendAll(new MarketChangeMessage(game.getSimplifiedMarket()));
             ArrayList<String> resSupply = player.getSimplifiedSupply();
+            System.out.println("le risorse nel supply sono:");
+            player.getResourceSupply().viewResources().forEach(System.out::println);
             int num=Collections.frequency(resSupply,"CHOOSABLE");
             if(num>0) {
                 getHandlerFromPlayer(id).send(new ChangeChoosableResourceRequest(num, resArrayToStringArray(player.getWhiteMarbleAbility()),
@@ -772,8 +774,8 @@ public class Controller {
      * @param pointsToGive is the number of faith points to give away
      */
     public void faithPointsGiveAwayHandler(Player player, int pointsToGive){
-        for (int i=0; i<pointsToGive;i++) {
-            System.out.println("sto donando il "+ i +" punto");
+        while (pointsToGive>0) {
+            System.out.println("sto donando il "+ pointsToGive +" punto");
             int meetingNumber = game.faithPointsGiveAway(player);
             System.out.println("si è attivato il meeting "+ meetingNumber);
             lobby.getClientFromPosition().values().forEach(client->{
@@ -786,6 +788,7 @@ public class Controller {
                 System.out.println("avviso tutti che c'è stato il meeting " +meetingNumber);
                 lobby.sendAll(new ActivePopeMeetingMessage(meetingNumber));
             }
+            pointsToGive--;
         }
     }
 
@@ -810,8 +813,8 @@ public class Controller {
                 System.out.println("mando la nuova disposizione del warehouse");
                 getHandlerFromPlayer(id).send( new WareHouseChangeMessage(player.getPersonalBoard().getSimplifiedWarehouse()));
             }else{
-                getHandlerFromPlayer(id).send(new WareHouseChangeMessage(player.getPersonalBoard().getSimplifiedWarehouse()));
                 getHandlerFromPlayer(id).send(new LobbyMessage("Resources not valid in this disposition, please retry"));
+                getHandlerFromPlayer(id).send(new WareHouseChangeMessage(player.getPersonalBoard().getSimplifiedWarehouse()));
             }
         }
     }
@@ -822,7 +825,9 @@ public class Controller {
      * @return an Arraylist of the Resources remained in the Player's Supply
      */
     private ArrayList<Resource> checkWarehouseDimension(ArrayList<String>[] newWarehouse, Player player) {
-        ArrayList<Resource> allResources = player.getSupplyResources();
+        player.getSupplyResources().forEach(System.out::println);
+        ArrayList<Resource> allResources = new ArrayList<>(player.getSupplyResources());
+        allResources.forEach(System.out::println);
         System.out.println("mi sono salvato le risorse nel supply");
         allResources.addAll(player.getWarehouseResources());
         System.out.println("mi sono salvato le risorse del warehouse");
@@ -831,10 +836,15 @@ public class Controller {
         ArrayList<Resource> newRes= new ArrayList<>();
         for (ArrayList<String> strings : newWarehouse)
             newRes.addAll(stringArrayToResArray(strings));
+        allResources.forEach(resource -> System.out.println(resource.toString()));
+        System.out.println("-----");
+        newRes.forEach(resource -> System.out.println(resource.toString()));
         System.out.println("mi sono salvato tutte le risorse mandate del client");
+        //player.getPersonalBoard().checkResourcesForUsages(newRes,allResources);
         for (int i=0;i<allResources.size();i++){
             for (int j=0;j<newRes.size();j++){
-                if (newRes.get(j).equals(allResources.get(i))){
+                System.out.println("valuto risorsa "+i+": "+allResources);
+                if (allResources.get(i).equals(newRes.get(j))){
                     System.out.println("risorsa corrispondente trovata");
                     allResources.remove(i);
                     newRes.remove(j);

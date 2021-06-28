@@ -208,9 +208,7 @@ public class Player implements Points{
      * @return an ArrayList of Resources stored in Player's Supply
      */
     public ArrayList<Resource> getSupplyResources() {
-        ArrayList<Resource> resources=new ArrayList<>();
-        if(!resourceSupply.getResources().isEmpty())
-            resources.addAll(resourceSupply.viewResources());
+        ArrayList<Resource> resources=new ArrayList<>(resourceSupply.viewResources());
         return resources;
     }
 

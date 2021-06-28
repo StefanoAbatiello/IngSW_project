@@ -52,7 +52,11 @@ public class ResourceSupply implements ResourceCreator {
      */
     public ArrayList<Resource> viewResources() {
         ArrayList<Resource> resources = new ArrayList<>();
-        Arrays.stream(containers).forEach(container ->{if (!container.isEmpty()) resources.add(container.showResource());});
+        for (Container container:containers){
+            if (!container.isEmpty())
+                resources.add(container.showResource());
+        }
+        //Arrays.stream(containers).forEach(container ->{if (!container.isEmpty()) resources.add(container.showResource());});
         return resources;
     }
 
