@@ -75,7 +75,6 @@ public class MainServer {
                 System.err.println("Port number not valid, restart the program");
                 System.exit(0);
             }
-            System.out.println("Creating socket server");
             new MainServer(portNumber);
         }catch (NumberFormatException e){
             System.err.println(e.getMessage());
@@ -144,6 +143,7 @@ public class MainServer {
                 if (isClientOnline(id)) {
                     return -2;
                 } else {
+                    System.out.println("riconnessione dell'utente "+id);//[Debug]
                     reconnectClient(id, name, clientHandler);
                     if (isClientInALobby(id)) {
                         Lobby lobby = lobbyFromClientID.get(id);
@@ -164,7 +164,7 @@ public class MainServer {
      */
     public boolean isClientInALobby(int id) {
         if (lobbyFromClientID.containsKey(id)) {
-            System.out.println("l'utente" + id + "non è collegato, ma esiste partita in cui giocava");//[Debug]
+            System.out.println("esiste partita in cui giocava");//[Debug]
             Lobby lobby = lobbyFromClientID.get(id);
             if (lobby.getStateOfGame() != GameState.ENDED) {
                 System.out.println("la partita è in corso, il giocatore può essere ricollegato");//[Debug]
@@ -194,7 +194,7 @@ public class MainServer {
     public boolean isClientOnline(String name) {
         int id=getIDFromName().get(name);
         if (clientFromId.containsKey(id)) {
-            System.out.println("l'utente " + id + "è online");//[Debug]
+            System.out.println("l'utente " + id + " è online");//[Debug]
             return true;
         }
         return false;
@@ -205,7 +205,7 @@ public class MainServer {
      * @return true if player is already contained in someone lobby or if he is entered in a new lobby, false if every lobby is full
      */
     public boolean findEmptyLobby(int id) {
-        System.out.println("sei dentro check first player");//[Debug]
+        //System.out.println("sei dentro find empty lobby");[Debug]
         ArrayList<Lobby> lobbies= (ArrayList<Lobby>) lobbyFromClientID.values().stream().distinct().collect(Collectors.toList());
         for(Lobby lobby:lobbies) {
             if (!lobby.isLobbyFull() && lobby.getStateOfGame()==GameState.WAITING && !isSinglePlayerLobby(lobby)) {

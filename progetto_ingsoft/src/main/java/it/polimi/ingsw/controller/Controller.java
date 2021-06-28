@@ -373,8 +373,7 @@ public class Controller {
      */
     public void checkBuy(int cardId, int clientId, int position) throws CardNotOnTableException, ResourceNotValidException, InvalidSlotException, ActionAlreadySetException {
         Player player = getPlayerInTurn();
-        Optional<Action> playerAction = Optional.ofNullable(player.getAction());
-        if (playerAction.isPresent())
+        if (checkActionDoneYet(player))
             throw new ActionAlreadySetException("You has already gone through with an action in this turn");
         else {
             System.out.println("ho controllato l'azione e la posizione scelta");
@@ -798,14 +797,15 @@ public class Controller {
     public void checkPositionOfResources(ArrayList<String>[] newWarehouse, int id){
         Player player=getPlayerFromId(id);
         if (newWarehouse.length <= 5){
-            ArrayList<Resource> remainingRes=checkWarehouseDimension(newWarehouse,player);
-            if(!remainingRes.isEmpty()){
-                faithPointsGiveAwayHandler(player,player.getResourceSupply().discardResources(remainingRes));
-            }
             if(checkShelfContent(newWarehouse,player)){
+                ArrayList<Resource> remainingRes=checkWarehouseDimension(newWarehouse,player);
+                if(!remainingRes.isEmpty()){
+                    faithPointsGiveAwayHandler(player,player.getResourceSupply().discardResources(remainingRes));
+                }
                 setWarehouseNewDisposition(newWarehouse,player);
                 getHandlerFromPlayer(id).send( new WareHouseChangeMessage(player.getPersonalBoard().getSimplifiedWarehouse()));
             }else{
+                getHandlerFromPlayer(id).send(new WareHouseChangeMessage(player.getPersonalBoard().getSimplifiedWarehouse()));
                 getHandlerFromPlayer(id).send(new LobbyMessage("Resources not valid in this disposition, please retry"));
             }
         }
@@ -854,12 +854,9 @@ public class Controller {
                 if(player.getPersonalBoard().getSpecialShelves().get(i-3).isPresent())
                     resource=player.getPersonalBoard().getSpecialShelves().get(i-3).get().getResourceType();
                 player.getPersonalBoard().getSpecialShelves().remove(i-3);
-                System.out.println("DEBUG 3.3");
                 player.getPersonalBoard().getSpecialShelves().add(i-3, Optional.of(new SpecialShelf(resource)));
                 if(!newWarehouse[i].isEmpty()) {
-                    System.out.println("DEBUG 3.4");
                     player.getPersonalBoard().getWarehouseDepots().addInShelf(i, stringArrayToResArray(newWarehouse[i]));
-                    System.out.println("DEBUG 3.5");
                 }
             }
         }
@@ -896,9 +893,9 @@ public class Controller {
      */
     private void sendStrongboxInfo(Player p) {
         ClientHandler handler=getHandlerFromPlayer(p.getName());
-        System.out.println("mando strongbox");
+        //System.out.println("mando strongbox");[Debug]
         handler.send(new StrongboxChangeMessage(p.getPersonalBoard().getSimplifiedStrongbox()));
-        System.out.println("strongbox mandato");
+        //System.out.println("strongbox mandato");[Debug]
     }
 
     /**
@@ -907,9 +904,9 @@ public class Controller {
      */
     private void sendFaithMarkerPosition(Player p) {
         ClientHandler handler=getHandlerFromPlayer(p.getName());
-        System.out.println("mando faith position");
+        //System.out.println("mando faith position");[Debug]
         handler.send(new FaithPositionChangeMessage(p.getPersonalBoard().getFaithMarker().getFaithPosition()));
-        System.out.println("faith position mandato");
+        //System.out.println("faith position mandato");[Debug]
     }
 
     /**
@@ -917,7 +914,7 @@ public class Controller {
      * @param p is the Player who need the info of his cards
      */
     private void sendPlayerCardsInfo(Player p) {
-        System.out.println("mando le carte del giocatore");
+       // System.out.println("mando le carte del giocatore");[Debug]
         ClientHandler handler=getHandlerFromPlayer(p.getName());
         handler.send(new CardIDChangeMessage(p.getCardsId()));
     }
@@ -927,7 +924,7 @@ public class Controller {
      * @param p is the Player who need the info of his Warehouse
      */
     private void sendWarehouseInfo(Player p) {
-        System.out.println("mando il warehouse");
+        //System.out.println("mando il warehouse");[Debug]
         ClientHandler handler=getHandlerFromPlayer(p.getName());
         handler.send(new WareHouseChangeMessage(p.getPersonalBoard().getSimplifiedWarehouse()));
     }
@@ -937,7 +934,7 @@ public class Controller {
      * @param p is the Player who need the info of the Development cards Matrix
      */
     private void sendDevCardMatrixInfo(Player p) {
-        System.out.println("mando le info della matrice di dev card");
+        //System.out.println("mando le info della matrice di dev card");[Debug]
         ClientHandler handler=getHandlerFromPlayer(p.getName());
         handler.send(new DevMatrixChangeMessage(game.getSimplifiedDevMatrix()));
     }
@@ -947,7 +944,7 @@ public class Controller {
      * @param p is the Player who need the info of the Resource Market
      */
     private void sendMarketInfo(Player p) {
-        System.out.println("mando le info del market");
+        //System.out.println("mando le info del market");[Debug]
         ClientHandler handler=getHandlerFromPlayer(p.getName());
         handler.send(new MarketChangeMessage(game.getSimplifiedMarket()));
     }
@@ -1027,20 +1024,20 @@ public class Controller {
      */
     public void sendInfoAfterReconnection(int id) {
         if (lobby.getStateOfGame() == GameState.PREPARATION1) {
-            System.out.println("il giocatori stanno scegliendo le Leads");
+            //System.out.println("il giocatori stanno scegliendo le Leads");[Debug]
             if (leaderCardChosenYet(getPlayerFromId(id)))
                 notifyLeadCardDistributed(server.getClientFromId().get(id));
             else
                 getHandlerFromPlayer(id).send(new LobbyMessage("You have Chosen your Leader cards yet"));
         } else if (lobby.getStateOfGame() == GameState.PREPARATION2) {
-            System.out.println(" i giocatori stanno scegliendo le risorse iniziali");
+            //System.out.println(" i giocatori stanno scegliendo le risorse iniziali");[Debug]
             if (!checkPlayerStartingWarehouse(lobby.getPositionFromClient().get(server.getClientFromId().get(id)))) {
                 askInitialResources(server.getClientFromId().get(id));
                 checkPlayerInitialFaithMarker(lobby.getPositionFromClient().get(server.getClientFromId().get(id)));
             } else
                 getHandlerFromPlayer(id).send(new LobbyMessage("You have Chosen your initial Resource yet"));
         } else if (lobby.getStateOfGame() == GameState.ONGOING) {
-            System.out.println("i giocatori stanno giocando");
+            //System.out.println("i giocatori stanno giocando");[Debug]
             Player p = getPlayerFromId(id);
             sendMarketInfo(p);
             sendDevCardMatrixInfo(p);

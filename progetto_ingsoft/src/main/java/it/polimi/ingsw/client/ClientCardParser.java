@@ -26,13 +26,11 @@ public class ClientCardParser {
         try{
             reader = new InputStreamReader(Objects.requireNonNull(JSONParser.class.getResourceAsStream(
                     "/DEVCARDS.json")), StandardCharsets.UTF_8);
-            System.out.println("ho letto il file dev");
-            //Read JSON File
+            //System.out.println("ho letto il file dev");[Debug]
             this.devCardList = (JSONArray)jsonP.parse(reader);
             reader = new InputStreamReader(Objects.requireNonNull(JSONParser.class.getResourceAsStream(
                     "/LEADCARDS.json")), StandardCharsets.UTF_8);
-            System.out.println("ho letto il file lead");
-            //Read JSON File
+            //System.out.println("ho letto il file lead");[Debug]
             this.leadCardList = (JSONArray) jsonP.parse(reader);
         }
         catch (FileNotFoundException e) {

@@ -121,11 +121,14 @@ public class MainClient implements Runnable, Sender {
             if (!pingObserver.isStarted()) {
                 //System.out.println("era il primo ping, faccio partire il pongObserver");[Debug]
                 try{
+                    pingObserver.setStarted(true);
                     timer.schedule(pingObserver, 0, timerPeriod);
                 } catch (IllegalStateException e) {
-                    System.out.println(e.getMessage());
-                    e.printStackTrace();
+                    System.out.println("-----");
+                    System.err.println(e.getMessage());
                     System.out.println("timer scheduled yet");
+                    e.printStackTrace();
+                    System.out.println("-----");
                 }
                 //System.out.println("pongObserver partito");[Debug]
             }

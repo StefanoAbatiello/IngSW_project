@@ -44,20 +44,20 @@ public class MultiPlayer extends Game {
         setVC2active(true);
         setVC3active(true);
         players= new ArrayList<>();
-        System.out.println("mi salvo la lista di giocatori");
+        //System.out.println("mi salvo la lista di giocatori");[Debug]
         for(String user:username) {
-            System.out.println("creo il giocatore " + user);
+            //System.out.println("creo il giocatore " + user);[Debug]
             this.players.add(new Player(user));
-            System.out.println(user + "creato");
+            //System.out.println(user + "creato");[Debug]
         }
-        System.out.println("lista di giocatori salvata, creo le devCards");
+        //System.out.println("lista di giocatori salvata, creo le devCards");[Debug]
         matrix = new DevDeckMatrix();
         devDeck = matrix.getDeck();
-        System.out.println("devCards create, creo il market");
+        //System.out.println("devCards create, creo il market");[Debug]
         this.market=new Market();
-        System.out.println("market creato, creo le leadCards");
+        //System.out.println("market creato, creo le leadCards");[Debug]
         leads = new LeadDeck();
-        System.out.println("distribuisco le leadCards");
+        //System.out.println("distribuisco le leadCards");[Debug]
         leads.shuffle();
         for(Player player:players){
             leads.giveToPlayer(player);

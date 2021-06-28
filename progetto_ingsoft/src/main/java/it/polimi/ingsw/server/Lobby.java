@@ -58,7 +58,6 @@ public class Lobby {
 
 
     public ArrayList<String> getPlayersName(){
-        System.out.println("mi sto salvando i nomi dei giocatori");
         ArrayList<String> playersName = new ArrayList<>();
         for (VirtualClient client : clientFromPosition.values()) {
             playersName.add(client.getNickName());

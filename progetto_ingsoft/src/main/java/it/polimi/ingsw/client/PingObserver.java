@@ -23,13 +23,16 @@ public class PingObserver extends TimerTask {
         counterTimeout=0;
     }
 
+    public void setStarted(boolean started) {
+        this.started = started;
+    }
+
     public boolean isStarted() {
         return started;
     }
 
     @Override
     public void run() {
-        started = true;
         //System.out.println("creo il timer");[Debug]
         timer=new Timer();
         //System.out.println("creo il timertask");[Debug]
@@ -42,13 +45,11 @@ public class PingObserver extends TimerTask {
                     //System.out.println("ping non ricevuto " + counterTimeout + " volta/e");[Debug]
                 } else {
                     //System.out.println("ping ricevuto");
-                    client.send(new PingMessage());
                     counterTimeout = 0;
                     pingReceived=false;
                     //System.err.println("blocco il timer");
                     timer.cancel();
                     timer.purge();
-                    cancel();
                 }
                 if (counterTimeout == maxTimeoutNumber) {
                     System.out.println("non ho ricevuto ping per troppo tempo");

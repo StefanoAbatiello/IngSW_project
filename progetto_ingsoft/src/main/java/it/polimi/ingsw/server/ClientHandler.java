@@ -57,9 +57,9 @@ public class ClientHandler implements Runnable, Sender {
     public void run() {
         try {
             SerializedMessage message;
+            System.out.println("chiedo il nickname al nuovo utente");
             send(new NickNameAction("Please choose a nickname"));
             do{
-                System.out.println("inizio do");
                 message = streamReader();
                 if (message instanceof NickNameAction) {
                     nickNameHandler( message);
@@ -67,9 +67,9 @@ public class ClientHandler implements Runnable, Sender {
             }while(isActive() && !(clientID > 0));
 
             while (isActive()) {
-                System.out.println("aspetto un messaggio");//[Debug]
+                //System.out.println("aspetto un messaggio");[Debug]
                 message = streamReader();
-                System.out.println("ho ricevuto un messaggio da "+ server.getNameFromId().get(clientID));//[Debug]
+                //System.out.println("ho ricevuto un messaggio da "+ server.getNameFromId().get(clientID));[Debug]
                 if(!pingHandler(message) && !playersNumberHandler(message) && !quitHandler(message)){
                     if (!server.getLobbyFromClientID().containsKey(clientID) || server.getLobbyFromClientID().get(clientID).getStateOfGame()==GameState.WAITING || server.getLobbyFromClientID().get(clientID).getStateOfGame()==GameState.ENDED)
                         send(new LobbyMessage("Action not valid now"));
@@ -115,7 +115,7 @@ public class ClientHandler implements Runnable, Sender {
      */
     private synchronized boolean pingHandler(SerializedMessage message) {
         if(message instanceof PingMessage) {
-            System.out.println("ping message client "+clientID);//[Debug]
+            //System.out.println("ping message client "+clientID);[Debug]
             this.pingObserver.setResponse();
             return true;
         }
@@ -131,14 +131,14 @@ public class ClientHandler implements Runnable, Sender {
             String nickname = ((NickNameAction) message).getMessage();
             if (nickname != null && !nickname.equals("")) {
                 clientID = server.checkNickName(nickname, this);
+                System.out.println("nickname valido");
                 if (clientID > 0) {
                     pingObserver = new PongObserver(this);
                     server.getConnectionServer().addPingObserver(pingObserver);
                     //System.out.println("Ho creato il pongObserver");[Debug]
                     if (!server.getLobbyFromClientID().containsKey(clientID))
                         if (!server.findEmptyLobby(clientID)) {
-                            send(new RequestNumOfPlayers("YOU ARE THE HOST OF A NEW LOBBY"
-                                    + " CHOOSE HOW MANY PLAYERS YOU WANT TO CHALLENGE [0 to 3]"));
+                            send(new RequestNumOfPlayers("CHOOSE HOW MANY PLAYERS YOU WANT TO CHALLENGE [0 to 3]"));
                         }
                 } else if (clientID == -2) {
                     send(new NickNameAction("Nickname already taken." + " Please choose another one:"));
@@ -165,8 +165,8 @@ public class ClientHandler implements Runnable, Sender {
                 else {
                     Lobby lobby = new Lobby(server.generateLobbyId(), num + 1, server);
                     send(new WaitingRoomAction("Lobby created. Wait for the other players to join!"));
-                    System.out.println("Lobby di" + num + "giocatori creata con id: " + lobby.getLobbyID() + "." +
-                            "inserisco l'host");//[Debug]
+                    System.out.println("Lobby di " + (num+1) + " giocatori creata con id: " + lobby.getLobbyID() + "." +
+                            " Inserisco l'host");//[Debug]
                     lobby.insertPlayer(clientID);
                 }
                 return true;
@@ -184,14 +184,13 @@ public class ClientHandler implements Runnable, Sender {
      */
     public synchronized void send(SerializedMessage message){
         try {
-            System.out.println("sto inviando il messaggio");
+            //System.out.println("sto inviando il messaggio");[Debug]
             outputStreamObj.writeObject(message);
             outputStreamObj.flush();
-            System.out.println("messaggio inviato");
+            //System.out.println("messaggio inviato");[Debug]
         } catch (IOException e) {
             System.err.println("client not reachable(send)");
             server.disconnectClient(clientID);
-            e.printStackTrace();
         }
     }
 

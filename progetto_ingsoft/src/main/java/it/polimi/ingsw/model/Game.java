@@ -76,7 +76,6 @@ public abstract class  Game {
     public int[][] getSimplifiedDevMatrix(){
         int[][] devMatrix = new int[4][3];
         DevCard[][] matrix = getDevDeckMatrix().getUpperDevCardsOnTable();
-        System.out.println("mi sono salvato le carte acquistabili");
         for (int j = 0; j < 4; j++) {
             for (int k = 0; k < 3; k++) {
                 devMatrix[j][k] = matrix[j][k].getId();

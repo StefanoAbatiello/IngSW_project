@@ -15,7 +15,7 @@ public class PongObserver implements Runnable {
     private int counterTimeout;
     private final ClientHandler clientHandler;
     private Timer timer;
-    private static final int timerPeriod = 4000;// time in milliseconds
+    private static final int timerPeriod = 5000;// time in milliseconds
     private boolean pingReceived;
 
     public PongObserver(ClientHandler clientHandler) {
@@ -29,37 +29,12 @@ public class PongObserver implements Runnable {
     public synchronized void setActive(boolean active){
         this.active=active;
     }
-/*
-    public boolean waitResponse () {
-        try {
-            while (counterTimeout < maxTimeoutNumber) {
-                sleep(4000);
-                if (active) {
-                    if (clientHandler.getPingReceived()) {
-                        counterTimeout = 0;
-                        return true;
-                    } else {
-                        counterTimeout = counterTimeout + 1;
-                        System.out.println("ping non ricevuto " + counterTimeout + " volta/e dal client: " + clientHandler.getClientId());
-                        clientHandler.asyncSend(new PingMessage());
-                    }
-                }else
-                    return false;
-            }
-        }catch(InterruptedException e){
-                e.printStackTrace();
-        }
-        return false;
-    }
-
- */
-
 
     @Override
     public void run() {
         System.out.println("mando il ping al client: "+clientHandler.getClientId());
         clientHandler.send(new PingMessage());
-        System.out.println("aspetto il ping del client: "+clientHandler.getClientId());
+        //System.out.println("aspetto il ping del client: "+clientHandler.getClientId());[Debug]
         timer=new Timer();
         TimerTask checkResponse=new TimerTask() {
             @Override
@@ -81,12 +56,11 @@ public class PongObserver implements Runnable {
                         clientHandler.getServer().disconnectClient(clientHandler.getClientId());
                         timer.cancel();
                         timer.purge();
-                        cancel();
                     }
                 }
             }
         };
-        timer.schedule(checkResponse, 0, timerPeriod);
+        timer.schedule(checkResponse, 1000, timerPeriod);
     }
 
     public synchronized void setResponse() {

@@ -237,11 +237,11 @@ public class Player implements Points{
      */
     public Map<Integer,Boolean> getCardsId() {
         Map<Integer, Boolean> cardsId = new HashMap<>();
-        System.out.println("ho creato la mappa");
+        //System.out.println("ho creato la mappa");[Debug]
         getLeadCards().forEach(leadCard -> cardsId.put(leadCard.getId(), leadCard.isActive()));
-        System.out.println("mi sono salvato gli id delle lead card");
+        //System.out.println("mi sono salvato gli id delle lead card");[Debug]
         getPersonalBoard().getDevCardSlot().getDevCards().forEach(devCard -> cardsId.put(devCard.getId(), devCard.isActive()));
-        System.out.println("mi sono salvato gli id delle dev card");
+        //System.out.println("mi sono salvato gli id delle dev card");[Debug]
         return cardsId;
     }
 
