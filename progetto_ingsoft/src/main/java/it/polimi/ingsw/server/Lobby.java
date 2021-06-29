@@ -134,13 +134,11 @@ public class Lobby {
                 int firstId, secondId;
                 firstId = ((ChosenLeadMessage) input).getChosenId().get(0);
                 secondId = ((ChosenLeadMessage) input).getChosenId().get(1);
-                System.out.println("ho letto gli id");
                 if(controller.check2Leads(id, firstId, secondId)) {
-                    System.out.println("carte scelte");
                     if (controller.checkAllPlayersChooseLeads()) {
                         System.out.println("tutti hanno scelto le lead cards");
-                        int playersNum=positionFromClient.size();
-                        if(playersNum>1 && playersOnline()>1) {
+                        if(positionFromClient.size()>1 && playersOnline()>1) {
+                            stateOfGame=GameState.PREPARATION2;
                             for(VirtualClient client:clientFromPosition.values())
                             controller.askInitialResources(client);
                         }else
@@ -182,7 +180,7 @@ public class Lobby {
                 int slot = ((BuyCardAction) input).getSlot();
                 System.out.println("card "+ cardID + " in slot "+slot);
                 try {
-                     controller.checkBuy(cardID, id, slot);
+                     controller.checkBuy(cardID, slot);
                 } catch (ActionAlreadySetException | InvalidSlotException | CardNotOnTableException | ResourceNotValidException e) {
                     controller.getActualPlayerTurn().getClientHandler().send(new LobbyMessage(e.getMessage()));
                 }
@@ -219,11 +217,11 @@ public class Lobby {
                 String personalProdOut=((ProductionAction) input).getPersProdOut();
                 ArrayList<String> leadProdOut= ((ProductionAction) input).getLeadProdOut();
                 try {
-                    if (controller.checkProduction(cardProd, personalProdIn, personalProdOut, leadProdOut, id)) {
+                    if (controller.checkProduction(cardProd, personalProdIn, personalProdOut, leadProdOut)) {
                         //result = new ActionAnswer("produzioni effettuate \n(carte: " + cardProd + "\npersonal:"+personalProdIn+" )");
                     }
-                } catch (ActionAlreadySetException actionAlreadySetException) {
-                    controller.getActualPlayerTurn().getClientHandler().send(new LobbyMessage("Actions already set for this player"));
+                } catch (ActionAlreadySetException e) {
+                    controller.getActualPlayerTurn().getClientHandler().send(new LobbyMessage(e.getMessage()));
                 } catch (CardNotOwnedByPlayerOrNotActiveException e) {
                     e.printStackTrace();
                 } catch (ResourceNotValidException e) {
@@ -259,7 +257,7 @@ public class Lobby {
         //9-gestisco il cambio delle white marble
         else if (input instanceof ChangeChoosableAction && server.getClientFromId().get(id).equals(controller.getActualPlayerTurn())){
             if(stateOfGame==GameState.MARKET){
-                controller.ChangeChoosable(id,((ChangeChoosableAction) input).getNewRes());
+                controller.checkChangeChoosable(id,((ChangeChoosableAction) input).getNewRes());
             }
         }
 

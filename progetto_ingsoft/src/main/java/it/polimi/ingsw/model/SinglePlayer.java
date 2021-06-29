@@ -110,12 +110,10 @@ public class SinglePlayer extends Game{
 
     /**
      * @param player      is the players who give away faith points
-     * @return
      */
     @Override
-    public int faithPointsGiveAway(Player player) {
+    public void faithPointsGiveAway(Player player) {
         blackCross.updateBlackCross(1);
-        return activePopeSpace(player);
     }
 
     /**

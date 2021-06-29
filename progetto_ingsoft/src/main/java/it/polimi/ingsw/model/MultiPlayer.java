@@ -117,26 +117,15 @@ public class MultiPlayer extends Game {
 
     /**
      * @param player      is the player who give away faith points
-     * @return
      */
     @Override
-    public int faithPointsGiveAway(Player player) {
-        AtomicInteger result= new AtomicInteger(0);
+    public void faithPointsGiveAway(Player player) {
         players.forEach(p -> {
             if (p != player) {
                 System.out.println("il player "+p.getName()+" sta ricevendo il punto");
                 p.getPersonalBoard().getFaithMarker().updatePosition();
             }
         });
-        players.forEach(p -> {
-            int position=p.getPersonalBoard().getFaithMarker().getFaithPosition();
-            if (position==8 || position==16 || position== 24) {
-                System.out.println("il player "+p.getName()+" ha attivato un pope meeting");
-                result.set(activePopeSpace(p));
-            }
-        });
-        System.out.println("il pope meeting attivato è "+result);
-        return result.get();
     }
 
     /**

@@ -11,7 +11,6 @@ import it.polimi.ingsw.model.cards.cardExceptions.*;
 import org.json.simple.parser.ParseException;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Controller {
 
@@ -117,7 +116,6 @@ public class Controller {
      * otherwise a multi player mode
      */
     public void createGame(){
-        //lobby.sendAll(new LobbyMessage("The game is starting"));[Debug]
         lobby.setStateOfGame(GameState.PREPARATION1);
         try{
             if(lobby.getPositionFromClient().size()==1) {
@@ -162,9 +160,9 @@ public class Controller {
      * advise each Player of the Leader cards he received
      */
     private void notifyLeadCardDistributed(VirtualClient client){
-        int i=lobby.getPositionFromClient().get(client);
+        int position =lobby.getPositionFromClient().get(client);
         ArrayList<Integer> leaderId = new ArrayList<>();
-        for (LeadCard card : game.getPlayers().get(i).getLeadCards())
+        for (LeadCard card : game.getPlayers().get(position).getLeadCards())
             leaderId.add(card.getId());
         client.getClientHandler().send(new LeaderCardDistribution(leaderId, "Please choose 2 leader card to hold"));
     }
@@ -175,10 +173,8 @@ public class Controller {
     public boolean checkAllPlayersChooseLeads(){
         //System.out.println("controllo se tutti hanno scelto le leads");[Debug]
         for(Player player:game.getPlayers()) {
-            if (player.getLeadCards().size() != 2) {
-                //System.out.println("player "+i + " non ha ancora scelto le leads");[Debug]
+            if (!leaderCardChosenYet(player))
                 return false;
-            }
         }
         //System.out.println("tutti i giocatori hanno già scelto le leads");[Debug]
         return true;
@@ -202,8 +198,7 @@ public class Controller {
                 //System.out.println("gli id scelti non vanno bene");[Debug]
                 ArrayList<Integer> leaderId = player.getLeadCardsId();
                 //System.out.println("mi sono salvato gli id delle carte");[Debug]
-                server.getClientFromId().get(id).getClientHandler().send(new LeaderCardDistribution(leaderId,
-                        "You choose not valid leader cards "));
+                getHandlerFromPlayer(id).send(new LeaderCardDistribution(leaderId, "You choose not valid leader cards "));
                 return false;
             }
         }else{
@@ -232,7 +227,6 @@ public class Controller {
                 player.getLeadCards().stream().anyMatch(leadCard -> leadCard.getId()==card1) &&
                 card1!=card2;
     }
-    //TODO popeSpace control
 
     /**
      * if the game is a single player mode this method start the game,
@@ -240,7 +234,6 @@ public class Controller {
      * @param client is the client who has to choose the initial Resource
      */
     public void askInitialResources(VirtualClient client) {
-        lobby.setStateOfGame(GameState.PREPARATION2);
         if (server.isClientOnline(client.getNickName())) {
             int position = lobby.getPositionFromClient().get(client);
             if (position == 0)
@@ -249,9 +242,8 @@ public class Controller {
                 int num = playerInitialResources(position);
                 getHandlerFromPlayerPosition(position).send(new GetInitialResourcesAction("You can choose " + num + " initial resource", num));
                 if (position >= 2) {
-                    ClientHandler handler=getHandlerFromPlayerPosition(position);
-                    handler.send(new LobbyMessage("you will receive a Faith point also"));
-                    getPlayerFromId(handler.getClientId()).getPersonalBoard().getFaithMarker().updatePosition();
+                    getHandlerFromPlayerPosition(position).send(new LobbyMessage("you will receive a Faith point also"));
+                    getPlayerFromId(client.getID()).getPersonalBoard().getFaithMarker().updatePosition();
                 }
             }
         }
@@ -286,15 +278,15 @@ public class Controller {
     public boolean checkInitialResources() {
         //System.out.println("sto controllando se gli altri giocatori hanno scelto le risorse");[Debug]
         boolean result=true;
-        for (int i = 0; i < game.getPlayers().size(); i++) {
-            String name= game.getPlayers().get(i).getName();
+        for (int position = 0; position < game.getPlayers().size(); position++) {
+            String name= game.getPlayers().get(position).getName();
             //System.out.println("sto controllando "+name);[Debug]
-            if (!checkPlayerStartingWarehouse(i)) {
+            if (!checkPlayerStartingWarehouse(position)) {
                 System.out.println(name+" non ha ancora scelto le risorse initiali");//[Debug]
                 result=false;
             } else {
                 System.out.println(name + " ha il giusto numero di risorse");//[Debug]
-                checkPlayerInitialFaithMarker(i);
+                checkPlayerInitialFaithMarker(position);
                 System.out.println(name+": faithmarker ok");//[Debug]
             }
         }
@@ -302,17 +294,17 @@ public class Controller {
     }
 
     /**
-     * @param i is the position of the player
+     * @param position is the position of the player
      */
-    private void checkPlayerInitialFaithMarker(int i) {
+    private void checkPlayerInitialFaithMarker(int position) {
         //System.out.println("controllo il suo faithmarker");[Debug]
-        Player player = getPlayerFromId(getHandlerFromPlayerPosition(i).getClientId());
+        Player player = getPlayerFromId(getHandlerFromPlayerPosition(position).getClientId());
         //System.out.println("mi sono salvato la sua posizione");[Debug]
-        if (player.getPersonalBoard().getFaithMarker().getFaithPosition() != playerInitialFaithPoint(i)) {
+        if (player.getPersonalBoard().getFaithMarker().getFaithPosition() != playerInitialFaithPoint(position)) {
             System.out.println("ha ricevuto uno sbagliato numero di faith points");//[Debug]
             player.getPersonalBoard().getFaithMarker().reset();
             //System.out.println("ho resettato il faithmarker");[Debug]
-            while (player.getPersonalBoard().getFaithMarker().getFaithPosition() < playerInitialFaithPoint(i)) {
+            while (player.getPersonalBoard().getFaithMarker().getFaithPosition() < playerInitialFaithPoint(position)) {
                 System.out.println("gli sto assegnando un punto");//[Debug]
                 player.getPersonalBoard().getFaithMarker().updatePosition();
             }
@@ -320,31 +312,31 @@ public class Controller {
     }
 
     /**
-     * @param i is the position of the player
+     * @param position is the position of the player
      * @return true if the Player has chosen the correct number of resources yet
      */
-    private boolean checkPlayerStartingWarehouse(int i){
+    private boolean checkPlayerStartingWarehouse(int position){
         //System.out.println("sto controllando il suo warehouse");[Debug]
-        Player player=getPlayerFromId(getHandlerFromPlayerPosition(i).getClientId());
-        ArrayList<Resource> resources=player.getPersonalBoard().getWarehouseDepots().getResources();
+        Player player=getPlayerFromId(getHandlerFromPlayerPosition(position).getClientId());
+        ArrayList<Resource> resources=player.getWarehouseResources();
         //System.out.println("mi sono salvato tutte le sue risorse");[Debug]
-        if (resources.size()!= playerInitialResources(i) ) {
+        if (resources.size()!= playerInitialResources(position) ) {
             if (resources.size()>0) {
                 //System.out.println("ha scelto un numero sbagliato di risorse");[Debug]
-                game.getPlayers().get(i).getPersonalBoard().getWarehouseDepots().clear();
+                game.getPlayers().get(position).getPersonalBoard().getWarehouseDepots().clear();
                 //System.out.println("ho pulito il suo warehouse");[Debug]
-                if (i != 0 && server.isClientOnline(game.getPlayers().get(i).getName())) {
+                if (position != 0 && server.isClientOnline(game.getPlayers().get(position).getName())) {
                     //System.out.println("gli chiedo di scegliere nuovamente");[Debug]
-                    getHandlerFromPlayerPosition(i).send(new GetInitialResourcesAction("You have choose an incorrect number of resources, please resend your initial resources:  ", playerInitialResources(i)));
+                    getHandlerFromPlayerPosition(position).send(new GetInitialResourcesAction("You have choose an incorrect number of resources, please resend your initial resources:  ", playerInitialResources(position)));
                 }
             }return false;
         }
-        else return true;
+        return true;
     }
 
     /**
      * @param id is the id of the client
-     * @param position is the level of the Chelf chosen by the client
+     * @param position is the level of the Shelf chosen by the client
      * @param resource is the Resource that is to put on the shelf chosen
      * @throws ResourceNotValidException if the shelf chosen is not valid
      */
@@ -364,20 +356,18 @@ public class Controller {
 
     /**
      * @param cardId is the id of the Development card that the Player wishes to buy
-     * @param clientId is the id of the Client who wants to buy this card
      * @param position is the position where the Client wants to put the new card
      * @throws CardNotOnTableException if the Development card searched is not present in the upper level of the matrix
      * @throws ResourceNotValidException if the Player has not the required Resources to buy the card
      * @throws InvalidSlotException if the position chosen is not valid
      * @throws ActionAlreadySetException is the Player has already gone through with an action in this turn
      */
-    public void checkBuy(int cardId, int clientId, int position) throws CardNotOnTableException, ResourceNotValidException, InvalidSlotException, ActionAlreadySetException {
+    public void checkBuy(int cardId, int position) throws CardNotOnTableException, ResourceNotValidException, InvalidSlotException, ActionAlreadySetException {
         Player player = getPlayerInTurn();
         if (checkActionDoneYet(player))
             throw new ActionAlreadySetException("You has already gone through with an action in this turn");
         else {
-            System.out.println("ho controllato l'azione e la posizione scelta");
-            if (playerCardLevel(player, cardId, position)) {
+            if (checkLevelPosition(player, cardId, position)) {
                 DevCard cardToBuy = game.getDevDeckMatrix().findCardInMatrix(cardId);
                 ArrayList<Resource> boardResources = new ArrayList<>(player.getStrongboxResources());
                 boardResources.addAll(player.getWarehouseResources());
@@ -395,7 +385,8 @@ public class Controller {
                         sendDevCardMatrixInfo(player1);
                 } else
                     throw new ResourceNotValidException("The player does not have enough resources to go through with the action");
-            }
+            } else
+                getHandlerFromPlayerPosition(position).send(new LobbyMessage("Card chosen not valid"));
         }
     }
 
@@ -421,7 +412,7 @@ public class Controller {
      * @throws InvalidSlotException if the position chosen is negative or >2
      * @return true if the position chosen is valid, false otherwise
      */
-    private boolean playerCardLevel(Player player, int cardId, int position) throws InvalidSlotException {
+    private boolean checkLevelPosition(Player player, int cardId, int position) throws InvalidSlotException {
         if (position>=0 && position<=2) {
             DevCard wantedCard;
             try {
@@ -430,9 +421,8 @@ public class Controller {
                 return false;
             }
             int newCardLevel = wantedCard.getLevel();
-            int numActiveCards = player.getPersonalBoard().getDevCardSlot().getActiveCards().size();
             if (newCardLevel == 1) {
-                return numActiveCards < 3;
+                return player.getPersonalBoard().getDevCardSlot().getActiveCards().size() < 3;
             } else {
                 int lastIndex = player.getPersonalBoard().getDevCardSlot().getSlot()[position].size() - 1;
                 DevCard card = player.getPersonalBoard().getDevCardSlot().getSlot()[position].get(lastIndex);
@@ -460,14 +450,10 @@ public class Controller {
             lobby.setStateOfGame(GameState.MARKET);
             player.setAction(Action.TAKEFROMMARKET);
             game.getMarket().buyResources(index, player);
-            getHandlerFromPlayer(id).send(new FaithPositionChangeMessage(player.getPersonalBoard().getFaithMarker().getFaithPosition()));
-            int popeMeeting=game.activePopeSpace(getPlayerFromId(id));
-            if (popeMeeting>0 && popeMeeting<4)
-                lobby.sendAll(new ActivePopeMeetingMessage(popeMeeting));
-            lobby.sendAll(new MarketChangeMessage(game.getSimplifiedMarket()));
+            faithMarkerUpdateHandler(player);
+            for (Player player1:game.getPlayers())
+                sendMarketInfo(player1);
             ArrayList<String> resSupply = player.getSimplifiedSupply();
-            System.out.println("le risorse nel supply sono:");
-            player.getResourceSupply().viewResources().forEach(System.out::println);
             int num=Collections.frequency(resSupply,"CHOOSABLE");
             if(num>0) {
                 getHandlerFromPlayer(id).send(new ChangeChoosableResourceRequest(num, resArrayToStringArray(player.getWhiteMarbleAbility()),
@@ -476,6 +462,16 @@ public class Controller {
                 getHandlerFromPlayer(id).send(new ResourceInSupplyRequest(resSupply));
             }
         }
+    }
+
+    /**
+     * @param player is the Player whose Faith marker is updated
+     */
+    private void faithMarkerUpdateHandler(Player player) {
+        sendFaithMarkerPosition(player);
+        int popeMeeting=game.activePopeSpace(player);
+        if (popeMeeting>0 && popeMeeting<4)
+            lobby.sendAll(new ActivePopeMeetingMessage(popeMeeting));
     }
 
     /**
@@ -501,7 +497,7 @@ public class Controller {
      * @param clientId is the id or the player
      * @param newRes is the list of String indicating the Resources wanted by the player
      */
-    public void ChangeChoosable(int clientId, ArrayList<String> newRes){
+    public void checkChangeChoosable(int clientId, ArrayList<String> newRes){
         Player player=getPlayerInTurn();
         ArrayList<Resource> newResources=stringArrayToResArray(newRes);
         int num=Collections.frequency(player.getResourceSupply().viewResources(),Resource.CHOOSABLE);
@@ -515,65 +511,39 @@ public class Controller {
         }
     }
 
-    public boolean checkProduction(ArrayList<Integer> cardProd , ArrayList<String> personalProdIn, String personalProdOut, ArrayList<String> leadProdOut, int id) throws ActionAlreadySetException, ResourceNotValidException, CardNotOwnedByPlayerOrNotActiveException {
-        //TODO cosa manda client, produzione personale e leader da controllare, aggiungere eventuale controllo sulla generazione di faith point
+    public boolean checkProduction(ArrayList<Integer> cardProd , ArrayList<String> personalProdIn, String personalProdOut, ArrayList<String> leadProdOut) throws ActionAlreadySetException, ResourceNotValidException, CardNotOwnedByPlayerOrNotActiveException {
         Player player=getPlayerInTurn();
-
-        Optional<Action> playerAction = Optional.ofNullable(player.getAction());
-        if (playerAction.isPresent())
+        if (checkActionDoneYet(player))
             throw new ActionAlreadySetException("The player has already gone through with an action in their turn");
         else if (checkOwnerCards(cardProd,player)) {
-            ArrayList<Resource> totalProdIn;
-            try {
-                totalProdIn = takeAllProdIn(cardProd, stringArrayToResArray(personalProdIn), player);
-            } catch (CardChosenNotValidException e) {
-                getHandlerFromPlayer(id).send(new LobbyMessage(e.getMessage()));
-                return false;
-            }
-            ArrayList<Resource> totalProdOut;
+            ArrayList<Resource> totalProdIn = takeAllProdIn(cardProd, stringArrayToResArray(personalProdIn), player);
             ArrayList<Resource> playersResources =new ArrayList<>(player.getWarehouseResources());
             playersResources.addAll(player.getSpecialShelfResources());
             if(player.getPersonalBoard().checkResourcesForUsages(totalProdIn, playersResources)) {
                 player.setAction(Action.ACTIVATEPRODUCTION);
                 player.getPersonalBoard().removeResources(totalProdIn);
-                totalProdOut = takeAllProdOut(cardProd, stringArrayToResArray(personalProdIn), personalProdOut, leadProdOut, id);
+                ArrayList<Resource> totalProdOut = takeAllProdOut(cardProd, stringArrayToResArray(personalProdIn), personalProdOut, leadProdOut, player);
                 player.getPersonalBoard().getStrongBox().addInStrongbox(totalProdOut);
-                getHandlerFromPlayer(id).send(new StrongboxChangeMessage(player.getPersonalBoard().getSimplifiedStrongbox()));
-                getHandlerFromPlayer(id).send(new WareHouseChangeMessage(player.getPersonalBoard().getSimplifiedWarehouse()));
+                sendStrongboxInfo(player);
+                sendWarehouseInfo(player);
                 return true;
             }
-
         }
-
         return false;
     }
 
-    private ArrayList<Resource> takeAllProdIn( ArrayList<Integer> cardProd ,ArrayList<Resource> personalProdIn, Player player) throws CardChosenNotValidException {
+    /**
+     * @param cardProd is the ArrayList containing the id of the cards chosen by the Player
+     * @param personalProdIn is the ArrayList containing the Resources chosen by the Player to do the personal Production
+     * @param player is the Player who wants to do this productions
+     * @return an ArrayList containing all the Resources required to do the chosen production
+     */
+    private ArrayList<Resource> takeAllProdIn( ArrayList<Integer> cardProd ,ArrayList<Resource> personalProdIn, Player player) {
         ArrayList<Resource> totalProdIn = new ArrayList<>();
-        ArrayList<DevCard> prodDevs = new ArrayList<>();
-        ArrayList<LeadCard> prodLeads = new ArrayList<>();
-        cardProd.stream().filter(integer -> integer > 0 && integer < 49).forEach(integer -> {
-            DevCard dev;
-            try {
-                dev = game.getDevDeck().getCardFromId(integer);
-            } catch (CardChosenNotValidException e) {
-                System.err.println(e.getMessage());
-                return;
-            }
-            prodDevs.add(dev);
-        });
-        AtomicBoolean correctLead= new AtomicBoolean(true);
-        cardProd.stream().filter(integer -> integer > 48 && integer < 65).forEach(integer -> {
-            LeadCard lead = null;
-            try {
-                lead = player.getLeadCardFromId(integer);
-            } catch (CardChosenNotValidException e) {
-                correctLead.set(false);
-            }
-            prodLeads.add(lead);
-        });
-        if (!correctLead.get())
-            throw new CardChosenNotValidException("You have not the card chosen");
+        ArrayList<DevCard> prodDevs = new ArrayList<>(player.getPersonalBoard().getDevCardSlot().getDevCards());
+        ArrayList<LeadCard> prodLeads = new ArrayList<>(player.getLeadCards());
+        prodDevs.removeIf(card->!cardProd.contains(card.getId()));
+        prodLeads.removeIf(card->!cardProd.contains(card.getId())&&!(card.getAbility() instanceof LeadAbilityProduction)&&!card.isActive());
         if (!prodDevs.isEmpty())
             prodDevs.forEach(card -> {
                 ArrayList<Resource> prodIn = card.getProdIn();
@@ -586,51 +556,59 @@ public class Controller {
             });
         if (!personalProdIn.isEmpty())
             totalProdIn.addAll(personalProdIn);
-
        return totalProdIn;
     }
 
-    private ArrayList<Resource> takeAllProdOut(ArrayList<Integer> cardProd ,ArrayList<Resource> personalProdIn, String personalProdOut,ArrayList<String> leadProdOut, int id) {
+    /**
+     * @param cardProd is the ArrayList containing the id of the cards chosen by the Player
+     * @param personalProdIn is the ArrayList containing the Resources chosen by the Player to do the personal Production
+     * @param personalProdOut is the String representing the Resources chosen by the Player as result of the personal Production
+     * @param leadProdOut is the ArrayList containing the Resources generated by the Leader Productions
+     * @param player is the Player who wants to do this productions
+     * @return an ArrayList containing all the Resources produced by the Production chosen by the Player
+     */
+    private ArrayList<Resource> takeAllProdOut(ArrayList<Integer> cardProd ,ArrayList<Resource> personalProdIn, String personalProdOut,ArrayList<String> leadProdOut, Player player) throws ResourceNotValidException{
         ArrayList<Resource> totalProdOut = new ArrayList<>();
-        ArrayList<DevCard> prodDevs = new ArrayList<>();
-        cardProd.stream().filter(integer -> integer > 0 && integer < 49).forEach(integer -> {
-            DevCard dev;
-            try {
-                dev = game.getDevDeck().getCardFromId(integer);
-            } catch (CardChosenNotValidException e) {
-                System.err.println(e.getMessage());
-                return;
-            }
-            prodDevs.add(dev);
-        });
+        ArrayList<DevCard> prodDevs = new ArrayList<>(player.getPersonalBoard().getDevCardSlot().getDevCards());
+        prodDevs.removeIf(card->!cardProd.contains(card.getId()));
+        ArrayList<LeadCard> prodLeads = new ArrayList<>(player.getLeadCards());
+        prodLeads.removeIf(card->!cardProd.contains(card.getId())&&!(card.getAbility() instanceof LeadAbilityProduction)&&!card.isActive());
+        if(!personalProdIn.isEmpty()) {
+            if (!personalProdOut.equals(""))
+                try {
+                    totalProdOut.add(Resource.valueOf(personalProdOut));
+                }catch (IllegalArgumentException e){
+                    throw new ResourceNotValidException("Resource chosen for personal production not valid");
+                }
+            else
+                throw new ResourceNotValidException("Resource chosen for personal production not valid");
+        }
+        int numOfLead = prodLeads.size();
+        if(numOfLead ==leadProdOut.size()){
+            leadProdOut.forEach(resource -> totalProdOut.add(Resource.valueOf(resource)));
+            player.getPersonalBoard().getFaithMarker().updatePosition();
+            faithMarkerUpdateHandler(player);
+        }else
+            throw new ResourceNotValidException("Number of Resources chosen for leader production not valid");
         prodDevs.forEach(card -> {
-                ArrayList<Resource> prodOut = card.getProdOut();
-                totalProdOut.addAll(prodOut);
-                for (int i=card.getFaithPoint();i>0;i--) {
-                    getPlayerFromId(id).getPersonalBoard().getFaithMarker().updatePosition();
-                    int popeMeeting=game.activePopeSpace(getPlayerFromId(id));
-                    if (popeMeeting>0 && popeMeeting<4)
-                        lobby.sendAll(new ActivePopeMeetingMessage(popeMeeting));
+                totalProdOut.addAll(card.getProdOut());
+                for (int faithPoint = card.getFaithPoint(); faithPoint >0; faithPoint--) {
+                    player.getPersonalBoard().getFaithMarker().updatePosition();
+                    faithMarkerUpdateHandler(player);
                 }
         });
-        int numofLead= (int) cardProd.stream().filter(integer -> integer > 48).count();
-        if(numofLead==leadProdOut.size()){
-            leadProdOut.forEach(resource -> totalProdOut.add(Resource.valueOf(resource)));
-            game.getPlayers().get(id).getPersonalBoard().getFaithMarker().updatePosition();
-        }else
-            getHandlerFromPlayer(id).send(new LobbyMessage("Prod Out of the LeadCard requested missing"));
-        if(!personalProdIn.isEmpty())
-            if(personalProdOut!=null)
-                totalProdOut.add(Resource.valueOf(personalProdOut));
-            else
-                getHandlerFromPlayer(id).send(new LobbyMessage("Prod Out of the personal production requested missing"));
+
 
         return totalProdOut;
     }
 
+    /**
+     * @param cardsId is an ArrayList containing the id of the cards chosen by Player
+     * @param player is the Player who choose this cards
+     * @return true if the Player own all the cards he choose and they are all active
+     */
     private boolean checkOwnerCards(ArrayList<Integer> cardsId,Player player){
         ArrayList<Integer> playerCards= new ArrayList<>();
-
         player.getPersonalBoard().getDevCardSlot().getDevCards().forEach(card->{int id=card.getId();playerCards.add(id);});
         player.getLeadCards().forEach(card->{int id=card.getId();
             if(card.isActive()&&(card.getAbility() instanceof LeadAbilityProduction))
@@ -656,7 +634,7 @@ public class Controller {
                 } else {
                     if(requirementsLeadCheck(card,player)) {
                         player.activateAbility(card);
-                        getHandlerFromPlayer(clientId).send(new CardIDChangeMessage(player.getCardsId()));
+                        sendPlayerCardsInfo(player);
                     }else
                         getHandlerFromPlayer(clientId).send(new LobbyMessage("Missing requirements to activate this lead"));
                 }
@@ -682,7 +660,7 @@ public class Controller {
                     getHandlerFromPlayer(clientId).send(new LobbyMessage("This leadCard is already active"));
                 } else {
                     player.discardLead(card);
-                    getHandlerFromPlayer(clientId).send(new CardIDChangeMessage(player.getCardsId()));
+                    sendPlayerCardsInfo(player);
                     faithPointsGiveAwayHandler(player,1);
                 }
             } catch (CardChosenNotValidException e) {
@@ -775,19 +753,8 @@ public class Controller {
      */
     public void faithPointsGiveAwayHandler(Player player, int pointsToGive){
         while (pointsToGive>0) {
-            System.out.println("sto donando il "+ pointsToGive +" punto");
-            int meetingNumber = game.faithPointsGiveAway(player);
-            System.out.println("si è attivato il meeting "+ meetingNumber);
-            lobby.getClientFromPosition().values().forEach(client->{
-                int faithPosition=getPlayerFromId(client.getID()).getPersonalBoard().getFaithMarker().getFaithPosition();
-                System.out.println("il faith marker di "+ client.getNickName()+" è ora in posizione "+faithPosition);
-                client.getClientHandler().send(new FaithPositionChangeMessage(faithPosition));
-                    }
-            );
-            if (meetingNumber > 0 && meetingNumber < 4) {
-                System.out.println("avviso tutti che c'è stato il meeting " +meetingNumber);
-                lobby.sendAll(new ActivePopeMeetingMessage(meetingNumber));
-            }
+            game.faithPointsGiveAway(player);
+            game.getPlayers().forEach(this::faithMarkerUpdateHandler);
             pointsToGive--;
         }
     }
@@ -800,17 +767,12 @@ public class Controller {
     public void checkPositionOfResources(ArrayList<String>[] newWarehouse, int id){
         Player player=getPlayerFromId(id);
         if (newWarehouse.length <= 5){
-            System.out.println("dimensione adeguata");
             if(checkShelfContent(newWarehouse,player)){
-                System.out.println("disposizione del nuovo warehouse valida");
                 ArrayList<Resource> remainingRes=checkWarehouseDimension(newWarehouse,player);
-                System.out.println("mi sono salvato le risorse da scartare");
                 if(!remainingRes.isEmpty()){
                     faithPointsGiveAwayHandler(player,player.getResourceSupply().discardResources(remainingRes));
-                    System.out.println("ho donato i faith point delle risorse scartate");
                 }
                 setWarehouseNewDisposition(newWarehouse,player);
-                System.out.println("mando la nuova disposizione del warehouse");
                 getHandlerFromPlayer(id).send( new WareHouseChangeMessage(player.getPersonalBoard().getSimplifiedWarehouse()));
             }else{
                 getHandlerFromPlayer(id).send(new LobbyMessage("Resources not valid in this disposition, please retry"));
@@ -825,35 +787,21 @@ public class Controller {
      * @return an Arraylist of the Resources remained in the Player's Supply
      */
     private ArrayList<Resource> checkWarehouseDimension(ArrayList<String>[] newWarehouse, Player player) {
-        player.getSupplyResources().forEach(System.out::println);
         ArrayList<Resource> allResources = new ArrayList<>(player.getSupplyResources());
-        allResources.forEach(System.out::println);
-        System.out.println("mi sono salvato le risorse nel supply");
         allResources.addAll(player.getWarehouseResources());
-        System.out.println("mi sono salvato le risorse del warehouse");
         allResources.addAll(player.getSpecialShelfResources());
-        System.out.println("mi sono salvato le risorse degli special shelf");
         ArrayList<Resource> newRes= new ArrayList<>();
         for (ArrayList<String> strings : newWarehouse)
             newRes.addAll(stringArrayToResArray(strings));
-        allResources.forEach(resource -> System.out.println(resource.toString()));
-        System.out.println("-----");
-        newRes.forEach(resource -> System.out.println(resource.toString()));
-        System.out.println("mi sono salvato tutte le risorse mandate del client");
-        //player.getPersonalBoard().checkResourcesForUsages(newRes,allResources);
         for (int i=0;i<allResources.size();i++){
             for (int j=0;j<newRes.size();j++){
-                System.out.println("valuto risorsa "+i+": "+allResources);
                 if (allResources.get(i).equals(newRes.get(j))){
-                    System.out.println("risorsa corrispondente trovata");
                     allResources.remove(i);
                     newRes.remove(j);
                     break;
                 }
             }
         }
-        System.out.println("queste sono le risorse da scartare");
-        allResources.forEach(resource -> System.out.println(resource.toString()));
         return allResources;
     }
 
@@ -863,31 +811,26 @@ public class Controller {
      */
     private void setWarehouseNewDisposition(ArrayList<String>[] newWarehouse, Player player) {
         for(int i=0;i<3;i++) {
-            System.out.println("scaffale "+i);
             if(newWarehouse[i].isEmpty()) {
-                System.out.println("svuoto scaffale");
                 player.getPersonalBoard().getWarehouseDepots().getShelves()[i].removeAllRes();
-                System.out.println("scaffale svuotato");
             }else {
-                System.out.println("cambio le risorse che ci sono su questo scaffale");
                 player.getPersonalBoard().getWarehouseDepots().getShelves()[i].removeAllRes();
                 player.getPersonalBoard().getWarehouseDepots().addInShelf(i, stringArrayToResArray(newWarehouse[i]));
-                System.out.println("risorse posizionate");
             }
         }
         if(!player.getPersonalBoard().getSpecialShelves().isEmpty()){
             for(int i=3;i<5;i++) {
-                Resource resource=Resource.CHOOSABLE;
-                if(player.getPersonalBoard().getSpecialShelves().get(i-3).isPresent())
-                    resource=player.getPersonalBoard().getSpecialShelves().get(i-3).get().getResourceType();
-                player.getPersonalBoard().getSpecialShelves().remove(i-3);
-                player.getPersonalBoard().getSpecialShelves().add(i-3, Optional.of(new SpecialShelf(resource)));
-                if(!newWarehouse[i].isEmpty()) {
-                    player.getPersonalBoard().getWarehouseDepots().addInShelf(i, stringArrayToResArray(newWarehouse[i]));
+                if(!player.getPersonalBoard().getSpecialShelves().isEmpty()&&player.getPersonalBoard().getSpecialShelves().get(i-3).isPresent()) {
+                    Resource resource = player.getPersonalBoard().getSpecialShelves().get(i - 3).get().getResourceType();
+                    player.getPersonalBoard().getSpecialShelves().remove(i - 3);
+                    player.getPersonalBoard().getSpecialShelves().add(i - 3, Optional.of(new SpecialShelf(resource)));
+                    if (!newWarehouse[i].isEmpty()) {
+                        int finalI = i;
+                        newWarehouse[i].forEach(res->player.getPersonalBoard().getSpecialShelves().get(finalI -3).get().addResources(Resource.valueOf(res)));
+                    }
                 }
             }
         }
-
     }
 
     /**
@@ -896,27 +839,21 @@ public class Controller {
      * @return true if the disposition is valid, false otherwise
      */
     private boolean checkShelfContent(ArrayList<String>[] newWarehouse, Player player) {
-        System.out.println("controllo la disposizione del nuovo warehouse");
         for(int i=0; i<3;i++) {
             if (newWarehouse[i].size() <= i + 1) {
-                System.out.println("dimensione dello scaffale adeguta");
                 for (int j = 0; j < newWarehouse[i].size() - 1; j++) {
                     if (!newWarehouse[i].get(j).equals(newWarehouse[i].get(j + 1))) {
-                        System.out.println("due risorse diverse su uno stesso scaffale");
                         return false;
                     }
                 }
-                System.out.println("scaffale "+i+" ben organizzato");
             } else
                 return false;
         }
         if(!newWarehouse[3].isEmpty()) {
-            System.out.println("ha messo risorse nel primo specialshelf");
             if (!checkSpecialShelf(stringArrayToResArray(newWarehouse[3]), player))
                 return false;
         }
         if(!newWarehouse[4].isEmpty()){
-            System.out.println("ha messo risorse nel secondo specialshelf");
             return checkSpecialShelf(stringArrayToResArray(newWarehouse[4]), player);
         }
         return true;
@@ -1063,14 +1000,14 @@ public class Controller {
             if (leaderCardChosenYet(getPlayerFromId(id)))
                 notifyLeadCardDistributed(server.getClientFromId().get(id));
             else
-                getHandlerFromPlayer(id).send(new LobbyMessage("You have Chosen your Leader cards yet"));
+                getHandlerFromPlayer(id).send(new WaitingRoomAction("You have Chosen your Leader cards yet"));
         } else if (lobby.getStateOfGame() == GameState.PREPARATION2) {
             //System.out.println(" i giocatori stanno scegliendo le risorse iniziali");[Debug]
             if (!checkPlayerStartingWarehouse(lobby.getPositionFromClient().get(server.getClientFromId().get(id)))) {
                 askInitialResources(server.getClientFromId().get(id));
                 checkPlayerInitialFaithMarker(lobby.getPositionFromClient().get(server.getClientFromId().get(id)));
             } else
-                getHandlerFromPlayer(id).send(new LobbyMessage("You have Chosen your initial Resource yet"));
+                getHandlerFromPlayer(id).send(new WaitingRoomAction("You have Chosen your Leader cards yet"));
         } else if (lobby.getStateOfGame() == GameState.ONGOING) {
             //System.out.println("i giocatori stanno giocando");[Debug]
             Player p = getPlayerFromId(id);

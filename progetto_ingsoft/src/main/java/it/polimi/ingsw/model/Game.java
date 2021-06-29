@@ -99,9 +99,8 @@ public abstract class  Game {
     /**
      * this method give a Faith point to all other player, then check if one of them reaches a Pope meeting
      * @param player is the player who give away faith points
-     * @return the number of the pope meeting activated(1, 2 or 3), otherwise if none is activated return 0
      */
-    public abstract int faithPointsGiveAway(Player player);
+    public abstract void faithPointsGiveAway(Player player);
 
     public abstract Player getPlayerFromName(String name);
 }
