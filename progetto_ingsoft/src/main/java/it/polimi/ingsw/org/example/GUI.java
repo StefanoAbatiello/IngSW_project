@@ -75,6 +75,7 @@ public class GUI extends Application implements View {
 
         currentscene=nameMapScene.get(s);
         stage.setScene(currentscene);
+        stage.centerOnScreen();
         stage.show();
 
     }
@@ -98,7 +99,6 @@ public class GUI extends Application implements View {
         System.out.println("change stage");
         SetupController guicontroller = (SetupController) nameMapController.get(NICKNAME);
         System.out.println("end controller setup");
-        guicontroller.setErrorLabel(nickNameAction.getMessage());
         guicontroller.setEmptyTextFieldName();
         System.out.println("end");});
     }
@@ -110,7 +110,6 @@ public class GUI extends Application implements View {
             System.out.println("change stage");
             SetupController guicontroller = (SetupController) nameMapController.get(NUMOFPLAYER);
             System.out.println("end controller setup");
-            guicontroller.setErrorLabel(requestNumOfPlayers.getMessage());
             System.out.println("end");});
     }
 
@@ -212,25 +211,58 @@ public class GUI extends Application implements View {
 
     @Override
     public void warehouseHandler(WareHouseChangeMessage wareHouseChangeMessage) {
-        System.out.println("Your warehouse is changed:");
-        viewCLI.setWarehouse((wareHouseChangeMessage).getWarehouse());
-        BoardController boardController= (BoardController) getControllerFromName(BOARD);
-        boardController.setWareHouse(viewCLI);
+        Platform.runLater(()-> {
+            System.out.println("Your warehouse is changed:");
+            viewCLI.setWarehouse((wareHouseChangeMessage).getWarehouse());
+            BoardController boardController = (BoardController) getControllerFromName(BOARD);
+            boardController.setWareHouse(viewCLI);
+        });
     }
 
     @Override
     public void personalCardHandler(CardIDChangeMessage cardIDChangeMessage) {
+            System.out.println("Your cards have changed");
+            cardIDChangeMessage.getCardID().keySet().stream().filter(integer -> integer > 48 && integer < 65).forEach(cardID -> {
+                if (viewCLI.getLeadCardsId().get(cardID) != cardIDChangeMessage.getCardID().get(cardID)) {
+                    viewCLI.getLeadCardsId().remove(cardID);
+                }
+                if (!viewCLI.getLeadCardsId().containsKey(cardID)) {
+                    viewCLI.addLeadCardsId(cardID, cardIDChangeMessage.getCardID().get(cardID));
+                    System.out.println("mi sto salvando la carta " + cardID);
+                }
+                for (int id : viewCLI.getLeadCardsId().keySet())
+                    if (!cardIDChangeMessage.getCardID().containsKey(id))
+                        viewCLI.getLeadCardsId().remove(id);
+            });
+            cardIDChangeMessage.getCardID().keySet().stream().filter(integer -> integer >= 0 && integer <= 48).forEach(cardID -> {
+                if (viewCLI.getDevCardsId().get(cardID) != cardIDChangeMessage.getCardID().get(cardID)) {
+                    viewCLI.getDevCardsId().remove(cardID);
+                }
+                if (!viewCLI.getDevCardsId().containsKey(cardID)) {
+                    viewCLI.addDevCardId(cardID, cardIDChangeMessage.getCardID().get(cardID));
+                    System.out.println("mi sto salvando la carta " + cardID);
 
+                }
+            });
+        Platform.runLater(()-> {viewCLI.setDevPositions(cardIDChangeMessage.getCardPosition());
+            BoardController boardController = (BoardController) getControllerFromName(BOARD);
+            boardController.setCards(viewCLI);
+        });
     }
 
     //TODO controllo se necessario override o metodo comune
     @Override
     public void devMatrixHandler(DevMatrixChangeMessage devMatrixChangeMessage) {
     viewCLI.setDevMatrix(devMatrixChangeMessage.getDevMatrix());
+    Platform.runLater(()->{
+        DevMatrixController matrixController = (DevMatrixController) getControllerFromName(DEVMATRIX);
+        matrixController.setDevMatrix(viewCLI);
+    });
     }
 
     @Override
     public void strongboxHandler(StrongboxChangeMessage strongboxChangeMessage) {
+        viewCLI.setStrongbox(strongboxChangeMessage.getStrongbox());
 
     }
 

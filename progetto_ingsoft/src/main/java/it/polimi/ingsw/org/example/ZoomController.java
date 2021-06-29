@@ -49,7 +49,7 @@ public class ZoomController implements GUIcontroller{
     public void viewBoard(){
         gui.changeStage("board.fxml");
         BoardController controller=(BoardController) gui.getControllerFromName("board.fxml");
-        controller.disableAll();
+        controller.disableAll(false,true,false,true);
     }
 
     public void cardBuy(){

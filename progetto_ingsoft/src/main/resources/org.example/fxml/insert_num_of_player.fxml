@@ -10,18 +10,31 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.org.example.SetupController">
    <children>
-      <ImageView fitHeight="400.0" fitWidth="606.0" layoutX="-1.0" layoutY="1.0" opacity="0.47" pickOnBounds="true">
+      <ImageView fitHeight="406.0" fitWidth="607.0" layoutX="-1.0" layoutY="-5.0" opacity="0.47" pickOnBounds="true">
          <image>
             <Image url="@../images/LorenzoMagnifico-boardgame.jpg" />
          </image>
       </ImageView>
-      <Label fx:id="confirmation" layoutX="200.0" layoutY="66.0" text="INSERT NUM OF PLAYERS" textAlignment="CENTER" wrapText="true">
+      <Label fx:id="confirmation" layoutX="94.0" layoutY="9.0" prefHeight="70.0" prefWidth="415.0" text="Number of Players" textAlignment="CENTER" textFill="#3e5234" wrapText="true">
          <font>
-            <Font name="Comic Sans MS Bold" size="13.0" />
+            <Font name="Comic Sans MS Bold" size="44.0" />
          </font>
       </Label>
-      <TextField fx:id="num_of_player" layoutX="259.0" layoutY="188.0" prefHeight="25.0" prefWidth="59.0" />
+      <TextField fx:id="num_of_player" layoutX="291.0" layoutY="188.0" prefHeight="25.0" prefWidth="59.0" />
       <Button fx:id="sendbutton" layoutX="266.0" layoutY="347.0" mnemonicParsing="false" onAction="#waitingRoom" text="SEND" />
-      <Label fx:id="errorLabel" layoutX="18.0" layoutY="95.0" prefHeight="17.0" prefWidth="559.0" text="Label" visible="true" />
+      <Label fx:id="errorLabel" layoutX="117.0" layoutY="84.0" prefHeight="19.0" prefWidth="374.0" text="Please choose how many players you want to challenge" visible="true">
+         <font>
+            <Font name="Comic Sans MS Bold" size="13.0" />
+         </font></Label>
+      <Label layoutX="130.0" layoutY="188.0" text="I want to challenge ">
+         <font>
+            <Font name="Comic Sans MS Bold" size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="365.0" layoutY="188.0" text="players">
+         <font>
+            <Font name="Comic Sans MS Bold" size="17.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

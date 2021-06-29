@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ViewCLI {
 
@@ -18,6 +19,8 @@ public class ViewCLI {
     private int[][] devMatrix;
     private final Map<Integer, ArrayList<String>[]> cardsFromId;
     private String[][] market;
+
+    private Map<Integer,Integer> devPositions= new HashMap<>();
 
     public void setLeadCardsId(Map<Integer,Boolean> leadCardsId) {
         this.leadCardsId = leadCardsId;
@@ -130,16 +133,28 @@ public class ViewCLI {
         this.faithPosition = faithPosition;
     }
 
+    public void setDevPositions(Map<Integer,Integer> positions){
+        this.devPositions=positions;
+    }
+
+    public Map<Integer, Integer> getDevPositions() {
+        return devPositions;
+    }
+
     public void showPersonalBoard(){
-        System.out.println("Your development card id:");
-        for(int i:devCardsId.keySet()) {
-            showDevCard(i);
-            System.out.println("\n    active: " + devCardsId.get(i));
+        System.out.println("Your development cards id:");
+        for (int pos:devPositions.values()){
+            ArrayList<Integer> ids= (ArrayList<Integer>) devPositions.keySet().stream().filter(value-> value!=pos).collect(Collectors.toList());
+            System.out.println("Slot "+pos+":");
+            for(int id :ids) {
+                showDevCard(id);
+                System.out.println("    active: " + devCardsId.get(id));
+            }
         }
-        System.out.println("Your leader card id:");
+        System.out.println("Your leader cards id:");
         for(int i:leadCardsId.keySet()) {
             showLeadCard(i);
-            System.out.println("\n    active: " + leadCardsId.get(i));
+            System.out.println("    active: " + leadCardsId.get(i));
         }
         System.out.println("Your faith track is in position: " + faithPosition);
         System.out.print("In strongbox you have: ");
@@ -220,6 +235,7 @@ public class ViewCLI {
                 System.out.print("\n");
         }
     }
+
 
 
 }

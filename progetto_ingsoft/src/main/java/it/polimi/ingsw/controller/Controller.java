@@ -722,6 +722,7 @@ public class Controller {
      */
     private boolean checkSpecialShelf(ArrayList<Resource> specialRes, Player player) {
         boolean result= false;
+
         if (specialRes.size() > 2) {
             getHandlerFromPlayer(player.getName()).send(new LobbyMessage("Too many resources for the special shelf"));
         } else if (!specialRes.get(0).equals(specialRes.get(1))){
@@ -888,7 +889,7 @@ public class Controller {
     private void sendPlayerCardsInfo(Player p) {
        // System.out.println("mando le carte del giocatore");[Debug]
         ClientHandler handler=getHandlerFromPlayer(p.getName());
-        handler.send(new CardIDChangeMessage(p.getCardsId()));
+        handler.send(new CardIDChangeMessage(p.getCardsId(),p.getCardsPosition()));
     }
 
     /**
@@ -928,11 +929,17 @@ public class Controller {
     /**
      * this method handles the end of the Player's turn
      */
-    public void turnUpdate() {
+    public void turnUpdate()  {
         if (!lobby.getClientFromPosition().values().isEmpty()) {
             String name = actualPlayerTurn.getNickName();
             Player player = game.getPlayerFromName(name);
-            finishPlayerTurn(player);
+            try {
+                finishPlayerTurn(player);
+            } catch (ActionNotDoneException e) {
+                getHandlerFromPlayer(player.getName()).send(new LobbyMessage(e.getMessage()));
+                return;
+            }
+            System.out.println("fuori dal try");
             changeActualPlayerTurn();
             String s = game.draw();
             if (s.isEmpty()) {
@@ -966,9 +973,11 @@ public class Controller {
      * this method check if there is something not concluded and in case terminate it
      * @param player is the player who is terminating his turn
      */
-    private void finishPlayerTurn(Player player) {
+    private void finishPlayerTurn(Player player) throws ActionNotDoneException {
         player.resetAction();
         ArrayList<Resource> resources=player.getResourceSupply().viewResources();
+        if(player.getAction()==null)
+            throw new ActionNotDoneException("Main Action not chosen, cannot end turn");
         if(!resources.isEmpty()){
             faithPointsGiveAwayHandler(player,player.getResourceSupply().discardResources(resources));
         }
@@ -1018,6 +1027,16 @@ public class Controller {
             sendFaithMarkerPosition(p);
             sendStrongboxInfo(p);
             getHandlerFromPlayer(id).send(new StartingGameMessage());
+        }
+    }
+
+    public void actionForDisconnession(int id) {
+        try {
+            getPlayerFromId(id).setAction(Action.ACTIVATEPRODUCTION);
+        } catch (ActionAlreadySetException ignored) {
+        }
+        finally{
+            turnUpdate();
         }
     }
 }

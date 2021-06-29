@@ -3,6 +3,7 @@ package it.polimi.ingsw.org.example;
 import it.polimi.ingsw.client.MainClient;
 import it.polimi.ingsw.messages.ChosenLeadMessage;
 import it.polimi.ingsw.messages.InitialResourceMessage;
+import it.polimi.ingsw.messages.LobbyMessage;
 import it.polimi.ingsw.messages.NickNameAction;
 import it.polimi.ingsw.messages.answerMessages.NumOfPlayersAnswer;
 import javafx.event.ActionEvent;
@@ -38,8 +39,6 @@ public class SetupController implements GUIcontroller {
     @FXML
     TextField port_field;
     @FXML
-    Label errorLabel;
-    @FXML
     Label validation;
     @FXML
     TextField num_of_player;
@@ -55,7 +54,6 @@ public class SetupController implements GUIcontroller {
     HBox hbox;
     @FXML
     Label labelLeads;
-
     @FXML
     HBox hboxRes;
     @FXML
@@ -86,10 +84,6 @@ public class SetupController implements GUIcontroller {
         return ip;
     }
 
-    public void setErrorLabel(String confirmation) {
-        this.errorLabel.setText(confirmation);
-    }
-
     public void setEmptyTextFieldName(){
         this.nickname_field.setText("");
     }
@@ -115,7 +109,7 @@ public class SetupController implements GUIcontroller {
                 new Thread(mainClient).start();
             } else {
                 port_field.setText("");
-                errorLabel.setText("Insert valid port number & ip");
+                gui.lobbyMessageHandler(new LobbyMessage("Insert valid port number & ip"));
             }
         } catch (NumberFormatException e) {
             System.out.println(e.getMessage());
@@ -156,7 +150,7 @@ public class SetupController implements GUIcontroller {
         else if(countLeads==2)
             ((BoardController)gui.getControllerFromName("board.fxml")).setLeads(selectedCards);
         else
-           errorLabel.setText("You already chose 2 leads, if you want to change click RETRY, else NEXT ");
+           gui.lobbyMessageHandler(new LobbyMessage("You already chose 2 leads, if you want to change click RETRY, else NEXT "));
     }
 
     public void setLeads(ArrayList<Integer> cards){
@@ -188,14 +182,11 @@ public class SetupController implements GUIcontroller {
             gui.changeStage("waiting.fxml");
         }
         else
-            errorLabel.setText("Please choose 2 leads before pressing NEXT.If you want to change your choice, click RETRY");
+            gui.lobbyMessageHandler(new LobbyMessage("Please choose 2 leads before pressing NEXT.If you want to change your choice, click RETRY"));
 
 
     }
 
-    public void setLabelResources(String message) {
-        errorLabel.setText(message);
-    }
 
     public void setInitialRes(int numRes) {
         initialRes=numRes;
@@ -214,7 +205,7 @@ public class SetupController implements GUIcontroller {
                 shelfMenu.setVisible(true);
             }
             else
-                errorLabel.setText("You have already chosen "+initialRes+ "resources, if you want to change click RETRY, else NEXT ");
+               gui.lobbyMessageHandler(new LobbyMessage("You have already chosen "+initialRes+ "resources, if you want to change click RETRY, else NEXT "));
         }
 
     public void selectShelf1() {
@@ -267,9 +258,13 @@ public class SetupController implements GUIcontroller {
             gui.changeStage("waiting.fxml");
         }
         else
-            errorLabel.setText("Please choose 2 leads before pressing NEXT.If you want to change your choice, click RETRY");
+            gui.lobbyMessageHandler(new LobbyMessage("Please choose 2 leads before pressing NEXT.If you want to change your choice, click RETRY"));
 
 
+    }
+
+    public void setLabelResources(String message) {
+        initialResLabel.setText(message);
     }
 }
 /**

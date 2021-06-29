@@ -2,8 +2,10 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.ActionAlreadySetException;
 import it.polimi.ingsw.model.Market.ResourceSupply;
+import it.polimi.ingsw.model.cards.DevCard;
 import it.polimi.ingsw.model.cards.LeadCard;
 import it.polimi.ingsw.model.cards.cardExceptions.CardChosenNotValidException;
+import it.polimi.ingsw.model.personalboard.DevCardSlot;
 import it.polimi.ingsw.model.personalboard.PersonalBoard;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -235,7 +237,7 @@ public class Player implements Points{
     }
 
     /**
-     * @return a Map where the cards (both Leader and Development) id are the kay and the values are a boolean indicating if the card is active
+     * @return a Map where the cards (both Leader and Development) id are the keys and the values are a boolean indicating if the card is active
      */
     public Map<Integer,Boolean> getCardsId() {
         Map<Integer, Boolean> cardsId = new HashMap<>();
@@ -245,6 +247,21 @@ public class Player implements Points{
         getPersonalBoard().getDevCardSlot().getDevCards().forEach(devCard -> cardsId.put(devCard.getId(), devCard.isActive()));
         //System.out.println("mi sono salvato gli id delle dev card");[Debug]
         return cardsId;
+    }
+
+    /**
+     * @return a Map where the cards (only Development) id are the keys and the values are the positions of the cards
+     */
+    public Map<Integer,Integer> getCardsPosition() {
+        Map<Integer, Integer> cardsPos = new HashMap<>();
+        //System.out.println("ho creato la mappa");[Debug]
+        for(int i=0;i<3;i++) {
+            ArrayList<DevCard> slot = getPersonalBoard().getDevCardSlot().getSlot()[i];
+            int finalI = i;
+            slot.forEach(devCard -> cardsPos.put(devCard.getId(), finalI));
+        }
+        //System.out.println("mi sono salvato gli id delle dev card");[Debug]
+        return cardsPos;
     }
 
     /**

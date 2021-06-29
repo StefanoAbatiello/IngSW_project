@@ -118,7 +118,7 @@ public class Lobby {
         seatsAvailable++;
         if(stateOfGame==GameState.ONGOING) {
             if (player.equals(controller.getActualPlayerTurn())) {
-                controller.turnUpdate();
+                controller.actionForDisconnession(player.getID());
             }
         }
         return positionFromClient;

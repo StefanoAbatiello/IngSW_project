@@ -106,32 +106,37 @@ public class CLI extends App implements View {
     @Override
     public void personalCardHandler(CardIDChangeMessage input) {
         System.out.println("Your cards are changed:");
-        ((CardIDChangeMessage) input).getCardID().keySet().stream().filter(integer -> integer > 48 && integer < 65).forEach(cardID -> {
+        input.getCardID().keySet().stream().filter(integer -> integer > 48 && integer < 65).forEach(cardID -> {
             if (!viewCLI.getCardsFromId().containsKey(cardID)) {
                 parser.takeLeadCardFromId(cardID);
                 System.out.println("sto parsando la carta " + cardID);
             }
-            if (viewCLI.getLeadCardsId().get(cardID) != ((CardIDChangeMessage) input).getCardID().get(cardID)) {
+            if (viewCLI.getLeadCardsId().get(cardID) != input.getCardID().get(cardID)) {
                 viewCLI.getLeadCardsId().remove(cardID);
             }
             if (!viewCLI.getLeadCardsId().containsKey(cardID)) {
-                viewCLI.addLeadCardsId(cardID, ((CardIDChangeMessage) input).getCardID().get(cardID));
+                viewCLI.addLeadCardsId(cardID, input.getCardID().get(cardID));
                 System.out.println("mi sto salvando la carta " + cardID);
             }
+            for(int id: viewCLI.getLeadCardsId().keySet())
+                if(!input.getCardID().containsKey(id))
+                    viewCLI.getLeadCardsId().remove(id);
         });
-        ((CardIDChangeMessage) input).getCardID().keySet().stream().filter(integer -> integer >= 0 && integer <= 48).forEach(cardID -> {
+        input.getCardID().keySet().stream().filter(integer -> integer >= 0 && integer <= 48).forEach(cardID -> {
             if (!viewCLI.getCardsFromId().containsKey(cardID)) {
                 parser.takeDevCardFromId(cardID);
                 System.out.println("sto parsando la carta " + cardID);
             }
-            if(viewCLI.getDevCardsId().get(cardID)!=((CardIDChangeMessage) input).getCardID().get(cardID)){
+            if(viewCLI.getDevCardsId().get(cardID)!= input.getCardID().get(cardID)){
                 viewCLI.getDevCardsId().remove(cardID);
             }
             if (!viewCLI.getDevCardsId().containsKey(cardID)) {
-                viewCLI.addDevCardId(cardID, ((CardIDChangeMessage) input).getCardID().get(cardID));
+                viewCLI.addDevCardId(cardID, input.getCardID().get(cardID));
                 System.out.println("mi sto salvando la carta "+cardID);
+
             }
         });
+        viewCLI.setDevPositions(input.getCardPosition());
     }
 
     @Override

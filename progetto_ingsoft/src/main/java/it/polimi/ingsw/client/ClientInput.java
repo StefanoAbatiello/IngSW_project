@@ -323,16 +323,13 @@ public class ClientInput implements Runnable{
 
         //13-request to discard a leader card
         else if(input.startsWith("DiscardLeadCard")){
-            if (!mainAction) {
-                mainAction=true;
-                input = input.replace("DiscardLeadCard:", "");
-                try {
-                    int id = Integer.parseInt(input);
-                    client.send(new DiscardLeadAction(id));
-                } catch (NumberFormatException e) {
-                    System.out.println("please insert a number. Type again" +
-                            "\"DiscardLeadCard:[Card id]\"");
-                }
+            input = input.replace("DiscardLeadCard:", "");
+            try {
+                int id = Integer.parseInt(input);
+                client.send(new DiscardLeadAction(id));
+            } catch (NumberFormatException e) {
+                System.out.println("please insert a number. Type again" +
+                        "\"DiscardLeadCard:[Card id]\"");
             }
         }
 
