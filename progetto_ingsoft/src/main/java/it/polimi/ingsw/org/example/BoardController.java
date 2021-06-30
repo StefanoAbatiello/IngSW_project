@@ -2,6 +2,7 @@ package it.polimi.ingsw.org.example;
 
 import it.polimi.ingsw.client.ViewCLI;
 import it.polimi.ingsw.messages.*;
+import it.polimi.ingsw.model.personalboard.BlackCross;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -113,7 +114,9 @@ public class BoardController implements GUIcontroller{
 
     private int blackCrossPos=0;
 
-    private int oldPosition=0;
+    private int oldRedCrossPosition=0;
+    private int oldBlackCrossPosition=0;
+
 
 
     @Override
@@ -199,28 +202,53 @@ public class BoardController implements GUIcontroller{
 
     }
 
-    public void uploadPosition(int newPosition, ImageView cross) {
+    public void uploadRedCrossPosition(int newPosition) {
         final int shift = 35;
-        if(newPosition>oldPosition || newPosition==0) {
+        if(newPosition>oldRedCrossPosition || newPosition==0) {
             if (newPosition == 0) {
-                cross.setLayoutX(46.0);
-                cross.setLayoutY(176.0);
+                croce.setLayoutX(46.0);
+                croce.setLayoutY(176.0);
             } else if (newPosition > 0 && newPosition <= 2) {
-                cross.setLayoutX(cross.getLayoutX() + shift);
+                croce.setLayoutX(croce.getLayoutX() + shift);
             } else if (newPosition <= 4) {
-                cross.setLayoutY(cross.getLayoutY() + shift);
+                croce.setLayoutY(croce.getLayoutY() - shift);
             } else if (newPosition <= 9) {
-                cross.setLayoutX(cross.getLayoutX() + shift);
+                croce.setLayoutX(croce.getLayoutX() + shift);
             } else if (newPosition <= 11) {
-                cross.setLayoutY(cross.getLayoutY() - shift);
+                croce.setLayoutY(croce.getLayoutY() + shift);
             } else if (newPosition <= 16)
-                cross.setLayoutX(cross.getLayoutX() + shift);
+                croce.setLayoutX(croce.getLayoutX() + shift);
             else if (newPosition <= 18) {
-                cross.setLayoutY(cross.getLayoutY() + shift);
+                croce.setLayoutY(croce.getLayoutY() + shift);
             } else if (newPosition <= 24) {
-                cross.setLayoutX(cross.getLayoutX() + shift);
+                croce.setLayoutX(croce.getLayoutX() + shift);
             }
-            oldPosition= newPosition;
+            oldRedCrossPosition= newPosition;
+        }
+    }
+
+    public void uploadBlackCrossPosition(int newPosition) {
+        final int shift = 35;
+        if(newPosition>oldBlackCrossPosition || newPosition==0) {
+            if (newPosition == 0) {
+                blackCross.setLayoutX(46.0);
+                blackCross.setLayoutY(176.0);
+            } else if (newPosition > 0 && newPosition <= 2) {
+                blackCross.setLayoutX(blackCross.getLayoutX() + shift);
+            } else if (newPosition <= 4) {
+                blackCross.setLayoutY(blackCross.getLayoutY() - shift);
+            } else if (newPosition <= 9) {
+                blackCross.setLayoutX(blackCross.getLayoutX() + shift);
+            } else if (newPosition <= 11) {
+                blackCross.setLayoutY(blackCross.getLayoutY() + shift);
+            } else if (newPosition <= 16)
+                blackCross.setLayoutX(blackCross.getLayoutX() + shift);
+            else if (newPosition <= 18) {
+                blackCross.setLayoutY(blackCross.getLayoutY() + shift);
+            } else if (newPosition <= 24) {
+                blackCross.setLayoutX(blackCross.getLayoutX() + shift);
+            }
+            oldBlackCrossPosition= newPosition;
         }
     }
 
@@ -242,7 +270,7 @@ public class BoardController implements GUIcontroller{
         }
         for(int i=0;i<viewCLI.getWarehouse()[2].size();i++){
             System.out.println(viewCLI.getWarehouse()[2]);
-            ImageView image= (ImageView) shelf2.getChildren().get(i);
+            ImageView image= (ImageView) shelf3.getChildren().get(i);
             image.setImage(new Image("org.example/images/"+viewCLI.getWarehouse()[2].get(i)+".png"));
             image.setOpacity(1.0);
         }
@@ -567,8 +595,9 @@ public class BoardController implements GUIcontroller{
     public void lorenzoUpdate(int val) {
             if(val>=0) {
                 blackCross.setVisible(true);
-                blackCrossPos = blackCrossPos + val;
-                uploadPosition(blackCrossPos, blackCross);
+                System.out.println("old position of BC: "+oldBlackCrossPosition);
+                System.out.println("new position of BC: "+(oldBlackCrossPosition+val));
+                uploadBlackCrossPosition(oldBlackCrossPosition+val);
             }else
                 blackCross.setVisible(false);
     }

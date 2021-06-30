@@ -166,6 +166,7 @@ public class Controller {
     private void sendBlackCrossInfo(Player p, int position, String message) {
         Map<Integer,String> info=new HashMap<>();
         info.put(position,message);
+        System.out.println("mando un lorenzo message");
         getHandlerFromPlayer(p.getName()).send(new LorenzoActionMessage(info));
     }
 
@@ -485,24 +486,6 @@ public class Controller {
     }
 
     /**
-     * @param player is the Player whose Faith marker is updated
-     */
-    private void faithMarkerUpdateHandler(Player player) {
-        sendFaithMarkerPosition(player);
-        int popeMeeting=game.activePopeSpace(player);
-        if (popeMeeting>0 && popeMeeting<4) {
-            for (Player p: game.getPlayers()) {
-                if (p.getPersonalBoard().getFaithMarker().isVaticanZone(popeMeeting)&&server.isClientOnline(p.getName()))
-                    getHandlerFromPlayer(p.getName()).send(new ActivePopeMeetingMessage(popeMeeting));
-            }
-            if (popeMeeting==3 && lobby.playersOnline()>0) {
-                lastRound = true;
-                lobby.sendAll(new LobbyMessage("A Player has reached the end of the faith Track"));
-            }
-        }
-    }
-
-    /**
      * @param newResources is the list of String indicating the Resources wanted by the player
      * @param player is the player who wants to change the resources
      * @return true if all the Choosable Resources are changed in valid Resources
@@ -784,12 +767,34 @@ public class Controller {
      * @param pointsToGive is the number of faith points to give away
      */
     public void faithPointsGiveAwayHandler(Player player, int pointsToGive){
+        System.out.println("devo donare "+pointsToGive+" punti");
+        int i=1;
         while (pointsToGive>0) {
+            System.out.println("punto: "+i);
             if (game.faithPointsGiveAway(player)==0) {
                 sendBlackCrossInfo(player,1,"Lorenzo receives one FaithPoints");
             }
             game.getPlayers().forEach(this::faithMarkerUpdateHandler);
             pointsToGive--;
+            i++;
+        }
+    }
+
+    /**
+     * @param player is the Player whose Faith marker is updated
+     */
+    private void faithMarkerUpdateHandler(Player player) {
+        sendFaithMarkerPosition(player);
+        int popeMeeting=game.activePopeSpace(player);
+        if (popeMeeting>0 && popeMeeting<4) {
+            for (Player p: game.getPlayers()) {
+                if (p.getPersonalBoard().getFaithMarker().isVaticanZone(popeMeeting)&&server.isClientOnline(p.getName()))
+                    getHandlerFromPlayer(p.getName()).send(new ActivePopeMeetingMessage(popeMeeting));
+            }
+            if (popeMeeting==3 && lobby.playersOnline()>0) {
+                lastRound = true;
+                lobby.sendAll(new LobbyMessage("A Player has reached the end of the faith Track"));
+            }
         }
     }
 
@@ -808,7 +813,11 @@ public class Controller {
                 if(!remainingRes.isEmpty()){
                     System.out.println("ci sono risorse da scartare");
                     faithPointsGiveAwayHandler(player,player.getResourceSupply().discardResources(remainingRes));
+                    System.out.println("risorse scartate");
+                    System.out.println(player.getSupplyResources());
                 }
+                player.getResourceSupply().emptySupply();
+                System.out.println(player.getSupplyResources());
                 setWarehouseNewDisposition(newWarehouse,player);
                 getHandlerFromPlayer(id).send( new WareHouseChangeMessage(player.getPersonalBoard().getSimplifiedWarehouse()));
                 lobby.setStateOfGame(GameState.ONGOING);
@@ -830,21 +839,29 @@ public class Controller {
         allResources.addAll(player.getWarehouseResources());
         allResources.addAll(player.getSpecialShelfResources());
         System.out.println("mi sono salvato tutte le risorse del tizio");
+        System.out.println(allResources);
         ArrayList<Resource> newRes= new ArrayList<>();
-        for (ArrayList<String> strings : newWarehouse)
-            newRes.addAll(stringArrayToResArray(strings));
+        for (int k=0;k<5;k++)
+            newRes.addAll(stringArrayToResArray(newWarehouse[k]));
         System.out.println("mi sono salvato tutte le risorse del messaggio");
+        System.out.println(newRes);
         for (int i=0;i<allResources.size();i++){
+            System.out.println("risorsa "+i+" su dim: "+allResources.size());
             System.out.println("cerco risorsa "+allResources.get(i));
             for (int j=0;j<newRes.size();j++){
-                if (allResources.get(i).equals(newRes.get(j))){
+                if (newRes.get(j).equals(allResources.get(i))){
                     System.out.println("risorsa trovata");
                     allResources.remove(i);
                     newRes.remove(j);
+                    i--;
                     break;
                 }
             }
         }
+        System.out.println("allResources:");
+        System.out.println(allResources);
+        System.out.println("newResources:");
+        System.out.println(newRes);
         return allResources;
     }
 
@@ -1000,6 +1017,12 @@ public class Controller {
                     lastRound=true;
                 } else {
                     lobby.sendAll(new DevMatrixChangeMessage(game.getSimplifiedDevMatrix()));
+                    if (result.containsKey(1))
+                        System.out.println(result.get(1));
+                    if (result.containsKey(2))
+                        System.out.println(result.get(2));
+                    if (result.containsKey(0))
+                        System.out.println(result.get(0));
                     lobby.sendAll(new LorenzoActionMessage(result));
                     lobby.sendAll(new LobbyMessage("It's again your turn"));
                 }
@@ -1040,6 +1063,8 @@ public class Controller {
         player.resetAction();
         ArrayList<Resource> resources=player.getResourceSupply().viewResources();
         if(!resources.isEmpty()){
+            System.out.println("ci sono ancora risorse nel supply");
+            System.out.println(resources);
             faithPointsGiveAwayHandler(player,player.getResourceSupply().discardResources(resources));
         }
     }

@@ -194,7 +194,9 @@ public class MainClient implements Runnable, Sender {
             System.out.println("è è avvenuto il pope meeting "+((ActivePopeMeetingMessage) input).getMeetingNumber());
         }
 
-        //TODO shelfactive posso non gestirla?
+        else if (input instanceof LorenzoActionMessage){
+            view.lorenzoActionHandler((LorenzoActionMessage) input);
+        }
     }
 
     public void disconnect() {

@@ -77,12 +77,14 @@ public class ResourceSupply implements ResourceCreator {
      * @return the number of Faith points ti give to other player
      */
     public int discardResources(ArrayList<Resource> discardedResources) {
-        AtomicInteger pointsGiven= new AtomicInteger();
         for(Resource res:discardedResources)
-            Arrays.stream(containers).forEach(container -> {
-                if (!container.isEmpty() && container.showResource() == res) {container.takeResource(); pointsGiven.getAndIncrement();}
-            });
-        return pointsGiven.get();
+            for (int i=0;i<4;i++){
+                if (!containers[i].isEmpty()&&containers[i].showResource()==res){
+                    containers[i].takeResource();
+                    break;
+                }
+            }
+        return discardedResources.size();
     }
 
     /**

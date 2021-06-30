@@ -33,7 +33,7 @@ public class SupplyController implements GUIcontroller{
     }
 
     public void selectShelf1(ActionEvent actionEvent) {
-        System.out.println("sono qui");
+        System.out.println("shelf 1");
         for(Node res:supply.getChildren()){
             res.setMouseTransparent(false);
             res.setOpacity(1.0);
@@ -46,7 +46,7 @@ public class SupplyController implements GUIcontroller{
     }
 
     public void selectShelf2(ActionEvent actionEvent) {
-        System.out.println("sono qui");
+        System.out.println("shelf2");
 
         for(Node res:supply.getChildren()){
             res.setMouseTransparent(false);
@@ -58,7 +58,7 @@ public class SupplyController implements GUIcontroller{
     }
 
     public void selectShelf3(ActionEvent actionEvent) {
-        System.out.println("sono qui");
+        System.out.println("shelf3");
 
         for(Node res:supply.getChildren()){
             res.setMouseTransparent(false);
@@ -75,6 +75,7 @@ public class SupplyController implements GUIcontroller{
         String resource;
         newWarehouse=gui.getViewCLI().getWarehouse();
         for(Node image: supply.getChildren()){
+            ((ImageView)image).setImage(null);
             if(!resources.isEmpty()) {
                 resource = resources.get(0);
                 ((ImageView) image).setImage(new Image("org.example/images/" + resource + ".png"));

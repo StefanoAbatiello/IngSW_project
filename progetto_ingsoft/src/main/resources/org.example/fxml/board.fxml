@@ -88,11 +88,11 @@
             <children>
                 <ImageView fx:id="lead1" fitHeight="254.0" fitWidth="166.0" onMouseClicked="#showLeadsAction" pickOnBounds="true">
                <image>
-                  <Image url="@../leadcards/Masters%20of%20Renaissance_Cards_FRONT_3mmBleed_1-56-1.png" />
+                  <Image url="@../leadcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-56-1.png" />
                </image></ImageView>
                 <ImageView fx:id="lead2" fitHeight="260.0" fitWidth="167.0" onMouseClicked="#showLeadsAction" pickOnBounds="true">
                <image>
-                  <Image url="@../leadcards/Masters%20of%20Renaissance_Cards_FRONT_3mmBleed_1-56-1.png" />
+                  <Image url="@../leadcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-56-1.png" />
                </image></ImageView>
             </children>
         </VBox>

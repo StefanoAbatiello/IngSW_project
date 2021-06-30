@@ -183,7 +183,7 @@ public class GUI extends Application implements View {
             System.out.println(message.getFaithPosition());
             System.out.println("faithMessage");
             BoardController boardController=(BoardController) nameMapController.get(BOARD);
-            boardController.uploadPosition(message.getFaithPosition(), boardController.croce);
+            boardController.uploadRedCrossPosition(message.getFaithPosition());
         });
     }
 
@@ -207,6 +207,7 @@ public class GUI extends Application implements View {
     public void lorenzoActionHandler(LorenzoActionMessage lorenzoActionMessage) {
         Platform.runLater(()->{
             System.out.println("lorenzoMessage");
+            System.out.println(lorenzoActionMessage.getMessage());
             BoardController boardController=(BoardController) nameMapController.get(BOARD);
             boardController.lorenzoUpdate(lorenzoActionMessage.getVal());
         });

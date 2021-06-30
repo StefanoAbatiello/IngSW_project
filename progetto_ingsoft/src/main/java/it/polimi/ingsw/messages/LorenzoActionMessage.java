@@ -16,9 +16,15 @@ public class LorenzoActionMessage implements SerializedMessage {
     String message;
 
     public LorenzoActionMessage(Map<Integer, String> result) {
-        if(result.keySet().stream().findAny().isPresent())
-            val=result.keySet().stream().findAny().get();
-        if (!result.isEmpty())
-            message=result.values().stream().toString();
+        if (result.containsKey(-1))
+            val=-1;
+        if(result.containsKey(0))
+            val=0;
+        else if(result.containsKey(1))
+            val=1;
+        else if (result.containsKey(2))
+            val=2;
+        message=result.get(val);
+
     }
 }

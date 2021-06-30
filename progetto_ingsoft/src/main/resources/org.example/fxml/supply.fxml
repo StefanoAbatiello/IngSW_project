@@ -44,8 +44,8 @@
       <MenuButton fx:id="shelfMenu" layoutX="250.0" layoutY="117.0" mnemonicParsing="false" text="choose shelf">
          <items>
             <MenuItem fx:id="shelf1" mnemonicParsing="false" onAction="#selectShelf1" text="shelf 1" />
-            <MenuItem fx:id="shelf2" mnemonicParsing="false" onAction="#selectShelf2" text="shelf2" />
-            <MenuItem fx:id="shelf3" mnemonicParsing="false" onAction="#selectShelf3" text="shelf3" />
+            <MenuItem fx:id="shelf2" mnemonicParsing="false" onAction="#selectShelf2" text="shelf 2" />
+            <MenuItem fx:id="shelf3" mnemonicParsing="false" onAction="#selectShelf3" text="shelf 3" />
          </items>
       </MenuButton>
       <Button layoutX="273.0" layoutY="354.0" mnemonicParsing="false" onAction="#sendResource" text="Send" />
