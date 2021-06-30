@@ -102,7 +102,10 @@ public class SinglePlayer extends Game{
      */
     @Override
     public String draw() {
-        if (checkEmptyLineInMatrix()) {
+        if (checkBlackCrossPosition() || checkEmptyLineInMatrix()) {
+            winnerName="Lorenzo il Magnifico";
+            return "Finished";
+        }else if (players.get(0).getPersonalBoard().getFaithMarker().getFaithPosition()==24){
             winnerName=players.get(0).getName();
             return "Finished";
         }
@@ -196,10 +199,6 @@ public class SinglePlayer extends Game{
         else if((player.getPersonalBoard().getFaithMarker().getFaithPosition()==24 || blackCross.getCrossPosition()==24) && isVC3active()) {
             if(player.getPersonalBoard().getFaithMarker().isVaticanZone(3))
                 player.increaseFaithTrackPoints(4);
-            if (player.getPersonalBoard().getFaithMarker().getFaithPosition()==24)
-                winnerName=player.getName();
-            else
-                winnerName="Lorenzo il Magnifico";
             setVC3active(false);
             return 3;
         }

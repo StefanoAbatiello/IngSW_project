@@ -641,7 +641,7 @@ public class Controller {
 
     /**
      * this method handles the activation action of a Leader card
-     * @param cardId is the Leader card id that the player wants to discard
+     * @param cardId is the Leader card id that the player wants to activate
      * @param clientId is the id of the Client
      */
     public void checkLeadActivation(int cardId, int clientId) {
@@ -683,7 +683,8 @@ public class Controller {
                 } else {
                     player.discardLead(card);
                     sendPlayerCardsInfo(player);
-                    faithPointsGiveAwayHandler(player,1);
+                    player.getPersonalBoard().getFaithMarker().updatePosition();
+                    faithMarkerUpdateHandler(player);
                 }
             } catch (CardChosenNotValidException e) {
                 getHandlerFromPlayer(clientId).send(new LobbyMessage(e.getMessage()));
