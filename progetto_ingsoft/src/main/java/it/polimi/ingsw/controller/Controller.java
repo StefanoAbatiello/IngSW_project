@@ -93,7 +93,7 @@ public class Controller {
      */
     private boolean checkActionDoneYet(Player player){
         Action playerAction= player.getAction();
-        return playerAction==Action.NOTDONE;
+        return (playerAction!=Action.NOTDONE);
     }
 
     /**
@@ -454,7 +454,6 @@ public class Controller {
             throw new InvalidSlotException("Slot chosen not valid");
     }
 
-
     /**
      * @param index is the index of the market wanted by the Player
      * @param id is the id of the Player
@@ -540,6 +539,7 @@ public class Controller {
         }
     }
 
+    //TODO documentazione
     public boolean checkProduction(ArrayList<Integer> cardProd , ArrayList<String> personalProdIn, String personalProdOut, ArrayList<String> leadProdOut) throws ActionAlreadySetException, ResourceNotValidException, CardNotOwnedByPlayerOrNotActiveException {
         Player player=getPlayerInTurn();
         if (checkActionDoneYet(player))
@@ -664,6 +664,8 @@ public class Controller {
                     if(requirementsLeadCheck(card,player)) {
                         player.activateAbility(card);
                         sendPlayerCardsInfo(player);
+                        if(card.getAbility() instanceof LeadAbilityShelf)
+                            getHandlerFromPlayer(clientId).send(new ShelfAbilityActiveMessage(cardId));
                     }else
                         getHandlerFromPlayer(clientId).send(new LobbyMessage("Missing requirements to activate this lead"));
                 }
@@ -1033,7 +1035,7 @@ public class Controller {
      * @param player is the player who is terminating his turn
      */
     private void finishPlayerTurn(Player player) throws ActionNotDoneException {
-        if(checkActionDoneYet(player))
+        if(!checkActionDoneYet(player))
             throw new ActionNotDoneException("Main Action not chosen, cannot end turn");
         player.resetAction();
         ArrayList<Resource> resources=player.getResourceSupply().viewResources();

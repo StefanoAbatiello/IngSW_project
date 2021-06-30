@@ -73,6 +73,25 @@ public class BoardController implements GUIcontroller{
     ImageView pope2;
     @FXML
     ImageView pope3;
+    @FXML
+    Label coinBox;
+    @FXML
+    Label servantBox;
+    @FXML
+    Label shieldBox;
+    @FXML
+    Label stoneBox;
+    @FXML
+    HBox sShelf1;
+    @FXML
+    HBox sShelf2;
+    @FXML
+    ImageView lead1;
+    @FXML
+    ImageView lead2;
+    @FXML
+    ImageView blackCross;
+
 
     private ArrayList<Integer> prodCards= new ArrayList<>();
     private boolean productionActive=false;
@@ -80,6 +99,10 @@ public class BoardController implements GUIcontroller{
     private String output= "";
     //TODO scelta leadout
     private ArrayList<String> leadOut= new ArrayList<>();
+    private String lead1Id= "lead1";
+    private String lead2Id= "lead2";
+    private boolean shelf4= false;
+
     private String card1ID="card1";
     private String card2ID="card2";
     private String card3ID="card3";
@@ -87,6 +110,10 @@ public class BoardController implements GUIcontroller{
     private int space1=0;
     private int space2=0;
     private int space3=0;
+
+    private int blackCrossPos=0;
+
+    private int oldPosition=0;
 
 
     @Override
@@ -101,6 +128,10 @@ public class BoardController implements GUIcontroller{
             ((ImageView) image).setImage(new Image("org.example/leadcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-" + card + "-1.png"));
             image.setId(String.valueOf(card));
             image.setOpacity(0.7);
+            if(lead1Id.equals("lead1"))
+                lead1Id=image.getId();
+            else
+                lead2Id= image.getId();
             cards.remove(0);
         }
     }
@@ -168,30 +199,35 @@ public class BoardController implements GUIcontroller{
 
     }
 
-    public void uploadPosition(int newPosition) {
+    public void uploadPosition(int newPosition, ImageView cross) {
         final int shift = 35;
-
-        if (newPosition == 0) {
-            croce.setLayoutX(46.0);
-            croce.setLayoutY(176.0);
-        } else if (newPosition > 0 && newPosition <= 2) {
-            croce.setLayoutX(croce.getLayoutX() + shift);
-        } else if (newPosition <= 4) {
-            croce.setLayoutY(croce.getLayoutY() + shift);
-        } else if (newPosition <= 9) {
-            croce.setLayoutX(croce.getLayoutX() + shift);
-        } else if (newPosition <= 11) {
-            croce.setLayoutY(croce.getLayoutY() - shift);
-        } else if (newPosition <= 16)
-            croce.setLayoutX(croce.getLayoutX() + shift);
-        else if (newPosition <= 18) {
-            croce.setLayoutY(croce.getLayoutY() + shift);
-        } else if (newPosition <= 24) {
-            croce.setLayoutX(croce.getLayoutX() + shift);
+        if(newPosition>oldPosition || newPosition==0) {
+            if (newPosition == 0) {
+                cross.setLayoutX(46.0);
+                cross.setLayoutY(176.0);
+            } else if (newPosition > 0 && newPosition <= 2) {
+                cross.setLayoutX(cross.getLayoutX() + shift);
+            } else if (newPosition <= 4) {
+                cross.setLayoutY(cross.getLayoutY() + shift);
+            } else if (newPosition <= 9) {
+                cross.setLayoutX(cross.getLayoutX() + shift);
+            } else if (newPosition <= 11) {
+                cross.setLayoutY(cross.getLayoutY() - shift);
+            } else if (newPosition <= 16)
+                cross.setLayoutX(cross.getLayoutX() + shift);
+            else if (newPosition <= 18) {
+                cross.setLayoutY(cross.getLayoutY() + shift);
+            } else if (newPosition <= 24) {
+                cross.setLayoutX(cross.getLayoutX() + shift);
+            }
+            oldPosition= newPosition;
         }
     }
 
     public void setWareHouse(ViewCLI viewCLI) {
+
+        emptyShelves();
+
         if(!viewCLI.getWarehouse()[0].isEmpty()) {
             shelf1.setImage(new Image("org.example/images/" + viewCLI.getWarehouse()[0].get(0) + ".png"));
             shelf1.setOpacity(1.0);
@@ -210,6 +246,42 @@ public class BoardController implements GUIcontroller{
             image.setImage(new Image("org.example/images/"+viewCLI.getWarehouse()[2].get(i)+".png"));
             image.setOpacity(1.0);
         }
+
+        setSpecialShelf(viewCLI);
+    }
+
+    private void emptyShelves() {
+        shelf1.setImage(null);
+
+        for(Node node: shelf2.getChildren())
+            ((ImageView)node).setImage(null);
+        for(Node node: shelf3.getChildren())
+            ((ImageView)node).setImage(null);
+        /*for(Node node: shelf2.getChildren())
+            ((ImageView)node).setImage(null);
+        for(Node node: shelf2.getChildren())
+            ((ImageView)node).setImage(null);*/
+    }
+
+    private void setSpecialShelf(ViewCLI viewCLI) {
+        if(!viewCLI.getWarehouse()[3].isEmpty())
+            for(int i=0;i<viewCLI.getWarehouse()[3].size();i++){
+                System.out.println(viewCLI.getWarehouse()[3]);
+                //considero che se mi arriva c'è sicuramente attiva
+                HBox special= (HBox) board.lookup("#shelf4");
+                ImageView image= (ImageView) special.getChildren().get(i);
+                image.setImage(new Image("org.example/images/"+viewCLI.getWarehouse()[3].get(i)+".png"));
+                image.setOpacity(1.0);
+            }
+        if(!viewCLI.getWarehouse()[4].isEmpty())
+            for(int i=0;i<viewCLI.getWarehouse()[4].size();i++){
+                System.out.println(viewCLI.getWarehouse()[4]);
+                HBox special= (HBox) board.lookup("#shelf5");
+                ImageView image= (ImageView) special.getChildren().get(i);
+                image.setImage(new Image("org.example/images/"+viewCLI.getWarehouse()[4].get(i)+".png"));
+                image.setOpacity(1.0);
+            }
+
     }
 
     //production
@@ -375,21 +447,20 @@ public class BoardController implements GUIcontroller{
     }
 
     public void endTurn(ActionEvent actionEvent) {
-        //if(mainAction){
-            gui.getMainClient().send(new TurnChangeMessage());
-            //mainAction=false;
-        //}else
-           // gui.lobbyMessageHandler(new LobbyMessage("you have not done a main action yet"));
+        gui.getMainClient().send(new TurnChangeMessage());
+
     }
 
     public void setCards(ViewCLI viewCLI) {
         Set<Integer> keySet = viewCLI.getLeadCardsId().keySet();
         ArrayList<Integer> updatedCards = new ArrayList<>(keySet);
         for(Node node: leadsBox.getChildren()) {
-            if (!updatedCards.contains(Integer.parseInt(node.getId())))
-                ((ImageView) node).setImage(new Image("/org.example/images/Masters of Renaissance__Cards_BACK_3mmBleed-49-1.png"));
-            else if (viewCLI.getLeadCardsId().get(Integer.parseInt(node.getId())))
-                node.setOpacity(1.0);
+            if (!node.getId().equals(lead1Id) && !node.getId().equals(lead2Id)) {
+                if (!updatedCards.contains(Integer.parseInt(node.getId())))
+                    ((ImageView) node).setImage(new Image("/org.example/images/Masters of Renaissance__Cards_BACK_3mmBleed-49-1.png"));
+                else if (viewCLI.getLeadCardsId().get(Integer.parseInt(node.getId())))
+                    node.setOpacity(1.0);
+            }
         }
         keySet = viewCLI.getDevCardsId().keySet();
         updatedCards = new ArrayList<>(keySet);
@@ -455,6 +526,10 @@ public class BoardController implements GUIcontroller{
     }
 
     public void setStrongbox(ViewCLI viewCLI) {
+        coinBox.setText( String.valueOf(viewCLI.getStrongbox()[0]));
+        servantBox.setText( String.valueOf(viewCLI.getStrongbox()[1]));
+        shieldBox.setText( String.valueOf(viewCLI.getStrongbox()[2]));
+        stoneBox.setText( String.valueOf(viewCLI.getStrongbox()[3]));
     }
 
     public void activePope(int meetingNumber) {
@@ -469,5 +544,32 @@ public class BoardController implements GUIcontroller{
                 pope3.setVisible(true);
                 break;
         }
+    }
+
+    public void leadShelfActivation(int cardId) {
+
+        if (leadsBox.lookup("#" + lead1Id).getId().equals(String.valueOf(cardId))) {
+            if(!shelf4)
+                sShelf1.setId("shelf4");
+            else
+                sShelf1.setId("shelf5");
+
+        }
+        if (leadsBox.lookup("#" + lead2Id).getId().equals(String.valueOf(cardId))) {
+            if(!shelf4)
+                sShelf2.setId("shelf4");
+            else
+                sShelf2.setId("shelf5");
+        }
+        shelf4=true;
+    }
+
+    public void lorenzoUpdate(int val) {
+            if(val>=0) {
+                blackCross.setVisible(true);
+                blackCrossPos = blackCrossPos + val;
+                uploadPosition(blackCrossPos, blackCross);
+            }else
+                blackCross.setVisible(false);
     }
 }

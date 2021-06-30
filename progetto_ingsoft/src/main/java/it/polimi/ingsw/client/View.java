@@ -21,4 +21,6 @@ public interface View {
     void setViewCLI(ViewCLI viewCLI);
     void faithPositionHandler(FaithPositionChangeMessage message);
     void activePopeMeetingHandler(ActivePopeMeetingMessage message);
+    void shelfAbilityActiveHandler(ShelfAbilityActiveMessage message);
+    void lorenzoActionHandler(LorenzoActionMessage lorenzoActionMessage);
 }

@@ -60,6 +60,7 @@ public class Player implements Points{
         //System.out.println("creo la personalboard di "+ username); [Debug]
         this.personalBoard = new PersonalBoard(this);
         //System.out.println("personalBoard creata"); [Debug]
+        this.action=Action.NOTDONE;
     }
 
     /**

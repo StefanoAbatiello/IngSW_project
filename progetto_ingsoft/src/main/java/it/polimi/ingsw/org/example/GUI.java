@@ -32,6 +32,9 @@ public class GUI extends Application implements View {
     private final String DEVMATRIX="devMatrix.fxml";
     private final String ZOOMCARD="zoomedCard.fxml";
     private final String SUPPLY="supply.fxml";
+    private final String WINNER="winner.fxml";
+
+
 
     private final HashMap<String,Scene> nameMapScene= new HashMap<>();
     private final HashMap<String,GUIcontroller> nameMapController= new HashMap<>();
@@ -49,7 +52,7 @@ public class GUI extends Application implements View {
     @Override
     public void start(Stage stage) {
         this.stage=stage;
-        List<String> fxmList = new ArrayList<>(Arrays.asList(LOGIN, NICKNAME,BOARD,WAITING,NUMOFPLAYER,LEADCARDSCHOICE,INITIALRESOURCES,MARKETBOARD,DEVMATRIX,SUPPLY,ZOOMCARD));
+        List<String> fxmList = new ArrayList<>(Arrays.asList(LOGIN, NICKNAME,BOARD,WAITING,NUMOFPLAYER,LEADCARDSCHOICE,INITIALRESOURCES,MARKETBOARD,DEVMATRIX,SUPPLY,ZOOMCARD,WINNER));
         try {
 
             for (String path : fxmList) {
@@ -177,8 +180,10 @@ public class GUI extends Application implements View {
 
     public void faithPositionHandler(FaithPositionChangeMessage message){
         Platform.runLater(()->{
+            System.out.println(message.getFaithPosition());
+            System.out.println("faithMessage");
             BoardController boardController=(BoardController) nameMapController.get(BOARD);
-            boardController.uploadPosition(message.getFaithPosition());
+            boardController.uploadPosition(message.getFaithPosition(), boardController.croce);
         });
     }
 
@@ -187,6 +192,23 @@ public class GUI extends Application implements View {
         Platform.runLater(()->{
             BoardController boardController=(BoardController) nameMapController.get(BOARD);
             boardController.activePope(message.getMeetingNumber());
+        });
+    }
+
+    @Override
+    public void shelfAbilityActiveHandler(ShelfAbilityActiveMessage message) {
+        Platform.runLater(()->{
+            BoardController boardController=(BoardController) nameMapController.get(BOARD);
+            boardController.leadShelfActivation(message.getCardId());
+        });
+    }
+
+    @Override
+    public void lorenzoActionHandler(LorenzoActionMessage lorenzoActionMessage) {
+        Platform.runLater(()->{
+            System.out.println("lorenzoMessage");
+            BoardController boardController=(BoardController) nameMapController.get(BOARD);
+            boardController.lorenzoUpdate(lorenzoActionMessage.getVal());
         });
     }
 
@@ -258,7 +280,6 @@ public class GUI extends Application implements View {
         });
     }
 
-    //TODO controllo se necessario override o metodo comune
     @Override
     public void devMatrixHandler(DevMatrixChangeMessage devMatrixChangeMessage) {
     viewCLI.setDevMatrix(devMatrixChangeMessage.getDevMatrix());
@@ -282,6 +303,10 @@ public class GUI extends Application implements View {
     public void choosableResourceHandler(ChangeChoosableResourceRequest input) {
 
     }
+
+
+
+    //TODO special shelf
 
     public void setViewCLI(ViewCLI viewCLI) {
         this.viewCLI = viewCLI;

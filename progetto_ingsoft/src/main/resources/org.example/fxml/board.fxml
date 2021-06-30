@@ -64,6 +64,11 @@
                 <Image url="@../images/faith.png" />
             </image>
         </ImageView>
+        <ImageView fx:id="blackCross" fitHeight="30.0" fitWidth="33.0" layoutX="46.0" layoutY="176.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../images/croceNera.png" />
+            </image>
+        </ImageView>
         <ImageView fx:id="card1" disable="true" fitHeight="198.0" fitWidth="158.0" layoutX="283.0" layoutY="297.0" onMouseClicked="#cardProd" pickOnBounds="true" preserveRatio="true">
             <image>
                 <Image url="@/org.example/images/Masters of Renaissance__Cards_BACK_3mmBleed-49-1.png" />
@@ -81,8 +86,14 @@
         </ImageView>
         <VBox fx:id="leadsBox" layoutX="730.0" layoutY="69.0" prefHeight="356.0" prefWidth="122.0">
             <children>
-                <ImageView fx:id="0" fitHeight="254.0" fitWidth="165.0" onMouseClicked="#showLeadsAction" pickOnBounds="true" />
-                <ImageView fx:id="1" fitHeight="260.0" fitWidth="167.0" onMouseClicked="#showLeadsAction" pickOnBounds="true" />
+                <ImageView fx:id="lead1" fitHeight="254.0" fitWidth="166.0" onMouseClicked="#showLeadsAction" pickOnBounds="true">
+               <image>
+                  <Image url="@../leadcards/Masters%20of%20Renaissance_Cards_FRONT_3mmBleed_1-56-1.png" />
+               </image></ImageView>
+                <ImageView fx:id="lead2" fitHeight="260.0" fitWidth="167.0" onMouseClicked="#showLeadsAction" pickOnBounds="true">
+               <image>
+                  <Image url="@../leadcards/Masters%20of%20Renaissance_Cards_FRONT_3mmBleed_1-56-1.png" />
+               </image></ImageView>
             </children>
         </VBox>
         <Label fx:id="leadOutLabel" layoutX="740.0" layoutY="220.0" text="Please choose the output" visible="false" />
@@ -362,5 +373,74 @@
             <Image url="@../images/pope_favor3_front.png" />
          </image>
       </ImageView>
+      <HBox layoutX="36.0" layoutY="455.0" prefHeight="50.0" prefWidth="120.0">
+         <children>
+            <ImageView fitHeight="36.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/coin.png" />
+               </image>
+               <HBox.margin>
+                  <Insets top="10.0" />
+               </HBox.margin>
+            </ImageView>
+            <ImageView fitHeight="37.0" fitWidth="46.0" pickOnBounds="true" preserveRatio="true">
+               <HBox.margin>
+                  <Insets left="25.0" top="5.0" />
+               </HBox.margin>
+               <image>
+                  <Image url="@../images/servant.png" />
+               </image>
+            </ImageView>
+         </children>
+      </HBox>
+      <HBox layoutX="38.0" layoutY="507.0" prefHeight="44.0" prefWidth="111.0">
+         <children>
+            <ImageView fitHeight="44.0" fitWidth="46.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/shield.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="42.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/stone.png" />
+               </image>
+               <HBox.margin>
+                  <Insets left="25.0" />
+               </HBox.margin>
+            </ImageView>
+         </children>
+      </HBox>
+      <Label fx:id="coinBox" layoutX="45.0" layoutY="468.0" prefHeight="25.0" prefWidth="29.0" text="0" textAlignment="CENTER">
+         <font>
+            <Font name="System Bold" size="17.0" />
+         </font>
+      </Label>
+      <Label fx:id="servantBox" layoutX="112.0" layoutY="471.0" prefHeight="25.0" prefWidth="31.0" text="2" textAlignment="CENTER" textFill="#fdfbfb">
+         <font>
+            <Font name="System Bold" size="17.0" />
+         </font>
+      </Label>
+      <Label fx:id="shieldBox" layoutX="47.0" layoutY="512.0" prefHeight="37.0" prefWidth="26.0" text="0" textAlignment="CENTER">
+         <font>
+            <Font name="System Bold" size="17.0" />
+         </font>
+      </Label>
+      <Label fx:id="stoneBox" layoutX="111.0" layoutY="521.0" prefHeight="25.0" prefWidth="31.0" text="0">
+         <font>
+            <Font size="17.0" />
+         </font>
+      </Label>
+      <HBox fx:id="sShelf1" layoutX="747.0" layoutY="255.0" prefHeight="59.0" prefWidth="134.0">
+         <children>
+            <ImageView fitHeight="62.0" fitWidth="67.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fitHeight="61.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true" />
+         </children>
+      </HBox>
+      <HBox fx:id="sShelf2" layoutX="744.0" layoutY="516.0" prefHeight="59.0" prefWidth="143.0">
+         <children>
+            <ImageView fitHeight="62.0" fitWidth="67.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fitHeight="61.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true" />
+         </children>
+      </HBox>
     </children>
 </Pane>

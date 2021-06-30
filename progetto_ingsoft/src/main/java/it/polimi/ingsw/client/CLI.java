@@ -17,7 +17,7 @@ public class CLI extends App implements View {
     public CLI(ClientCardParser clientCardParser) {
         parser=clientCardParser;
     }
-
+    private int blackCrossPos=0;
 
 
     @Override
@@ -203,5 +203,19 @@ public class CLI extends App implements View {
     @Override
     public void activePopeMeetingHandler(ActivePopeMeetingMessage message) {
 
+    }
+
+    @Override
+    public void shelfAbilityActiveHandler(ShelfAbilityActiveMessage message) {
+
+    }
+
+    @Override
+    public void lorenzoActionHandler(LorenzoActionMessage lorenzoActionMessage) {
+        if (lorenzoActionMessage.getVal() >= 0) {
+            System.out.println(lorenzoActionMessage.getMessage());
+            blackCrossPos= blackCrossPos+lorenzoActionMessage.getVal();
+            System.out.println("Lorenzo's cross is in position:"+blackCrossPos);
+        }
     }
 }
