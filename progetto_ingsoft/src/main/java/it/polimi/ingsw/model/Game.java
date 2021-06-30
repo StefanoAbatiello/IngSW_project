@@ -5,8 +5,11 @@ import it.polimi.ingsw.model.Market.Market;
 import it.polimi.ingsw.model.cards.DevCard;
 import it.polimi.ingsw.model.cards.DevDeck;
 import it.polimi.ingsw.model.cards.DevDeckMatrix;
+import it.polimi.ingsw.model.personalboard.BlackCross;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class  Game {
 
@@ -66,9 +69,11 @@ public abstract class  Game {
 
     public abstract DevDeckMatrix getDevDeckMatrix();
 
-    public String draw() {
-        return "";
+    public Map<Integer, String> draw() {
+        return new HashMap<>();
     }
+
+    public abstract int initializeBlackCross();
 
     /**
      * @return a simplified version of the development cards that can be purchased
@@ -102,8 +107,9 @@ public abstract class  Game {
     /**
      * this method give a Faith point to all other player, then check if one of them reaches a Pope meeting
      * @param player is the player who give away faith points
+     * @return 1 if the game is multiplayer, 0 otherwise
      */
-    public abstract void faithPointsGiveAway(Player player);
+    public abstract int faithPointsGiveAway(Player player);
 
     public abstract Player getPlayerFromName(String name);
 

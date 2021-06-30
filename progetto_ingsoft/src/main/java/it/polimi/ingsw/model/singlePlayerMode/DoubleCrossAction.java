@@ -2,6 +2,8 @@ package it.polimi.ingsw.model.singlePlayerMode;
 
 import it.polimi.ingsw.model.SinglePlayer;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DoubleCrossAction implements ActionToken {
 
@@ -18,9 +20,11 @@ public class DoubleCrossAction implements ActionToken {
      * @return a String which descibes the effect of specified token
      */
     @Override
-    public String applyEffect(ArrayList<ActionToken> tokensStack){
+    public Map<Integer, String> applyEffect(ArrayList<ActionToken> tokensStack){
+        Map<Integer,String> result=new HashMap<>();
         sP.getBlackCrossToken().updateBlackCross(2);
-        return "Lorenzo receives two faith point";
+        result.put(2,"Lorenzo receives two faith point");
+        return result;
     }
 
 }

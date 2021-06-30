@@ -10,6 +10,8 @@ import org.json.simple.parser.ParseException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SinglePlayer extends Game{
 
@@ -55,6 +57,7 @@ public class SinglePlayer extends Game{
     }
 
     public SinglePlayer(String username) throws playerLeadsNotEmptyException, IOException, ParseException {
+        blackCross =new BlackCross();
         this.players.add(new Player(username));
         tokensStack.add(new CrossShuffleAction(this));
         tokensStack.add(new DoubleCrossAction(this));
@@ -66,7 +69,6 @@ public class SinglePlayer extends Game{
         Collections.shuffle(tokensStack);
         matrix= new DevDeckMatrix();
         devDeck = matrix.getDeck();
-        blackCross =new BlackCross();
         this.market=new Market();
         leads= new LeadDeck();
         leads.shuffle();
@@ -101,30 +103,41 @@ public class SinglePlayer extends Game{
      * @return tokensStack after activation of first token's effect and reorganization of the stack
      */
     @Override
-    public String draw() {
+    public Map<Integer, String> draw() {
+        Map<Integer,String> result=new HashMap<>();
         if (checkBlackCrossPosition() || checkEmptyLineInMatrix()) {
             winnerName="Lorenzo il Magnifico";
-            return "Finished";
+            result.put(-1,"Finished");
+            return result;
         }else if (players.get(0).getPersonalBoard().getFaithMarker().getFaithPosition()==24){
             winnerName=players.get(0).getName();
-            return "Finished";
+            result.put(-1,"Finished");
+            return result;
         }
         ActionToken token = tokensStack.remove(0);
         tokensStack.add(token);
-        String effect = token.applyEffect(tokensStack);
+        Map<Integer,String> effect = token.applyEffect(tokensStack);
         if (checkBlackCrossPosition() || checkEmptyLineInMatrix()) {
             winnerName = "Lorenzo il Magnifico";
-            return "Finished";
+            result.put(-1,"Finished");
+            return result;
         }
         return effect;
     }
 
+    @Override
+    public int initializeBlackCross() {
+        return 0;
+    }
+
     /**
      * @param player      is the players who give away faith points
+     * @return 1 if the game is multiplayer, 0 otherwise
      */
     @Override
-    public void faithPointsGiveAway(Player player) {
+    public int faithPointsGiveAway(Player player) {
         blackCross.updateBlackCross(1);
+        return  0;
     }
 
     /**
@@ -186,19 +199,19 @@ public class SinglePlayer extends Game{
         if((player.getPersonalBoard().getFaithMarker().getFaithPosition()==8 || blackCross.getCrossPosition()==8) && isVC1active()) {
 
             if(player.getPersonalBoard().getFaithMarker().isVaticanZone(1))
-                player.increaseFaithTrackPoints(2);
+                player.increasePopeMeetingPoints(2);
             setVC1active(false);
             return 1;
         }
         else if((player.getPersonalBoard().getFaithMarker().getFaithPosition()==16 || blackCross.getCrossPosition()==16) && isVC2active()) {
             if(player.getPersonalBoard().getFaithMarker().isVaticanZone(2))
-                player.increaseFaithTrackPoints(3);
+                player.increasePopeMeetingPoints(3);
             setVC2active(false);
             return 2;
         }
         else if((player.getPersonalBoard().getFaithMarker().getFaithPosition()==24 || blackCross.getCrossPosition()==24) && isVC3active()) {
             if(player.getPersonalBoard().getFaithMarker().isVaticanZone(3))
-                player.increaseFaithTrackPoints(4);
+                player.increasePopeMeetingPoints(4);
             setVC3active(false);
             return 3;
         }

@@ -10,7 +10,6 @@ import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class MultiPlayer extends Game {
 
@@ -79,21 +78,21 @@ public class MultiPlayer extends Game {
         if(playerInput.getPersonalBoard().getFaithMarker().getFaithPosition()==8 && isVC1active()) {
             players.stream().filter(player ->
                     player.getPersonalBoard().getFaithMarker().isVaticanZone(1)).forEach(player ->
-                        player.increaseFaithTrackPoints(2));
+                        player.increasePopeMeetingPoints(2));
             setVC1active(false);
             return 1;
         }
         else if(playerInput.getPersonalBoard().getFaithMarker().getFaithPosition()==16 && isVC2active()) {
             players.stream().filter(player ->
                     player.getPersonalBoard().getFaithMarker().isVaticanZone(2)).forEach(player ->
-                        player.increaseFaithTrackPoints(3));
+                        player.increasePopeMeetingPoints(3));
             setVC2active(false);
             return 2;
         }
         else if(playerInput.getPersonalBoard().getFaithMarker().getFaithPosition()==24 && isVC3active()) {
             players.stream().filter(player ->
                     player.getPersonalBoard().getFaithMarker().isVaticanZone(3)).forEach(player ->
-                        player.increaseFaithTrackPoints(4));
+                        player.increasePopeMeetingPoints(4));
             setVC3active(false);
             return 3;
         }
@@ -115,17 +114,24 @@ public class MultiPlayer extends Game {
         return matrix;
     }
 
+    @Override
+    public int initializeBlackCross() {
+        return -1;
+    }
+
     /**
      * @param player      is the player who give away faith points
+     * @return 1 if the game is multiplayer, 0 otherwise
      */
     @Override
-    public void faithPointsGiveAway(Player player) {
+    public int faithPointsGiveAway(Player player) {
         players.forEach(p -> {
             if (p != player) {
                 System.out.println("il player "+p.getName()+" sta ricevendo il punto");
                 p.getPersonalBoard().getFaithMarker().updatePosition();
             }
         });
+        return 1;
     }
 
     /**

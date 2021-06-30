@@ -18,10 +18,12 @@ public class CrossShuffleAction implements ActionToken {
      * @return a String which descibes the effect of specified token
      */
     @Override
-    public String applyEffect(ArrayList<ActionToken> tokensStack){
+    public Map<Integer, String> applyEffect(ArrayList<ActionToken> tokensStack){
+        Map<Integer,String> result=new HashMap<>();
         Collections.shuffle(tokensStack);
         singlePlayer.getBlackCrossToken().updateBlackCross(1);
-        return "Lorenzo receives one faith point";
+        result.put(1,"Lorenzo receives one faith point");
+        return result;
     }
 
 }

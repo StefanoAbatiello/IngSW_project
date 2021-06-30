@@ -2,6 +2,8 @@ package it.polimi.ingsw.model.singlePlayerMode;
 
 import it.polimi.ingsw.model.SinglePlayer;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DiscardDevCardAction implements ActionToken {
 
@@ -31,10 +33,12 @@ public class DiscardDevCardAction implements ActionToken {
      * @return a String which descibes the effect of specified token
      */
     @Override
-    public String applyEffect(ArrayList<ActionToken> tokensStack) {
+    public Map<Integer, String> applyEffect(ArrayList<ActionToken> tokensStack) {
+        Map<Integer,String> result=new HashMap<>();
         sP.removeTokenCard(color);
         sP.removeTokenCard(color);
-        return "Lorenzo has discarded two development card of color " + color;
+        result.put(0,"Lorenzo has discarded two development card of color " + color);
+        return result;
     }
 }
 

@@ -81,8 +81,8 @@ class FaithMarkerTest {
             game.getPlayers().get(0).getPersonalBoard().getFaithMarker().updatePosition();
 
         game.activePopeSpace(game.getPlayers().get(0));
-        assertEquals(2,game.getPlayers().get(0).getFaithTrackPoints());
-        assertEquals(0,game.getPlayers().get(1).getFaithTrackPoints());
+        assertEquals(2,game.getPlayers().get(0).getPopeMeetingPoints());
+        assertEquals(0,game.getPlayers().get(1).getPopeMeetingPoints());
 
     }
 

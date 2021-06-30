@@ -1,21 +1,14 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.exceptions.ActionAlreadySetException;
 import it.polimi.ingsw.model.Market.ResourceSupply;
 import it.polimi.ingsw.model.cards.DevCard;
 import it.polimi.ingsw.model.cards.LeadCard;
 import it.polimi.ingsw.model.cards.cardExceptions.CardChosenNotValidException;
-import it.polimi.ingsw.model.personalboard.DevCardSlot;
 import it.polimi.ingsw.model.personalboard.PersonalBoard;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Player implements Points{
-
-    /**
-     * this are the points of the player
-     */
-    private int points=0;
 
     /**
      * this is the player's Personal board
@@ -25,7 +18,7 @@ public class Player implements Points{
     /**
      * this are the points gained from the position of Faith marker
      */
-    private int faithTrackPoints =0;
+    private int popeMeetingPoints =0;
 
     /**
      * this is the list of leader card
@@ -96,9 +89,8 @@ public class Player implements Points{
            return card.isActive();
     }
 
-    public boolean setAction(Action newAction) throws ActionAlreadySetException {
+    public void setAction(Action newAction) {
             this.action = newAction;
-            return true;
     }
 
     public Action getAction(){
@@ -111,30 +103,36 @@ public class Player implements Points{
 
     @Override
     public int getPoints(){
+        /**
+         * this are the points of the player
+         */
+        int points = personalBoard.getDevCardSlot().getPoints();
+        points +=getLeaderPoints();
+        points +=personalBoard.getFaithMarker().getPoints();
+        points +=getResourcesPoints();
+        points +=popeMeetingPoints;
         return points;
     }
 
-    public int setPoints (int points){
-        this.points += points;
-        return this.points;
+    private int getResourcesPoints() {
+        ArrayList<Resource> resources= getSupplyResources();
+        resources.addAll(getStrongboxResources());
+        resources.addAll(getSpecialShelfResources());
+        return resources.size()/5;
+    }
+
+    private int getLeaderPoints() {
+        return leadCards.stream().filter(LeadCard::isActive).mapToInt(LeadCard::getPoints).sum();
     }
 
     public PersonalBoard getPersonalBoard() {
         return personalBoard;
     }
 
-    public int getFaithTrackPoints() {
-        return faithTrackPoints;
+    public int increasePopeMeetingPoints(int faithTrackPoints){
+        this.popeMeetingPoints += faithTrackPoints;
+        return this.popeMeetingPoints;
     }
-
-    public int increaseFaithTrackPoints(int faithTrackpoints){
-        this.faithTrackPoints += faithTrackpoints;
-        return this.faithTrackPoints;
-    }
-
-    public String getPotentialResource(String potentialResource) {
-        return potentialResource;
-    }//serve getter?
 
     public ArrayList<LeadCard> getLeadCards () {
         return leadCards;
@@ -161,16 +159,6 @@ public class Player implements Points{
     public boolean discardLead(LeadCard card){
         leadCards.remove(card);
         return true;
-    }
-
-    /**
-     * @param resources is the list of Resources chosen by the player to activate the basic production
-     * @param potentialResource is the Resource chosen by the player as product of the basic production
-     * @return the produced Resource
-     */
-    public Resource doBasicProduction (ArrayList<Resource> resources,Resource potentialResource) {
-        getPersonalBoard().removeResources(resources);
-        return potentialResource;
     }
 
     /**
@@ -272,5 +260,9 @@ public class Player implements Points{
         for (LeadCard card:leadCards)
             leaderId.add(card.getId());
         return leaderId;
+    }
+
+    public int getPopeMeetingPoints() {
+        return popeMeetingPoints;
     }
 }

@@ -157,9 +157,16 @@ public class Controller {
                 sendPlayerCardsInfo(p);
                 sendFaithMarkerPosition(p);
                 sendStrongboxInfo(p);
+                sendBlackCrossInfo(p,game.initializeBlackCross(),"");
             }
         }
         lobby.sendAll(new StartingGameMessage());
+    }
+
+    private void sendBlackCrossInfo(Player p, int position, String message) {
+        Map<Integer,String> info=new HashMap<>();
+        info.put(position,message);
+        getHandlerFromPlayer(p.getName()).send(new LorenzoActionMessage(info));
     }
 
     /**
@@ -776,7 +783,9 @@ public class Controller {
      */
     public void faithPointsGiveAwayHandler(Player player, int pointsToGive){
         while (pointsToGive>0) {
-            game.faithPointsGiveAway(player);
+            if (game.faithPointsGiveAway(player)==0) {
+                sendBlackCrossInfo(player,1,"Lorenzo receives one FaithPoints");
+            }
             game.getPlayers().forEach(this::faithMarkerUpdateHandler);
             pointsToGive--;
         }
@@ -796,6 +805,7 @@ public class Controller {
                     faithPointsGiveAwayHandler(player,player.getResourceSupply().discardResources(remainingRes));
                 }
                 setWarehouseNewDisposition(newWarehouse,player);
+                lobby.setStateOfGame(GameState.ONGOING);
             }else{
                 getHandlerFromPlayer(id).send(new ResourceInSupplyRequest(player.getSimplifiedSupply()));
                 getHandlerFromPlayer(id).send(new LobbyMessage("Resources not valid in this disposition, please retry"));
@@ -966,17 +976,16 @@ public class Controller {
                 return;
             }
             System.out.println("fuori dal try");
-            String s = game.draw();
+            Map<Integer,String> result = game.draw();
             if (lobby.playersOnline() > 0) {
-                if (s.isEmpty()) {
+                if (result.isEmpty()) {
                     lobby.sendAll(new LobbyMessage("Now it's the turn of " + server.getNameFromId().get(actualPlayerTurn.getID())));
-                } else if (s.equalsIgnoreCase("finished")) {
+                } else if (result.containsKey(-1)) {
                     lastRound=true;
                 } else {
-                        if (s.contains("Lorenzo has discarded two development card of color ")) {
-                            lobby.sendAll(new DevMatrixChangeMessage(game.getSimplifiedDevMatrix()));
-                        }
-                        lobby.sendAll(new LobbyMessage(s + ", its again your turn"));
+                    lobby.sendAll(new DevMatrixChangeMessage(game.getSimplifiedDevMatrix()));
+                    lobby.sendAll(new LorenzoActionMessage(result));
+                    lobby.sendAll(new LobbyMessage("It's again your turn"));
                 }
             }
             changeActualPlayerTurn();
@@ -1067,13 +1076,7 @@ public class Controller {
     }
 
     public void actionForDisconnection(int id) {
-        try {
-            getPlayerFromId(id).setAction(Action.ACTIVATEPRODUCTION);
-        } catch (ActionAlreadySetException ignored) {
-        }
-        finally{
-            turnUpdate();
-        }
+        getPlayerFromId(id).setAction(Action.ACTIVATEPRODUCTION);
     }
 }
 
