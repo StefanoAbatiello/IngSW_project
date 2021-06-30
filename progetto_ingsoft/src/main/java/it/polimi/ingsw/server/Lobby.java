@@ -113,12 +113,12 @@ public class Lobby {
     public Map<VirtualClient,Integer> removePlayer(VirtualClient player) {
         clientFromPosition.remove(positionFromClient.get(player));
         positionFromClient.remove(player);
-        if (clientFromPosition.size()>0)
+        if (playersOnline()>0)
             sendAll(new LobbyMessage(player.getNickName() +" left the game"));
         seatsAvailable++;
         if(stateOfGame==GameState.ONGOING) {
             if (player.equals(controller.getActualPlayerTurn())) {
-                controller.actionForDisconnession(player.getID());
+                controller.actionForDisconnection(player.getID());
             }
         }
         return positionFromClient;
@@ -259,6 +259,14 @@ public class Lobby {
             if(stateOfGame==GameState.MARKET){
                 controller.checkChangeChoosable(id,((ChangeChoosableAction) input).getNewRes());
             }
+        }
+
+        else if (input instanceof WinnerMessage){
+            removePlayer(server.getClientFromId().get(id));
+            if(((WinnerMessage) input).getMessage().equalsIgnoreCase("yes"))
+                server.findEmptyLobby(id);
+            else
+                server.disconnectClient(id);
         }
 
         else if(!server.getClientFromId().get(id).equals(controller.getActualPlayerTurn()))

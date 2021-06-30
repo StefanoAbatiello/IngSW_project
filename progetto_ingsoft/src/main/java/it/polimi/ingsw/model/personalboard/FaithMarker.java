@@ -41,9 +41,27 @@ public class FaithMarker implements Points {
 
     /**
      * @return true if this faith marker is in a Vatican zone
+     * @param i is the number of the Pope meeting to check
      */
-    public boolean isVaticanZone(){
-        inVaticanZone = (getFaithPosition() >= 5 && getFaithPosition() <= 8) || (getFaithPosition() >= 12 && getFaithPosition() <= 16) || (getFaithPosition() >= 19 && getFaithPosition() <= 24);
+    public boolean isVaticanZone(int i){
+        inVaticanZone=false;
+        switch (i){
+            case 1:
+                if (getFaithPosition() >= 5 && getFaithPosition() <= 8){
+                    inVaticanZone=true;
+                    break;
+                }
+            case 2:
+                if (getFaithPosition() >= 12 && getFaithPosition() <= 16){
+                    inVaticanZone=true;
+                    break;
+                }
+            case 3:
+                if (getFaithPosition() >= 19 && getFaithPosition() <= 24){
+                    inVaticanZone=true;
+                    break;
+                }
+        }
         return inVaticanZone;
     }
 
@@ -85,7 +103,7 @@ public class FaithMarker implements Points {
     public int updatePosition(){
         faithPosition= faithPosition +1;
         setPoints();
-        isVaticanZone();
+        isVaticanZone(24);
         return faithPosition;
     }
 }

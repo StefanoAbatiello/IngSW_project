@@ -204,7 +204,7 @@ public class MainServer {
      * @param id is the player ID
      * @return true if player is already contained in someone lobby or if he is entered in a new lobby, false if every lobby is full
      */
-    public boolean findEmptyLobby(int id) {
+    public synchronized boolean findEmptyLobby(int id) {
         //System.out.println("sei dentro find empty lobby");[Debug]
         ArrayList<Lobby> lobbies= (ArrayList<Lobby>) lobbyFromClientID.values().stream().distinct().collect(Collectors.toList());
         for(Lobby lobby:lobbies) {

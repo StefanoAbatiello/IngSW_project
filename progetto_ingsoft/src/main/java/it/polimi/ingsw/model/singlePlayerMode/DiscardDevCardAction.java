@@ -33,6 +33,7 @@ public class DiscardDevCardAction implements ActionToken {
     @Override
     public String applyEffect(ArrayList<ActionToken> tokensStack) {
         sP.removeTokenCard(color);
+        sP.removeTokenCard(color);
         return "Lorenzo has discarded two development card of color " + color;
     }
 }

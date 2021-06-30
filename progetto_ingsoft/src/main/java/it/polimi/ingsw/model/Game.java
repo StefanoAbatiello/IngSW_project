@@ -78,7 +78,10 @@ public abstract class  Game {
         DevCard[][] matrix = getDevDeckMatrix().getUpperDevCardsOnTable();
         for (int j = 0; j < 4; j++) {
             for (int k = 0; k < 3; k++) {
-                devMatrix[j][k] = matrix[j][k].getId();
+                if(matrix[j][k]==null)
+                    devMatrix[j][k]=0;
+                else
+                    devMatrix[j][k] = matrix[j][k].getId();
             }
         }
         return devMatrix;
@@ -103,4 +106,6 @@ public abstract class  Game {
     public abstract void faithPointsGiveAway(Player player);
 
     public abstract Player getPlayerFromName(String name);
+
+    public abstract String getWinner();
 }

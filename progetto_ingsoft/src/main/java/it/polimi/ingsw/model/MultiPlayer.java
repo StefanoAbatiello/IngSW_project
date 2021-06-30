@@ -78,21 +78,21 @@ public class MultiPlayer extends Game {
     public int activePopeSpace(Player playerInput) {
         if(playerInput.getPersonalBoard().getFaithMarker().getFaithPosition()==8 && isVC1active()) {
             players.stream().filter(player ->
-                    player.getPersonalBoard().getFaithMarker().isVaticanZone()).forEach(player ->
+                    player.getPersonalBoard().getFaithMarker().isVaticanZone(1)).forEach(player ->
                         player.increaseFaithTrackPoints(2));
             setVC1active(false);
             return 1;
         }
         else if(playerInput.getPersonalBoard().getFaithMarker().getFaithPosition()==16 && isVC2active()) {
             players.stream().filter(player ->
-                    player.getPersonalBoard().getFaithMarker().isVaticanZone()).forEach(player ->
+                    player.getPersonalBoard().getFaithMarker().isVaticanZone(2)).forEach(player ->
                         player.increaseFaithTrackPoints(3));
             setVC2active(false);
             return 2;
         }
         else if(playerInput.getPersonalBoard().getFaithMarker().getFaithPosition()==24 && isVC3active()) {
             players.stream().filter(player ->
-                    player.getPersonalBoard().getFaithMarker().isVaticanZone()).forEach(player ->
+                    player.getPersonalBoard().getFaithMarker().isVaticanZone(3)).forEach(player ->
                         player.increaseFaithTrackPoints(4));
             setVC3active(false);
             return 3;
@@ -142,6 +142,33 @@ public class MultiPlayer extends Game {
             return players.get(2);
         } else
             return players.get(3);
+    }
+
+    @Override
+    public String getWinner() {
+        int winnerPlayerIndex=0;
+        int winnerPoints=players.get(0).getPoints();
+        ArrayList<Resource> winnerResources=new ArrayList<>(players.get(winnerPlayerIndex).getWarehouseResources());
+        winnerResources.addAll(players.get(winnerPlayerIndex).getSpecialShelfResources());
+        winnerResources.addAll(players.get(winnerPlayerIndex).getStrongboxResources());
+        for (int i=1;i<players.size();i++){
+            int playerPoints=players.get(i).getPoints();
+            ArrayList<Resource> playerResource=new ArrayList<>(players.get(i).getWarehouseResources());
+            playerResource.addAll(players.get(i).getSpecialShelfResources());
+            playerResource.addAll(players.get(i).getStrongboxResources());
+            if (playerPoints>winnerPoints){
+                winnerPlayerIndex=i;
+                winnerPoints=playerPoints;
+                winnerResources=playerResource;
+            }else if (playerPoints==winnerPoints){
+                if (playerResource.size()>winnerResources.size()){
+                    winnerPlayerIndex=i;
+                    winnerPoints=playerPoints;
+                    winnerResources=playerResource;
+                }
+            }
+        }
+        return players.get(winnerPlayerIndex).getName();
     }
 
 }

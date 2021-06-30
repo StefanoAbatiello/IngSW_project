@@ -48,6 +48,8 @@ public class SinglePlayer extends Game{
      */
     private final BlackCross blackCross;
 
+    private String winnerName;
+
     public  ArrayList<ActionToken> getTokensStack() {
         return tokensStack;
     }
@@ -99,12 +101,18 @@ public class SinglePlayer extends Game{
      * @return tokensStack after activation of first token's effect and reorganization of the stack
      */
     @Override
-    public String draw(){
+    public String draw() {
+        if (checkEmptyLineInMatrix()) {
+            winnerName=players.get(0).getName();
+            return "Finished";
+        }
         ActionToken token = tokensStack.remove(0);
         tokensStack.add(token);
-        String effect=token.applyEffect(tokensStack);
-        if(checkBlackCrossPosition()||checkEmptyLineInMatrix())
+        String effect = token.applyEffect(tokensStack);
+        if (checkBlackCrossPosition() || checkEmptyLineInMatrix()) {
+            winnerName = "Lorenzo il Magnifico";
             return "Finished";
+        }
         return effect;
     }
 
@@ -118,7 +126,7 @@ public class SinglePlayer extends Game{
 
     /**
      * @param color indicates the color of the card that lorenzo is trying to discard from DevDeckMatrix
-     * @return 0 if removing a card there are other cards with same color, otherwise -1, or -2 if the card removal failed
+     * @return 0 if the removing of the card of the color indicated is done correctly, 1 otherwise
      */
     public int removeTokenCard(String color)  {
         for(int i=0;i<4;i++){
@@ -126,15 +134,13 @@ public class SinglePlayer extends Game{
                 if(!matrix.getDevMatrix()[i][j].getLittleDevDeck().isEmpty()){
                     if(matrix.getDevMatrix()[i][j].getLittleDevDeck().get(0).getColor().equals(color)){
                         matrix.getDevMatrix()[i][j].getLittleDevDeck().remove(0);
-                        if(j==2 && matrix.getDevMatrix()[i][j].getLittleDevDeck().isEmpty())
-                            return -1;
                         return 0;
                     }else
                         j=3;
                 }
             }
         }
-        return -2;
+        return 1;
     }
 
     @Override
@@ -176,20 +182,24 @@ public class SinglePlayer extends Game{
     public int activePopeSpace(Player player) {
         if((player.getPersonalBoard().getFaithMarker().getFaithPosition()==8 || blackCross.getCrossPosition()==8) && isVC1active()) {
 
-            if(player.getPersonalBoard().getFaithMarker().isVaticanZone())
+            if(player.getPersonalBoard().getFaithMarker().isVaticanZone(1))
                 player.increaseFaithTrackPoints(2);
             setVC1active(false);
             return 1;
         }
         else if((player.getPersonalBoard().getFaithMarker().getFaithPosition()==16 || blackCross.getCrossPosition()==16) && isVC2active()) {
-            if(player.getPersonalBoard().getFaithMarker().isVaticanZone())
+            if(player.getPersonalBoard().getFaithMarker().isVaticanZone(2))
                 player.increaseFaithTrackPoints(3);
             setVC2active(false);
             return 2;
         }
         else if((player.getPersonalBoard().getFaithMarker().getFaithPosition()==24 || blackCross.getCrossPosition()==24) && isVC3active()) {
-            if(player.getPersonalBoard().getFaithMarker().isVaticanZone())
+            if(player.getPersonalBoard().getFaithMarker().isVaticanZone(3))
                 player.increaseFaithTrackPoints(4);
+            if (player.getPersonalBoard().getFaithMarker().getFaithPosition()==24)
+                winnerName=player.getName();
+            else
+                winnerName="Lorenzo il Magnifico";
             setVC3active(false);
             return 3;
         }
@@ -226,5 +236,10 @@ public class SinglePlayer extends Game{
             return players.get(2);
         } else
             return players.get(3);
+    }
+
+    @Override
+    public String getWinner() {
+        return winnerName;
     }
 }

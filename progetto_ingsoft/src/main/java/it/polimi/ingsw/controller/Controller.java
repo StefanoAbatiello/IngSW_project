@@ -34,9 +34,15 @@ public class Controller {
      */
     private VirtualClient actualPlayerTurn;
 
+    /**
+     * this boolean indicates if this round of Players' turn is the last one ore not
+     */
+    private boolean lastRound;
+
     public Controller(Lobby lobby, MainServer server) {
         this.lobby=lobby;
         this.server=server;
+        this.lastRound=false;
     }
 
     /**
@@ -319,8 +325,9 @@ public class Controller {
         //System.out.println("sto controllando il suo warehouse");[Debug]
         Player player=getPlayerFromId(getHandlerFromPlayerPosition(position).getClientId());
         ArrayList<Resource> resources=player.getWarehouseResources();
+        ArrayList<String>[] warehouse=player.getPersonalBoard().getSimplifiedWarehouse();
         //System.out.println("mi sono salvato tutte le sue risorse");[Debug]
-        if (resources.size()!= playerInitialResources(position) ) {
+        if (resources.size()!= playerInitialResources(position) || !checkShelfContent(warehouse, player)) {
             if (resources.size()>0) {
                 //System.out.println("ha scelto un numero sbagliato di risorse");[Debug]
                 game.getPlayers().get(position).getPersonalBoard().getWarehouseDepots().clear();
@@ -330,8 +337,9 @@ public class Controller {
                     getHandlerFromPlayerPosition(position).send(new GetInitialResourcesAction("You have choose an incorrect number of resources, please resend your initial resources:  ", playerInitialResources(position)));
                 }
             }return false;
+        }else {
+            return true;
         }
-        return true;
     }
 
     /**
@@ -378,6 +386,10 @@ public class Controller {
                     game.getDevDeckMatrix().buyCard(cardToBuy);
                     player.getPersonalBoard().removeResources(cardToBuy.getRequirements());
                     player.getPersonalBoard().getDevCardSlot().overlap(cardToBuy, position);
+                    if (player.getPersonalBoard().getDevCardSlot().getDevCards().size()==7){
+                        lastRound=true;
+                        lobby.sendAll(new LobbyMessage(player.getName()+" has bought the 7th Development card"));
+                    }
                     sendWarehouseInfo(player);
                     sendStrongboxInfo(player);
                     sendPlayerCardsInfo(player);
@@ -425,8 +437,10 @@ public class Controller {
                 return player.getPersonalBoard().getDevCardSlot().getActiveCards().size() < 3;
             } else {
                 int lastIndex = player.getPersonalBoard().getDevCardSlot().getSlot()[position].size() - 1;
-                DevCard card = player.getPersonalBoard().getDevCardSlot().getSlot()[position].get(lastIndex);
-                return card.getLevel() == newCardLevel - 1;
+                if (lastIndex>=0){
+                    DevCard card = player.getPersonalBoard().getDevCardSlot().getSlot()[position].get(lastIndex);
+                    return card.getLevel() == newCardLevel - 1;
+                } else return false;
             }
         }
         else
@@ -470,8 +484,16 @@ public class Controller {
     private void faithMarkerUpdateHandler(Player player) {
         sendFaithMarkerPosition(player);
         int popeMeeting=game.activePopeSpace(player);
-        if (popeMeeting>0 && popeMeeting<4)
-            lobby.sendAll(new ActivePopeMeetingMessage(popeMeeting));
+        if (popeMeeting>0 && popeMeeting<4) {
+            for (Player p: game.getPlayers()) {
+                if (p.getPersonalBoard().getFaithMarker().isVaticanZone(popeMeeting)&&server.isClientOnline(p.getName()))
+                    getHandlerFromPlayer(p.getName()).send(new ActivePopeMeetingMessage(popeMeeting));
+            }
+            if (popeMeeting==3 && lobby.playersOnline()>0) {
+                lastRound = true;
+                lobby.sendAll(new LobbyMessage("A Player has reached the end of the faith Track"));
+            }
+        }
     }
 
     /**
@@ -722,7 +744,6 @@ public class Controller {
      */
     private boolean checkSpecialShelf(ArrayList<Resource> specialRes, Player player) {
         boolean result= false;
-
         if (specialRes.size() > 2) {
             getHandlerFromPlayer(player.getName()).send(new LobbyMessage("Too many resources for the special shelf"));
         } else if (!specialRes.get(0).equals(specialRes.get(1))){
@@ -774,11 +795,11 @@ public class Controller {
                     faithPointsGiveAwayHandler(player,player.getResourceSupply().discardResources(remainingRes));
                 }
                 setWarehouseNewDisposition(newWarehouse,player);
-                getHandlerFromPlayer(id).send( new WareHouseChangeMessage(player.getPersonalBoard().getSimplifiedWarehouse()));
             }else{
+                getHandlerFromPlayer(id).send(new ResourceInSupplyRequest(player.getSimplifiedSupply()));
                 getHandlerFromPlayer(id).send(new LobbyMessage("Resources not valid in this disposition, please retry"));
-                getHandlerFromPlayer(id).send(new WareHouseChangeMessage(player.getPersonalBoard().getSimplifiedWarehouse()));
             }
+            getHandlerFromPlayer(id).send( new WareHouseChangeMessage(player.getPersonalBoard().getSimplifiedWarehouse()));
         }
     }
 
@@ -842,7 +863,7 @@ public class Controller {
     private boolean checkShelfContent(ArrayList<String>[] newWarehouse, Player player) {
         for(int i=0; i<3;i++) {
             if (newWarehouse[i].size() <= i + 1) {
-                for (int j = 0; j < newWarehouse[i].size() - 1; j++) {
+                for (int j = 0; j < newWarehouse[i].size() -1; j++) {
                     if (!newWarehouse[i].get(j).equals(newWarehouse[i].get(j + 1))) {
                         return false;
                     }
@@ -850,6 +871,10 @@ public class Controller {
             } else
                 return false;
         }
+        if(newWarehouse[0].get(0).equals(newWarehouse[1].get(0))||newWarehouse[0].get(0).equals(newWarehouse[2].get(0)))
+            return false;
+        if(newWarehouse[1].get(0).equals(newWarehouse[0].get(0))||newWarehouse[1].get(0).equals(newWarehouse[2].get(0)))
+            return false;
         if(!newWarehouse[3].isEmpty()) {
             if (!checkSpecialShelf(stringArrayToResArray(newWarehouse[3]), player))
                 return false;
@@ -940,20 +965,20 @@ public class Controller {
                 return;
             }
             System.out.println("fuori dal try");
-            changeActualPlayerTurn();
             String s = game.draw();
-            if (s.isEmpty()) {
-                lobby.sendAll(new LobbyMessage("è il turno di " + server.getNameFromId().get(actualPlayerTurn.getID())));
-            } else if (s.equalsIgnoreCase("finished")) {
-                //TODO gestione fine gioco
-            } else {
-                if (lobby.playersOnline() > 0) {
-                    if (s.contains("Lorenzo has discarded two development card of color ")) {
-                        lobby.sendAll(new DevMatrixChangeMessage(game.getSimplifiedDevMatrix()));
-                    }
-                    lobby.sendAll(new LobbyMessage(s + ", è di nuovo il tuo turno"));
+            if (lobby.playersOnline() > 0) {
+                if (s.isEmpty()) {
+                    lobby.sendAll(new LobbyMessage("Now it's the turn of " + server.getNameFromId().get(actualPlayerTurn.getID())));
+                } else if (s.equalsIgnoreCase("finished")) {
+                    lastRound=true;
+                } else {
+                        if (s.contains("Lorenzo has discarded two development card of color ")) {
+                            lobby.sendAll(new DevMatrixChangeMessage(game.getSimplifiedDevMatrix()));
+                        }
+                        lobby.sendAll(new LobbyMessage(s + ", its again your turn"));
                 }
             }
+            changeActualPlayerTurn();
         }
     }
 
@@ -962,11 +987,21 @@ public class Controller {
      */
     private void changeActualPlayerTurn() {
         int actualIndex=lobby.getPositionFromClient().get(actualPlayerTurn);
-        do {
-            actualIndex=(actualIndex+1)%(game.getPlayers().size());
+        if (lastRound && actualIndex==lobby.getPositionFromClient().size()-1){
+            endGame();
+        }else {
+            do {
+                actualIndex = (actualIndex + 1) % (game.getPlayers().size());
+            }
+            while (!lobby.getClientFromPosition().containsKey(actualIndex));
+            actualPlayerTurn = lobby.getClientFromPosition().get(actualIndex);
         }
-        while(!lobby.getClientFromPosition().containsKey(actualIndex));
-        actualPlayerTurn=lobby.getClientFromPosition().get(actualIndex);
+    }
+
+    private void endGame() {
+        lobby.setStateOfGame(GameState.ENDED);
+        String winnerName=game.getWinner();
+        lobby.sendAll(new WinnerMessage(winnerName+" is the winner!!"));
     }
 
     /**
@@ -974,10 +1009,10 @@ public class Controller {
      * @param player is the player who is terminating his turn
      */
     private void finishPlayerTurn(Player player) throws ActionNotDoneException {
-        player.resetAction();
-        ArrayList<Resource> resources=player.getResourceSupply().viewResources();
         if(player.getAction()==null)
             throw new ActionNotDoneException("Main Action not chosen, cannot end turn");
+        player.resetAction();
+        ArrayList<Resource> resources=player.getResourceSupply().viewResources();
         if(!resources.isEmpty()){
             faithPointsGiveAwayHandler(player,player.getResourceSupply().discardResources(resources));
         }
@@ -1030,7 +1065,7 @@ public class Controller {
         }
     }
 
-    public void actionForDisconnession(int id) {
+    public void actionForDisconnection(int id) {
         try {
             getPlayerFromId(id).setAction(Action.ACTIVATEPRODUCTION);
         } catch (ActionAlreadySetException ignored) {
