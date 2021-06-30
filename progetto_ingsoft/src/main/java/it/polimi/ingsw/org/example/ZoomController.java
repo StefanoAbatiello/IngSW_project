@@ -56,7 +56,7 @@ public class ZoomController implements GUIcontroller{
         if(slot==0)
             gui.getMainClient().send(new LobbyMessage("You haven't chosen a slot, please retry"));
         else {
-            gui.getMainClient().send(new BuyCardAction(buyCard, slot));
+            gui.getMainClient().send(new BuyCardAction(buyCard, slot-1));
             buyButton.setVisible(true);
             slots.setVisible(false);
             viewBoard.setVisible(false);

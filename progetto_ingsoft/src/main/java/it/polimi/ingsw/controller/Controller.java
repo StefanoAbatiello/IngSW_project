@@ -373,7 +373,7 @@ public class Controller {
     public void checkBuy(int cardId, int position) throws CardNotOnTableException, ResourceNotValidException, InvalidSlotException, ActionAlreadySetException {
         Player player = getPlayerInTurn();
         if (checkActionDoneYet(player))
-            throw new ActionAlreadySetException("You has already gone through with an action in this turn");
+            throw new ActionAlreadySetException("You have already gone through with an action in this turn");
         else {
             if (checkLevelPosition(player, cardId, position)) {
                 DevCard cardToBuy = game.getDevDeckMatrix().findCardInMatrix(cardId);
@@ -444,7 +444,7 @@ public class Controller {
             }
         }
         else
-            throw new InvalidSlotException();
+            throw new InvalidSlotException("Slot chosen not valid");
     }
 
 

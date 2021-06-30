@@ -182,6 +182,14 @@ public class GUI extends Application implements View {
         });
     }
 
+    @Override
+    public void activePopeMeetingHandler(ActivePopeMeetingMessage message) {
+        Platform.runLater(()->{
+            BoardController boardController=(BoardController) nameMapController.get(BOARD);
+            boardController.activePope(message.getMeetingNumber());
+        });
+    }
+
 
     @Override
     public void supplyHandler(ResourceInSupplyRequest resource) {
@@ -212,7 +220,7 @@ public class GUI extends Application implements View {
     @Override
     public void warehouseHandler(WareHouseChangeMessage wareHouseChangeMessage) {
         Platform.runLater(()-> {
-            System.out.println("Your warehouse is changed:");
+            System.out.println("Your warehouse has changed");
             viewCLI.setWarehouse((wareHouseChangeMessage).getWarehouse());
             BoardController boardController = (BoardController) getControllerFromName(BOARD);
             boardController.setWareHouse(viewCLI);
@@ -262,8 +270,12 @@ public class GUI extends Application implements View {
 
     @Override
     public void strongboxHandler(StrongboxChangeMessage strongboxChangeMessage) {
-        viewCLI.setStrongbox(strongboxChangeMessage.getStrongbox());
-
+        Platform.runLater(()-> {
+            System.out.println("Your strongbox has changed");
+            viewCLI.setStrongbox(strongboxChangeMessage.getStrongbox());
+            BoardController boardController = (BoardController) getControllerFromName(BOARD);
+            boardController.setStrongbox(viewCLI);
+        });
     }
 
     @Override

@@ -20,4 +20,5 @@ public interface View {
     void gameSetupHandler(ViewCLI viewCLI, SerializedMessage input);
     void setViewCLI(ViewCLI viewCLI);
     void faithPositionHandler(FaithPositionChangeMessage message);
+    void activePopeMeetingHandler(ActivePopeMeetingMessage message);
 }

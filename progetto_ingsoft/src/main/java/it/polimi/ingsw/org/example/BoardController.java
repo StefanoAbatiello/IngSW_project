@@ -65,6 +65,14 @@ public class BoardController implements GUIcontroller{
     Button backDevs;
     @FXML
     Button backProd;
+    @FXML
+    Button viewDevs;
+    @FXML
+    ImageView pope1;
+    @FXML
+    ImageView pope2;
+    @FXML
+    ImageView pope3;
 
     private ArrayList<Integer> prodCards= new ArrayList<>();
     private boolean productionActive=false;
@@ -99,17 +107,17 @@ public class BoardController implements GUIcontroller{
 
     public void addDev(String id,int slot){
        switch (slot) {
-           case 1:
+           case 0:
                ((ImageView)board.lookup("#"+card1ID)).setImage(new Image("org.example/devcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-" + id + "-1.png"));
                board.lookup("#"+card1ID).setId(id);
                card1ID=id;
                break;
-           case 2:
+           case 1:
                ((ImageView)board.lookup("#"+card2ID)).setImage(new Image("org.example/devcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-" + id + "-1.png"));
                board.lookup("#"+card2ID).setId(id);
                card2ID=id;
                break;
-           case 3:
+           case 2:
                ((ImageView)board.lookup("#"+card3ID)).setImage(new Image("org.example/devcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-" + id + "-1.png"));
                board.lookup("#"+card3ID).setId(id);
                card3ID=id;
@@ -184,19 +192,23 @@ public class BoardController implements GUIcontroller{
     }
 
     public void setWareHouse(ViewCLI viewCLI) {
-        if(!viewCLI.getWarehouse()[0].isEmpty())
-            shelf1.setImage(new Image("org.example/images/"+viewCLI.getWarehouse()[0].get(0)+".png"));
+        if(!viewCLI.getWarehouse()[0].isEmpty()) {
+            shelf1.setImage(new Image("org.example/images/" + viewCLI.getWarehouse()[0].get(0) + ".png"));
+            shelf1.setOpacity(1.0);
+        }
         System.out.println(viewCLI.getWarehouse()[0]);
 
         for(int i=0;i<viewCLI.getWarehouse()[1].size();i++){
             System.out.println(viewCLI.getWarehouse()[1]);
             ImageView image= (ImageView) shelf2.getChildren().get(i);
             image.setImage(new Image("org.example/images/"+viewCLI.getWarehouse()[1].get(i)+".png"));
+            image.setOpacity(1.0);
         }
         for(int i=0;i<viewCLI.getWarehouse()[2].size();i++){
             System.out.println(viewCLI.getWarehouse()[2]);
             ImageView image= (ImageView) shelf2.getChildren().get(i);
             image.setImage(new Image("org.example/images/"+viewCLI.getWarehouse()[2].get(i)+".png"));
+            image.setOpacity(1.0);
         }
     }
 
@@ -395,19 +407,19 @@ public class BoardController implements GUIcontroller{
     private void updateDevs(String stringId, Integer slot) {
         ImageView card= new ImageView(new Image("org.example/devcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-" + stringId + "-1.png"));
         switch(slot){
-            case 1:
-                card.setFitWidth(30.0);
-                card.setFitHeight(50.0);
+            case 0:
+                card.setFitWidth(100.0);
+                card.setFitHeight(150.0);
                 allDevs.add(card,slot,space1);
                 space1++;
-            case 2:
-                card.setFitWidth(30.0);
-                card.setFitHeight(50.0);
+            case 1:
+                card.setFitWidth(100.0);
+                card.setFitHeight(150.0);
                 allDevs.add(card,slot,space2);
                 space2++;
-            case 3:
-                card.setFitWidth(30.0);
-                card.setFitHeight(50.0);
+            case 2:
+                card.setFitWidth(100.0);
+                card.setFitHeight(150.0);
                 allDevs.add(card,slot,space3);
                 space3++;
         }
@@ -419,8 +431,14 @@ public class BoardController implements GUIcontroller{
         if(allDevs.getChildren().size()==0)
             gui.lobbyMessageHandler(new LobbyMessage("You do not own any development card yet"));
         else {
+            viewDevs.setVisible(false);
             allDevs.setVisible(true);
             disableAll(false, true, false, false);
+            board.lookup("#"+card1ID).setVisible(false);
+            board.lookup("#"+card2ID).setVisible(false);
+            board.lookup("#"+card3ID).setVisible(false);
+            for (Node card : leadsBox.getChildren())
+                card.setVisible(false);
             backDevs.setVisible(true);
         }
     }
@@ -429,6 +447,27 @@ public class BoardController implements GUIcontroller{
         allDevs.setVisible(false);
         disableAll(true,false,false,false);
         backDevs.setVisible(false);
+        board.lookup("#"+card1ID).setVisible(true);
+        board.lookup("#"+card2ID).setVisible(true);
+        board.lookup("#"+card3ID).setVisible(true);
+        for (Node card : leadsBox.getChildren())
+            card.setVisible(true);
     }
 
+    public void setStrongbox(ViewCLI viewCLI) {
+    }
+
+    public void activePope(int meetingNumber) {
+        switch (meetingNumber){
+            case 1:
+                pope1.setVisible(true);
+                break;
+            case 2:
+                pope2.setVisible(true);
+                break;
+            case 3:
+                pope3.setVisible(true);
+                break;
+        }
+    }
 }

@@ -42,7 +42,10 @@ public class DevMatrixController implements GUIcontroller {
                 System.out.println(info.getDevMatrix()[i][j]);
                 int id = info.getDevMatrix()[i][j];
                 ImageView card = new ImageView();
-                card.setImage(new Image("org.example/devcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-" + id + "-1.png"));
+                if(id==0)
+                    card.setImage(new Image("org.example/images/Masters of Renaissance__Cards_BACK_3mmBleed-"+i+"-"+j+".png"));
+                else
+                    card.setImage(new Image("org.example/devcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-" + id + "-1.png"));
                 card.setFitHeight(138.0);
                 card.setFitWidth(104.0);
                 devMatrixGrid.add(card, j, i);

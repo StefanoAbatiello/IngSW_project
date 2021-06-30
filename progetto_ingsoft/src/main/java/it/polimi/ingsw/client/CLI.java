@@ -199,4 +199,9 @@ public class CLI extends App implements View {
     public void faithPositionHandler(FaithPositionChangeMessage message) {
 
     }
+
+    @Override
+    public void activePopeMeetingHandler(ActivePopeMeetingMessage message) {
+
+    }
 }

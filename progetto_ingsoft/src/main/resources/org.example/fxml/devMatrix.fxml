@@ -30,62 +30,62 @@
          <children>
             <ImageView fx:id="card0" fitHeight="138.0" fitWidth="104.0" onMouseClicked="#zoomCard" pickOnBounds="true">
                <image>
-                  <Image url="@../devcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-1-1.png" />
+                  <Image url="@../images/Masters of Renaissance__Cards_BACK_3mmBleed-0-0.png" />
                </image>
             </ImageView>
             <ImageView fx:id="card1" fitHeight="138.0" fitWidth="104.0" pickOnBounds="true" GridPane.columnIndex="1">
                <image>
-                  <Image url="@../devcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-1-1.png" />
+                  <Image url="@../images/Masters of Renaissance__Cards_BACK_3mmBleed-0-1.png" />
                </image>
             </ImageView>
             <ImageView fx:id="card2" fitHeight="138.0" fitWidth="104.0" pickOnBounds="true" GridPane.columnIndex="2">
                <image>
-                  <Image url="@../devcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-1-1.png" />
+                  <Image url="@../images/Masters of Renaissance__Cards_BACK_3mmBleed-0-2.png" />
                </image>
             </ImageView>
             <ImageView fx:id="card11" fitHeight="138.0" fitWidth="104.0" pickOnBounds="true" GridPane.columnIndex="2" GridPane.rowIndex="3">
                <image>
-                  <Image url="@../devcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-1-1.png" />
+                  <Image url="@../images/Masters of Renaissance__Cards_BACK_3mmBleed-3-2.png" />
                </image>
             </ImageView>
             <ImageView fx:id="card10" fitHeight="138.0" fitWidth="104.0" pickOnBounds="true" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <image>
-                  <Image url="@../devcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-1-1.png" />
+                  <Image url="@../images/Masters of Renaissance__Cards_BACK_3mmBleed-3-1.png" />
                </image>
             </ImageView>
             <ImageView fx:id="card9" fitHeight="138.0" fitWidth="104.0" pickOnBounds="true" GridPane.rowIndex="3">
                <image>
-                  <Image url="@../devcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-1-1.png" />
+                  <Image url="@../images/Masters of Renaissance__Cards_BACK_3mmBleed-3-0.png" />
                </image>
             </ImageView>
             <ImageView fx:id="card6" fitHeight="138.0" fitWidth="104.0" pickOnBounds="true" GridPane.rowIndex="2">
                <image>
-                  <Image url="@../devcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-1-1.png" />
+                  <Image url="@../images/Masters of Renaissance__Cards_BACK_3mmBleed-2-0.png" />
                </image>
             </ImageView>
             <ImageView fx:id="card3" fitHeight="138.0" fitWidth="104.0" pickOnBounds="true" GridPane.rowIndex="1">
                <image>
-                  <Image url="@../devcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-1-1.png" />
+                  <Image url="@../images/Masters of Renaissance__Cards_BACK_3mmBleed-1-0.png" />
                </image>
             </ImageView>
             <ImageView fx:id="card4" fitHeight="138.0" fitWidth="104.0" pickOnBounds="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <image>
-                  <Image url="@../devcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-1-1.png" />
+                  <Image url="@../images/Masters of Renaissance__Cards_BACK_3mmBleed-1-1.png" />
                </image>
             </ImageView>
             <ImageView fx:id="card7" fitHeight="138.0" fitWidth="104.0" pickOnBounds="true" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <image>
-                  <Image url="@../devcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-1-1.png" />
+                  <Image url="@../images/Masters of Renaissance__Cards_BACK_3mmBleed-2-1.png" />
                </image>
             </ImageView>
             <ImageView fx:id="card8" fitHeight="138.0" fitWidth="104.0" pickOnBounds="true" GridPane.columnIndex="2" GridPane.rowIndex="2">
                <image>
-                  <Image url="@../devcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-1-1.png" />
+                  <Image url="@../images/Masters of Renaissance__Cards_BACK_3mmBleed-2-2.png" />
                </image>
             </ImageView>
             <ImageView fx:id="card5" fitHeight="138.0" fitWidth="104.0" pickOnBounds="true" GridPane.columnIndex="2" GridPane.rowIndex="1">
                <image>
-                  <Image url="@../devcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-1-1.png" />
+                  <Image url="@../images/Masters of Renaissance__Cards_BACK_3mmBleed-1-2.png" />
                </image>
             </ImageView>
          </children>
