@@ -92,8 +92,8 @@ public class Controller {
      * @return true if the Player has done an action in this turn yet
      */
     private boolean checkActionDoneYet(Player player){
-        Optional<Action> playerAction= Optional.ofNullable(player.getAction());
-        return playerAction.isPresent();
+        Action playerAction= player.getAction();
+        return playerAction==Action.NOTDONE;
     }
 
     /**
@@ -800,17 +800,21 @@ public class Controller {
         Player player=getPlayerFromId(id);
         if (newWarehouse.length <= 5){
             if(checkShelfContent(newWarehouse,player)){
+                System.out.println("nuovo wharehouse ben fatto");
                 ArrayList<Resource> remainingRes=checkWarehouseDimension(newWarehouse,player);
+                System.out.println(remainingRes);
                 if(!remainingRes.isEmpty()){
+                    System.out.println("ci sono risorse da scartare");
                     faithPointsGiveAwayHandler(player,player.getResourceSupply().discardResources(remainingRes));
                 }
                 setWarehouseNewDisposition(newWarehouse,player);
+                getHandlerFromPlayer(id).send( new WareHouseChangeMessage(player.getPersonalBoard().getSimplifiedWarehouse()));
                 lobby.setStateOfGame(GameState.ONGOING);
             }else{
+                getHandlerFromPlayer(id).send( new WareHouseChangeMessage(player.getPersonalBoard().getSimplifiedWarehouse()));
                 getHandlerFromPlayer(id).send(new ResourceInSupplyRequest(player.getSimplifiedSupply()));
                 getHandlerFromPlayer(id).send(new LobbyMessage("Resources not valid in this disposition, please retry"));
             }
-            getHandlerFromPlayer(id).send( new WareHouseChangeMessage(player.getPersonalBoard().getSimplifiedWarehouse()));
         }
     }
 
@@ -823,12 +827,16 @@ public class Controller {
         ArrayList<Resource> allResources = new ArrayList<>(player.getSupplyResources());
         allResources.addAll(player.getWarehouseResources());
         allResources.addAll(player.getSpecialShelfResources());
+        System.out.println("mi sono salvato tutte le risorse del tizio");
         ArrayList<Resource> newRes= new ArrayList<>();
         for (ArrayList<String> strings : newWarehouse)
             newRes.addAll(stringArrayToResArray(strings));
+        System.out.println("mi sono salvato tutte le risorse del messaggio");
         for (int i=0;i<allResources.size();i++){
+            System.out.println("cerco risorsa "+allResources.get(i));
             for (int j=0;j<newRes.size();j++){
                 if (allResources.get(i).equals(newRes.get(j))){
+                    System.out.println("risorsa trovata");
                     allResources.remove(i);
                     newRes.remove(j);
                     break;
@@ -874,18 +882,24 @@ public class Controller {
     private boolean checkShelfContent(ArrayList<String>[] newWarehouse, Player player) {
         for(int i=0; i<3;i++) {
             if (newWarehouse[i].size() <= i + 1) {
+                System.out.println("dimensione dell shelf corretta "+i);
                 for (int j = 0; j < newWarehouse[i].size() -1; j++) {
                     if (!newWarehouse[i].get(j).equals(newWarehouse[i].get(j + 1))) {
+                        System.out.println("risorse shelf non stesso tipo");
                         return false;
                     }
                 }
+                System.out.println("risorse shelf dello stesso tipo");
             } else
                 return false;
         }
-        if(newWarehouse[0].get(0).equals(newWarehouse[1].get(0))||newWarehouse[0].get(0).equals(newWarehouse[2].get(0)))
+        System.out.println("sono fuori dal for");
+        if((!newWarehouse[0].isEmpty()&&!newWarehouse[1].isEmpty()&&newWarehouse[0].get(0).equals(newWarehouse[1].get(0)))
+                ||(!newWarehouse[0].isEmpty()&&!newWarehouse[2].isEmpty()&&newWarehouse[0].get(0).equals(newWarehouse[2].get(0)))
+                ||(!newWarehouse[1].isEmpty()&&!newWarehouse[2].isEmpty()&&newWarehouse[1].get(0).equals(newWarehouse[2].get(0)))) {
+            System.out.println("ci sono risorse di stesso tipo su shelf diversi");
             return false;
-        if(newWarehouse[1].get(0).equals(newWarehouse[0].get(0))||newWarehouse[1].get(0).equals(newWarehouse[2].get(0)))
-            return false;
+        }
         if(!newWarehouse[3].isEmpty()) {
             if (!checkSpecialShelf(stringArrayToResArray(newWarehouse[3]), player))
                 return false;
@@ -1019,7 +1033,7 @@ public class Controller {
      * @param player is the player who is terminating his turn
      */
     private void finishPlayerTurn(Player player) throws ActionNotDoneException {
-        if(player.getAction()==null)
+        if(checkActionDoneYet(player))
             throw new ActionNotDoneException("Main Action not chosen, cannot end turn");
         player.resetAction();
         ArrayList<Resource> resources=player.getResourceSupply().viewResources();
@@ -1077,6 +1091,7 @@ public class Controller {
 
     public void actionForDisconnection(int id) {
         getPlayerFromId(id).setAction(Action.ACTIVATEPRODUCTION);
+        turnUpdate();
     }
 }
 

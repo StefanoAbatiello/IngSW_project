@@ -65,7 +65,7 @@ public class Player implements Points{
     /**
      * reset the action made in this turn by the player
      */
-    public void resetAction(){action=null;}
+    public void resetAction(){action=Action.NOTDONE;}
 
     public ArrayList<Resource> getProductionAbility() {
         return productionAbility;

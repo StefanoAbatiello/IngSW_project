@@ -22,7 +22,7 @@ public class SupplyController implements GUIcontroller{
 
     private GUI gui;
     private String selectedResource;
-
+    private ArrayList<String>[] newWarehouse;
 
 
 
@@ -34,14 +34,13 @@ public class SupplyController implements GUIcontroller{
 
     public void selectShelf1(ActionEvent actionEvent) {
         System.out.println("sono qui");
-
         for(Node res:supply.getChildren()){
             res.setMouseTransparent(false);
             res.setOpacity(1.0);
         }
         shelfMenu.setVisible(false);
         System.out.println("finito");
-        gui.getViewCLI().getWarehouse()[0].add(selectedResource);
+        newWarehouse[0].add(selectedResource);
 
 
     }
@@ -55,7 +54,7 @@ public class SupplyController implements GUIcontroller{
         }
         shelfMenu.setVisible(false);
         System.out.println("finito");
-        gui.getViewCLI().getWarehouse()[1].add(selectedResource);
+        newWarehouse[1].add(selectedResource);
     }
 
     public void selectShelf3(ActionEvent actionEvent) {
@@ -67,13 +66,14 @@ public class SupplyController implements GUIcontroller{
         }
         shelfMenu.setVisible(false);
         System.out.println("finito");
-        gui.getViewCLI().getWarehouse()[2].add(selectedResource);
+        newWarehouse[2].add(selectedResource);
     }
 
 
 
     public void setSupply(ArrayList<String> resources) {
         String resource;
+        newWarehouse=gui.getViewCLI().getWarehouse();
         for(Node image: supply.getChildren()){
             if(!resources.isEmpty()) {
                 resource = resources.get(0);
@@ -96,7 +96,7 @@ public class SupplyController implements GUIcontroller{
     }
 
     public void sendResource() {
-        gui.getMainClient().send(new ResourceInSupplyAction(gui.getViewCLI().getWarehouse()));
+        gui.getMainClient().send(new ResourceInSupplyAction(newWarehouse));
         gui.changeStage("board.fxml");
     }
 
