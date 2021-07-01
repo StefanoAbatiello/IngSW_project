@@ -384,12 +384,14 @@ public class Controller {
             throw new ActionAlreadySetException("You have already gone through with an action in this turn");
         else {
             if (checkLevelPosition(player, cardId, position)) {
+                System.out.println("dentro dopo checkLevelPosition");
                 DevCard cardToBuy = game.getDevDeckMatrix().findCardInMatrix(cardId);
                 ArrayList<Resource> boardResources = new ArrayList<>(player.getStrongboxResources());
                 boardResources.addAll(player.getWarehouseResources());
                 boardResources.addAll(player.getSpecialShelfResources());
                 ArrayList<Resource> requirements = getDevCardRequirements(player,cardToBuy);
                 if (player.getPersonalBoard().checkResourcesForUsages(requirements, boardResources)) {
+                    System.out.println("ha i requisiti");
                     player.setAction(Action.BUYCARD);
                     game.getDevDeckMatrix().buyCard(cardToBuy);
                     player.getPersonalBoard().removeResources(cardToBuy.getRequirements());
@@ -406,7 +408,7 @@ public class Controller {
                 } else
                     throw new ResourceNotValidException("The player does not have enough resources to go through with the action");
             } else
-                getHandlerFromPlayerPosition(position).send(new LobbyMessage("Card chosen not valid"));
+                getHandlerFromPlayer(player.getName()).send(new LobbyMessage("Card chosen not valid"));
         }
     }
 
@@ -435,6 +437,7 @@ public class Controller {
     private boolean checkLevelPosition(Player player, int cardId, int position) throws InvalidSlotException {
         if (position>=0 && position<=2) {
             DevCard wantedCard;
+            System.out.println("posizione valida");
             try {
                 wantedCard = game.getDevDeck().getCardFromId(cardId);
             } catch (CardChosenNotValidException e) {
@@ -442,10 +445,15 @@ public class Controller {
             }
             int newCardLevel = wantedCard.getLevel();
             if (newCardLevel == 1) {
+                System.out.println("carta livello 1");
                 return player.getPersonalBoard().getDevCardSlot().getActiveCards().size() < 3;
             } else {
+                System.out.println("carta livello>1");
+                System.out.println(player.getPersonalBoard().getDevCardSlot().getSlot()[position]);
                 int lastIndex = player.getPersonalBoard().getDevCardSlot().getSlot()[position].size() - 1;
+                System.out.println(lastIndex);
                 if (lastIndex>=0){
+                    System.out.println("nello slot ci sono altre carte");
                     DevCard card = player.getPersonalBoard().getDevCardSlot().getSlot()[position].get(lastIndex);
                     return card.getLevel() == newCardLevel - 1;
                 } else return false;

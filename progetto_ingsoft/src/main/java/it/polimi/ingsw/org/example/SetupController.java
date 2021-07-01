@@ -51,7 +51,7 @@ public class SetupController implements GUIcontroller {
     @FXML
     ImageView card4;
     @FXML
-    HBox hbox;
+    HBox leadBox;
     @FXML
     Label labelLeads;
     @FXML
@@ -144,18 +144,19 @@ public class SetupController implements GUIcontroller {
             ImageView target= (ImageView) mouseEvent.getTarget();
             String imageId= (target.getId());
             selectedCards.add(Integer.parseInt(imageId));
-            System.out.println(imageId);
-            target.setOpacity(0.8);
+            System.out.println("lead scelta: "+imageId);
+            target.setOpacity(0.6);
         }
-        else if(countLeads==2)
-            ((BoardController)gui.getControllerFromName("board.fxml")).setLeads(selectedCards);
-        else
-           gui.lobbyMessageHandler(new LobbyMessage("You already chose 2 leads, if you want to change click RETRY, else NEXT "));
+        else if(countLeads==2) {
+            for (Node node : leadBox.getChildren())
+                ((ImageView) node).setDisable(true);
+            gui.lobbyMessageHandler(new LobbyMessage("You already chose 2 leads, if you want to change click RETRY, else NEXT "));
+        }
     }
 
     public void setLeads(ArrayList<Integer> cards){
         int card;
-        for(Node image: hbox.getChildren()) {
+        for(Node image: leadBox.getChildren()) {
             card = cards.get(0);
             ((ImageView) image).setImage(new Image("org.example/leadcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-" + card + "-1.png"));
             image.setId(String.valueOf(card));
@@ -167,7 +168,7 @@ public class SetupController implements GUIcontroller {
 
     public void retry(MouseEvent mouseEvent) {
        ArrayList<Integer> cardsId= new ArrayList<>();
-        for(Node image:hbox.getChildren()) {
+        for(Node image:leadBox.getChildren()) {
             cardsId.add(Integer.parseInt(image.getId()));
             image.setOpacity(1.0);
         }

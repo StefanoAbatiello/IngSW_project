@@ -1,8 +1,12 @@
 package it.polimi.ingsw.org.example;
 
-import it.polimi.ingsw.client.ViewCLI;
+import javafx.event.ActionEvent;
 
 public interface GUIcontroller {
     void setGui(GUI gui);
 
+    default void quit(ActionEvent actionEvent){
+
+
+    }
 }

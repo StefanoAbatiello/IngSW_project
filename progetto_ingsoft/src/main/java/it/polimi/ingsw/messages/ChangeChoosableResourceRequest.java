@@ -5,11 +5,6 @@ import java.util.ArrayList;
 public class ChangeChoosableResourceRequest implements SerializedMessage {
 
     private int num;
-
-    public ArrayList<String> getResources() {
-        return resources;
-    }
-
     private ArrayList<String> resources;
     private String message;
 
@@ -21,6 +16,10 @@ public class ChangeChoosableResourceRequest implements SerializedMessage {
 
     public String getMessage() {
         return message;
+    }
+
+    public ArrayList<String> getResources() {
+        return resources;
     }
 
     public int getNum() {

@@ -33,6 +33,7 @@ public class GUI extends Application implements View {
     private final String ZOOMCARD="zoomedCard.fxml";
     private final String SUPPLY="supply.fxml";
     private final String WINNER="winner.fxml";
+    private final String WHITEMARBLE="whitemarble.fxml";
 
 
 
@@ -52,7 +53,7 @@ public class GUI extends Application implements View {
     @Override
     public void start(Stage stage) {
         this.stage=stage;
-        List<String> fxmList = new ArrayList<>(Arrays.asList(LOGIN, NICKNAME,BOARD,WAITING,NUMOFPLAYER,LEADCARDSCHOICE,INITIALRESOURCES,MARKETBOARD,DEVMATRIX,SUPPLY,ZOOMCARD,WINNER));
+        List<String> fxmList = new ArrayList<>(Arrays.asList(LOGIN, NICKNAME,BOARD,WAITING,NUMOFPLAYER,LEADCARDSCHOICE,INITIALRESOURCES,MARKETBOARD,DEVMATRIX,SUPPLY,ZOOMCARD,WHITEMARBLE,WINNER));
         try {
 
             for (String path : fxmList) {
@@ -145,7 +146,7 @@ public class GUI extends Application implements View {
             BoardController boardController = (BoardController) nameMapController.get(BOARD);
             SetupController leadscontroller = (SetupController) nameMapController.get(LEADCARDSCHOICE);
             DevMatrixController devscontroller = (DevMatrixController) nameMapController.get(DEVMATRIX);
-            boardController.setLeads(leadscontroller.getSelectedCards());
+            boardController.setLeads(viewCLI);
             devscontroller.setDevMatrix(viewCLI);
             System.out.println("end controller game");
             System.out.println("end");});
@@ -235,7 +236,7 @@ public class GUI extends Application implements View {
             System.out.println("end controller game");
             System.out.println("end");
             viewCLI.setMarket(marketChangeMessage.getMarket());
-            guicontroller.changeMarket(marketChangeMessage.getMarket());
+            guicontroller.setMarket(marketChangeMessage.getMarket());
         });
 
     }
@@ -302,7 +303,14 @@ public class GUI extends Application implements View {
 
     @Override
     public void choosableResourceHandler(ChangeChoosableResourceRequest input) {
-
+        Platform.runLater(()->{System.out.println("white Marble choice");
+            changeStage(WHITEMARBLE);
+            System.out.println("change stage");
+            WhiteMarbleController guicontroller = (WhiteMarbleController) nameMapController.get(WHITEMARBLE);
+            System.out.println("end controller game");
+            System.out.println("end");
+            guicontroller.setChoosableRes(input.getNum(),input.getResources());
+        });
     }
 
 

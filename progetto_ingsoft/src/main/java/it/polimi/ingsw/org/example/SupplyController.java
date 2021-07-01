@@ -5,7 +5,9 @@ import it.polimi.ingsw.messages.answerMessages.WareHouseChangeMessage;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -18,6 +20,12 @@ public class SupplyController implements GUIcontroller{
     HBox supply;
     @FXML
     MenuButton shelfMenu;
+    @FXML
+    MenuItem shelf4;
+    @FXML
+    MenuItem shelf5;
+    @FXML
+    Button viewBoard;
 
 
     private GUI gui;
@@ -69,6 +77,30 @@ public class SupplyController implements GUIcontroller{
         newWarehouse[2].add(selectedResource);
     }
 
+    public void selectShelf4(ActionEvent actionEvent) {
+        System.out.println("sono qui");
+
+        for(Node res:supply.getChildren()){
+            res.setMouseTransparent(false);
+            res.setOpacity(1.0);
+        }
+        shelfMenu.setVisible(false);
+        System.out.println("finito");
+        newWarehouse[3].add(selectedResource);
+    }
+
+    public void selectShelf5(ActionEvent actionEvent) {
+        System.out.println("sono qui");
+
+        for(Node res:supply.getChildren()){
+            res.setMouseTransparent(false);
+            res.setOpacity(1.0);
+        }
+        shelfMenu.setVisible(false);
+        System.out.println("finito");
+        newWarehouse[4].add(selectedResource);
+    }
+
 
 
     public void setSupply(ArrayList<String> resources) {
@@ -93,6 +125,13 @@ public class SupplyController implements GUIcontroller{
         selectedResource= (target.getId());
         target.setOpacity(0.8);
 
+        if(((BoardController)(gui.getControllerFromName("board.fxml"))).checkSpecial()==1)
+            shelf4.setVisible(true);
+        else
+            if(((BoardController)(gui.getControllerFromName("board.fxml"))).checkSpecial()==2) {
+                shelf4.setVisible(true);
+                shelf5.setVisible(true);
+            }
         shelfMenu.setVisible(true);
     }
 
@@ -101,7 +140,10 @@ public class SupplyController implements GUIcontroller{
         gui.changeStage("board.fxml");
     }
 
-    public void goBack() {
+    public void viewBoard(){
         gui.changeStage("board.fxml");
+        BoardController controller=(BoardController) gui.getControllerFromName("board.fxml");
+        controller.disableAll(false,true,false,false);
+        controller.backSupply.setVisible(true);
     }
 }

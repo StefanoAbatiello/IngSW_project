@@ -65,6 +65,8 @@ public class BoardController implements GUIcontroller{
     @FXML
     Button backDevs;
     @FXML
+    Button backSupply;
+    @FXML
     Button backProd;
     @FXML
     Button viewDevs;
@@ -103,6 +105,7 @@ public class BoardController implements GUIcontroller{
     private String lead1Id= "lead1";
     private String lead2Id= "lead2";
     private boolean shelf4= false;
+    private boolean shelf5= false;
 
     private String card1ID="card1";
     private String card2ID="card2";
@@ -124,10 +127,12 @@ public class BoardController implements GUIcontroller{
         this.gui=gui;
     }
 
-    public void setLeads(ArrayList<Integer> cards) {
+    public void setLeads(ViewCLI viewCLI) {
         int card;
+        Set<Integer> leadsIdSet= viewCLI.getLeadCardsId().keySet();
+        ArrayList<Integer> leadsId= new ArrayList<>(leadsIdSet);
         for(Node image: leadsBox.getChildren()) {
-            card = cards.get(0);
+            card = leadsId.get(0);
             ((ImageView) image).setImage(new Image("org.example/leadcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-" + card + "-1.png"));
             image.setId(String.valueOf(card));
             image.setOpacity(0.7);
@@ -135,7 +140,7 @@ public class BoardController implements GUIcontroller{
                 lead1Id=image.getId();
             else
                 lead2Id= image.getId();
-            cards.remove(0);
+            leadsId.remove(0);
         }
     }
 
@@ -161,6 +166,16 @@ public class BoardController implements GUIcontroller{
 
     public void showMarket() {
         gui.changeStage("provabiglia.fxml");
+    }
+
+    public int checkSpecial(){
+        if(shelf4 && shelf5)
+            return 2;
+        else
+            if(shelf4)
+                return 1;
+        else
+            return 0;
     }
 
     public void showLeadsAction(MouseEvent mouseEvent) {
@@ -465,11 +480,25 @@ public class BoardController implements GUIcontroller{
             button.setVisible(true);
         for (Node card : leadsBox.getChildren())
             card.setDisable(false);
-        in1.setVisible(true);
-        in2.setVisible(true);
-        out.setVisible(true);
+        in1.setVisible(false);
+        in2.setVisible(false);
+        out.setVisible(false);
         viewBack.setVisible(false);
         gui.changeStage("zoomedCard.fxml");
+        System.out.println("change made");
+
+    }
+
+    public void supplyBack(ActionEvent actionEvent) {
+        for(Node button: buttonsVbox.getChildren())
+            button.setVisible(true);
+        for (Node card : leadsBox.getChildren())
+            card.setDisable(false);
+        in1.setVisible(false);
+        in2.setVisible(false);
+        out.setVisible(false);
+        backSupply.setVisible(false);
+        gui.changeStage("supply.fxml");
         System.out.println("change made");
 
     }
@@ -496,33 +525,33 @@ public class BoardController implements GUIcontroller{
         for(int id: updatedCards) {
             String stringId = String.valueOf(id);
             if (!stringId.equals(card1ID) && !stringId.equals(card2ID) && !stringId.equals(card3ID)) {
-                if (viewCLI.getDevCardsId().get(id))
+                if (viewCLI.getDevCardsId().get(id)) {
                     addDev(stringId, viewCLI.getDevPositions().get(id));
-                updateDevs(stringId, viewCLI.getDevPositions().get(id));
+                    updateDevs(stringId, viewCLI.getDevPositions().get(id));
+                }
             }
         }
     }
 
     private void updateDevs(String stringId, Integer slot) {
         ImageView card= new ImageView(new Image("org.example/devcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-" + stringId + "-1.png"));
+        card.setFitWidth(150.0);
+        card.setFitHeight(200.0);
         switch(slot){
             case 0:
-                card.setFitWidth(100.0);
-                card.setFitHeight(150.0);
                 allDevs.add(card,slot,space1);
                 space1++;
+                break;
             case 1:
-                card.setFitWidth(100.0);
-                card.setFitHeight(150.0);
                 allDevs.add(card,slot,space2);
                 space2++;
+                break;
             case 2:
-                card.setFitWidth(100.0);
-                card.setFitHeight(150.0);
                 allDevs.add(card,slot,space3);
                 space3++;
+                break;
         }
-        allDevs.setMargin(card,new Insets(10,0,0,30));
+        GridPane.setMargin(card,new Insets(50,0,0,30));
 
     }
 
@@ -544,6 +573,7 @@ public class BoardController implements GUIcontroller{
 
     public void devsBack(ActionEvent actionEvent){
         allDevs.setVisible(false);
+        viewDevs.setVisible(true);
         disableAll(true,false,false,false);
         backDevs.setVisible(false);
         board.lookup("#"+card1ID).setVisible(true);
@@ -552,6 +582,7 @@ public class BoardController implements GUIcontroller{
         for (Node card : leadsBox.getChildren())
             card.setVisible(true);
     }
+
 
     public void setStrongbox(ViewCLI viewCLI) {
         coinBox.setText( String.valueOf(viewCLI.getStrongbox()[0]));
@@ -579,16 +610,19 @@ public class BoardController implements GUIcontroller{
         if (leadsBox.lookup("#" + lead1Id).getId().equals(String.valueOf(cardId))) {
             if(!shelf4)
                 sShelf1.setId("shelf4");
-            else
+            else {
                 sShelf1.setId("shelf5");
-
+                shelf5=true;
+            }
         }
         if (leadsBox.lookup("#" + lead2Id).getId().equals(String.valueOf(cardId))) {
             if(!shelf4)
                 sShelf2.setId("shelf4");
             else
+            {
                 sShelf2.setId("shelf5");
-        }
+                shelf5=true;
+            }        }
         shelf4=true;
     }
 
