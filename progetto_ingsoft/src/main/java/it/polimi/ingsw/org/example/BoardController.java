@@ -630,8 +630,8 @@ public class BoardController implements GUIcontroller{
             if(val>=0) {
                 blackCross.setVisible(true);
                 System.out.println("old position of BC: "+oldBlackCrossPosition);
-                System.out.println("new position of BC: "+(oldBlackCrossPosition+val));
-                uploadBlackCrossPosition(oldBlackCrossPosition+val);
+                System.out.println("new position of BC: "+(val));
+                uploadBlackCrossPosition(val);
             }else
                 blackCross.setVisible(false);
     }

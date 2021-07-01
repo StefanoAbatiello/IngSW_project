@@ -33,12 +33,10 @@ public class DiscardDevCardAction implements ActionToken {
      * @return a String which descibes the effect of specified token
      */
     @Override
-    public Map<Integer, String> applyEffect(ArrayList<ActionToken> tokensStack) {
-        Map<Integer,String> result=new HashMap<>();
+    public String applyEffect(ArrayList<ActionToken> tokensStack) {
         sP.removeTokenCard(color);
         sP.removeTokenCard(color);
-        result.put(0,"Lorenzo has discarded two development card of color " + color);
-        return result;
+        return "Lorenzo has discarded two development card of color " + color;
     }
 }
 

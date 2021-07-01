@@ -20,11 +20,9 @@ public class DoubleCrossAction implements ActionToken {
      * @return a String which descibes the effect of specified token
      */
     @Override
-    public Map<Integer, String> applyEffect(ArrayList<ActionToken> tokensStack){
-        Map<Integer,String> result=new HashMap<>();
+    public String applyEffect(ArrayList<ActionToken> tokensStack){
         sP.getBlackCrossToken().updateBlackCross(2);
-        result.put(2,"Lorenzo receives two faith point");
-        return result;
+        return "Lorenzo receives two faith point";
     }
 
 }

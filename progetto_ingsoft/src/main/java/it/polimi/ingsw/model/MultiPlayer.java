@@ -114,11 +114,6 @@ public class MultiPlayer extends Game {
         return matrix;
     }
 
-    @Override
-    public int initializeBlackCross() {
-        return -1;
-    }
-
     /**
      * @param player      is the player who give away faith points
      * @return 1 if the game is multiplayer, 0 otherwise
@@ -175,6 +170,11 @@ public class MultiPlayer extends Game {
             }
         }
         return players.get(winnerPlayerIndex).getName();
+    }
+
+    @Override
+    public int getBlackCrossPosition() {
+        return -1;
     }
 
 }

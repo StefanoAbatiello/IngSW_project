@@ -69,11 +69,9 @@ public abstract class  Game {
 
     public abstract DevDeckMatrix getDevDeckMatrix();
 
-    public Map<Integer, String> draw() {
-        return new HashMap<>();
+    public String draw() {
+        return "";
     }
-
-    public abstract int initializeBlackCross();
 
     /**
      * @return a simplified version of the development cards that can be purchased
@@ -114,4 +112,6 @@ public abstract class  Game {
     public abstract Player getPlayerFromName(String name);
 
     public abstract String getWinner();
+
+    public abstract int getBlackCrossPosition();
 }

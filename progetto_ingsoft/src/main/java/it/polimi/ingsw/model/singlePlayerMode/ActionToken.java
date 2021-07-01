@@ -8,6 +8,6 @@ public interface ActionToken {
     /**
      * @return a String which describes the effect of specified token
      */
-    Map<Integer,String> applyEffect(ArrayList<ActionToken> tokensStack);
+    String applyEffect(ArrayList<ActionToken> tokensStack);
 }
 

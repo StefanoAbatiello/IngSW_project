@@ -157,17 +157,15 @@ public class Controller {
                 sendPlayerCardsInfo(p);
                 sendFaithMarkerPosition(p);
                 sendStrongboxInfo(p);
-                sendBlackCrossInfo(p,game.initializeBlackCross(),"");
+                sendBlackCrossInfo(p);
             }
         }
         lobby.sendAll(new StartingGameMessage());
     }
 
-    private void sendBlackCrossInfo(Player p, int position, String message) {
-        Map<Integer,String> info=new HashMap<>();
-        info.put(position,message);
+    private void sendBlackCrossInfo(Player p) {
         System.out.println("mando un lorenzo message");
-        getHandlerFromPlayer(p.getName()).send(new LorenzoActionMessage(info));
+        getHandlerFromPlayer(p.getName()).send(new LorenzoActionMessage(game.getBlackCrossPosition()));
     }
 
     /**
@@ -780,7 +778,7 @@ public class Controller {
         while (pointsToGive>0) {
             System.out.println("punto: "+i);
             if (game.faithPointsGiveAway(player)==0) {
-                sendBlackCrossInfo(player,1,"Lorenzo receives one FaithPoints");
+                sendBlackCrossInfo(player);
             }
             game.getPlayers().forEach(this::faithMarkerUpdateHandler);
             pointsToGive--;
@@ -834,12 +832,12 @@ public class Controller {
                     lobby.setStateOfGame(GameState.ONGOING);
                 } catch (ResourceNotValidException e) {
                     System.out.println(e.getMessage());
-                    getHandlerFromPlayer(id).send(new WareHouseChangeMessage(player.getPersonalBoard().getSimplifiedWarehouse()));
+                    sendWarehouseInfo(player);
                     getHandlerFromPlayer(id).send(new ResourceInSupplyRequest(player.getSimplifiedSupply()));
                     getHandlerFromPlayer(id).send(new LobbyMessage(e.getMessage()));
                 }
             }else{
-                getHandlerFromPlayer(id).send( new WareHouseChangeMessage(player.getPersonalBoard().getSimplifiedWarehouse()));
+                sendWarehouseInfo(player);
                 getHandlerFromPlayer(id).send(new ResourceInSupplyRequest(player.getSimplifiedSupply()));
                 getHandlerFromPlayer(id).send(new LobbyMessage("Resources not valid in this disposition, please retry"));
             }
@@ -1030,22 +1028,16 @@ public class Controller {
                 return;
             }
             System.out.println("fuori dal try");
-            Map<Integer,String> result = game.draw();
+            String message = game.draw();
             if (lobby.playersOnline() > 0) {
-                if (result.isEmpty()) {
+                if (message.isEmpty()) {
                     lobby.sendAll(new LobbyMessage("Now it's the turn of " + server.getNameFromId().get(actualPlayerTurn.getID())));
-                } else if (result.containsKey(-1)) {
+                } else if (message.equalsIgnoreCase("Finished")) {
                     lastRound=true;
                 } else {
-                    lobby.sendAll(new DevMatrixChangeMessage(game.getSimplifiedDevMatrix()));
-                    if (result.containsKey(1))
-                        System.out.println(result.get(1));
-                    if (result.containsKey(2))
-                        System.out.println(result.get(2));
-                    if (result.containsKey(0))
-                        System.out.println(result.get(0));
-                    lobby.sendAll(new LorenzoActionMessage(result));
-                    lobby.sendAll(new LobbyMessage("It's again your turn"));
+                    sendDevCardMatrixInfo(player);
+                    sendBlackCrossInfo(player);
+                    lobby.sendAll(new LobbyMessage(message + ", it's again your turn"));
                 }
             }
             changeActualPlayerTurn();
@@ -1132,6 +1124,7 @@ public class Controller {
             sendWarehouseInfo(p);
             sendPlayerCardsInfo(p);
             sendFaithMarkerPosition(p);
+            sendBlackCrossInfo(p);
             sendStrongboxInfo(p);
             getHandlerFromPlayer(id).send(new StartingGameMessage());
         }

@@ -103,31 +103,22 @@ public class SinglePlayer extends Game{
      * @return tokensStack after activation of first token's effect and reorganization of the stack
      */
     @Override
-    public Map<Integer, String> draw() {
-        Map<Integer,String> result=new HashMap<>();
+    public String draw() {
         if (checkBlackCrossPosition() || checkEmptyLineInMatrix()) {
             winnerName="Lorenzo il Magnifico";
-            result.put(-1,"Finished");
-            return result;
+            return "Finished";
         }else if (players.get(0).getPersonalBoard().getFaithMarker().getFaithPosition()==24){
             winnerName=players.get(0).getName();
-            result.put(-1,"Finished");
-            return result;
+            return "Finished";
         }
         ActionToken token = tokensStack.remove(0);
         tokensStack.add(token);
-        Map<Integer,String> effect = token.applyEffect(tokensStack);
+        String message =token.applyEffect(tokensStack);
         if (checkBlackCrossPosition() || checkEmptyLineInMatrix()) {
             winnerName = "Lorenzo il Magnifico";
-            result.put(-1,"Finished");
-            return result;
+            return "Finished";
         }
-        return effect;
-    }
-
-    @Override
-    public int initializeBlackCross() {
-        return 0;
+        return message;
     }
 
     /**
@@ -253,5 +244,10 @@ public class SinglePlayer extends Game{
     @Override
     public String getWinner() {
         return winnerName;
+    }
+
+    @Override
+    public int getBlackCrossPosition() {
+        return blackCross.getCrossPosition();
     }
 }

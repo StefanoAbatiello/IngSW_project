@@ -208,9 +208,8 @@ public class GUI extends Application implements View {
     public void lorenzoActionHandler(LorenzoActionMessage lorenzoActionMessage) {
         Platform.runLater(()->{
             System.out.println("lorenzoMessage");
-            System.out.println(lorenzoActionMessage.getMessage());
             BoardController boardController=(BoardController) nameMapController.get(BOARD);
-            boardController.lorenzoUpdate(lorenzoActionMessage.getVal());
+            boardController.lorenzoUpdate(lorenzoActionMessage.getPosition());
         });
     }
 

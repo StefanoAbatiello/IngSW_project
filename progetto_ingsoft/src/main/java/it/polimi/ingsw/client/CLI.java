@@ -212,9 +212,8 @@ public class CLI extends App implements View {
 
     @Override
     public void lorenzoActionHandler(LorenzoActionMessage lorenzoActionMessage) {
-        if (lorenzoActionMessage.getVal() >= 0) {
-            System.out.println(lorenzoActionMessage.getMessage());
-            blackCrossPos= blackCrossPos+lorenzoActionMessage.getVal();
+        if (lorenzoActionMessage.getPosition() >= 0) {
+            blackCrossPos= blackCrossPos+lorenzoActionMessage.getPosition();
             System.out.println("Lorenzo's cross is in position:"+blackCrossPos);
         }
     }
