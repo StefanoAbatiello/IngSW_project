@@ -96,6 +96,10 @@ public class Controller {
         return (playerAction!=Action.NOTDONE);
     }
 
+    public Game getGame(){
+        return game;
+    }
+
     /**
      * @param resources is the ArrayList of Resources to change in ArrayList of Strings
      * @return the correspondent ArrayList of Strings
@@ -180,7 +184,7 @@ public class Controller {
     public boolean checkAllPlayersChooseLeads(){
         //System.out.println("controllo se tutti hanno scelto le leads");[Debug]
         for(Player player:game.getPlayers()) {
-            if (!leaderCardChosenYet(player))
+            if (!leaderCardAlreadyChosen(player))
                 return false;
         }
         //System.out.println("tutti i giocatori hanno già scelto le leads");[Debug]
@@ -196,7 +200,7 @@ public class Controller {
     public boolean check2Leads(int id, int card1, int card2){
         //System.out.println("controllo gli id");[Debug]
         Player player = getPlayerFromId(id);
-        if(!leaderCardChosenYet(player)) {
+        if(!leaderCardAlreadyChosen(player)) {
             if (checkLeadsIdChosen(player,card1,card2)){
                 getHandlerFromPlayer(id).send(new LobbyMessage("Leader cards picked correctly"));
                 //System.out.println("gli id scelti vanno bene");[Debug]
@@ -219,7 +223,7 @@ public class Controller {
      * @param player is the player to whom I have to check the number of Leader cards
      * @return true if he has only two Leader cards
      */
-    private boolean leaderCardChosenYet(Player player){
+    private boolean leaderCardAlreadyChosen(Player player){
         return player.getLeadCards().size()==2;
     }
 
@@ -462,7 +466,7 @@ public class Controller {
      * @throws ActionAlreadySetException if the Player has done an action in this turn already
      * @throws NotAcceptableSelectorException if the Player has chosen a selector <0 or >6
      */
-    public void checkMarket(int index, int id) throws ActionAlreadySetException, NotAcceptableSelectorException {
+    public int checkMarket(int index, int id) throws ActionAlreadySetException, NotAcceptableSelectorException {
         Player player=getPlayerInTurn();
         if (checkActionDoneYet(player)){
             throw new ActionAlreadySetException("You have already gone through with an action in this turn");
@@ -483,6 +487,7 @@ public class Controller {
             }else {
                 getHandlerFromPlayer(id).send(new ResourceInSupplyRequest(resSupply));
             }
+            return num;
         }
     }
 
@@ -1120,7 +1125,7 @@ public class Controller {
     public void sendInfoAfterReconnection(int id) {
         if (lobby.getStateOfGame() == GameState.PREPARATION1) {
             //System.out.println("il giocatori stanno scegliendo le Leads");[Debug]
-            if (leaderCardChosenYet(getPlayerFromId(id)))
+            if (leaderCardAlreadyChosen(getPlayerFromId(id)))
                 notifyLeadCardDistributed(server.getClientFromId().get(id));
             else
                 getHandlerFromPlayer(id).send(new WaitingRoomAction("You have Chosen your Leader cards yet"));
@@ -1152,6 +1157,10 @@ public class Controller {
     public void actionForDisconnection(int id) {
         getPlayerFromId(id).setAction(Action.ACTIVATEPRODUCTION);
         turnUpdate();
+    }
+
+    public void setActualPlayerTurn(VirtualClient client) {
+        this.actualPlayerTurn=client;
     }
 }
 
