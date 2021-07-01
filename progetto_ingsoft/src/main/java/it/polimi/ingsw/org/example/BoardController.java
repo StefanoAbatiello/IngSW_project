@@ -329,17 +329,16 @@ public class BoardController implements GUIcontroller{
 
     //production
     public void activateProds(ActionEvent actionEvent) {
-        in1.setVisible(true);
+        disableAll(false,false,true,false);
+
         in1.setOnAction((event) -> {
             Label selectedItem = (Label)in1.getSelectionModel().getSelectedItem();
             insertIn1(selectedItem);
         });
-        in2.setVisible(true);
         in2.setOnAction((event) -> {
             Label selectedItem = (Label)in2.getSelectionModel().getSelectedItem();
             insertIn2(selectedItem);
         });
-        out.setVisible(true);
         out.setOnAction((event) -> {
             Label selectedItem = (Label)out.getSelectionModel().getSelectedItem();
             insertOut(selectedItem);
@@ -348,13 +347,11 @@ public class BoardController implements GUIcontroller{
         System.out.println(board.lookup("#"+card1ID).getId());
         board.lookup("#"+card2ID).setDisable(false);
         System.out.println(board.lookup("#"+card2ID).getId());
-
         board.lookup("#"+card3ID).setDisable(false);
+        System.out.println(board.lookup("#"+card3ID).getId());
         productionActive=true;
-        production.setVisible(false);
         endProd.setVisible(true);
         backProd.setVisible(true);
-
 
     }
 
@@ -448,15 +445,12 @@ public class BoardController implements GUIcontroller{
         productionActive=false;
         personalProdIn= new String[2];
         output= "";
-        in1.setVisible(false);
-        in2.setVisible(false);
-        out.setVisible(false);
+        disableAll(true,false,false,false);
         board.lookup("#"+card1ID).setDisable(true);
         board.lookup("#"+card2ID).setDisable(true);
         board.lookup("#"+card3ID).setDisable(true);
         productionActive=false;
         //non può rifare la produzione, la lascio invisibile, oppure posso fare main già scelta
-        production.setVisible(true);
         endProd.setVisible(false);
         backProd.setVisible(false);
 
@@ -522,12 +516,15 @@ public class BoardController implements GUIcontroller{
         keySet = viewCLI.getDevCardsId().keySet();
         updatedCards = new ArrayList<>(keySet);
         System.out.println(updatedCards);
+        for(Node node: allDevs.getChildren())
+            ((ImageView)node).setImage(null);
         for(int id: updatedCards) {
             String stringId = String.valueOf(id);
+            updateDevs(stringId, viewCLI.getDevPositions().get(id));
             if (!stringId.equals(card1ID) && !stringId.equals(card2ID) && !stringId.equals(card3ID)) {
                 if (viewCLI.getDevCardsId().get(id)) {
                     addDev(stringId, viewCLI.getDevPositions().get(id));
-                    updateDevs(stringId, viewCLI.getDevPositions().get(id));
+                    //updateDevs(stringId, viewCLI.getDevPositions().get(id));
                 }
             }
         }
