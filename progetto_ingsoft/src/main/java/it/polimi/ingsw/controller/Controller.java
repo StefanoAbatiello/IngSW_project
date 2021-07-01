@@ -808,19 +808,28 @@ public class Controller {
         if (newWarehouse.length <= 5){
             if(checkShelfContent(newWarehouse,player)){
                 System.out.println("nuovo wharehouse ben fatto");
-                ArrayList<Resource> remainingRes=checkWarehouseDimension(newWarehouse,player);
-                System.out.println(remainingRes);
-                if(!remainingRes.isEmpty()){
-                    System.out.println("ci sono risorse da scartare");
-                    faithPointsGiveAwayHandler(player,player.getResourceSupply().discardResources(remainingRes));
-                    System.out.println("risorse scartate");
+                ArrayList<Resource> remainingRes= null;
+                try {
+                    remainingRes = checkWarehouseDimension(newWarehouse, player);
+
+                    System.out.println(remainingRes);
+                    if (!remainingRes.isEmpty()) {
+                        System.out.println("ci sono risorse da scartare");
+                        faithPointsGiveAwayHandler(player, player.getResourceSupply().discardResources(remainingRes));
+                        System.out.println("risorse scartate");
+                        System.out.println(player.getSupplyResources());
+                    }
+                    player.getResourceSupply().emptySupply();
                     System.out.println(player.getSupplyResources());
+                    setWarehouseNewDisposition(newWarehouse, player);
+                    getHandlerFromPlayer(id).send(new WareHouseChangeMessage(player.getPersonalBoard().getSimplifiedWarehouse()));
+                    lobby.setStateOfGame(GameState.ONGOING);
+                } catch (ResourceNotValidException e) {
+                    System.out.println(e.getMessage());
+                    getHandlerFromPlayer(id).send(new WareHouseChangeMessage(player.getPersonalBoard().getSimplifiedWarehouse()));
+                    getHandlerFromPlayer(id).send(new ResourceInSupplyRequest(player.getSimplifiedSupply()));
+                    getHandlerFromPlayer(id).send(new LobbyMessage(e.getMessage()));
                 }
-                player.getResourceSupply().emptySupply();
-                System.out.println(player.getSupplyResources());
-                setWarehouseNewDisposition(newWarehouse,player);
-                getHandlerFromPlayer(id).send( new WareHouseChangeMessage(player.getPersonalBoard().getSimplifiedWarehouse()));
-                lobby.setStateOfGame(GameState.ONGOING);
             }else{
                 getHandlerFromPlayer(id).send( new WareHouseChangeMessage(player.getPersonalBoard().getSimplifiedWarehouse()));
                 getHandlerFromPlayer(id).send(new ResourceInSupplyRequest(player.getSimplifiedSupply()));
@@ -834,7 +843,7 @@ public class Controller {
      * @param player is the Player who send the disposition
      * @return an Arraylist of the Resources remained in the Player's Supply
      */
-    private ArrayList<Resource> checkWarehouseDimension(ArrayList<String>[] newWarehouse, Player player) {
+    private ArrayList<Resource> checkWarehouseDimension(ArrayList<String>[] newWarehouse, Player player) throws ResourceNotValidException {
         ArrayList<Resource> allResources = new ArrayList<>(player.getSupplyResources());
         allResources.addAll(player.getWarehouseResources());
         allResources.addAll(player.getSpecialShelfResources());
@@ -853,7 +862,7 @@ public class Controller {
                     System.out.println("risorsa trovata");
                     allResources.remove(i);
                     newRes.remove(j);
-                    i--;
+                    i=-1;
                     break;
                 }
             }
@@ -862,6 +871,10 @@ public class Controller {
         System.out.println(allResources);
         System.out.println("newResources:");
         System.out.println(newRes);
+        if(newRes.size()>0) {
+            System.out.println("ha scelto troppe risorse");
+            throw new ResourceNotValidException("you have chosen not valid resources");
+        }
         return allResources;
     }
 
