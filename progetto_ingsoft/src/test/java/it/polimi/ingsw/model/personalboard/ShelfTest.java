@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class ShelfTest {
 
     @Test
-    void isShelfAvailability() throws ResourceNotValidException {
+    void isShelfAvailability(){
         Shelf shelf=new Shelf(3);
 
         shelf.addResources(Resource.SHIELD);
@@ -20,7 +20,7 @@ class ShelfTest {
     }
 
     @Test
-    void addResources() throws ResourceNotValidException {
+    void addResources() {
         Shelf shelf=new Shelf(3);
 
         shelf.addResources(Resource.SHIELD);
@@ -31,7 +31,7 @@ class ShelfTest {
     }
 
     @Test
-    void getSlots() throws ResourceNotValidException {
+    void getSlots(){
         Shelf shelf=new Shelf(3);
 
         shelf.addResources(Resource.SHIELD);

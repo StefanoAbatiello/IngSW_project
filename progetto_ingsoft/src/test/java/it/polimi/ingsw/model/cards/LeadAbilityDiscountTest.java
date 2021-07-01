@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class LeadAbilityDiscountTest {
 
     @Test
-    void activeAbility1() throws InvalidActiveParameterException {
+    void activeAbility1(){
         Player p= new Player("pincopallo");
         LeadAbility disAb= new LeadAbilityDiscount(Resource.STONE);
         ArrayList<String> color=new ArrayList<>();
@@ -27,7 +27,7 @@ class LeadAbilityDiscountTest {
         assertTrue(p.getDiscountAbility().size()==1);
     }
     @Test
-    void activeAbility2TimesSameCard() throws InvalidActiveParameterException {
+    void activeAbility2TimesSameCard(){
         Player p= new Player("pincopallo");
         LeadAbility disAb= new LeadAbilityDiscount(Resource.STONE);
         ArrayList<String> color=new ArrayList<>();
@@ -42,7 +42,7 @@ class LeadAbilityDiscountTest {
         assertFalse(p.getDiscountAbility().size()==2);
     }
     @Test
-    void activeAbility2Times() throws InvalidActiveParameterException {
+    void activeAbility2Times(){
         Player p= new Player("pincopallo");
         LeadAbility disAb= new LeadAbilityDiscount(Resource.STONE);
         ArrayList<String> color=new ArrayList<>();

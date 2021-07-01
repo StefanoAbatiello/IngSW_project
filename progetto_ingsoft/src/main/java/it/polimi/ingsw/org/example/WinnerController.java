@@ -26,6 +26,6 @@ public class WinnerController implements GUIcontroller{
     public void endGameQuit(ActionEvent actionEvent) {
         gui.getMainClient().send(new WinnerMessage("no"));
         gui.getMainClient().disconnect();
-        //TODO esci dal gioco
+        gui.getStage().close();
     }
 }

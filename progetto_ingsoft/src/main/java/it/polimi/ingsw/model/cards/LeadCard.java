@@ -2,7 +2,6 @@ package it.polimi.ingsw.model.cards;
 import it.polimi.ingsw.model.Points;
 import it.polimi.ingsw.model.Resource;
 import it.polimi.ingsw.model.ResourceCreator;
-import it.polimi.ingsw.model.cards.cardExceptions.NoSuchRequirementException;
 
 import java.util.ArrayList;
 import java.util.HashMap;

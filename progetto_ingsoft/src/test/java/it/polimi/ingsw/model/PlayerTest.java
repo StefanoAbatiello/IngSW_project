@@ -15,27 +15,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerTest {
 
-    @Test
-    void doBasicProduction() throws ResourceNotValidException {
-        Player player=new Player("Pippo");
-        ArrayList<Resource> prodInput=new ArrayList<>();
-        prodInput.add(Resource.SERVANT);
-        prodInput.add(Resource.SHIELD);
-        player.getPersonalBoard().getWarehouseDepots().addInShelf(0, Resource.SERVANT);
-        player.getPersonalBoard().getStrongBox().addInStrongbox(prodInput);
-        //assertEquals(Resource.COIN,player.doBasicProduction(prodInput,Resource.COIN));
-    }
 
-    //TODO controller test
-    /*@Test
-    void doNotValidBasicProduction1() throws ResourceNotValidException {
-        Player player=new Player("Paki");
-        ArrayList<Resource> prodInput=new ArrayList<>();
-        prodInput.add(Resource.SERVANT);
-        prodInput.add(Resource.SHIELD);
-        player.getPersonalBoard().getWarehouseDepots().addInShelf(0, Resource.SERVANT);
-        assertThrows(ResourceNotValidException.class,()-> player.doBasicProduction(prodInput,Resource.COIN));
-    }*/
+
 
     @Test
     void firstLeadCardChosen() throws  playerLeadsNotEmptyException, IOException, ParseException {
@@ -68,18 +49,11 @@ class PlayerTest {
     }
 
     @Test
-    void checkSetAction() throws ActionAlreadySetException {
+    void checkSetAction(){
         Player player= new Player("Jenny");
         player.setAction(Action.ACTIVATEPRODUCTION);
         assertEquals(Action.ACTIVATEPRODUCTION,player.getAction());
     }
 
-   //TODO controller test
-    /* @Test
-    void checkExceptionSetAction() throws ActionAlreadySetException {
-        Player player= new Player("USER");
-        player.setAction(Action.ACTIVATEPRODUCTION);
-        assertThrows(ActionAlreadySetException.class,()->player.setAction(Action.BUYCARD));
-    }*/
 
 }

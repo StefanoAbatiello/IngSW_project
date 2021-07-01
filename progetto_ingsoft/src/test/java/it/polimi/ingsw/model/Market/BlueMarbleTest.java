@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.Market;
 
-import it.polimi.ingsw.exceptions.FullSupplyException;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Resource;
 import java.util.ArrayList;
@@ -13,7 +12,7 @@ class BlueMarbleTest {
     this Test is implemented to check if a BlueMarble in changed correctly
      */
     @Test
-    void changeMarbleTest() throws FullSupplyException {
+    void changeMarbleTest(){
         BlueMarble marble=new BlueMarble();
         Player p=new Player("0");
         marble.changeMarble(p);

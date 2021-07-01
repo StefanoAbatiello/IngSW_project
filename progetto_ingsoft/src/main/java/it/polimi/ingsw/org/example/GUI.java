@@ -49,7 +49,9 @@ public class GUI extends Application implements View {
         launch();
     }
 
-
+    /**
+     * called from App.main
+     */
     @Override
     public void start(Stage stage) {
         this.stage=stage;
@@ -71,11 +73,19 @@ public class GUI extends Application implements View {
             }
         }
 
+    /**
+     * disconnect client when he closes the window
+     */
     private void closeWindowEvent(WindowEvent t) {
         getMainClient().disconnect();
     }
 
-    public void changeStage(String s) {
+    /**
+     * Method changeStage changes the stage scene based on the ones declared during setup phase.
+     * On method call the actual stage scene is replaced from the parameter one.
+     * @param s is the new scene which replaces the actual
+     */
+    protected void changeStage(String s) {
 
         currentscene=nameMapScene.get(s);
         stage.setScene(currentscene);
@@ -96,6 +106,10 @@ public class GUI extends Application implements View {
         return client;
     }
 
+    /**
+     * show Nickname window with empty fields
+     * @param nickNameAction is the message sent by the server
+     */
     @Override
     public void nicknameHandler(NickNameAction nickNameAction) {
         Platform.runLater(()->{System.out.println("begin of nickname");
@@ -107,6 +121,10 @@ public class GUI extends Application implements View {
         System.out.println("end");});
     }
 
+    /**
+     *
+     * @param requestNumOfPlayers is message sent by the server
+     */
     @Override
     public void numOfPlayerHandler(RequestNumOfPlayers requestNumOfPlayers) {
         Platform.runLater(()->{System.out.println("begin of numplayers");
@@ -117,6 +135,9 @@ public class GUI extends Application implements View {
             System.out.println("end");});
     }
 
+    /**
+     * @param waitingRoomAction is showed when players are waiting others players in the lobby
+     */
     public void waitingRoomHandler(WaitingRoomAction waitingRoomAction) {
         Platform.runLater(()->{System.out.println("waiting room");
             changeStage(WAITING);
@@ -126,6 +147,10 @@ public class GUI extends Application implements View {
             System.out.println("end");});
     }
 
+    /**
+     *
+     * @param lobbyMessage is the info of game message
+     */
     @Override
     public void lobbyMessageHandler(LobbyMessage lobbyMessage) {
         Platform.runLater(()->{
@@ -138,6 +163,11 @@ public class GUI extends Application implements View {
 
     }
 
+    /**
+     *
+     * @param viewCLI are semplified informations given from server
+     * @param input
+     */
     @Override
     public void gameSetupHandler(ViewCLI viewCLI, SerializedMessage input){
         Platform.runLater(()->{System.out.println("gameSetup");
@@ -153,6 +183,10 @@ public class GUI extends Application implements View {
 
     }
 
+    /**
+     * show leader cards choice window
+     * @param leaderCardDistribution indicates cards that have to be shown
+     */
     @Override
     public void leadCardHandler(LeaderCardDistribution leaderCardDistribution) {
         Platform.runLater(()->{System.out.println("leadcardschoice");
@@ -165,6 +199,10 @@ public class GUI extends Application implements View {
         });
     }
 
+    /**
+     * Display inital resourcce window
+     * @param initialResourcesAction contains the number of resources that each player can choice
+     */
     @Override
     public void initialResourceHandler(GetInitialResourcesAction initialResourcesAction) {
         Platform.runLater(()->{System.out.println("leadcardschoice");
@@ -179,6 +217,10 @@ public class GUI extends Application implements View {
         });
     }
 
+    /**
+     *
+     * @param message contains the actual position of faith position
+     */
     public void faithPositionHandler(FaithPositionChangeMessage message){
         Platform.runLater(()->{
             System.out.println(message.getFaithPosition());
@@ -188,6 +230,10 @@ public class GUI extends Application implements View {
         });
     }
 
+    /**
+     *
+     * @param message contains the number of meeting pope space
+     */
     @Override
     public void activePopeMeetingHandler(ActivePopeMeetingMessage message) {
         Platform.runLater(()->{
@@ -204,6 +250,10 @@ public class GUI extends Application implements View {
         });
     }
 
+    /**
+     *
+     * @param lorenzoActionMessage message sent by the server during single player mode
+     */
     @Override
     public void lorenzoActionHandler(LorenzoActionMessage lorenzoActionMessage) {
         Platform.runLater(()->{
@@ -213,7 +263,10 @@ public class GUI extends Application implements View {
         });
     }
 
-
+    /**
+     *
+     * @param resource are the ones which must be put in supply
+     */
     @Override
     public void supplyHandler(ResourceInSupplyRequest resource) {
         Platform.runLater(()->{
@@ -226,6 +279,10 @@ public class GUI extends Application implements View {
 
     }
 
+    /**
+     *
+     * @param marketChangeMessage contains th new disposition of the market
+     */
     @Override
     public void marketHandler(MarketChangeMessage marketChangeMessage) {
         Platform.runLater(()->{System.out.println("market");
@@ -240,6 +297,10 @@ public class GUI extends Application implements View {
 
     }
 
+    /**
+     *
+     * @param wareHouseChangeMessage is the new disposition of warehouse
+     */
     @Override
     public void warehouseHandler(WareHouseChangeMessage wareHouseChangeMessage) {
         Platform.runLater(()-> {
@@ -250,6 +311,10 @@ public class GUI extends Application implements View {
         });
     }
 
+    /**
+     *
+     * @param cardIDChangeMessage contains the new disposition of Dev Card & Lead Card
+     */
     @Override
     public void personalCardHandler(CardIDChangeMessage cardIDChangeMessage) {
             System.out.println("Your cards have changed");
@@ -281,6 +346,10 @@ public class GUI extends Application implements View {
         });
     }
 
+    /**
+     *
+     * @param devMatrixChangeMessage contains the new disposition of dev matrix
+     */
     @Override
     public void devMatrixHandler(DevMatrixChangeMessage devMatrixChangeMessage) {
     viewCLI.setDevMatrix(devMatrixChangeMessage.getDevMatrix());
@@ -290,6 +359,10 @@ public class GUI extends Application implements View {
     });
     }
 
+    /**
+     *
+     * @param strongboxChangeMessage contains the new disposition of resources in strongbox
+     */
     @Override
     public void strongboxHandler(StrongboxChangeMessage strongboxChangeMessage) {
         Platform.runLater(()-> {
@@ -300,6 +373,10 @@ public class GUI extends Application implements View {
         });
     }
 
+    /**
+     *
+     * @param input contains the number of active white marble ability & the resources that white marble could be changed
+     */
     @Override
     public void choosableResourceHandler(ChangeChoosableResourceRequest input) {
         Platform.runLater(()->{System.out.println("white Marble choice");
@@ -312,15 +389,15 @@ public class GUI extends Application implements View {
         });
     }
 
-
-
-    //TODO special shelf
-
     public void setViewCLI(ViewCLI viewCLI) {
         this.viewCLI = viewCLI;
     }
 
     public ViewCLI getViewCLI() {
         return viewCLI;
+    }
+
+    public Stage getStage() {
+        return stage;
     }
 }

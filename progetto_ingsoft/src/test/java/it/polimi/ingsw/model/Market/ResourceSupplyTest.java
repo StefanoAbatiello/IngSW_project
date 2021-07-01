@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.Market;
 
-import it.polimi.ingsw.exceptions.FullSupplyException;
 import it.polimi.ingsw.model.Resource;
 import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,7 @@ class ResourceSupplyTest {
     put the correct resource in a container
      */
     @Test
-    void putResourceInEmptyContainerTest() throws FullSupplyException {
+    void putResourceInEmptyContainerTest() {
         ResourceSupply supply=new ResourceSupply();
         supply.putResourceInContainer(Resource.SHIELD);
         ArrayList<Resource> resources=new ArrayList<>();
@@ -22,22 +21,10 @@ class ResourceSupplyTest {
     }
 
     /*
-     this Test is implemented to check if method putResourceInContainer
-     throws the Exception in case of a full ResourceSupply
-      */
-    @Test
-    void putResourceInFullContainerTest(){
-        ResourceSupply supply=new ResourceSupply();
-        for(Container container : supply.getContainers())
-            container.fillContainer(Resource.SHIELD);
-        assertThrows(FullSupplyException.class, ()-> supply.putResourceInContainer(Resource.SHIELD));
-    }
-
-    /*
     this Test is implemented to check if this structure works correctly is case of multiple usages
      */
     @Test
-    void fillingSupplyTest() throws FullSupplyException {
+    void fillingSupplyTest() {
         ResourceSupply supply=new ResourceSupply();
         supply.putResourceInContainer(Resource.COIN);
         supply.putResourceInContainer(Resource.SERVANT);
@@ -55,7 +42,7 @@ class ResourceSupplyTest {
    this Test is implemented to check if this structure works correctly after has been emptied
     */
     @Test
-    void takingSomeResourceTest() throws FullSupplyException{
+    void takingSomeResourceTest() {
         ResourceSupply supply=new ResourceSupply();
         supply.putResourceInContainer(Resource.COIN);
         supply.putResourceInContainer(Resource.SERVANT);

@@ -117,18 +117,6 @@ public class DevCard implements Cards{
         return this;
     }
 
-    /**
-     * @param player is a reference to the player who is doing production
-     * @return the entire strongbox after the production with the new resources and in case without the resources used
-     * @throws ResourceNotValidException if the player doesn't have the resources required for production
-     */
-    public StrongBox useProduction(Player player) throws ResourceNotValidException {
-            player.getPersonalBoard().removeResources(getProdIn());
-            player.getPersonalBoard().getStrongBox().addInStrongbox(getProdOut());
-        return player.getPersonalBoard().getStrongBox();
-    }
-
-
 }
 
 

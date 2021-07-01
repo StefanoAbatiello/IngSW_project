@@ -140,8 +140,7 @@ public class Controller {
             for(VirtualClient client: lobby.getClientFromPosition().values())
                 notifyLeadCardDistributed(client);
         } catch (playerLeadsNotEmptyException | IOException | ParseException e) {
-            //TODO gestisco le eccezioni
-            e.printStackTrace();
+            server.quitter();
         }
     }
 

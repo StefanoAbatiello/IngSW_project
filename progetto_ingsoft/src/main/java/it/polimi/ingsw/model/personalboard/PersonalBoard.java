@@ -128,9 +128,6 @@ public class PersonalBoard {
             int finalI = i;
             warehouseDepots.getShelves()[i].getSlots().forEach(resource -> warehouse[finalI].add(String.valueOf(resource)));
         }
-        //warehouseDepots.getShelves()[0].getSlots().forEach(resource -> warehouse[0].add(String.valueOf(resource)));
-        //warehouseDepots.getShelves()[1].getSlots().forEach(resource -> warehouse[1].add(String.valueOf(resource)));
-        //warehouseDepots.getShelves()[2].getSlots().forEach(resource -> warehouse[2].add(String.valueOf(resource)));
         if(!getSpecialShelves().isEmpty()) {
             getSpecialShelves().get(0).ifPresent(specialShelf ->
                 specialShelf.getSpecialSlots().forEach(resource -> warehouse[3].add(String.valueOf(resource))));
