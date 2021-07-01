@@ -126,9 +126,8 @@ public class SinglePlayer extends Game{
      * @return 1 if the game is multiplayer, 0 otherwise
      */
     @Override
-    public int faithPointsGiveAway(Player player) {
+    public void faithPointsGiveAway(Player player) {
         blackCross.updateBlackCross(1);
-        return  0;
     }
 
     /**

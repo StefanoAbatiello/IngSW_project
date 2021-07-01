@@ -163,11 +163,6 @@ public class Controller {
         lobby.sendAll(new StartingGameMessage());
     }
 
-    private void sendBlackCrossInfo(Player p) {
-        System.out.println("mando un lorenzo message");
-        getHandlerFromPlayer(p.getName()).send(new LorenzoActionMessage(game.getBlackCrossPosition()));
-    }
-
     /**
      * advise each Player of the Leader cards he received
      */
@@ -528,7 +523,16 @@ public class Controller {
         }
     }
 
-    //TODO documentazione
+    /**
+     * @param cardProd is the ArrayList of the id of the card chosen for productions
+     * @param personalProdIn is the ArrayList of Resources chosen for the personal production
+     * @param personalProdOut is the Resource chosen as product of the personal production
+     * @param leadProdOut is the ArrayList of Resources chosen as products of leader productions
+     * @return true if the productions are done correctly, false otherwise
+     * @throws ActionAlreadySetException if the player has done a main action yet
+     * @throws ResourceNotValidException if the Resources chosen are not valid
+     * @throws CardNotOwnedByPlayerOrNotActiveException if the Player has chosen a card not owned by him
+     */
     public boolean checkProduction(ArrayList<Integer> cardProd , ArrayList<String> personalProdIn, String personalProdOut, ArrayList<String> leadProdOut) throws ActionAlreadySetException, ResourceNotValidException, CardNotOwnedByPlayerOrNotActiveException {
         Player player=getPlayerInTurn();
         if (checkActionDoneYet(player))
@@ -777,9 +781,8 @@ public class Controller {
         int i=1;
         while (pointsToGive>0) {
             System.out.println("punto: "+i);
-            if (game.faithPointsGiveAway(player)==0) {
-                sendBlackCrossInfo(player);
-            }
+            game.faithPointsGiveAway(player);
+            sendBlackCrossInfo(player);
             game.getPlayers().forEach(this::faithMarkerUpdateHandler);
             pointsToGive--;
             i++;
@@ -971,6 +974,15 @@ public class Controller {
     }
 
     /**
+     * this method pick the position of Lorenzo's black cross and send it to the player
+     * @param p is the Player who need the info of the Lorenzo's black cross
+     */
+    private void sendBlackCrossInfo(Player p) {
+        System.out.println("mando un lorenzo message");
+        getHandlerFromPlayer(p.getName()).send(new LorenzoActionMessage(game.getBlackCrossPosition()));
+    }
+
+    /**
      * this method pick the id of the Player's cards and send them to the player
      * @param p is the Player who need the info of his cards
      */
@@ -1060,6 +1072,9 @@ public class Controller {
         }
     }
 
+    /**
+     * this method handles the end of the game sending to the Players the name of the winner
+     */
     private void endGame() {
         lobby.setStateOfGame(GameState.ENDED);
         String winnerName=game.getWinner();
@@ -1130,6 +1145,10 @@ public class Controller {
         }
     }
 
+    /**
+     * this method set a
+     * @param id is the id of the Player who is disconnecting
+     */
     public void actionForDisconnection(int id) {
         getPlayerFromId(id).setAction(Action.ACTIVATEPRODUCTION);
         turnUpdate();

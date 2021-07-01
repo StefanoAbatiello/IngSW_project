@@ -119,14 +119,13 @@ public class MultiPlayer extends Game {
      * @return 1 if the game is multiplayer, 0 otherwise
      */
     @Override
-    public int faithPointsGiveAway(Player player) {
+    public void faithPointsGiveAway(Player player) {
         players.forEach(p -> {
             if (p != player) {
                 System.out.println("il player "+p.getName()+" sta ricevendo il punto");
                 p.getPersonalBoard().getFaithMarker().updatePosition();
             }
         });
-        return 1;
     }
 
     /**

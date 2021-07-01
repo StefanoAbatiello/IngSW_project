@@ -107,7 +107,7 @@ public abstract class  Game {
      * @param player is the player who give away faith points
      * @return 1 if the game is multiplayer, 0 otherwise
      */
-    public abstract int faithPointsGiveAway(Player player);
+    public abstract void faithPointsGiveAway(Player player);
 
     public abstract Player getPlayerFromName(String name);
 
