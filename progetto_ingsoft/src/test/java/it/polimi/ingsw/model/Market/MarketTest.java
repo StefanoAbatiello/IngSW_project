@@ -1,7 +1,5 @@
 package it.polimi.ingsw.model.Market;
 
-import it.polimi.ingsw.exceptions.FullSupplyException;
-import it.polimi.ingsw.exceptions.NotAcceptableSelectorException;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Resource;
 import java.util.ArrayList;
@@ -36,7 +34,7 @@ class MarketTest {
      */
 
     @Test
-    void buyingRowTest() throws FullSupplyException, NotAcceptableSelectorException {
+    void buyingRowTest() {
         Market market = new Market();
         MarketMarble[][] marketTray = market.getMarketBoard();
         ArrayList<Resource> resources = new ArrayList<>();
@@ -61,7 +59,7 @@ class MarketTest {
    this Test verifies if selecting a column(3<=selector<=6) the resources put in ResourceSupply are the expected ones
     */
     @Test
-    void buyingColumnTest() throws FullSupplyException, NotAcceptableSelectorException {
+    void buyingColumnTest() {
         Market market = new Market();
         MarketMarble[][] marketTray = market.getMarketBoard();
         ArrayList<Resource> resources = new ArrayList<>();
@@ -86,7 +84,7 @@ class MarketTest {
    this Test verifies if selecting a row(0<selector<=2) the marketTray is modified correctly
     */
     @Test
-    void insertExtMarbleInRowTest()throws FullSupplyException, NotAcceptableSelectorException{
+    void insertExtMarbleInRowTest(){
         Market market=new Market();
         MarketMarble[][] marketTray= market.getMarketBoard();
         MarketMarble extMarble= market.getExtMarble();
@@ -106,7 +104,7 @@ class MarketTest {
    this Test verifies if selecting a column(3<=selector<=6) the marketTray is modified correctly
     */
     @Test
-    void insertExtMarbleInColumnTest()throws FullSupplyException, NotAcceptableSelectorException{
+    void insertExtMarbleInColumnTest(){
         Market market=new Market();
         MarketMarble[][] marketTray= market.getMarketBoard();
         MarketMarble extMarble= market.getExtMarble();

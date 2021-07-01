@@ -17,19 +17,5 @@ public class LeadAbilityProduction extends LeadAbility{
             return false;
 
     }
-
-
-
-
-   /* public boolean useAbility(LeadCard leadCard, Player p){
-        Resource answer= Resource.SHIELD;
-        if(checkDepots(leadCard.getLeadCardRes())){
-                //ask the player which resource they want
-                fillStrongBox(answer);
-                p.updateFaithMarker();
-                return true;
-            }else
-                return false;
-        }*/
 }
 

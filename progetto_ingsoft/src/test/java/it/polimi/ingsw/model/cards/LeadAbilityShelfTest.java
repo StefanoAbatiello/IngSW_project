@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class LeadAbilityShelfTest {
 
     @Test
-    void activeAbility1() throws InvalidActiveParameterException {
+    void activeAbility1() {
         Player p= new Player("pippo");
         LeadAbility shelfAb= new LeadAbilityShelf(Resource.STONE);
         ArrayList<String> color=new ArrayList<>();

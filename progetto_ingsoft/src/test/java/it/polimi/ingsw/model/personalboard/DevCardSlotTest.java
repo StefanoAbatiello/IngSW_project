@@ -11,18 +11,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DevCardSlotTest {
 
-    //TODO test controller
-    /*@Test
-    void overlapInInvalidSlot()  {
-        DevCardSlot devCardSlot=new DevCardSlot();
-        ArrayList<Resource> array= new ArrayList<>();
-        array.add(Resource.STONE);
-        DevCard card = new DevCard(2,4,"PURPLE",4,array,array,array,3);
-        assertThrows(InvalidSlotException.class,()->devCardSlot.overlap(card,3));
-    }*/
-
     @Test
-    void OverlapInValidSlot() throws InvalidSlotException {
+    void OverlapInValidSlot() {
         DevCardSlot devCardSlot=new DevCardSlot();
         ArrayList<Resource> array= new ArrayList<>();
         array.add(Resource.STONE);
@@ -33,7 +23,7 @@ class DevCardSlotTest {
     }
 
     @Test
-    void getVictoryPoints() throws InvalidSlotException {
+    void getVictoryPoints(){
         DevCardSlot devCardSlot=new DevCardSlot();
         ArrayList<Resource> array= new ArrayList<>();
         array.add(Resource.STONE);
@@ -43,7 +33,7 @@ class DevCardSlotTest {
     }
 
     @Test
-    void getActiveCards() throws InvalidSlotException {
+    void getActiveCards(){
         DevCardSlot devCardSlot=new DevCardSlot();
         ArrayList<Resource> array= new ArrayList<>();
         array.add(Resource.STONE);

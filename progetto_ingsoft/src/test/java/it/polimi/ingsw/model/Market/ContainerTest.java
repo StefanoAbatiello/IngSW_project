@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.Market;
 
-import it.polimi.ingsw.exceptions.EmptyContainerException;
 import it.polimi.ingsw.model.Resource;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,7 +39,7 @@ class ContainerTest {
     this Test is implemented to check if method takeResource empties container correctly
     */
     @Test
-    void emptyingTest() throws EmptyContainerException {
+    void emptyingTest(){
         Container container = new Container();
         container.fillContainer(Resource.SHIELD);
         container.takeResource();
@@ -51,7 +50,7 @@ class ContainerTest {
     this Test is implemented to check if method takeResource return Resource correctly
     */
     @Test
-    void takingResourceTest() throws EmptyContainerException{
+    void takingResourceTest() {
         Container container = new Container();
         container.fillContainer(Resource.SHIELD);
         assertEquals(Resource.SHIELD,container.takeResource());
@@ -61,7 +60,7 @@ class ContainerTest {
     this Test is implemented to check if iterating methods fillContainer and takeResource the attributes are modified correctly
     */
     @Test
-    void refillingContainerTest() throws EmptyContainerException{
+    void refillingContainerTest(){
         Container container = new Container();
         container.fillContainer(Resource.SHIELD);
         container.takeResource();

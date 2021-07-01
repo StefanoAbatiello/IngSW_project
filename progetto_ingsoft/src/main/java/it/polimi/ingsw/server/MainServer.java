@@ -229,4 +229,8 @@ public class MainServer {
         return(lobby.getClientFromPosition().size()+lobby.getSeatsAvailable())==1;
     }
 
+    public void quitter() {
+            connectionServer.setActive(false);
+            System.exit(0);
+    }
 }

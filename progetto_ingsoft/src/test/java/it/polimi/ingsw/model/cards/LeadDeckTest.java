@@ -3,7 +3,6 @@ package it.polimi.ingsw.model.cards;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Resource;
 import it.polimi.ingsw.model.cards.cardExceptions.CardChosenNotValidException;
-import it.polimi.ingsw.model.cards.cardExceptions.NoSuchRequirementException;
 import it.polimi.ingsw.model.cards.cardExceptions.playerLeadsNotEmptyException;
 import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.BeforeAll;
@@ -21,7 +20,7 @@ class LeadDeckTest {
 
     @Test
     @BeforeAll
-    void createDeck() throws NoSuchRequirementException, IOException, ParseException, CardChosenNotValidException {
+    void createDeck() throws IOException, ParseException, CardChosenNotValidException {
         LeadDeck deck=new LeadDeck();
         ArrayList<String> color=new ArrayList<>();
         color.add("YELLOW");

@@ -357,7 +357,6 @@
       <Button fx:id="viewDevs" layoutX="436.0" layoutY="224.0" mnemonicParsing="false" onAction="#viewAllDevs" prefHeight="26.0" prefWidth="104.0" text="View all Devs" />
       <Button fx:id="backDevs" layoutX="850.0" layoutY="156.0" mnemonicParsing="false" onAction="#devsBack" prefHeight="38.0" prefWidth="113.0" text="Back" visible="false" />
         <Button fx:id="backSupply" layoutX="919.0" layoutY="156.0" mnemonicParsing="false" onAction="#supplyBack" prefHeight="38.0" prefWidth="128.0" text="Back" visible="false" />
-        <Button cancelButton="true" defaultButton="true" layoutX="935.0" layoutY="38.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="87.0" text="QUIT" />
        <Button fx:id="endProd" layoutX="918.0" layoutY="251.0" mnemonicParsing="false" onAction="#sendProd" prefHeight="38.0" prefWidth="138.0" text="end Productions" visible="false" />
       <ImageView fx:id="pope2" fitHeight="51.0" fitWidth="44.0" layoutX="192.0" layoutY="154.0" pickOnBounds="true" preserveRatio="true" visible="false">
          <image>

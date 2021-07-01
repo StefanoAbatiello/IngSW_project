@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model.cards;
 
 import it.polimi.ingsw.model.Resource;
-import it.polimi.ingsw.model.cards.cardExceptions.NoSuchRequirementException;
 import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.Test;
 
@@ -52,7 +51,7 @@ class LeadCardTest {
     }*/
 
     @Test
-    void getResourceReqTrue() throws NoSuchRequirementException {
+    void getResourceReqTrue() {
         HashMap<Integer, Resource> resReq= new HashMap<>();
         resReq.put(5,Resource.COIN);
         LeadAbility leadAbility= new LeadAbilityWhiteMarble(Resource.SHIELD);
@@ -65,7 +64,7 @@ class LeadCardTest {
     }
 
     @Test
-    void getResourceReqFalse() throws NoSuchRequirementException {
+    void getResourceReqFalse() {
         HashMap<Integer, Resource> resReq= new HashMap<>();
         resReq.put(5,Resource.COIN);
         LeadAbility leadAbility= new LeadAbilityWhiteMarble(Resource.SHIELD);
@@ -79,7 +78,7 @@ class LeadCardTest {
 
 
     @Test
-    void getDevCardReq() throws NoSuchRequirementException, IOException, ParseException {
+    void getDevCardReq() throws IOException, ParseException {
         LeadDeck deck = new LeadDeck();
         ArrayList<String> color=new ArrayList<>();
         color.add("GREEN");
@@ -92,7 +91,7 @@ class LeadCardTest {
     }
 
     @Test
-    void getDevCardReqWrong() throws NoSuchRequirementException, IOException, ParseException {
+    void getDevCardReqWrong() throws IOException, ParseException {
         LeadDeck deck = new LeadDeck();
         ArrayList<String> color=new ArrayList<>();
         color.add("GREEN");

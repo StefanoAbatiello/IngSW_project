@@ -14,7 +14,6 @@ public class LeadAbilityShelf extends LeadAbility{
     }
     @Override
     public boolean activeAbility(Player p) {
-       // if(!p.getPersonalBoard().getSpecialShelves().isPresent() || //TODO control both shelves !p.getPersonalBoard().getSpecialShelves().get().contains()) {
             Optional<SpecialShelf> newShelf= Optional.of(new SpecialShelf(this.abilityResource));
             p.getPersonalBoard().getSpecialShelves().add(newShelf);
             return true;
