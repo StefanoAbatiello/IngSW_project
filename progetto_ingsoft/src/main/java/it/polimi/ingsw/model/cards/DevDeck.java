@@ -102,8 +102,9 @@ public class DevDeck implements ResourceGeneratorFromJSON, Decks{
     @Override
     public DevCard getCardFromId(int id) throws CardChosenNotValidException {
         for(DevCard card: devCards) {
-            if (card.getId() == id)
+            if (card.getId() == id) {
                 return card;
+            }
         }
         throw new CardChosenNotValidException("the id passed is not valid");
     }

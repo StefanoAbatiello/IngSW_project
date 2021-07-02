@@ -191,6 +191,9 @@ public class MainClient implements Runnable, Sender {
         else if (input instanceof LorenzoActionMessage){
             view.lorenzoActionHandler((LorenzoActionMessage) input);
         }
+        else if (input instanceof ShelfAbilityActiveMessage ){
+            view.shelfAbilityActiveHandler((ShelfAbilityActiveMessage) input);
+        }
     }
 
     public void disconnect() {

@@ -245,6 +245,7 @@ public class GUI extends Application implements View {
     @Override
     public void shelfAbilityActiveHandler(ShelfAbilityActiveMessage message) {
         Platform.runLater(()->{
+            System.out.println("ho ricevuto un shelfAbility");
             BoardController boardController=(BoardController) nameMapController.get(BOARD);
             boardController.leadShelfActivation(message.getCardId());
         });
@@ -341,6 +342,7 @@ public class GUI extends Application implements View {
                 }
             });
         Platform.runLater(()-> {
+            System.out.println("sono nel run later");
             simplifiedModel.setDevPositions(cardIDChangeMessage.getCardPosition());
             BoardController boardController = (BoardController) getControllerFromName(BOARD);
             boardController.setCards(simplifiedModel);

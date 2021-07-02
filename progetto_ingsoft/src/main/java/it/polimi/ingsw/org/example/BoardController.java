@@ -133,6 +133,7 @@ public class BoardController implements GUIcontroller{
             card = leadsId.get(0);
             ((ImageView) image).setImage(new Image("org.example/leadcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-" + card + "-1.png"));
             image.setId(String.valueOf(card));
+            System.out.println("lead scelta: "+image.getId());
             image.setOpacity(0.7);
             if(lead1Id.equals("lead1"))
                 lead1Id=image.getId();
@@ -504,16 +505,22 @@ public class BoardController implements GUIcontroller{
         Set<Integer> keySet = simplifiedModel.getLeadCardsId().keySet();
         ArrayList<Integer> updatedCards = new ArrayList<>(keySet);
         for(Node node: leadsBox.getChildren()) {
-            if (!node.getId().equals(lead1Id) && !node.getId().equals(lead2Id)) {
-                if (!updatedCards.contains(Integer.parseInt(node.getId())))
+            System.out.println("carta leader con id num: "+node.getId());
+            System.out.println("carta leader con id num: "+node.getId());
+            if (!node.getId().equals("lead1") && !node.getId().equals("lead2")) {
+                System.out.println("carta leader con id num: "+node.getId());
+                if (!updatedCards.contains(Integer.parseInt(node.getId()))) {
+                    System.out.println("carta leader scartata");
                     ((ImageView) node).setImage(new Image("/org.example/images/Masters of Renaissance__Cards_BACK_3mmBleed-49-1.png"));
-                else if (simplifiedModel.getLeadCardsId().get(Integer.parseInt(node.getId())))
+                }else if (simplifiedModel.getLeadCardsId().get(Integer.parseInt(node.getId()))) {
+                    System.out.println("carta leader attivata");
                     node.setOpacity(1.0);
+                }
             }
         }
         keySet = simplifiedModel.getDevCardsId().keySet();
         updatedCards = new ArrayList<>(keySet);
-        System.out.println(updatedCards);
+        System.out.println("updated cards:" +updatedCards);
         for(Node node: allDevs.getChildren())
             ((ImageView)node).setImage(null);
         for(int id: updatedCards) {
@@ -603,6 +610,7 @@ public class BoardController implements GUIcontroller{
     public void leadShelfActivation(int cardId) {
 
         if (leadsBox.lookup("#" + lead1Id).getId().equals(String.valueOf(cardId))) {
+            System.out.println("ho trovato lead attiva, è la prima");
             if(!shelf4)
                 sShelf1.setId("shelf4");
             else {
@@ -610,7 +618,8 @@ public class BoardController implements GUIcontroller{
                 shelf5=true;
             }
         }
-        if (leadsBox.lookup("#" + lead2Id).getId().equals(String.valueOf(cardId))) {
+        else if (leadsBox.lookup("#" + lead2Id).getId().equals(String.valueOf(cardId))) {
+            System.out.println("ho trovato lead attiva, è la seconda");
             if(!shelf4)
                 sShelf2.setId("shelf4");
             else

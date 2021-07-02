@@ -210,21 +210,23 @@ public class Player {
     public ArrayList<Resource> getSpecialShelfResources() {
         ArrayList<Resource> resources=new ArrayList<>();
         for (int i = 0; i < 2; i++) {
-            System.out.println("controllo lo special chelf "+i);
-            if (!personalBoard.getSpecialShelves().isEmpty() && personalBoard.getSpecialShelves().get(i).isPresent()) {
+            System.out.println("controllo lo special shelf "+i);
+            if (!personalBoard.getSpecialShelves().isEmpty() && (personalBoard.getSpecialShelves().size()>i)&&personalBoard.getSpecialShelves().get(i).isPresent()) {
                 System.out.println("è presente");
                 resources.addAll(personalBoard.getSpecialShelves().get(i).get().getSpecialSlots());
                 System.out.println("ho preso le risorse contenute");
-            }
-        }return resources;
+            }else
+                System.out.println("non è presente");
+        }
+        System.out.println("fine controllo shelves");
+        return resources;
     }
 
     /**
      * @return an ArrayList of Resources stored in Player's Supply
      */
     public ArrayList<Resource> getSupplyResources() {
-        ArrayList<Resource> resources=new ArrayList<>(resourceSupply.viewResources());
-        return resources;
+        return new ArrayList<>(resourceSupply.viewResources());
     }
 
     /**

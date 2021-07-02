@@ -333,18 +333,24 @@ public class Controller {
                 if (player.getPersonalBoard().checkResourcesForUsages(requirements, boardResources)) {
                     System.out.println("ha i requisiti");
                     player.setAction(Action.BUYCARD);
+                    System.out.println("faccio buy");
                     game.getDevDeckMatrix().buyCard(cardToBuy);
+                    System.out.println("finito buy, rimuovo risorse");
                     player.getPersonalBoard().removeResources(cardToBuy.getRequirements());
+                    System.out.println("risorse rimosse,metto carta");
                     player.getPersonalBoard().getDevCardSlot().overlap(cardToBuy, position);
+                    System.out.println("carta messa");
                     if (player.getPersonalBoard().getDevCardSlot().getDevCards().size()==7){
                         lastRound=true;
                         lobby.sendAll(new LobbyMessage(player.getName()+" has bought the 7th Development card"));
                     }
+                    System.out.println("invio info");
                     sendWarehouseInfo(player);
                     sendStrongboxInfo(player);
                     sendPlayerCardsInfo(player);
                     for (Player player1:game.getPlayers())
                         sendDevCardMatrixInfo(player1);
+                    System.out.println("info inviate");
                 } else
                     throw new ResourceNotValidException("The player does not have enough resources to go through with the action");
             } else
@@ -386,6 +392,7 @@ public class Controller {
             int newCardLevel = wantedCard.getLevel();
             if (newCardLevel == 1) {
                 System.out.println("carta livello 1");
+                System.out.println(player.getPersonalBoard().getDevCardSlot().getActiveCards().size());
                 return player.getPersonalBoard().getDevCardSlot().getActiveCards().size() < 3;
             } else {
                 System.out.println("carta livello>1");
@@ -416,6 +423,7 @@ public class Controller {
         } else if(index <0 || index >6) {
             throw new NotAcceptableSelectorException("Index out of range : " + index);
         } else {
+            System.out.println("setto lobby su market");
             lobby.setStateOfGame(GameState.MARKET);
             player.setAction(Action.TAKEFROMMARKET);
             game.getMarket().buyResources(index, player);
@@ -605,8 +613,10 @@ public class Controller {
                     if(requirementsLeadCheck(card,player)) {
                         player.activateAbility(card);
                         sendPlayerCardsInfo(player);
-                        if(card.getAbility() instanceof LeadAbilityShelf)
+                        if(card.getAbility() instanceof LeadAbilityShelf){
+                            System.out.println("mando lo shelfabilityactivemessage");
                             getHandlerFromPlayer(clientId).send(new ShelfAbilityActiveMessage(cardId));
+                        }
                     }else
                         getHandlerFromPlayer(clientId).send(new LobbyMessage("Missing requirements to activate this lead"));
                 }
@@ -653,7 +663,6 @@ public class Controller {
             playersResources.addAll(player.getWarehouseResources());
             playersResources.addAll(player.getSpecialShelfResources());
             if (player.getPersonalBoard().checkResourcesForUsages(card.getResources(), playersResources)) {
-                player.getPersonalBoard().removeResources(card.getResources());
                 return true;
             } else
                 return false;
@@ -694,24 +703,35 @@ public class Controller {
      * @return true if the Resources are put in a valid position
      */
     private boolean checkSpecialShelf(ArrayList<Resource> specialRes, Player player) {
+        System.out.println("sono dentro checkspecialshelf");
         boolean result= false;
         if (specialRes.size() > 2) {
+            System.out.println("ho messo più di 2 risorse nella special");
             getHandlerFromPlayer(player.getName()).send(new LobbyMessage("Too many resources for the special shelf"));
-        } else if (!specialRes.get(0).equals(specialRes.get(1))){
+        } else if (specialRes.size()>1 && !specialRes.get(0).equals(specialRes.get(1))){
+            System.out.println("ho messo 2 risorse diverse nella special");
             getHandlerFromPlayer(player.getName()).send(new LobbyMessage("Two different resources cannot be in the same special shelf"));
         }else {
+            System.out.println("risorse valide in eventuale specialshelf");
             SpecialShelf shelf;
             for (int i = 0; i < 2; i++) {
-                if (player.getPersonalBoard().getSpecialShelves().get(i).isPresent()) {
+                if (player.getPersonalBoard().getSpecialShelves().size()>i &&
+                        player.getPersonalBoard().getSpecialShelves().get(i).isPresent()) {
+                    System.out.println("sono nella special shelf");
                     shelf = player.getPersonalBoard().getSpecialShelves().get(i).get();
+                    System.out.println("ho preso la special shelf");
                     if (shelf.getResourceType().equals(specialRes.get(0))) {
-                        shelf.getSpecialSlots().clear();
-                        shelf.getSpecialSlots().addAll(specialRes);
+                        //shelf.getSpecialSlots().clear();
+                        //shelf.getSpecialSlots().addAll(specialRes);
+                        System.out.println("posso mettere le res nella special shelf");
                         result = true;
-                    }
+                    }else
+                        System.out.println("special shelf di tipo diverso come risorse");
                 }else if(i==0) {
+                    System.out.println("non ho special shelves");
                     getHandlerFromPlayer(player.getName()).send(new LobbyMessage("The special shelves are not active"));
-                }else if(result){
+                }else if(!result){
+                    System.out.println("la II shelf non è disponibile");
                     getHandlerFromPlayer(player.getName()).send(new LobbyMessage("The shelf requested is not active"));
                 }
             }
@@ -850,7 +870,8 @@ public class Controller {
         }
         if(!player.getPersonalBoard().getSpecialShelves().isEmpty()){
             for(int i=3;i<5;i++) {
-                if(!player.getPersonalBoard().getSpecialShelves().isEmpty()&&player.getPersonalBoard().getSpecialShelves().get(i-3).isPresent()) {
+                if(player.getPersonalBoard().getSpecialShelves().size()>(i-3) &&
+                        player.getPersonalBoard().getSpecialShelves().get(i-3).isPresent()) {
                     Resource resource = player.getPersonalBoard().getSpecialShelves().get(i - 3).get().getResourceType();
                     player.getPersonalBoard().getSpecialShelves().remove(i - 3);
                     player.getPersonalBoard().getSpecialShelves().add(i - 3, Optional.of(new SpecialShelf(resource)));
@@ -869,6 +890,7 @@ public class Controller {
      * @return true if the disposition is valid, false otherwise
      */
     private boolean checkShelfContent(ArrayList<String>[] newWarehouse, Player player) {
+        System.out.println("sono dentro checkShelfContent");
         for(int i=0; i<3;i++) {
             if (newWarehouse[i].size() <= i + 1) {
                 System.out.println("dimensione dell shelf corretta "+i);
@@ -889,11 +911,15 @@ public class Controller {
             System.out.println("ci sono risorse di stesso tipo su shelf diversi");
             return false;
         }
+        System.out.println("sono prima if specialshelf 4 in check");
         if(!newWarehouse[3].isEmpty()) {
+            System.out.println("dentro !new[3]");
             if (!checkSpecialShelf(stringArrayToResArray(newWarehouse[3]), player))
                 return false;
         }
+        System.out.println("sono prima if specialshelf 4 in check");
         if(!newWarehouse[4].isEmpty()){
+            System.out.println("dentro !new[4]");
             return checkSpecialShelf(stringArrayToResArray(newWarehouse[4]), player);
         }
         return true;

@@ -28,7 +28,6 @@ public class DevMatrixController implements GUIcontroller {
     public void setDevMatrix(SimplifiedModel info) {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 3; j++) {
-                System.out.println(info.getDevMatrix()[i][j]);
                 int id = info.getDevMatrix()[i][j];
                 ImageView card = new ImageView();
                 if(id==0)

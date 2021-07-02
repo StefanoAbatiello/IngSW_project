@@ -106,14 +106,31 @@ public class PersonalBoard {
                 warehouseDepots.removeResource(resource);
             }
             else if(!specialShelves.isEmpty()) {
-                for(int i=0; i<2;i++) {
-                    if (specialShelves.get(i).isPresent() && specialShelves.get(i).get().getResourceType().equals(resource))
-                        specialShelves.get(i).get().getSpecialSlots().remove(resource);
+                if(!removeFromSpecialShelf(resource)){
+                            System.out.println("tolgo da strong perchè no in sShelf");
+                            strongBox.getStrongboxContent().remove(resource);
+                } else
+                    System.out.println("tolta da Special Shelf");
+            } else
+                strongBox.getStrongboxContent().remove(resource);
+        }
+        System.out.println("fine rimuovi in personalboard");
+        return resources;
+    }
+
+    private boolean removeFromSpecialShelf(Resource resource){
+        for(int i=0; i<2;i++) {
+            System.out.println("dentro for rimuovo Sshelf: "+i);
+            if (specialShelves.size()>i && specialShelves.get(i).isPresent() && specialShelves.get(i).get().getResourceType().equals(resource)) {
+                System.out.println("dentro if perchè presente shelf: " + i);
+                if (!specialShelves.get(i).get().getSpecialSlots().isEmpty()) {
+                    System.out.println("dentro if con shelf piena");
+                    specialShelves.get(i).get().getSpecialSlots().remove(resource);
+                    return true;
                 }
             }
-            else strongBox.getStrongboxContent().remove(resource);
         }
-        return resources;
+        return false;
     }
 
     /**
@@ -130,9 +147,11 @@ public class PersonalBoard {
         }
         if(!getSpecialShelves().isEmpty()) {
             getSpecialShelves().get(0).ifPresent(specialShelf ->
-                specialShelf.getSpecialSlots().forEach(resource -> warehouse[3].add(String.valueOf(resource))));
-            getSpecialShelves().get(1).ifPresent(specialShelf ->
-                specialShelf.getSpecialSlots().forEach(resource -> warehouse[4].add(String.valueOf(resource))));
+                specialShelf.getSpecialSlots().forEach(resource -> {
+                    System.out.println("metto una risorse nello special shelf 0");warehouse[3].add(String.valueOf(resource));}));
+            if(getSpecialShelves().size()>1)
+                getSpecialShelves().get(1).ifPresent(specialShelf ->
+                    specialShelf.getSpecialSlots().forEach(resource -> warehouse[4].add(String.valueOf(resource))));
         }
         return warehouse;
     }

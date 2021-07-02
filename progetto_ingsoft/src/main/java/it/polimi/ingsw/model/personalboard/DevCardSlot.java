@@ -12,11 +12,6 @@ public class DevCardSlot implements Points {
     private final ArrayList<DevCard>[] slot;
 
     /**
-     * this is a support ArrayList which contain al the active cards(the ones with the highest level)
-     */
-    private final ArrayList<DevCard> ActiveCards;
-
-    /**
      * this is the amount of points gained from the cards bought
      */
     private int VictoryPoints;
@@ -25,7 +20,6 @@ public class DevCardSlot implements Points {
         this.slot = new ArrayList[3];
         for (int i=0;i<3;i++)
             slot[i]=new ArrayList<>();
-        ActiveCards=new ArrayList<>();
         VictoryPoints=0;
     }
 
@@ -75,10 +69,14 @@ public class DevCardSlot implements Points {
      * @return an ArrayList containing only active cards owned by Player
      */
     public ArrayList<DevCard> getActiveCards() {
+        ArrayList<DevCard> ActiveCards= new ArrayList<>();
         for(int i=0;i<3;i++){
             for (DevCard dev : slot[i]) {
-                if (dev.isActive())
+                System.out.println("card id: "+dev.getId());
+                if (dev.isActive()){
                     ActiveCards.add(dev);
+                    System.out.println("is active");
+                }
             }
         }
         return ActiveCards;

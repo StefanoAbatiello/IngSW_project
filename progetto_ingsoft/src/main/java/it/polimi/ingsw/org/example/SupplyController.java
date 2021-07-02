@@ -49,7 +49,7 @@ public class SupplyController implements GUIcontroller{
             res.setOpacity(1.0);
         }
         shelfMenu.setVisible(false);
-        System.out.println("finito");
+        System.out.println("newWarehouse[1]: "+selectedResource);
         newWarehouse[0].add(selectedResource);
 
 
@@ -63,7 +63,7 @@ public class SupplyController implements GUIcontroller{
             res.setOpacity(1.0);
         }
         shelfMenu.setVisible(false);
-        System.out.println("finito");
+        System.out.println("newWarehouse[2]: "+selectedResource);
         newWarehouse[1].add(selectedResource);
     }
 
@@ -75,7 +75,7 @@ public class SupplyController implements GUIcontroller{
             res.setOpacity(1.0);
         }
         shelfMenu.setVisible(false);
-        System.out.println("finito");
+        System.out.println("newWarehouse[3]: "+selectedResource);
         newWarehouse[2].add(selectedResource);
     }
 
@@ -87,7 +87,7 @@ public class SupplyController implements GUIcontroller{
             res.setOpacity(1.0);
         }
         shelfMenu.setVisible(false);
-        System.out.println("finito");
+        System.out.println("newWarehouse[4]: "+selectedResource);
         newWarehouse[3].add(selectedResource);
     }
 
@@ -99,7 +99,7 @@ public class SupplyController implements GUIcontroller{
             res.setOpacity(1.0);
         }
         shelfMenu.setVisible(false);
-        System.out.println("finito");
+        System.out.println(("newWarehouse[5]: "+selectedResource));
         newWarehouse[4].add(selectedResource);
     }
 
@@ -127,10 +127,12 @@ public class SupplyController implements GUIcontroller{
         selectedResource= (target.getId());
         target.setOpacity(0.8);
 
-        if(((BoardController)(gui.getControllerFromName("board.fxml"))).checkSpecial()==1)
+        if(((BoardController)(gui.getControllerFromName("board.fxml"))).checkSpecial()==1) {
+            System.out.println("sono checkSpecial gui ==1");
             shelf4.setVisible(true);
-        else
+        }else
             if(((BoardController)(gui.getControllerFromName("board.fxml"))).checkSpecial()==2) {
+                System.out.println("sono checkSpecial gui ==2");
                 shelf4.setVisible(true);
                 shelf5.setVisible(true);
             }
@@ -138,6 +140,7 @@ public class SupplyController implements GUIcontroller{
     }
 
     public void sendResource() {
+        System.out.println(newWarehouse);
         gui.getMainClient().send(new ResourceInSupplyAction(newWarehouse));
         gui.changeStage("board.fxml");
     }

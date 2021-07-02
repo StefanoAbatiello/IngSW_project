@@ -170,6 +170,7 @@ public class SetupController implements GUIcontroller {
        ArrayList<Integer> cardsId= new ArrayList<>();
         for(Node image:leadBox.getChildren()) {
             cardsId.add(Integer.parseInt(image.getId()));
+            image.setDisable(false);
             image.setOpacity(1.0);
         }
         selectedCards.clear();
