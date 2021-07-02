@@ -54,22 +54,22 @@
                   <Image url="@../images/freccia.png" />
                </image>
             </ImageView>
-            <ImageView fx:id="arrow3" fitHeight="43.0" fitWidth="43.0" layoutX="451.0" layoutY="289.0" onMouseClicked="#changeMarket" pickOnBounds="true" preserveRatio="true" rotate="90.0">
+            <ImageView fx:id="arrow6" fitHeight="43.0" fitWidth="43.0" layoutX="451.0" layoutY="289.0" onMouseClicked="#changeMarket" pickOnBounds="true" preserveRatio="true" rotate="90.0">
                <image>
                   <Image url="@../images/freccia.png" />
                </image>
             </ImageView>
-            <ImageView fx:id="arrow4" fitHeight="43.0" fitWidth="43.0" layoutX="408.0" layoutY="289.0" onMouseClicked="#changeMarket" pickOnBounds="true" preserveRatio="true" rotate="90.0">
+            <ImageView fx:id="arrow5" fitHeight="43.0" fitWidth="43.0" layoutX="408.0" layoutY="289.0" onMouseClicked="#changeMarket" pickOnBounds="true" preserveRatio="true" rotate="90.0">
                <image>
                   <Image url="@../images/freccia.png" />
                </image>
             </ImageView>
-            <ImageView fx:id="arrow5" fitHeight="43.0" fitWidth="43.0" layoutX="365.0" layoutY="289.0" onMouseClicked="#changeMarket" pickOnBounds="true" preserveRatio="true" rotate="90.0">
+            <ImageView fx:id="arrow4" fitHeight="43.0" fitWidth="43.0" layoutX="365.0" layoutY="289.0" onMouseClicked="#changeMarket" pickOnBounds="true" preserveRatio="true" rotate="90.0">
                <image>
                   <Image url="@../images/freccia.png" />
                </image>
             </ImageView>
-            <ImageView fx:id="arrow6" fitHeight="43.0" fitWidth="43.0" layoutX="322.0" layoutY="289.0" onMouseClicked="#changeMarket" pickOnBounds="true" preserveRatio="true" rotate="90.0">
+            <ImageView fx:id="arrow3" fitHeight="43.0" fitWidth="43.0" layoutX="322.0" layoutY="289.0" onMouseClicked="#changeMarket" pickOnBounds="true" preserveRatio="true" rotate="90.0">
                <image>
                   <Image url="@../images/freccia.png" />
                </image>
