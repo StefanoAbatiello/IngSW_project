@@ -8,8 +8,15 @@ import static java.lang.Thread.sleep;
 
 public class ServerInput implements Runnable {
 
+    /**
+     * The mainServer of which this class is the input
+     */
     private final MainServer server;
 
+    /**
+     *
+     * @param server the mainServer of the class
+     */
     public ServerInput(MainServer server){
         this.server=server;
     }

@@ -533,6 +533,7 @@ public class BoardController implements GUIcontroller{
         viewDevs.setVisible(false);
         leadsBox.setVisible(false);
         chooseLeadOut.setVisible(true);
+        backProd.setVisible(false);
         leadOutLabel.setVisible(true);
         chooseLeadOut.setOnAction((event) -> {
             Label selectedItem = (Label)chooseLeadOut.getSelectionModel().getSelectedItem();
@@ -545,6 +546,7 @@ public class BoardController implements GUIcontroller{
         System.out.println(id);
         leadOut.add(id);
         disableAll(true,true,true,false);
+        backProd.setVisible(true);
         leadsBox.setVisible(true);
         production.setVisible(false);
         chooseLeadOut.setVisible(false);
@@ -662,6 +664,7 @@ public class BoardController implements GUIcontroller{
     }
 
     public void endTurn(ActionEvent actionEvent) {
+        resetBoard();
         gui.getMainClient().send(new TurnChangeMessage());
 
     }

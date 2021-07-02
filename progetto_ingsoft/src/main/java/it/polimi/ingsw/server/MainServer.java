@@ -18,26 +18,26 @@ public class MainServer {
     private int nextClientId;
     private final ServerInput keyboardReader;
 
-    public Map<Integer, VirtualClient> getClientFromId() {
+    public synchronized Map<Integer, VirtualClient> getClientFromId() {
         return clientFromId;
     }
 
-    public Map<String, Integer> getIDFromName() {
+    public synchronized Map<String, Integer> getIDFromName() {
         return IDFromName;
     }
 
-    public Map<Integer, String> getNameFromId() {
+    public synchronized Map<Integer, String> getNameFromId() {
         return nameFromId;
     }
 
-    public Map<Integer, Lobby> getLobbyFromClientID() {
+    public synchronized Map<Integer, Lobby> getLobbyFromClientID() {
         return lobbyFromClientID;
     }
 
     /**
      * @return a new valid Lobby id
      */
-    public int generateLobbyId(){
+    public synchronized int generateLobbyId(){
         int actualLobbyId=nextLobbyId;
         nextLobbyId++;
         return actualLobbyId;
@@ -46,7 +46,7 @@ public class MainServer {
     /**
      * @return a new valid client id
      */
-    private int generateClientId(){
+    private synchronized int generateClientId(){
         int actualClientId=nextClientId;
         nextClientId++;
         return actualClientId;
@@ -87,7 +87,7 @@ public class MainServer {
      * @param clientHandler is the user's clientHandler
      * @return player ID after connected his client to the server
      */
-    private int connectClient(String name, ClientHandler clientHandler) {
+    private synchronized int connectClient(String name, ClientHandler clientHandler) {
         int ID = generateClientId();
         nameFromId.put(ID,name);
         IDFromName.put(name,ID);
@@ -101,7 +101,7 @@ public class MainServer {
      * @param name is player's nickname
      * @param clientHandler is the user's clientHandler
      */
-    private void reconnectClient(int ID, String name, ClientHandler clientHandler) {
+    private synchronized void reconnectClient(int ID, String name, ClientHandler clientHandler) {
         VirtualClient newClient = new VirtualClient(ID, name, clientHandler);
         clientFromId.put(ID,newClient);
     }
@@ -109,7 +109,7 @@ public class MainServer {
     /**
      * @param clientId is the id of the client to disconnect
      */
-    public void disconnectClient(int clientId) {
+    public synchronized void disconnectClient(int clientId) {
         ClientHandler clientHandler = getClientFromId().get(clientId).getClientHandler();
         //clientHandler.closeStream();
         clientHandler.getPingObserver().setActive(false);
@@ -129,7 +129,7 @@ public class MainServer {
      * @param clientHandler is the user's clientHandler
      * @return new player ID when he is inserted in a new game, -1 when he is already logged into
      */
-    public int checkNickName(String newName, ClientHandler clientHandler) {
+    public synchronized int checkNickName(String newName, ClientHandler clientHandler) {
         //System.out.println("sei dentro checknickname con: " + message.getMessage());[Debug]
         int id;
         for (String name : nameFromId.values()) {

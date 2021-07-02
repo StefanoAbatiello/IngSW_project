@@ -78,6 +78,10 @@ public class GUI extends Application implements View {
      * disconnect client when he closes the window
      */
     private void closeWindowEvent(WindowEvent t) {
+        changeStage(BOARD);
+        BoardController boardController=(BoardController)getControllerFromName(BOARD);
+        boardController.resetBoard();
+        client.send(new QuitMessage());
         getMainClient().disconnect();
     }
 

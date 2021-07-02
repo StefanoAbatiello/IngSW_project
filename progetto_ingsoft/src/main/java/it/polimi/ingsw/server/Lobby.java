@@ -34,29 +34,53 @@ public class Lobby {
         return lobbyID;
     }
 
+    /**
+     * it sets the phase of the game
+     * @param stateOfGame the phase of game
+     */
     public void setStateOfGame(GameState stateOfGame) {
         this.stateOfGame = stateOfGame;
     }
 
+    /**
+     *
+     * @return if the lobby is full
+     */
     public boolean isLobbyFull(){
         return seatsAvailable == 0;
     }
 
+    /**
+     *
+     * @return the phase of the game
+     */
     public GameState getStateOfGame() {
         return stateOfGame;
     }
 
+    /**
+     * this sends a message to all the players of a lobby
+     * @param message the message to send
+     */
     public void sendAll(SerializedMessage message) {
         for(VirtualClient player: clientFromPosition.values()){
             player.getClientHandler().send(message);
         }
     }
 
-    public Map<Integer, VirtualClient> getClientFromPosition() {
+    /**
+     *
+     * @return the map of the clients and their positions
+     */
+    public synchronized Map<Integer, VirtualClient> getClientFromPosition() {
         return clientFromPosition;
     }
 
 
+    /**
+     *
+     * @return the names of the players in the lobby
+     */
     public ArrayList<String> getPlayersName(){
         ArrayList<String> playersName = new ArrayList<>();
         for (VirtualClient client : clientFromPosition.values()) {
@@ -65,11 +89,20 @@ public class Lobby {
         return  playersName;
     }
 
-    public int getSeatsAvailable() {
+    /**
+     *
+     * @return the available seats in a lobby
+     */
+    public synchronized int getSeatsAvailable() {
         return seatsAvailable;
     }
 
-    public Map<VirtualClient,Integer> reinsertPlayer(int id) {
+    /**
+     *
+     * @param id id of the player
+     * @return the map in which there is the client and their positions
+     */
+    public synchronized Map<VirtualClient,Integer> reinsertPlayer(int id) {
         System.out.println("sto reinserendo il player nella lobby");
         String name=server.getNameFromId().get(id);
         if(getStateOfGame()==GameState.PREPARATION1||getStateOfGame()==GameState.PREPARATION2||getStateOfGame()==GameState.ONGOING){
@@ -91,7 +124,12 @@ public class Lobby {
         return positionFromClient;
     }
 
-    public Map<VirtualClient,Integer> insertPlayer(int id) {
+    /**
+     *
+     * @param id
+     * @return
+     */
+    public synchronized Map<VirtualClient,Integer> insertPlayer(int id) {
         int position=positionFromClient.size();
         positionFromClient.put(server.getClientFromId().get(id), position);
         clientFromPosition.put(position,server.getClientFromId().get(id));
@@ -106,11 +144,11 @@ public class Lobby {
     }
 
 
-    public Map<VirtualClient,Integer> getPositionFromClient() {
+    public synchronized Map<VirtualClient,Integer> getPositionFromClient() {
         return positionFromClient;
     }
 
-    public Map<VirtualClient,Integer> removePlayer(VirtualClient player) {
+    public synchronized Map<VirtualClient,Integer> removePlayer(VirtualClient player) {
         clientFromPosition.remove(positionFromClient.get(player));
         positionFromClient.remove(player);
         if (playersOnline()>0)
@@ -229,14 +267,12 @@ public class Lobby {
                 controller.turnUpdate();
             }
         }
-
         //9-gestisco il cambio delle white marble
         else if (input instanceof ChangeChoosableAction && server.getClientFromId().get(id).equals(controller.getActualPlayerTurn())){
             if(stateOfGame==GameState.MARKET){
                 controller.checkChangeChoosable(id,((ChangeChoosableAction) input).getNewRes());
             }
         }
-
         else if(!server.getClientFromId().get(id).equals(controller.getActualPlayerTurn()))
             server.getClientFromId().get(id).getClientHandler().send(new LobbyMessage("Wait for your turn!"));
     }
@@ -248,6 +284,10 @@ public class Lobby {
         return (int) clientFromPosition.values().stream().filter(client -> server.isClientOnline(client.getID())).count();
     }
 
+    /**
+     *
+     * @return the controller of the game
+     */
     public Controller getController() {
         return controller;
     }

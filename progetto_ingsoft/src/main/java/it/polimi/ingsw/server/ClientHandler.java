@@ -22,7 +22,7 @@ public class ClientHandler implements Runnable, Sender {
     /**
      * @param active sets the active connection field of this SocketServer object
      */
-    public void setActive(boolean active) {
+    public synchronized void setActive(boolean active) {
         this.active = active;
     }
 
@@ -86,6 +86,11 @@ public class ClientHandler implements Runnable, Sender {
         }
     }
 
+    /**
+     * This method handles the QuitMessages from the clients
+     * @param message message from client
+     * @return true if the message is of type QuitMessage
+     */
     private boolean quitHandler(SerializedMessage message) {
         if(message instanceof QuitMessage){
             server.disconnectClient(clientID);
@@ -194,28 +199,20 @@ public class ClientHandler implements Runnable, Sender {
         }
     }
 
+    /**
+     *
+     * @return ClientId
+     */
     public int getClientId() {
         return clientID;
     }
 
+    /**
+     * @return pingObserver
+     */
     public PongObserver getPingObserver() {
         return pingObserver;
     }
 
-    public Socket getSocket() {
-        return this.socket;
-    }
-
-    public void closeStream() {
-        try {
-            inputStreamObj.close();
-        } catch (IOException ignored) {
-        }
-        try {
-            outputStreamObj.close();
-        } catch (IOException ignored) {
-
-        }
-    }
 }
 

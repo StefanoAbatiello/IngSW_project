@@ -42,29 +42,6 @@ public class MarketController implements GUIcontroller{
         gui.getMainClient().send(new MarketAction(Integer.parseInt(target)));
     }
 
-    /*public void changeSecondRow(MouseEvent mouseEvent) {
-            gui.getMainClient().send(new MarketAction(1));
-    }
-
-    public void changeThirdRow(MouseEvent mouseEvent) {
-            gui.getMainClient().send(new MarketAction(2));
-    }
-
-    public void changeFourthColumn(MouseEvent mouseEvent) {
-            gui.getMainClient().send(new MarketAction(6));
-    }
-
-    public void changeThirdColumn(MouseEvent mouseEvent) {
-            gui.getMainClient().send(new MarketAction(5));
-    }
-
-    public void changeSecondColumn(MouseEvent mouseEvent) {
-            gui.getMainClient().send(new MarketAction(4));
-    }
-
-    public void changeFirstColumn(MouseEvent mouseEvent) {
-            gui.getMainClient().send(new MarketAction(3));
-    }*/
 
     public void setMarket(String[][] info){
         for (int i=0;i<3;i++){
