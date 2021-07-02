@@ -193,9 +193,8 @@ public class Lobby {
                 String personalProdOut=((ProductionAction) input).getPersProdOut();
                 ArrayList<String> leadProdOut= ((ProductionAction) input).getLeadProdOut();
                 try {
-                    if (controller.checkProduction(cardProd, personalProdIn, personalProdOut, leadProdOut)) {
-                        //result = new ActionAnswer("produzioni effettuate \n(carte: " + cardProd + "\npersonal:"+personalProdIn+" )");
-                    }
+                     controller.checkProduction(cardProd, personalProdIn, personalProdOut, leadProdOut);
+
                 } catch (ActionAlreadySetException e) {
                     controller.getActualPlayerTurn().getClientHandler().send(new LobbyMessage(e.getMessage()));
                 } catch (CardNotOwnedByPlayerOrNotActiveException e) {

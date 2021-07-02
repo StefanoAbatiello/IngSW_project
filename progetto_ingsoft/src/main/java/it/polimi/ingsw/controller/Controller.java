@@ -103,7 +103,7 @@ public class Controller {
      */
     private ArrayList<Resource> stringArrayToResArray(ArrayList<String> resources){
         ArrayList<Resource> allRes = new ArrayList<>();
-        resources.forEach(res->allRes.add(Resource.valueOf(res)));
+        resources.forEach(res->allRes.add(Resource.valueOf(res.toUpperCase())));
         return allRes;
     }
 
@@ -494,18 +494,28 @@ public class Controller {
         if (player.checkActionAlreadyDone())
             throw new ActionAlreadySetException("The player has already gone through with an action in their turn");
         else if (checkOwnerCards(cardProd,player)) {
+            System.err.println("check prod dopo checkOwner");
             ArrayList<Resource> totalProdIn = takeAllProdIn(cardProd, stringArrayToResArray(personalProdIn), player);
+            System.err.println("presi tutti prodIn: "+totalProdIn);
             ArrayList<Resource> playersResources =new ArrayList<>(player.getWarehouseResources());
+            System.err.println("preso warehouse");
             playersResources.addAll(player.getSpecialShelfResources());
+
             if(player.getPersonalBoard().checkResourcesForUsages(totalProdIn, playersResources)) {
+                System.err.println("ha risorse per avere prodout");
                 player.setAction(Action.ACTIVATEPRODUCTION);
                 player.getPersonalBoard().removeResources(totalProdIn);
+                System.err.println("ho rimosso risorse prodin");
                 ArrayList<Resource> totalProdOut = takeAllProdOut(cardProd, stringArrayToResArray(personalProdIn), personalProdOut, leadProdOut, player);
+                System.err.println("ho preso prodout");
                 player.getPersonalBoard().getStrongBox().addInStrongbox(totalProdOut);
+                System.err.println("gli ho messo prodout");
                 sendStrongboxInfo(player);
                 sendWarehouseInfo(player);
+                System.err.println("ho madato info produzione");
                 return true;
-            }
+            }else
+                getHandlerFromPlayer(player.getName()).send(new LobbyMessage("You do not have enough resources for the production"));
         }
         return false;
     }
@@ -518,23 +528,30 @@ public class Controller {
      */
     private ArrayList<Resource> takeAllProdIn( ArrayList<Integer> cardProd ,ArrayList<Resource> personalProdIn, Player player) {
         ArrayList<Resource> totalProdIn = new ArrayList<>();
+        System.err.println("devo prendere dev giocatore");
         ArrayList<DevCard> prodDevs = new ArrayList<>(player.getPersonalBoard().getDevCardSlot().getDevCards());
         ArrayList<LeadCard> prodLeads = new ArrayList<>(player.getLeadCards());
-        prodDevs.removeIf(card->!cardProd.contains(card.getId()));
-        prodLeads.removeIf(card->!cardProd.contains(card.getId())&&!(card.getAbility() instanceof LeadAbilityProduction)&&!card.isActive());
-        if (!prodDevs.isEmpty())
-            prodDevs.forEach(card -> {
-                ArrayList<Resource> prodIn = card.getProdIn();
-                totalProdIn.addAll(prodIn);
-            });
-        if (!prodLeads.isEmpty())
-            prodLeads.forEach(card -> {
-                Resource prodIn = card.getAbility().getAbilityResource();
-                totalProdIn.add(prodIn);
-            });
-        if (!personalProdIn.isEmpty())
-            totalProdIn.addAll(personalProdIn);
-       return totalProdIn;
+        if(!cardProd.isEmpty()) {
+            if (!prodDevs.isEmpty()) {
+                prodDevs.removeIf(card -> !cardProd.contains(card.getId()));
+                prodDevs.forEach(card -> {
+                    ArrayList<Resource> prodIn = card.getProdIn();
+                    totalProdIn.addAll(prodIn);
+                });
+            }
+            if (!prodLeads.isEmpty()) {
+                prodLeads.removeIf(card -> !cardProd.contains(card.getId()) && !(card.getAbility() instanceof LeadAbilityProduction) && !card.isActive());
+
+                prodLeads.forEach(card -> {
+                    Resource prodIn = card.getAbility().getAbilityResource();
+                    totalProdIn.add(prodIn);
+                });
+            }
+        }
+            if (!personalProdIn.isEmpty())
+                totalProdIn.addAll(personalProdIn);
+
+        return totalProdIn;
     }
 
     /**
