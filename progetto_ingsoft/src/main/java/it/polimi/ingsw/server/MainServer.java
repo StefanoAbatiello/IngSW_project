@@ -78,6 +78,10 @@ public class MainServer {
         new MainServer(port);
     }
 
+    /**
+     *
+     * @return the connection server
+     */
     public ConnectionServer getConnectionServer() {
         return connectionServer;
     }

@@ -12,12 +12,33 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Lobby {
+    /**
+     * the server for the lobby
+     */
     private final MainServer server;
+    /**
+     * the id of the lobby
+     */
     private final int lobbyID;
+    /**
+     * seats available in the lobby
+     */
     private int seatsAvailable;
+    /**
+     * from the clients gets their positions
+     */
     private final Map<VirtualClient,Integer> positionFromClient;
+    /**
+     * from the positions gets the clients
+     */
     private final Map<Integer,VirtualClient> clientFromPosition;
+    /**
+     * the phase of the game
+     */
     private GameState stateOfGame;
+    /**
+     * the controller of the game
+     */
     private final Controller controller;
 
     public Lobby(int lobbyID, int seatsAvailable, MainServer server){
@@ -125,9 +146,9 @@ public class Lobby {
     }
 
     /**
-     *
-     * @param id
-     * @return
+     * inserts the player in the lobby
+     * @param id id of the player
+     * @return the map with the clients and their positions with the new client
      */
     public synchronized Map<VirtualClient,Integer> insertPlayer(int id) {
         int position=positionFromClient.size();
@@ -143,11 +164,19 @@ public class Lobby {
         return positionFromClient;
     }
 
-
+    /**
+     *
+     * @return the map with the clients and their positions with the new client
+     */
     public synchronized Map<VirtualClient,Integer> getPositionFromClient() {
         return positionFromClient;
     }
 
+    /**
+     * this method removes a player from the lobby they were playing in
+     * @param player the player to remove
+     * @return
+     */
     public synchronized Map<VirtualClient,Integer> removePlayer(VirtualClient player) {
         clientFromPosition.remove(positionFromClient.get(player));
         positionFromClient.remove(player);
@@ -162,6 +191,11 @@ public class Lobby {
         return positionFromClient;
     }
 
+    /**
+     * it handles the messages from the player in the game
+     * @param input the message in input
+     * @param id the id of the player
+     */
     public synchronized void actionHandler(SerializedMessage input, int id) {
         Object gameObj;
         System.out.println("sono nell'handler della lobby");
