@@ -2,7 +2,7 @@ package it.polimi.ingsw.org.example;
 
 import it.polimi.ingsw.client.MainClient;
 import it.polimi.ingsw.client.View;
-import it.polimi.ingsw.client.ViewCLI;
+import it.polimi.ingsw.client.SimplifiedModel;
 import it.polimi.ingsw.messages.*;
 import it.polimi.ingsw.messages.answerMessages.*;
 import javafx.application.Application;
@@ -42,7 +42,7 @@ public class GUI extends Application implements View {
     private Scene currentscene;
     private Stage stage;
     private MainClient client=null;
-    private ViewCLI viewCLI;
+    private SimplifiedModel simplifiedModel;
 
     public static void main() {
 
@@ -165,19 +165,19 @@ public class GUI extends Application implements View {
 
     /**
      *
-     * @param viewCLI are semplified informations given from server
+     * @param simplifiedModel are semplified informations given from server
      * @param input
      */
     @Override
-    public void gameSetupHandler(ViewCLI viewCLI, SerializedMessage input){
+    public void gameSetupHandler(SimplifiedModel simplifiedModel, StartingGameMessage input){
         Platform.runLater(()->{System.out.println("gameSetup");
             changeStage(BOARD);
             System.out.println("change stage");
             BoardController boardController = (BoardController) nameMapController.get(BOARD);
             SetupController leadscontroller = (SetupController) nameMapController.get(LEADCARDSCHOICE);
             DevMatrixController devscontroller = (DevMatrixController) nameMapController.get(DEVMATRIX);
-            boardController.setLeads(viewCLI);
-            devscontroller.setDevMatrix(viewCLI);
+            boardController.setLeads(simplifiedModel);
+            devscontroller.setDevMatrix(simplifiedModel);
             System.out.println("end controller game");
             System.out.println("end");});
 
@@ -291,7 +291,7 @@ public class GUI extends Application implements View {
             MarketController guicontroller = (MarketController) nameMapController.get(MARKETBOARD);
             System.out.println("end controller game");
             System.out.println("end");
-            viewCLI.setMarket(marketChangeMessage.getMarket());
+            simplifiedModel.setMarket(marketChangeMessage.getMarket());
             guicontroller.setMarket(marketChangeMessage.getMarket());
         });
 
@@ -305,9 +305,9 @@ public class GUI extends Application implements View {
     public void warehouseHandler(WareHouseChangeMessage wareHouseChangeMessage) {
         Platform.runLater(()-> {
             System.out.println("Your warehouse has changed");
-            viewCLI.setWarehouse((wareHouseChangeMessage).getWarehouse());
+            simplifiedModel.setWarehouse((wareHouseChangeMessage).getWarehouse());
             BoardController boardController = (BoardController) getControllerFromName(BOARD);
-            boardController.setWareHouse(viewCLI);
+            boardController.setWareHouse(simplifiedModel);
         });
     }
 
@@ -319,30 +319,31 @@ public class GUI extends Application implements View {
     public void personalCardHandler(CardIDChangeMessage cardIDChangeMessage) {
             System.out.println("Your cards have changed");
             cardIDChangeMessage.getCardID().keySet().stream().filter(integer -> integer > 48 && integer < 65).forEach(cardID -> {
-                if (viewCLI.getLeadCardsId().get(cardID) != cardIDChangeMessage.getCardID().get(cardID)) {
-                    viewCLI.getLeadCardsId().remove(cardID);
+                if (simplifiedModel.getLeadCardsId().get(cardID) != cardIDChangeMessage.getCardID().get(cardID)) {
+                    simplifiedModel.getLeadCardsId().remove(cardID);
                 }
-                if (!viewCLI.getLeadCardsId().containsKey(cardID)) {
-                    viewCLI.addLeadCardsId(cardID, cardIDChangeMessage.getCardID().get(cardID));
+                if (!simplifiedModel.getLeadCardsId().containsKey(cardID)) {
+                    simplifiedModel.addLeadCardsId(cardID, cardIDChangeMessage.getCardID().get(cardID));
                     System.out.println("mi sto salvando la carta " + cardID);
                 }
-                for (int id : viewCLI.getLeadCardsId().keySet())
+                for (int id : simplifiedModel.getLeadCardsId().keySet())
                     if (!cardIDChangeMessage.getCardID().containsKey(id))
-                        viewCLI.getLeadCardsId().remove(id);
+                        simplifiedModel.getLeadCardsId().remove(id);
             });
             cardIDChangeMessage.getCardID().keySet().stream().filter(integer -> integer >= 0 && integer <= 48).forEach(cardID -> {
-                if (viewCLI.getDevCardsId().get(cardID) != cardIDChangeMessage.getCardID().get(cardID)) {
-                    viewCLI.getDevCardsId().remove(cardID);
+                if (simplifiedModel.getDevCardsId().get(cardID) != cardIDChangeMessage.getCardID().get(cardID)) {
+                    simplifiedModel.getDevCardsId().remove(cardID);
                 }
-                if (!viewCLI.getDevCardsId().containsKey(cardID)) {
-                    viewCLI.addDevCardId(cardID, cardIDChangeMessage.getCardID().get(cardID));
+                if (!simplifiedModel.getDevCardsId().containsKey(cardID)) {
+                    simplifiedModel.addDevCardId(cardID, cardIDChangeMessage.getCardID().get(cardID));
                     System.out.println("mi sto salvando la carta " + cardID);
 
                 }
             });
-        Platform.runLater(()-> {viewCLI.setDevPositions(cardIDChangeMessage.getCardPosition());
+        Platform.runLater(()-> {
+            simplifiedModel.setDevPositions(cardIDChangeMessage.getCardPosition());
             BoardController boardController = (BoardController) getControllerFromName(BOARD);
-            boardController.setCards(viewCLI);
+            boardController.setCards(simplifiedModel);
         });
     }
 
@@ -352,10 +353,10 @@ public class GUI extends Application implements View {
      */
     @Override
     public void devMatrixHandler(DevMatrixChangeMessage devMatrixChangeMessage) {
-    viewCLI.setDevMatrix(devMatrixChangeMessage.getDevMatrix());
+    simplifiedModel.setDevMatrix(devMatrixChangeMessage.getDevMatrix());
     Platform.runLater(()->{
         DevMatrixController matrixController = (DevMatrixController) getControllerFromName(DEVMATRIX);
-        matrixController.setDevMatrix(viewCLI);
+        matrixController.setDevMatrix(simplifiedModel);
     });
     }
 
@@ -367,9 +368,9 @@ public class GUI extends Application implements View {
     public void strongboxHandler(StrongboxChangeMessage strongboxChangeMessage) {
         Platform.runLater(()-> {
             System.out.println("Your strongbox has changed");
-            viewCLI.setStrongbox(strongboxChangeMessage.getStrongbox());
+            simplifiedModel.setStrongbox(strongboxChangeMessage.getStrongbox());
             BoardController boardController = (BoardController) getControllerFromName(BOARD);
-            boardController.setStrongbox(viewCLI);
+            boardController.setStrongbox(simplifiedModel);
         });
     }
 
@@ -389,12 +390,12 @@ public class GUI extends Application implements View {
         });
     }
 
-    public void setViewCLI(ViewCLI viewCLI) {
-        this.viewCLI = viewCLI;
+    public void setViewCLI(SimplifiedModel simplifiedModel) {
+        this.simplifiedModel = simplifiedModel;
     }
 
-    public ViewCLI getViewCLI() {
-        return viewCLI;
+    public SimplifiedModel getViewCLI() {
+        return simplifiedModel;
     }
 
     public Stage getStage() {

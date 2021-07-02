@@ -13,8 +13,6 @@ import java.util.*;
 
 public class MainClient implements Runnable, Sender {
 
-
-
     private View view;
     private String ip;
     private int port;
@@ -23,7 +21,7 @@ public class MainClient implements Runnable, Sender {
     private ObjectOutputStream socketOut;
     private Socket socket;
     private static ClientInput keyboardReader;
-    private ViewCLI viewCLI;
+    private SimplifiedModel simplifiedModel;
     private ClientCardParser parser;
     private Timer timer;
     private static final int timerPeriod = 30000; // time in milliseconds
@@ -34,9 +32,9 @@ public class MainClient implements Runnable, Sender {
         this.port = port;
         parser = new ClientCardParser(this);
         timer=new Timer();
-        this.viewCLI = new ViewCLI();
-        this.view=new CLI(parser);
-        view.setViewCLI(viewCLI);
+        this.simplifiedModel = new SimplifiedModel();
+        this.view=new CLI(parser,keyboardReader);
+        view.setViewCLI(simplifiedModel);
 
     }
 
@@ -46,8 +44,8 @@ public class MainClient implements Runnable, Sender {
         parser = new ClientCardParser(this);
         timer=new Timer();
         this.view=gui;
-        viewCLI = new ViewCLI();
-        view.setViewCLI(viewCLI);
+        simplifiedModel = new SimplifiedModel();
+        view.setViewCLI(simplifiedModel);
     }
 
     public void run() {
@@ -124,11 +122,7 @@ public class MainClient implements Runnable, Sender {
                     pingObserver.setStarted(true);
                     timer.schedule(pingObserver, 0, timerPeriod);
                 } catch (IllegalStateException e) {
-                    System.out.println("-----");
-                    System.err.println(e.getMessage());
                     System.out.println("timer scheduled yet");
-                    e.printStackTrace();
-                    System.out.println("-----");
                 }
                 //System.out.println("pongObserver partito");[Debug]
             }
@@ -146,7 +140,7 @@ public class MainClient implements Runnable, Sender {
 
         //7-gestione del salvataggio e della stampa della situazione iniziale della partita
         else if(input instanceof StartingGameMessage){
-            view.gameSetupHandler(viewCLI,input);
+            view.gameSetupHandler(simplifiedModel,(StartingGameMessage) input);
         }
 
         //9-gestione della richiesta di sistemazione delle nuove risorse nel supply
@@ -214,8 +208,8 @@ public class MainClient implements Runnable, Sender {
         System.exit(-1);
     }
 
-    public ViewCLI getViewCLI() {
-        return viewCLI;
+    public SimplifiedModel getViewCLI() {
+        return simplifiedModel;
     }
 
 }

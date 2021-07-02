@@ -279,4 +279,8 @@ public class Lobby {
     public int playersOnline() {
         return (int) clientFromPosition.values().stream().filter(client -> server.isClientOnline(client.getID())).count();
     }
+
+    public Controller getController() {
+        return controller;
+    }
 }

@@ -1,8 +1,7 @@
 package it.polimi.ingsw.org.example;
 
-import it.polimi.ingsw.client.ViewCLI;
+import it.polimi.ingsw.client.SimplifiedModel;
 import it.polimi.ingsw.messages.*;
-import it.polimi.ingsw.model.personalboard.BlackCross;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -18,7 +17,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Window;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 public class BoardController implements GUIcontroller{
     @FXML
@@ -127,9 +125,9 @@ public class BoardController implements GUIcontroller{
         this.gui=gui;
     }
 
-    public void setLeads(ViewCLI viewCLI) {
+    public void setLeads(SimplifiedModel simplifiedModel) {
         int card;
-        Set<Integer> leadsIdSet= viewCLI.getLeadCardsId().keySet();
+        Set<Integer> leadsIdSet= simplifiedModel.getLeadCardsId().keySet();
         ArrayList<Integer> leadsId= new ArrayList<>(leadsIdSet);
         for(Node image: leadsBox.getChildren()) {
             card = leadsId.get(0);
@@ -267,30 +265,30 @@ public class BoardController implements GUIcontroller{
         }
     }
 
-    public void setWareHouse(ViewCLI viewCLI) {
+    public void setWareHouse(SimplifiedModel simplifiedModel) {
 
         emptyShelves();
 
-        if(!viewCLI.getWarehouse()[0].isEmpty()) {
-            shelf1.setImage(new Image("org.example/images/" + viewCLI.getWarehouse()[0].get(0) + ".png"));
+        if(!simplifiedModel.getWarehouse()[0].isEmpty()) {
+            shelf1.setImage(new Image("org.example/images/" + simplifiedModel.getWarehouse()[0].get(0) + ".png"));
             shelf1.setOpacity(1.0);
         }
-        System.out.println(viewCLI.getWarehouse()[0]);
+        System.out.println(simplifiedModel.getWarehouse()[0]);
 
-        for(int i=0;i<viewCLI.getWarehouse()[1].size();i++){
-            System.out.println(viewCLI.getWarehouse()[1]);
+        for(int i = 0; i< simplifiedModel.getWarehouse()[1].size(); i++){
+            System.out.println(simplifiedModel.getWarehouse()[1]);
             ImageView image= (ImageView) shelf2.getChildren().get(i);
-            image.setImage(new Image("org.example/images/"+viewCLI.getWarehouse()[1].get(i)+".png"));
+            image.setImage(new Image("org.example/images/"+ simplifiedModel.getWarehouse()[1].get(i)+".png"));
             image.setOpacity(1.0);
         }
-        for(int i=0;i<viewCLI.getWarehouse()[2].size();i++){
-            System.out.println(viewCLI.getWarehouse()[2]);
+        for(int i = 0; i< simplifiedModel.getWarehouse()[2].size(); i++){
+            System.out.println(simplifiedModel.getWarehouse()[2]);
             ImageView image= (ImageView) shelf3.getChildren().get(i);
-            image.setImage(new Image("org.example/images/"+viewCLI.getWarehouse()[2].get(i)+".png"));
+            image.setImage(new Image("org.example/images/"+ simplifiedModel.getWarehouse()[2].get(i)+".png"));
             image.setOpacity(1.0);
         }
 
-        setSpecialShelf(viewCLI);
+        setSpecialShelf(simplifiedModel);
     }
 
     private void emptyShelves() {
@@ -306,22 +304,22 @@ public class BoardController implements GUIcontroller{
             ((ImageView)node).setImage(null);*/
     }
 
-    private void setSpecialShelf(ViewCLI viewCLI) {
-        if(!viewCLI.getWarehouse()[3].isEmpty())
-            for(int i=0;i<viewCLI.getWarehouse()[3].size();i++){
-                System.out.println(viewCLI.getWarehouse()[3]);
+    private void setSpecialShelf(SimplifiedModel simplifiedModel) {
+        if(!simplifiedModel.getWarehouse()[3].isEmpty())
+            for(int i = 0; i< simplifiedModel.getWarehouse()[3].size(); i++){
+                System.out.println(simplifiedModel.getWarehouse()[3]);
                 //considero che se mi arriva c'è sicuramente attiva
                 HBox special= (HBox) board.lookup("#shelf4");
                 ImageView image= (ImageView) special.getChildren().get(i);
-                image.setImage(new Image("org.example/images/"+viewCLI.getWarehouse()[3].get(i)+".png"));
+                image.setImage(new Image("org.example/images/"+ simplifiedModel.getWarehouse()[3].get(i)+".png"));
                 image.setOpacity(1.0);
             }
-        if(!viewCLI.getWarehouse()[4].isEmpty())
-            for(int i=0;i<viewCLI.getWarehouse()[4].size();i++){
-                System.out.println(viewCLI.getWarehouse()[4]);
+        if(!simplifiedModel.getWarehouse()[4].isEmpty())
+            for(int i = 0; i< simplifiedModel.getWarehouse()[4].size(); i++){
+                System.out.println(simplifiedModel.getWarehouse()[4]);
                 HBox special= (HBox) board.lookup("#shelf5");
                 ImageView image= (ImageView) special.getChildren().get(i);
-                image.setImage(new Image("org.example/images/"+viewCLI.getWarehouse()[4].get(i)+".png"));
+                image.setImage(new Image("org.example/images/"+ simplifiedModel.getWarehouse()[4].get(i)+".png"));
                 image.setOpacity(1.0);
             }
 
@@ -502,28 +500,28 @@ public class BoardController implements GUIcontroller{
 
     }
 
-    public void setCards(ViewCLI viewCLI) {
-        Set<Integer> keySet = viewCLI.getLeadCardsId().keySet();
+    public void setCards(SimplifiedModel simplifiedModel) {
+        Set<Integer> keySet = simplifiedModel.getLeadCardsId().keySet();
         ArrayList<Integer> updatedCards = new ArrayList<>(keySet);
         for(Node node: leadsBox.getChildren()) {
             if (!node.getId().equals(lead1Id) && !node.getId().equals(lead2Id)) {
                 if (!updatedCards.contains(Integer.parseInt(node.getId())))
                     ((ImageView) node).setImage(new Image("/org.example/images/Masters of Renaissance__Cards_BACK_3mmBleed-49-1.png"));
-                else if (viewCLI.getLeadCardsId().get(Integer.parseInt(node.getId())))
+                else if (simplifiedModel.getLeadCardsId().get(Integer.parseInt(node.getId())))
                     node.setOpacity(1.0);
             }
         }
-        keySet = viewCLI.getDevCardsId().keySet();
+        keySet = simplifiedModel.getDevCardsId().keySet();
         updatedCards = new ArrayList<>(keySet);
         System.out.println(updatedCards);
         for(Node node: allDevs.getChildren())
             ((ImageView)node).setImage(null);
         for(int id: updatedCards) {
             String stringId = String.valueOf(id);
-            updateDevs(stringId, viewCLI.getDevPositions().get(id));
+            updateDevs(stringId, simplifiedModel.getDevPositions().get(id));
             if (!stringId.equals(card1ID) && !stringId.equals(card2ID) && !stringId.equals(card3ID)) {
-                if (viewCLI.getDevCardsId().get(id)) {
-                    addDev(stringId, viewCLI.getDevPositions().get(id));
+                if (simplifiedModel.getDevCardsId().get(id)) {
+                    addDev(stringId, simplifiedModel.getDevPositions().get(id));
                     //updateDevs(stringId, viewCLI.getDevPositions().get(id));
                 }
             }
@@ -581,11 +579,11 @@ public class BoardController implements GUIcontroller{
     }
 
 
-    public void setStrongbox(ViewCLI viewCLI) {
-        coinBox.setText( String.valueOf(viewCLI.getStrongbox()[0]));
-        servantBox.setText( String.valueOf(viewCLI.getStrongbox()[1]));
-        shieldBox.setText( String.valueOf(viewCLI.getStrongbox()[2]));
-        stoneBox.setText( String.valueOf(viewCLI.getStrongbox()[3]));
+    public void setStrongbox(SimplifiedModel simplifiedModel) {
+        coinBox.setText( String.valueOf(simplifiedModel.getStrongbox()[0]));
+        servantBox.setText( String.valueOf(simplifiedModel.getStrongbox()[1]));
+        shieldBox.setText( String.valueOf(simplifiedModel.getStrongbox()[2]));
+        stoneBox.setText( String.valueOf(simplifiedModel.getStrongbox()[3]));
     }
 
     public void activePope(int meetingNumber) {

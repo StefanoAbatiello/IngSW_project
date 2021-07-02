@@ -14,7 +14,7 @@ import java.util.Objects;
 
 public class ClientCardParser {
 
-    private MainClient client;
+    private final MainClient client;
     private JSONArray devCardList;
     private JSONArray leadCardList;
     private int cardId;
@@ -49,22 +49,24 @@ public class ClientCardParser {
     }
 
     private void parseDevCard(JSONObject card) {
-        ArrayList<String>[] cardValues = new ArrayList[6];
-        for (int i = 0; i < 6; i++)
-            cardValues[i] = new ArrayList<>();
-        cardValues[0].add(String.valueOf(card.get("LEVEL")));
-        cardValues[1].add(String.valueOf(card.get("COLOR")));
-        JSONArray jsonProdIn = (JSONArray) card.get("PRODIN");
-        for (String s : (Iterable<String>) jsonProdIn)
-            cardValues[2].add(String.valueOf(s));
-        JSONArray jsonProdOut = (JSONArray) card.get("PRODOUT");
-        for (String s : (Iterable<String>) jsonProdOut)
-            cardValues[3].add(String.valueOf(s));
-        cardValues[4].add(String.valueOf(card.get("FAITHPOINT")));
-        JSONArray jsonRequirements = (JSONArray) card.get("REQUIREMENTS");
-        for (String s : (Iterable<String>) jsonRequirements)
-            cardValues[5].add(String.valueOf(s));
-        client.getViewCLI().getCardsFromId().put(cardId, cardValues);
+        if (!client.getViewCLI().getCardsFromId().containsKey(cardId)) {
+            ArrayList<String>[] cardValues = new ArrayList[6];
+            for (int i = 0; i < 6; i++)
+                cardValues[i] = new ArrayList<>();
+            cardValues[0].add(String.valueOf(card.get("LEVEL")));
+            cardValues[1].add(String.valueOf(card.get("COLOR")));
+            JSONArray jsonProdIn = (JSONArray) card.get("PRODIN");
+            for (String s : (Iterable<String>) jsonProdIn)
+                cardValues[2].add(String.valueOf(s));
+            JSONArray jsonProdOut = (JSONArray) card.get("PRODOUT");
+            for (String s : (Iterable<String>) jsonProdOut)
+                cardValues[3].add(String.valueOf(s));
+            cardValues[4].add(String.valueOf(card.get("FAITHPOINT")));
+            JSONArray jsonRequirements = (JSONArray) card.get("REQUIREMENTS");
+            for (String s : (Iterable<String>) jsonRequirements)
+                cardValues[5].add(String.valueOf(s));
+            client.getViewCLI().getCardsFromId().put(cardId, cardValues);
+        }
     }
 
     public void takeLeadCardFromId(int cardId){
@@ -74,27 +76,29 @@ public class ClientCardParser {
     }
 
     private void parseLeadCard(JSONObject card) {
-        ArrayList<String>[] cardValues = new ArrayList[6];
-        for (int i = 0; i < 6; i++)
-            cardValues[i] = new ArrayList<>();
-        System.out.println("inizio il parsing");
-        cardValues[0].add(String.valueOf(card.get("ABILITY")));
-        cardValues[1].add(String.valueOf(card.get("RESOURCE")));
-        JSONObject jsonResourceReq = (JSONObject) card.get("RESOURCEREQ");
-        if (!jsonResourceReq.isEmpty()) {
-            cardValues[2].add(String.valueOf(jsonResourceReq.get("NUM")));
-            cardValues[3].add(String.valueOf(jsonResourceReq.get("KIND")));
+        if (!client.getViewCLI().getCardsFromId().containsKey(cardId)) {
+            ArrayList<String>[] cardValues = new ArrayList[6];
+            for (int i = 0; i < 6; i++)
+                cardValues[i] = new ArrayList<>();
+            System.out.println("inizio il parsing");
+            cardValues[0].add(String.valueOf(card.get("ABILITY")));
+            cardValues[1].add(String.valueOf(card.get("RESOURCE")));
+            JSONObject jsonResourceReq = (JSONObject) card.get("RESOURCEREQ");
+            if (!jsonResourceReq.isEmpty()) {
+                cardValues[2].add(String.valueOf(jsonResourceReq.get("NUM")));
+                cardValues[3].add(String.valueOf(jsonResourceReq.get("KIND")));
+            }
+            JSONObject jsonCardReq = (JSONObject) card.get("CARDREQ");
+            if (!jsonCardReq.isEmpty()) {
+                cardValues[4].add(String.valueOf(jsonCardReq.get("LEVEL")));
+                JSONArray jsonColor = (JSONArray) jsonCardReq.get("COLOR");
+                for (String s : (Iterable<String>) jsonColor)
+                    cardValues[5].add(String.valueOf(s));
+            }
+            System.out.println("salvo dati carta nella mappa");
+            client.getViewCLI().getCardsFromId().put(cardId, cardValues);
+            System.out.println("dati carta salvati nella mappa");
         }
-        JSONObject jsonCardReq = (JSONObject) card.get("CARDREQ");
-        if (!jsonCardReq.isEmpty()) {
-            cardValues[4].add(String.valueOf(jsonCardReq.get("LEVEL")));
-            JSONArray jsonColor = (JSONArray) jsonCardReq.get("COLOR");
-            for (String s : (Iterable<String>) jsonColor)
-                cardValues[5].add(String.valueOf(s));
-        }
-        System.out.println("salvo dati carta nella mappa");
-        client.getViewCLI().getCardsFromId().put(cardId, cardValues);
-        System.out.println("dati carta salvati nella mappa");
     }
 
 }

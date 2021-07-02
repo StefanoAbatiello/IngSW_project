@@ -1,23 +1,12 @@
 package it.polimi.ingsw.org.example;
 
-import it.polimi.ingsw.client.ViewCLI;
-import it.polimi.ingsw.messages.BuyCardAction;
-import it.polimi.ingsw.messages.ChosenLeadMessage;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
+import it.polimi.ingsw.client.SimplifiedModel;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-
-import java.io.IOException;
 
 public class DevMatrixController implements GUIcontroller {
     @FXML
@@ -36,7 +25,7 @@ public class DevMatrixController implements GUIcontroller {
         this.gui = gui;
     }
 
-    public void setDevMatrix(ViewCLI info) {
+    public void setDevMatrix(SimplifiedModel info) {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 3; j++) {
                 System.out.println(info.getDevMatrix()[i][j]);

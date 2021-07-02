@@ -3,7 +3,7 @@ package it.polimi.ingsw.client;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ViewCLI {
+public class SimplifiedModel {
 
     private Map<Integer, Boolean> devCardsId;
     private Map<Integer, Boolean> leadCardsId;
@@ -38,7 +38,7 @@ public class ViewCLI {
         this.market = market;
     }
 
-    public ViewCLI() {
+    public SimplifiedModel() {
         devCardsId=new HashMap<>();
         leadCardsId=new HashMap<>();
         strongbox = new int[4];
@@ -178,6 +178,7 @@ public class ViewCLI {
     }
 
     public void showMarket(){
+        System.out.println("this is the market:");
         for(int i=0;i<3;i++){
             System.out.println(i+"->    " + market[i][0] + "    |       " + market[i][1] + "    |       " + market[i][2] + "    |       " + market[i][3]);
         }
@@ -224,6 +225,7 @@ public class ViewCLI {
     }
 
     public void showDevMatrix(){
+        System.out.println("this are the development cards purchasable:");
         ArrayList<String>[] card;
         for(int i=0; i<4;i++)
             for(int j=0;j<3;j++){
@@ -237,5 +239,10 @@ public class ViewCLI {
     }
 
 
-
+    public void matrixParser(int[][] devMatrix, ClientCardParser parser) {
+        Arrays.stream(devMatrix[0]).forEach(parser::takeDevCardFromId);
+        Arrays.stream(devMatrix[1]).forEach(parser::takeDevCardFromId);
+        Arrays.stream(devMatrix[2]).forEach(parser::takeDevCardFromId);
+        Arrays.stream(devMatrix[3]).forEach(parser::takeDevCardFromId);
+    }
 }

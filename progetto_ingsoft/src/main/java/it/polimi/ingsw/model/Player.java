@@ -8,7 +8,7 @@ import it.polimi.ingsw.model.personalboard.PersonalBoard;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Player implements Points{
+public class Player {
 
     /**
      * this is the player's Personal board
@@ -102,7 +102,6 @@ public class Player implements Points{
         return name;
     }
 
-    @Override
     public int getPoints(){
         /**
          * this are the points of the player

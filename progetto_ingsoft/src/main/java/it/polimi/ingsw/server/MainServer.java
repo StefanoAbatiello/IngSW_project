@@ -2,7 +2,6 @@ package it.polimi.ingsw.server;
 
 
 import it.polimi.ingsw.messages.LobbyMessage;
-import it.polimi.ingsw.messages.NickNameAction;
 import it.polimi.ingsw.messages.WaitingRoomAction;
 
 import java.util.*;
@@ -68,18 +67,16 @@ public class MainServer {
 
     public static void main(String[] args) {
         System.out.println("I'm the Server, welcome!");
-        //String hostname=args[0];
-        try {
-            int portNumber = Integer.parseInt(args[1]);
-            if (portNumber < 0 || (portNumber > 0 && portNumber < 1024)) {
-                System.err.println("Port number not valid, restart the program");
-                System.exit(0);
-            }
-            new MainServer(portNumber);
-        }catch (NumberFormatException e){
-            System.err.println(e.getMessage());
-            System.exit(-1);
+        System.out.println("Please insert PORT");
+        System.out.println("Type: \"[PORT chosen]\"");
+        Scanner scanner = new Scanner(System.in);
+        int port = scanner.nextInt();
+        if (port < 0 || (port > 0 && port < 1024)) {
+            System.err.println("Port number not valid, restart the program");
+            System.exit(0);
         }
+        new MainServer(port);
+
     }
 
     public ConnectionServer getConnectionServer() {
@@ -95,7 +92,7 @@ public class MainServer {
         int ID = generateClientId();
         nameFromId.put(ID,name);
         IDFromName.put(name,ID);
-        VirtualClient newClient = new VirtualClient(ID, name, clientHandler.getSocket(), clientHandler);
+        VirtualClient newClient = new VirtualClient(ID, name, clientHandler);
         clientFromId.put(ID,newClient);
         return ID;
     }
@@ -106,7 +103,7 @@ public class MainServer {
      * @param clientHandler is the user's clientHandler
      */
     private void reconnectClient(int ID, String name, ClientHandler clientHandler) {
-        VirtualClient newClient = new VirtualClient(ID, name, clientHandler.getSocket(), clientHandler);
+        VirtualClient newClient = new VirtualClient(ID, name, clientHandler);
         clientFromId.put(ID,newClient);
     }
 

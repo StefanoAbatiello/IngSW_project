@@ -5,19 +5,16 @@ import it.polimi.ingsw.messages.DiscardLeadAction;
 import it.polimi.ingsw.messages.*;
 import it.polimi.ingsw.messages.answerMessages.NumOfPlayersAnswer;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
-public class ClientInput implements Runnable{
+public class ClientInput implements Runnable {
 
-    private MainClient client;
-    private Boolean mainAction;
+    private final MainClient client;
+    private Boolean active;
 
     public ClientInput(MainClient client) {
         this.client = client;
-        this.mainAction=false;
+        this.active = true;
     }
 
     /**
@@ -26,348 +23,334 @@ public class ClientInput implements Runnable{
     @Override
     public void run() {
         //System.out.println("sto leggendo da tastiera");
-        Scanner scanner=new Scanner(System.in);
-        while (true) {
-            String input = scanner.nextLine();
-            inputHandler(input.replace(" ",""));
+        Scanner scanner = new Scanner(System.in);
+        while (active) {
+            String input = scanner.nextLine().toUpperCase();
+            inputHandler(input.replace(" ", ""));
         }
     }
 
+    /**
+     * this method handles the command written by the player and in case communicates with the server
+     * @param input is the string written by the user
+     */
     private void inputHandler(String input) {
-        //1-close client
-        if (input.equalsIgnoreCase("quit")) {
+
+        if (input.equalsIgnoreCase("QUIT")) {
             client.disconnect();
-        }
-
-        //2-choose nickname
-        else if (input.startsWith("Nickname:")) {
-            System.out.println(input.replace("Nickname:", ""));
-            client.send(new NickNameAction(input.replace("Nickname:", "")));
-        }
-
-        //3-choose number of player in lobby
-        else if(input.startsWith("PlayersNumber:")){
-            String string = input.replace("PlayersNumber:", "");
-            try{
-                int num = Integer.parseInt(string);
-                if(num>=0 && num<=3) {
-                    client.send(new NumOfPlayersAnswer(num));
-                }else
-                    System.out.println("Number of player selected not valid. Please type again " +
-                            "\"PlayersNumber:[num of player]\"");
-            } catch (NumberFormatException e) {
-                System.out.println("Command not valid. Please type again " +
-                        "\"PlayersNumber:[num of player]\"");
-            }
-        }
-
-        //4-choose initial resource
-        else if(input.startsWith("InitialResource:") && input.contains("inshelf")){
-            input= input.replace("InitialResource:","").toUpperCase();
-            Map<Integer,Integer> shelves=new HashMap<>();
-            Map<Integer,String> resources=new HashMap<>();
-            String[] commands=input.split(";");
-            for(int i=0;i<commands.length;i++) {
-                String[] words = commands[i].split("INSHELF");
-                String resource = words[0];
-                try {
-                    int shelfNum = Integer.parseInt(words[1]);
-                    if (shelfNum >= 0 && shelfNum <= 2) {
-                        shelves.put(i,shelfNum);
-                        resources.put(i,resource);
-                    } else {
-                        System.out.println("Index of shelf not valid. Please type again");
-                        return;
-                    }
-                } catch (NumberFormatException e) {
-                    System.out.println("Command not valid. Please type again");
-                }
-            }
-            client.send(new InitialResourceMessage(resources, shelves));
-        }
-
-        //5-choose which leader cards hold
-        else if(input.startsWith("ChosenLeads:") && input.contains(",")){
-            //TODO check che ne scelga 2
-            input=input.replace("ChosenLeads:","");
-            ArrayList<Integer> chosenId = new ArrayList<>();
-            String[] words= input.split(",");
-            chosenId.add(Integer.parseInt(words[0]));
-            chosenId.add(Integer.parseInt(words[1]));
-            //chosenId.forEach(System.out::println);
-            client.send(new ChosenLeadMessage(chosenId));
-            //System.out.println("Ho inviato il messaggio");[Debug]
-        }
-
-        //6-ask for command's format
-        else if(input.equals("ShowActions")){
+        } else if (input.startsWith("NAME:")) {
+            sendNickname(input.replace("NAME:", ""));
+        } else if (input.startsWith("NUMBER:")) {
+            sendPlayersNumber(input.replace("NUMBER:", ""));
+        } else if (input.startsWith("INITIALRES:") && input.contains("INSHELF")) {
+            sendInitialResource(input.replace("INITIALRES:", ""));
+        } else if (input.startsWith("LEADS:") && input.contains(",")) {
+            sendChosenLeads(input.replace("LEADS:", ""));
+        } else if (input.equals("SHOWACTIONS")) {
             System.out.println("Type one of this command:");
-            if (!mainAction) {
-                System.out.println("# Buy a development card: "
-                        + "\"BuyDevCard:[CardId - 0 to 48],[Board Slot - 0 to 2]\"");
-                System.out.println("# Take resources from market: "
-                        + "\"BuyResources:[MarketTray's index - 0 to 6]\"");
-                System.out.println("# Do development production: "
-                        + "\"DoProductions:Cards:[card1ID,card2ID,...];personalIn:[Resource1,Resource2];personalOut:[Resource];LeadOut:[Resource...]\"");
-                //TODO gestione delle produzioni "speciali"
-            }else
-                System.out.println("# End your turn: " +
-                        "\"EndTurn\"");
+            System.out.println("# Buy a development card: "
+                    + "\"BuyCard:[CardId - 0 to 48],[Board Slot - 0 to 2]\"");
+            System.out.println("# Take resources from market: "
+                    + "\"BuyRes:[MarketTray's index - 0 to 6]\"");
+            System.out.println("# Do development production: "
+                    + "\"DoProd:Cards:[card1ID,card2ID,...];personalIn:[Resource1,Resource2];" +
+                    "personalOut:[Resource];LeadOut:[Resource...]\"");
             System.out.println("# Active leader card: " +
-                    "\"ActiveLeadCard:[Card id]\"");
+                    "\"ActiveLead:[Card id]\"");
             System.out.println("# Discard leader card: " +
-                    "\"DiscardLeadCard:[Card id]\"");
-            System.out.println("# Reorganize warehouse depots:" +
-                    "\"ReorganizeResources:\"");
+                    "\"DiscardLead:[Card id]\"");
             System.out.println("# Shows my personal board:" +
-                    "\"ShowPersonalBoard\"");
+                    "\"ShowBoard\"");
             System.out.println("# Show market: " +
                     "\"ShowMarket\"");
             System.out.println("# Show development card matrix: " +
-                    "\"ShowDevCardMatrix\"");
-        }
-
-        //7-request to show personal board
-        else if(input.equals("ShowPersonalBoard")){
+                    "\"ShowCardMatrix\"");
+            System.out.println("# End your turn: " +
+                    "\"EndTurn\"");
+        } else if (input.equals("SHOWBOARD")) {
             client.getViewCLI().showPersonalBoard();
-        }
-
-        //8-request to buy a development card
-        else if(input.startsWith("BuyDevCard") && input.contains(",")){
-            if(!mainAction) {
-                mainAction=true;
-                input = input.replace("BuyDevCard:", "");
-                try {
-                    String[] word=input.split(",");
-                    int id = Integer.parseInt(word[0]);
-                    int slot=Integer.parseInt(word[1]);
-                    if(id>=0 && id<=48 && slot>=0 && slot<=2) {
-                        int[][] matrix = client.getViewCLI().getDevMatrix();
-                        for (int i = 0; i < 4; i++)
-                            for (int j = 0; j < 3; j++) {
-                                if (matrix[i][j] == id) {
-                                    client.send(new BuyCardAction(id, slot));
-                                }
-                            }
-                    }else {
-                        System.out.println("Input not valid, please type again " +
-                                "\"BuyDevCard:[CardId - 0 to 48],[Board Slot - 0 to 2]\"");
-                        mainAction = false;
-                    }
-                } catch (NumberFormatException e) {
-                    System.out.println("Card id selected not valid. Please type again" +
-                            "\"BuyDevCard:[CardId - 0 to 48],[Board Slot - 0 to 2]\"");
-                        mainAction = false;
-                }
-            }else
-                System.out.println("Main action done yet," +
-                        " please type \"ShowActions\" to see which action you can do now");
-        }
-
-        //9-request to take resorces from market
-        else if(input.startsWith("BuyResources:")) {
-            if(!mainAction) {
-                mainAction=true;
-                input = input.replace("BuyResources:", "");
-                try {
-                    int selector = Integer.parseInt(input);
-                    if (selector >= 0 && selector <= 6) {
-                        System.out.println("invio il messaggio");
-                        client.send(new MarketAction(selector));
-                        System.out.println("messaggio inviato");
-                    } else {
-                        System.out.println("Index of matrix not valid. Type again" +
-                                "\"BuyResources:[MarketTray's index - 0 to 6]\"");
-                        mainAction = false;
-                    }
-                } catch (NumberFormatException e) {
-                    System.out.println("Command not valid. Please type again" +
-                            "\"BuyResources:[MarketTray's index - 0 to 6]\"");
-                    mainAction = false;
-                }
-            }else
-                System.out.println("Main action done yet," +
-                        " please type \"ShowActions\" to see which action you can do now");
-
-        }
-
-        //DoProductions:Cards:[card1ID,card2ID,...];personalIn:[Resource1,Resource2];personalOut:[Resource];LeadOut:[Resource...]\""
-        //10-request to activate productions
-        else if(input.startsWith("DoProductions")&&input.contains("Cards")&&input.contains("personalIn")&&input.contains("personalOut")&&input.contains("LeadOut")){
-            if (!mainAction) {
-                mainAction=true;
-                input = input.replace("DoProduction:", "");
-                String[] commands = input.split(";");
-
-                ArrayList<Integer> intId = new ArrayList<>();
-                ArrayList<String> personalIn =new ArrayList<>();
-                String personalOut=null;
-                ArrayList<String> leadOut =new ArrayList<>();
-
-
-                for(String string:commands) {
-                    if (string.contains("Cards")) {
-                        string = string.replace("Cards:", "");
-                        String[] words = string.split(",");
-                        for (String word : words) {
-                            if(word!=null) {
-                                intId.add(Integer.parseInt(word));
-                            }
-                        }
-                    }
-                    else
-                        System.out.println("Production of cards failed");
-                    if(string.contains("personalIn")){
-                        string=string.replace("personalIn:","");
-                        String[] words = string.split(",");
-                        for(String word:words){
-                            if(word!=null){
-                                personalIn.add(word);
-                            }
-                        }
-                    }
-                    else
-                        System.out.println("Production personalIn failed");
-                    if(string.contains("personalOut")){
-                        string=string.replace("personalOut:","");
-                        if(string!=null){
-                            personalOut=string;
-                        }
-                    }else
-                        System.out.println("Production personalOut failed");
-                    if(string.contains("LeadOut")){
-                        string=string.replace("LeadOut:","");
-                        String[] words = string.split(",");
-                        for(String word:words){
-                            if(word!=null){
-                                leadOut.add(word);
-                            }
-                        }
-                    }
-                    else
-                        System.out.println("Production of leads failed");
-                }
-                client.send(new ProductionAction(intId,personalIn,personalOut,leadOut));
-            }else
-                System.out.println("Main action done yet," +
-                        " please type \"ShowActions\" to see which action you can do now");
-        }
-
-        //11-request to activate a leader card
-        else if(input.startsWith("ActiveLeadCard:")){
-            input = input.replace("ActiveLeadCard:", "");
-            try {
-                int id = Integer.parseInt(input);
-                client.send(new ActiveLeadAction(id));
-            } catch (NumberFormatException e) {
-                System.out.println("please insert a number. Type again" +
-                        "\"ActiveLeadCard:[Card id]\"");
-            }
-        }
-
-        //12-request of put new resources in warehouse
-        else if(input.startsWith("PutNewResources:")){
-            input=input.replace("PutNewResources:","").toUpperCase();
-            String[] commands;
-            if (input.contains(","))
-                commands = input.split(",");
-            else {
-                commands= new String[1];
-                commands[0]=input;
-            }
-            int dim=client.getViewCLI().getWarehouse().length;
-            System.out.println("mi faccio una copia del warehouse");
-            ArrayList<String>[] warehouse=new ArrayList[dim];
-            for(int i=0;i<dim;i++) {
-                warehouse[i]=new ArrayList<>();
-            }
-            for(int i=0;i<dim;i++) {
-                System.out.println("copia dello shelf "+i);
-                int finalI = i;
-                client.getViewCLI().getWarehouse()[i].forEach(strings -> {
-                    warehouse[finalI].add(strings);
-                });
-            }
-            System.out.println("copia fatta");
-            for(String command:commands){
-                System.out.println("valuto validità del comando");
-                if(command.contains("INSHELF")) {
-                    String[] word = command.split("INSHELF");
-                    System.out.println("ho separato il comando");
-                    try {
-                        int shelfNum = Integer.parseInt(word[1]);
-                        if ((word[0].equalsIgnoreCase("COIN") ||
-                                word[0].equalsIgnoreCase("SERVANT") ||
-                                word[0].equalsIgnoreCase("SHIELD") ||
-                                word[0].equalsIgnoreCase("STONE")) && shelfNum < dim && shelfNum >= 0) {
-                            System.out.println("input valido: " + word[0] + " " + shelfNum);
-                            warehouse[shelfNum].add(word[0]);
-                            warehouse[shelfNum].forEach(string -> System.out.println("on shelf " + shelfNum + " [" + string + "]"));
-                            System.out.println("input salvato");
-                        } else {
-                            System.out.println("Input not valid, please type again");
-                            return;
-                        }
-                    }catch (NumberFormatException e){
-                        System.out.println("Input not valid, please type again");
-                    }
-                }else {
-                    System.out.println("Input not valid, please type again");
-                    return;
-                }
-            }
-            System.out.println("invio il messaggio");
-            client.send(new ResourceInSupplyAction(warehouse));
-            System.out.println("messaggio inviato");
-        }
-
-        //13-request to discard a leader card
-        else if(input.startsWith("DiscardLeadCard")){
-            input = input.replace("DiscardLeadCard:", "");
-            try {
-                int id = Integer.parseInt(input);
-                client.send(new DiscardLeadAction(id));
-            } catch (NumberFormatException e) {
-                System.out.println("please insert a number. Type again" +
-                        "\"DiscardLeadCard:[Card id]\"");
-            }
-        }
-
-        //14-show market
-        else if(input.equals("ShowMarket")){
-            System.out.println("this is the market:");
+        } else if (input.startsWith("BUYCARD") && input.contains(",")) {
+            sendDevCardPurchased(input.replace("BUYCARD:", ""));
+        } else if (input.startsWith("BUYRES:")) {
+            sendMarketIndex(input.replace("BUYRES:", ""));
+        } else if (input.startsWith("DOPROD") && input.contains("CARDS") && input.contains("PERSONALIN") && input.contains("PERSONALOUT") && input.contains("LEADOUT" )&& input.contains(";")) {
+            sendProductions(input.replace("DOPROD:", ""));
+        } else if (input.startsWith("ACTIVELEAD:")) {
+            sendActiveLeader(input.replace("ACTIVELEAD:", ""));
+        } else if (input.startsWith("DISCARDLEAD")) {
+            sendDiscardLeader(input.replace("DISCARDLEAD:", ""));
+        } else if (input.startsWith("PUTNEWRES")) {
+            sendNewWarehouseOrganization(input.replace("PUTNEWRES:", ""));
+        } else if (input.startsWith("CHANGERES")) {
+            sendChangeChoosable(input.replace("CHANGERES:", ""));
+        } else if (input.equals("SHOWMARKET")) {
             client.getViewCLI().showMarket();
-        }
-
-        //15-show dev matrix
-        else if(input.equals("ShowDevCardMatrix")){
-            System.out.println("this are dev cards buyable:");
+        } else if (input.equals("SHOWCARDMATRIX")) {
             client.getViewCLI().showDevMatrix();
-        }
-
-        //16-End of the turn
-        else if(input.equals("EndTurn")){
-            if(mainAction){
-                client.send(new TurnChangeMessage());
-                mainAction=false;
-            }else
-                System.out.println("you have not done a main action yet");
-        }
-
-
-        //ChangeWhiteMarble:[first resource],[second resource]
-        //17-white marble ability
-        else if(input.startsWith("ChangeWhiteMarble")){
-            input=input.replace("ChangeWhiteMarble:","");
-            String[] resources=input.split(",");
-            ArrayList<String> newRes=new ArrayList<>();
-            for (String res: resources){
-                newRes.add(res);
-            }
-            client.send(new ChangeChoosableAction(newRes));
-        }
-
-        else
+        } else if (input.equals("ENDTURN")) {
+            client.send(new TurnChangeMessage());
+        } else
             System.out.println("Input not valid, type again");
     }
+
+    /**
+     * this method analise the string and the send the ChangeChoosableMessage
+     * @param command is the string written by the user
+     */
+    private void sendChangeChoosable(String command) {
+        String[] resources;
+        if (command.contains(","))
+            resources = command.split(",");
+        else{
+            resources=new String[1];
+            resources[0]=command;
+        }
+        ArrayList<String> newRes = new ArrayList<>();
+        Collections.addAll(newRes, resources);
+        client.send(new ChangeChoosableAction(newRes));
+    }
+
+    /**
+     * this method analise the string and the send the ResourceInSupplyAction
+     * @param string is the string written by the user
+     */
+    private void sendNewWarehouseOrganization(String string) {
+        String[] commands;
+        if (string.contains(","))
+            commands = string.split(",");
+        else {
+            commands = new String[1];
+            commands[0] = string;
+        }
+        ArrayList<String>[] newWarehouse = new ArrayList[5];
+        for (int i = 0; i < 5; i++) {
+            newWarehouse[i] = new ArrayList<>();
+        }
+        for (int i = 0; i < 5; i++) {
+            newWarehouse[i].addAll(client.getViewCLI().getWarehouse()[i]);
+        }
+        for (String command : commands) {
+            if (command.contains("INSHELF")) {
+                String[] word = command.split("INSHELF");
+                try {
+                    int shelfNum = Integer.parseInt(word[1]);
+                    if ((word[0].equalsIgnoreCase("COIN") ||
+                            word[0].equalsIgnoreCase("SERVANT") ||
+                            word[0].equalsIgnoreCase("SHIELD") ||
+                            word[0].equalsIgnoreCase("STONE")) && shelfNum < 5 && shelfNum >= 0) {
+                        newWarehouse[shelfNum].add(word[0]);
+                    } else {
+                        System.out.println("Input not valid, please type again");
+                        return;
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Input not valid, please type again");
+                }
+            } else {
+                System.out.println("Input not valid, please type again");
+                return;
+            }
+        }
+        System.out.println("You want this disposition:");
+        for (int i=0;i<5;i++){
+            System.out.println("on shelf "+i);
+            System.out.println(newWarehouse[i]);
+        }
+        client.send(new ResourceInSupplyAction(newWarehouse));
+    }
+
+    /**
+     * this method analise the string written by the user and then send the DiscardLeaderAction
+     * @param cardId is the string written by the user
+     */
+    private void sendDiscardLeader(String cardId) {
+        try {
+            int id = Integer.parseInt(cardId);
+            client.send(new DiscardLeadAction(id));
+        } catch (NumberFormatException e) {
+            System.out.println("please insert a number. Type again");
+        }
+    }
+
+    /**
+     * this method analise the string written by the user and then send the ActiveLeaderAction
+     * @param cardID is the string written by the user
+     */
+    private void sendActiveLeader(String cardID) {
+        try {
+            int id = Integer.parseInt(cardID);
+            client.send(new ActiveLeadAction(id));
+        } catch (NumberFormatException e) {
+            System.out.println("please insert a number. Type again");
+        }
+    }
+
+    /**
+     * this method analise the string written by the user and then send the ProductionAction
+     * @param string is the string written by the user
+     */
+    private void sendProductions(String string) {
+        String[] commands = string.split(";");
+
+        ArrayList<Integer> intId = new ArrayList<>();
+        ArrayList<String> personalIn = new ArrayList<>();
+        String personalOut = null;
+        ArrayList<String> leadOut = new ArrayList<>();
+
+
+        for (String s : commands) {
+            if (s.startsWith("CARDS")&&!s.contains("PERSONALOUT")&&!s.contains("PERSONALIN")&&!s.contains("LEADOUT")) {
+                s = s.replace("CARDS:", "");
+                String[] words;
+                if (s.contains(","))
+                    words = s.split(",");
+                else {
+                    words = new String[1];
+                    words[0] = s;
+                }
+                for (String word : words) {
+                    if (word != null) {
+                        try {
+                            intId.add(Integer.parseInt(word));
+                        } catch (NumberFormatException e) {
+                            System.out.println("Input not valid, please type again");
+                        }
+                    }
+                }
+            } else if (s.startsWith("PERSONALIN")&&!s.contains("PERSONALOUT")&&!s.contains("LEADOUT")&&!s.contains("CARDS")) {
+                s = s.replace("PERSONALIN:", "");
+                String[] words;
+                if (s.contains(","))
+                    words = s.split(",");
+                else {
+                    words = new String[1];
+                    words[0] = s;
+                }
+                for (String word : words) {
+                    if (word != null) {
+                        personalIn.add(word);
+                    }
+                }
+            } else if (s.startsWith("PERSONALOUT")&&!s.contains("LEADOUT")&&!s.contains("PERSONALIN")&&!s.contains("CARDS")) {
+                s = s.replace("PERSONALOUT:", "");
+                personalOut = s;
+            } else if (s.startsWith("LEADOUT")&&!s.contains("PERSONALOUT")&&!s.contains("PERSONALIN")&&!s.contains("CARDS")) {
+                s = s.replace("LEADOUT:", "");
+                String[] words = s.split(",");
+                for (String word : words) {
+                    if (word != null) {
+                        leadOut.add(word);
+                    }
+                }
+            } else
+                System.out.println("Input not valid, please type again");
+        }
+        client.send(new ProductionAction(intId, personalIn, personalOut, leadOut));
+    }
+
+    /**
+     * this method analise the string written by the user and then send the MarketAction
+     * @param index is the string written by the user
+     */
+    private void sendMarketIndex(String index) {
+        try {
+            int selector = Integer.parseInt(index);
+            client.send(new MarketAction(selector));
+        } catch (NumberFormatException e) {
+            System.out.println("Command not valid. Please type again");
+        }
+    }
+
+    /**
+     * this method analise the string written by the user and then send the BuyCardAction
+     * @param string is the string written by the user
+     */
+    private void sendDevCardPurchased(String string) {
+        try {
+            String[] word=string.split(",");
+            int id = Integer.parseInt(word[0]);
+            int slot=Integer.parseInt(word[1]);
+            if(id>=0 && id<=48 && slot>=0 && slot<=2) {
+                client.send(new BuyCardAction(id, slot));
+            }else {
+                System.out.println("Input not valid, please type again");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Card id selected not valid. Please type again");
+        }
+    }
+
+    /**
+     * this method analise the string written by the user and then send the ChosenLeadMessage
+     * @param string is the string written by the user
+     */
+    private void sendChosenLeads(String string) {
+        ArrayList<Integer> chosenId = new ArrayList<>();
+        String[] words= string.split(",");
+        if (words.length==2) {
+            chosenId.add(Integer.parseInt(words[0]));
+            chosenId.add(Integer.parseInt(words[1]));
+            client.send(new ChosenLeadMessage(chosenId));
+        } else
+            System.out.println("Number of leader chosen not valid, please type again");
+    }
+
+    /**
+     * this method analise the string written by the user and then send the InitialResourceMessage
+     * @param string is the string written by the user
+     */
+    private void sendInitialResource(String string) {
+        Map<Integer,Integer> shelves=new HashMap<>();
+        Map<Integer,String> resources=new HashMap<>();
+        String[] commands;
+        if (string.contains(";"))
+        commands=string.split(";");
+        else{
+            commands=new String[1];
+            commands[0]=string;
+        }
+        for(int i=0;i<commands.length;i++) {
+            String[] words = commands[i].split("INSHELF");
+            String resource = words[0];
+            try {
+                int shelfNum = Integer.parseInt(words[1]);
+                if (shelfNum >= 0 && shelfNum <= 2) {
+                    shelves.put(i,shelfNum);
+                    resources.put(i,resource);
+                } else {
+                    System.out.println("Index of shelf not valid. Please type again");
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Command not valid. Please type again");
+            }
+        }
+        client.send(new InitialResourceMessage(resources, shelves));
+
+    }
+
+    /**
+     * this method analise the string written by the user and then send the NumOfPlayersAnswer
+     * @param string is the string written by the user
+     */
+    private void sendPlayersNumber(String string) {
+        try{
+            int num = Integer.parseInt(string);
+            if(num>=0 && num<=3) {
+                client.send(new NumOfPlayersAnswer(num));
+            }else
+                System.out.println("Number of player selected not valid. Please type again");
+        } catch (NumberFormatException e) {
+            System.out.println("Command not valid. Please type again");
+        }
+    }
+
+    /**
+     * this method analise the string written by the user and then send the NickNameAction
+     * @param name is the string written by the user
+     */
+    private void sendNickname(String name) {
+        client.send(new NickNameAction(name.replace("NICKNAME:", "")));
+    }
+
 }
