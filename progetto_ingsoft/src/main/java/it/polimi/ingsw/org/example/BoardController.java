@@ -587,7 +587,6 @@ public class BoardController implements GUIcontroller{
 
     public void sendProd(ActionEvent actionEvent){
         //array to arraylist for personal prod in
-        //TODO controllo cosa succede se mando tutto vuoto
 
         ArrayList<String> personalProdIn=new ArrayList<>();
         if(personalInArray[0]!=null && personalInArray[1]!=null) {

@@ -36,7 +36,6 @@ public class WhiteMarbleController implements GUIcontroller{
         this.gui=gui;
     }
 
-//TODO
     public void setChoosableRes(int num, ArrayList<String> resources) {
         resource1.setImage(new Image("org.example/images/" + resources.get(0) + ".png"));
         resource1.setId(resources.get(0));

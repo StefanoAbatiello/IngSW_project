@@ -62,7 +62,5 @@ public class DevMatrixController implements GUIcontroller {
     }
 
 
-    //todo aggiungo scelta slot
-
 
 }
