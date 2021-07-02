@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class WhiteMarbleController implements GUIcontroller{
 
     private GUI gui;
-    private ArrayList<String> resourcesChosen;
+    private ArrayList<String> resourcesChosen=new ArrayList<>();
     private String resourceChosen;
     private int numWhite;
 

@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FaithMarkerTest {
 
+    //test the initial position of faithmarker
     @Test
     void getFaithPositionAtCreation() {
 
@@ -21,6 +22,7 @@ class FaithMarkerTest {
 
     }
 
+    //test faith position when faithmarker is updated
     @Test
     void getFaithPositionInGame() {
 
@@ -30,6 +32,7 @@ class FaithMarkerTest {
 
     }
 
+    //test faithpoints at the recreation of a new game
     @Test
     void ResetFaithPoints(){
         FaithMarker faithMarker=new FaithMarker();
@@ -41,6 +44,7 @@ class FaithMarkerTest {
     }
 
 
+    //check if all different pope space are activated in right way
     @Test
     void CheckDifferentActivePopeSpace() throws playerLeadsNotEmptyException, IOException, ParseException {
         ArrayList<String> user= new ArrayList<>();
@@ -67,6 +71,7 @@ class FaithMarkerTest {
 
     }
 
+    //check if different player that access at the same pope space does not active its twice
     @Test
     void activePopeSpaceWithDifferentPlayers() throws playerLeadsNotEmptyException, IOException, ParseException {
 
@@ -87,6 +92,7 @@ class FaithMarkerTest {
     }
 
 
+    //check if faithmarker active vatican zone when it is in the aspected position
     @Test
     void isVaticanZone() {
         FaithMarker faithMarker= new FaithMarker();
@@ -97,6 +103,7 @@ class FaithMarkerTest {
         assertTrue(faithMarker.isVaticanZone(1));
     }
 
+    //check if all players have points incremented when they are in a vatican zone
     @Test
     void updatePoints() throws playerLeadsNotEmptyException, IOException, ParseException  {
         ArrayList<String> user= new ArrayList<>();
@@ -113,14 +120,4 @@ class FaithMarkerTest {
 
     }
 
-    @Test
-    void updatePosition() {
-        Player p1 = new Player("1");
-
-        for(int i=0;i<8;i++)
-            p1.getPersonalBoard().getFaithMarker().updatePosition();
-
-
-        assertEquals(8,p1.getPersonalBoard().getFaithMarker().getFaithPosition());
-    }
 }

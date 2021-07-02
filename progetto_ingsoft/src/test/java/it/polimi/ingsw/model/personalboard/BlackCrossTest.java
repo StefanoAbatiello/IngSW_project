@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BlackCrossTest {
 
+    //test a random position of black cross tocker
     @Test
     void getValidCrossPosition() {
         BlackCross blackCross =new BlackCross();
@@ -12,6 +13,7 @@ class BlackCrossTest {
         assertEquals(3, blackCross.getCrossPosition());
     }
 
+    //test initial position of black cross
     @Test
     void getInitialCrossPosition() {
         BlackCross blackCross =new BlackCross();

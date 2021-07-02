@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ShelfTest {
 
+    //check if shelf has free space when resources are added
     @Test
     void isShelfAvailability(){
         Shelf shelf=new Shelf(3);
@@ -19,6 +20,7 @@ class ShelfTest {
         assertTrue(shelf.isShelfAvailability());
     }
 
+    //check if resources are added in shelf given
     @Test
     void addResources() {
         Shelf shelf=new Shelf(3);
@@ -30,6 +32,7 @@ class ShelfTest {
 
     }
 
+    //test if more than two resources of the same type are added in a given slot
     @Test
     void getSlots(){
         Shelf shelf=new Shelf(3);

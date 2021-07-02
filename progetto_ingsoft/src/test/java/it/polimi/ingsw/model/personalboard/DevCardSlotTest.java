@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DevCardSlotTest {
 
+    //overlap card in a slot that has card with minor level
     @Test
     void OverlapInValidSlot() {
         DevCardSlot devCardSlot=new DevCardSlot();
@@ -22,6 +23,7 @@ class DevCardSlotTest {
         assertTrue(devCardSlot.getSlot()[2].get(0).isActive());
     }
 
+    //return the victorypoints of a devcard
     @Test
     void getVictoryPoints(){
         DevCardSlot devCardSlot=new DevCardSlot();
@@ -32,6 +34,7 @@ class DevCardSlotTest {
         assertEquals(4,devCardSlot.getPoints());
     }
 
+    //test if cards are activate successfully
     @Test
     void getActiveCards(){
         DevCardSlot devCardSlot=new DevCardSlot();

@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class StrongBoxTest {
 
+    //check if resources are added correctly in strongbox
     @Test
     void addResourceInStrongbox() {
         StrongBox strongBox=new StrongBox();
