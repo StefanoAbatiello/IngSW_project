@@ -528,7 +528,7 @@ public class BoardController implements GUIcontroller{
         updatedCards = new ArrayList<>(keySet);
         System.out.println("updated cards:" +updatedCards);
         for(Node node: allDevs.getChildren())
-            ((ImageView)node).setImage(null);
+            ((ImageView)node).setImage(new Image("/org.example/images/Masters of Renaissance__Cards_BACK_3mmBleed-49-1.png"));
         for(int id: updatedCards) {
             String stringId = String.valueOf(id);
             updateDevs(stringId, simplifiedModel.getDevPositions().get(id));
@@ -543,8 +543,8 @@ public class BoardController implements GUIcontroller{
 
     private void updateDevs(String stringId, Integer slot) {
         ImageView card= new ImageView(new Image("org.example/devcards/Masters of Renaissance_Cards_FRONT_3mmBleed_1-" + stringId + "-1.png"));
-        card.setFitWidth(150.0);
-        card.setFitHeight(200.0);
+        card.setFitWidth(100.0);
+        card.setFitHeight(150.0);
         switch(slot){
             case 0:
                 allDevs.add(card,slot,space1);
@@ -679,5 +679,11 @@ public class BoardController implements GUIcontroller{
         board.lookup("#"+lead2Id).setDisable(false);
         leadsBox.setVisible(true);
 
+    }
+
+    public void change_disposition() {
+        NewDispositionController supplyController= (NewDispositionController) gui.getControllerFromName("newWareHouse.fxml");
+        gui.changeStage("newWareHouse.fxml");
+        supplyController.setnewWareHouse(gui.getSimplifiedModel());
     }
 }

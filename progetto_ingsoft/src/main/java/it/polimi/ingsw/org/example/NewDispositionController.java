@@ -1,7 +1,6 @@
 package it.polimi.ingsw.org.example;
 
 import it.polimi.ingsw.client.SimplifiedModel;
-import it.polimi.ingsw.messages.ResourceInSupplyAction;
 import it.polimi.ingsw.messages.WareHouseDisposition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,9 +15,9 @@ import javafx.scene.layout.HBox;
 
 import java.util.ArrayList;
 
-public class SupplyController implements GUIcontroller{
+public class NewDispositionController implements GUIcontroller{
     @FXML
-    HBox supply;
+    HBox warehouseRes;
     @FXML
     MenuButton shelfMenu;
     @FXML
@@ -28,22 +27,18 @@ public class SupplyController implements GUIcontroller{
     @FXML
     Button viewBoard;
 
-
     private GUI gui;
     private String selectedResource;
     private ArrayList<String>[] newWarehouse;
 
 
-
-
-    @Override
     public void setGui(GUI gui) {
         this.gui=gui;
     }
 
     public void selectShelf1(ActionEvent actionEvent) {
         System.out.println("shelf 1");
-        for(Node res:supply.getChildren()){
+        for(Node res:warehouseRes.getChildren()){
             res.setMouseTransparent(false);
             res.setOpacity(1.0);
         }
@@ -57,7 +52,7 @@ public class SupplyController implements GUIcontroller{
     public void selectShelf2(ActionEvent actionEvent) {
         System.out.println("shelf2");
 
-        for(Node res:supply.getChildren()){
+        for(Node res:warehouseRes.getChildren()){
             res.setMouseTransparent(false);
             res.setOpacity(1.0);
         }
@@ -69,7 +64,7 @@ public class SupplyController implements GUIcontroller{
     public void selectShelf3(ActionEvent actionEvent) {
         System.out.println("shelf3");
 
-        for(Node res:supply.getChildren()){
+        for(Node res:warehouseRes.getChildren()){
             res.setMouseTransparent(false);
             res.setOpacity(1.0);
         }
@@ -81,7 +76,7 @@ public class SupplyController implements GUIcontroller{
     public void selectShelf4(ActionEvent actionEvent) {
         System.out.println("sono qui");
 
-        for(Node res:supply.getChildren()){
+        for(Node res:warehouseRes.getChildren()){
             res.setMouseTransparent(false);
             res.setOpacity(1.0);
         }
@@ -93,7 +88,7 @@ public class SupplyController implements GUIcontroller{
     public void selectShelf5(ActionEvent actionEvent) {
         System.out.println("sono qui");
 
-        for(Node res:supply.getChildren()){
+        for(Node res:warehouseRes.getChildren()){
             res.setMouseTransparent(false);
             res.setOpacity(1.0);
         }
@@ -102,25 +97,8 @@ public class SupplyController implements GUIcontroller{
         newWarehouse[4].add(selectedResource);
     }
 
-
-
-    public void setSupply(ArrayList<String> resources) {
-        String resource;
-        newWarehouse=gui.getSimplifiedModel().getWarehouse();
-        for(Node image: supply.getChildren()){
-            ((ImageView)image).setImage(null);
-            if(!resources.isEmpty()) {
-                resource = resources.get(0);
-                ((ImageView) image).setImage(new Image(getClass().getResourceAsStream("/org.example/images/" + resource.toLowerCase() + ".png")));
-                image.setId(resource);
-                resources.remove(0);
-            }
-        }
-
-    }
-
     public void select_resource(MouseEvent mouseEvent) {
-        for(Node res:supply.getChildren())
+        for(Node res:warehouseRes.getChildren())
             res.setMouseTransparent(true);
         ImageView target= (ImageView) mouseEvent.getTarget();
         selectedResource= (target.getId());
@@ -130,18 +108,12 @@ public class SupplyController implements GUIcontroller{
             System.out.println("sono checkSpecial gui ==1");
             shelf4.setVisible(true);
         }else
-            if(((BoardController)(gui.getControllerFromName("board.fxml"))).checkSpecial()==2) {
-                System.out.println("sono checkSpecial gui ==2");
-                shelf4.setVisible(true);
-                shelf5.setVisible(true);
-            }
+        if(((BoardController)(gui.getControllerFromName("board.fxml"))).checkSpecial()==2) {
+            System.out.println("sono checkSpecial gui ==2");
+            shelf4.setVisible(true);
+            shelf5.setVisible(true);
+        }
         shelfMenu.setVisible(true);
-    }
-
-    public void sendResource() {
-        System.out.println(newWarehouse);
-        gui.getMainClient().send(new ResourceInSupplyAction(newWarehouse));
-        gui.changeStage("board.fxml");
     }
 
     public void viewBoard(){
@@ -149,5 +121,33 @@ public class SupplyController implements GUIcontroller{
         BoardController controller=(BoardController) gui.getControllerFromName("board.fxml");
         controller.disableAll(false,true,false,false);
         controller.backSupply.setVisible(true);
+    }
+    public void setnewWareHouse(SimplifiedModel simplifiedModel) {
+        newWarehouse=new ArrayList[5];
+        for(int i=0;i<newWarehouse.length;i++)
+            newWarehouse[i]=new ArrayList<>();
+        ArrayList<String> allres=new ArrayList<>();
+        allres.addAll(simplifiedModel.getWarehouse()[0]);
+        allres.addAll(simplifiedModel.getWarehouse()[1]);
+        allres.addAll(simplifiedModel.getWarehouse()[2]);
+        allres.addAll(simplifiedModel.getWarehouse()[3]);
+        allres.addAll(simplifiedModel.getWarehouse()[4]);
+        System.out.println("mi sono salvato il wareHouse precedente");
+        for(Node image: warehouseRes.getChildren()){
+            ((ImageView)image).setImage(null);
+            if(!allres.isEmpty()){
+                String res=allres.get(0);
+                ((ImageView) image).setImage(new Image(getClass().getResourceAsStream("/org.example/images/" + res.toLowerCase() + ".png")));
+                image.setId(res);
+                allres.remove(0);
+            }
+        }
+
+    }
+
+    public void sendNewWareHouse(ActionEvent actionEvent) {
+        System.out.println(newWarehouse);
+        gui.getMainClient().send(new WareHouseDisposition(newWarehouse));
+        gui.changeStage("board.fxml");
     }
 }

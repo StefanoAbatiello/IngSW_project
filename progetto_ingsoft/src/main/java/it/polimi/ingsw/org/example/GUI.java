@@ -34,6 +34,7 @@ public class GUI extends Application implements View {
     private final String SUPPLY="supply.fxml";
     private final String WINNER="winner.fxml";
     private final String WHITEMARBLE="whitemarble.fxml";
+    private final String CHANGEWAREHOUSE="newWareHouse.fxml";
 
 
 
@@ -55,7 +56,7 @@ public class GUI extends Application implements View {
     @Override
     public void start(Stage stage) {
         this.stage=stage;
-        List<String> fxmList = new ArrayList<>(Arrays.asList(LOGIN, NICKNAME,BOARD,WAITING,NUMOFPLAYER,LEADCARDSCHOICE,INITIALRESOURCES,MARKETBOARD,DEVMATRIX,SUPPLY,ZOOMCARD,WHITEMARBLE,WINNER));
+        List<String> fxmList = new ArrayList<>(Arrays.asList(LOGIN, NICKNAME,BOARD,WAITING,NUMOFPLAYER,LEADCARDSCHOICE,INITIALRESOURCES,MARKETBOARD,DEVMATRIX,SUPPLY,ZOOMCARD,WHITEMARBLE,WINNER,CHANGEWAREHOUSE));
         try {
 
             for (String path : fxmList) {
@@ -398,7 +399,7 @@ public class GUI extends Application implements View {
         this.simplifiedModel = simplifiedModel;
     }
 
-    public SimplifiedModel getViewCLI() {
+    public SimplifiedModel getSimplifiedModel() {
         return simplifiedModel;
     }
 

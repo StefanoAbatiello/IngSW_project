@@ -341,7 +341,7 @@
                 </FXCollections>
             </items>
         </ComboBox>
-      <GridPane fx:id="allDevs" layoutX="249.0" layoutY="223.0" prefHeight="410.0" prefWidth="506.0" visible="false">
+      <GridPane fx:id="allDevs" layoutX="249.0" layoutY="170.0" prefHeight="410.0" prefWidth="506.0" visible="false">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -441,5 +441,6 @@
             <ImageView fitHeight="61.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true" />
          </children>
       </HBox>
+      <Button fx:id="changeDispButton" layoutX="20.0" layoutY="226.0" mnemonicParsing="false" onAction="#change_disposition" prefHeight="49.0" prefWidth="76.0" text="change disposition" textAlignment="CENTER" wrapText="true" />
     </children>
 </Pane>

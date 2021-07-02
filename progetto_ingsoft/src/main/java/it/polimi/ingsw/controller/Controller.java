@@ -336,7 +336,7 @@ public class Controller {
                     System.out.println("faccio buy");
                     game.getDevDeckMatrix().buyCard(cardToBuy);
                     System.out.println("finito buy, rimuovo risorse");
-                    player.getPersonalBoard().removeResources(cardToBuy.getRequirements());
+                    player.getPersonalBoard().removeResources(requirements);
                     System.out.println("risorse rimosse,metto carta");
                     player.getPersonalBoard().getDevCardSlot().overlap(cardToBuy, position);
                     System.out.println("carta messa");
@@ -365,8 +365,10 @@ public class Controller {
      */
     private ArrayList<Resource> getDevCardRequirements(Player player, DevCard cardToBuy) {
         ArrayList<Resource> requirements=new ArrayList<>(cardToBuy.getRequirements());
+        System.out.println("Inizio a scontare le risorse" + requirements);
         if (!player.getDiscountAbility().isEmpty()){
             requirements.remove(player.getDiscountAbility().get(0));
+            System.out.println("Risorsa scontata: " + requirements);
             if (player.getDiscountAbility().size()>1)
                 requirements.remove(player.getDiscountAbility().get(1));
         }
@@ -391,6 +393,9 @@ public class Controller {
             }
             int newCardLevel = wantedCard.getLevel();
             if (newCardLevel == 1) {
+                if(!player.getPersonalBoard().getDevCardSlot().getSlot()[position].isEmpty()){
+                    return false;
+                }
                 System.out.println("carta livello 1");
                 System.out.println(player.getPersonalBoard().getDevCardSlot().getActiveCards().size());
                 return player.getPersonalBoard().getDevCardSlot().getActiveCards().size() < 3;
