@@ -270,7 +270,7 @@ public class BoardController implements GUIcontroller{
         emptyShelves();
 
         if(!simplifiedModel.getWarehouse()[0].isEmpty()) {
-            shelf1.setImage(new Image("org.example/images/" + simplifiedModel.getWarehouse()[0].get(0) + ".png"));
+            shelf1.setImage(new Image(getClass().getResourceAsStream("/org.example/images/" + simplifiedModel.getWarehouse()[0].get(0).toLowerCase() + ".png")));
             shelf1.setOpacity(1.0);
         }
         System.out.println(simplifiedModel.getWarehouse()[0]);
@@ -278,13 +278,13 @@ public class BoardController implements GUIcontroller{
         for(int i = 0; i< simplifiedModel.getWarehouse()[1].size(); i++){
             System.out.println(simplifiedModel.getWarehouse()[1]);
             ImageView image= (ImageView) shelf2.getChildren().get(i);
-            image.setImage(new Image("org.example/images/"+ simplifiedModel.getWarehouse()[1].get(i)+".png"));
+            image.setImage(new Image(getClass().getResourceAsStream("/org.example/images/" + simplifiedModel.getWarehouse()[1].get(i).toLowerCase() + ".png")));
             image.setOpacity(1.0);
         }
         for(int i = 0; i< simplifiedModel.getWarehouse()[2].size(); i++){
             System.out.println(simplifiedModel.getWarehouse()[2]);
             ImageView image= (ImageView) shelf3.getChildren().get(i);
-            image.setImage(new Image("org.example/images/"+ simplifiedModel.getWarehouse()[2].get(i)+".png"));
+            image.setImage(new Image(getClass().getResourceAsStream("/org.example/images/" + simplifiedModel.getWarehouse()[2].get(i).toLowerCase() + ".png")));
             image.setOpacity(1.0);
         }
 
@@ -311,7 +311,7 @@ public class BoardController implements GUIcontroller{
                 //considero che se mi arriva c'è sicuramente attiva
                 HBox special= (HBox) board.lookup("#shelf4");
                 ImageView image= (ImageView) special.getChildren().get(i);
-                image.setImage(new Image("org.example/images/"+ simplifiedModel.getWarehouse()[3].get(i)+".png"));
+                image.setImage(new Image(getClass().getResourceAsStream("/org.example/images/" + simplifiedModel.getWarehouse()[4].get(i).toLowerCase() + ".png")));
                 image.setOpacity(1.0);
             }
         if(!simplifiedModel.getWarehouse()[4].isEmpty())
@@ -319,7 +319,7 @@ public class BoardController implements GUIcontroller{
                 System.out.println(simplifiedModel.getWarehouse()[4]);
                 HBox special= (HBox) board.lookup("#shelf5");
                 ImageView image= (ImageView) special.getChildren().get(i);
-                image.setImage(new Image("org.example/images/"+ simplifiedModel.getWarehouse()[4].get(i)+".png"));
+                image.setImage(new Image(getClass().getResourceAsStream("/org.example/images/" + simplifiedModel.getWarehouse()[5].get(i).toLowerCase() + ".png")));
                 image.setOpacity(1.0);
             }
 

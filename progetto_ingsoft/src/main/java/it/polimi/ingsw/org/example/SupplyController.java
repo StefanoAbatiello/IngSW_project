@@ -14,6 +14,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 
 import java.util.ArrayList;
+import java.util.Locale;
+import java.util.Objects;
 
 public class SupplyController implements GUIcontroller{
     @FXML
@@ -110,7 +112,7 @@ public class SupplyController implements GUIcontroller{
             ((ImageView)image).setImage(null);
             if(!resources.isEmpty()) {
                 resource = resources.get(0);
-                ((ImageView) image).setImage(new Image("org.example/images/" + resource + ".png"));
+                ((ImageView) image).setImage(new Image(getClass().getResourceAsStream("/org.example/images/" + resource.toLowerCase() + ".png")));
                 image.setId(resource);
                 resources.remove(0);
             }
