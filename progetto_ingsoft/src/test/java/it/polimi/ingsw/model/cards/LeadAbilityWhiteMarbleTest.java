@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class LeadAbilityWhiteMarbleTest {
 
     @Test
+        //this test check if the ability is activated correctly
     void activeAbility1() {
         Player p= new Player("pincopallo");
         LeadAbility whiteAb= new LeadAbilityWhiteMarble(Resource.STONE);
@@ -28,6 +29,7 @@ class LeadAbilityWhiteMarbleTest {
         assertTrue(p.getWhiteMarbleAbility().size()==1);
     }
     @Test
+        //this method checks if the activation of the same ability for the second time don't changes ability of the player
     void activeAbility2TimesSameCard()  {
         Player p= new Player("pincopallo");
         LeadAbility whiteAb= new LeadAbilityWhiteMarble(Resource.STONE);
@@ -43,6 +45,7 @@ class LeadAbilityWhiteMarbleTest {
         assertFalse(p.getWhiteMarbleAbility().size()==2);
     }
     @Test
+        //this test if the activation of two different abilities goes well
     void activeAbility2Times(){
         Player p= new Player("pincopallo");
         LeadAbility whiteAb= new LeadAbilityWhiteMarble(Resource.STONE);

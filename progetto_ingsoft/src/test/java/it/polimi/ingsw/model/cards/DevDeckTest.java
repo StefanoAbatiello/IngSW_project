@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.cards;
 
 import it.polimi.ingsw.model.Resource;
 
+import it.polimi.ingsw.model.cards.cardExceptions.CardChosenNotValidException;
 import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.Test;
 
@@ -72,6 +73,20 @@ class DevDeckTest {
             assertEquals(2,green.get(i).getLevel());
         for(int i=8;i<12;i++)
             assertEquals(3,green.get(i).getLevel());
+    }
 
+    @Test
+    //this method checks if the method getCardFromID return the card
+    void getCardFromIdTest() throws IOException, ParseException, CardChosenNotValidException {
+        DevDeck deck = new DevDeck();
+        DevCard card=deck.getDevCards().get(0);
+        assertEquals(card,deck.getCardFromId(card.getId()));
+    }
+
+    @Test
+    //this method checks if the method getCardFromId throws the exception in case of invalid id
+    void getCardFromIdException() throws IOException, ParseException {
+        DevDeck deck=new DevDeck();
+        assertThrows(CardChosenNotValidException.class,()->deck.getCardFromId(100));
     }
 }

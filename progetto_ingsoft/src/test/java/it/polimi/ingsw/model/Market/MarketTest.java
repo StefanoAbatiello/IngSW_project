@@ -8,26 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MarketTest {
 
-    //TODO controller test
-    /*
-    this Test is implemented to check if method buyResources throws the correct exception in case of negative selector
 
-    @Test
-    void negativeSelectorTest(){
-        Market market=new Market();
-        assertThrows(NotAcceptableSelectorException.class, ()->market.buyResources(-1,new Player("0")));
-    }*/
-
-    /*
-    this Test is implemented to check if method buyResources throws the correct exception in case of a too big selector
-    */
-
-    //TODO controller test
-    /*@Test
-    void notValidSelectorTest(){
-        Market market=new Market();
-        assertThrows(NotAcceptableSelectorException.class, ()->market.buyResources(7,new Player("0")));
-    }*/
 
     /*
     this Test verifies if selecting a row(0<=selector<=2) the resources put in ResourceSupply are the expected ones

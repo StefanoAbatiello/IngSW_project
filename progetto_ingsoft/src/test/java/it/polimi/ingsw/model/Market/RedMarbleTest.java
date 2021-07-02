@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class RedMarbleTest {
 
     @Test
+    //this method check if the marble is changed correctly
     void changeMarbleTest(){
         RedMarble marble=new RedMarble();
         assertTrue(marble.changeMarble(new Player("0")));
