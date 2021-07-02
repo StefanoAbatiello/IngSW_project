@@ -90,11 +90,11 @@ class FaithMarkerTest {
     @Test
     void isVaticanZone() {
         FaithMarker faithMarker= new FaithMarker();
-        assertFalse(faithMarker.isVaticanZone(24));
+        assertFalse(faithMarker.isVaticanZone(1));
 
         for(int i=0;i<8;i++)
             faithMarker.updatePosition();
-        assertTrue(faithMarker.isVaticanZone(24));
+        assertTrue(faithMarker.isVaticanZone(1));
     }
 
     @Test
