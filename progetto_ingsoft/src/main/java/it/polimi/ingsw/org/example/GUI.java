@@ -267,6 +267,16 @@ public class GUI extends Application implements View {
         });
     }
 
+    @Override
+    public void winnerHandler(WinnerMessage message) {
+        Platform.runLater(()->{
+            System.out.println("winnermessage");
+            WinnerController winnerController=(WinnerController) nameMapController.get(WINNER);
+            changeStage(WINNER);
+            winnerController.setWinnerLabel(message.getMessage());
+        });
+    }
+
     /**
      *
      * @param resource are the ones which must be put in supply

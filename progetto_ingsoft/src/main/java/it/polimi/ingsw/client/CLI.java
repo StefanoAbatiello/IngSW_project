@@ -76,7 +76,7 @@ public class CLI extends App implements View {
      */
     @Override
     public void gameSetupHandler(SimplifiedModel simplifiedModel, StartingGameMessage message){
-        System.out.println("The game can start!");
+        System.out.println("\n\n\n                  The game can start!");
         System.out.println("Type \"ShowActions\" to see commands");
     }
 
@@ -262,5 +262,11 @@ public class CLI extends App implements View {
         if (message.getPosition() >= 0) {
             System.out.println("Lorenzo's cross is in position:"+message.getPosition());
         }
+    }
+
+    @Override
+    public void winnerHandler(WinnerMessage message) {
+        System.out.println("\n \n \n                "+message.getMessage());
+        System.out.println("\n\nType quit to exit");
     }
 }

@@ -119,9 +119,11 @@ public class SinglePlayer extends Game{
     @Override
     public String draw() {
         if (checkBlackCrossPosition() || checkEmptyLineInMatrix()) {
+            System.out.println("vince lorenzo");
             winnerName="Lorenzo il Magnifico";
             return "Finished";
         }else if (players.get(0).getPersonalBoard().getFaithMarker().getFaithPosition()==24){
+            System.out.println("vinco io");
             winnerName=players.get(0).getName();
             return "Finished";
         }
@@ -162,37 +164,6 @@ public class SinglePlayer extends Game{
         }
         return 1;
     }
-
-    @Override
-    public boolean setVC1active(boolean VC1active) {
-        return false;
-    }
-
-    @Override
-    public boolean setVC2active(boolean VC2active) {
-        return false;
-    }
-
-    @Override
-    public boolean setVC3active(boolean VC3active) {
-        return false;
-    }
-
-    @Override
-    public boolean isVC1active() {
-        return false;
-    }
-
-    @Override
-    public boolean isVC2active() {
-        return false;
-    }
-
-    @Override
-    public boolean isVC3active() {
-        return false;
-    }
-
 
     /**
      * @param player is the players who activates the pope meeting

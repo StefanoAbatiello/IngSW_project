@@ -76,7 +76,6 @@ public class MainServer {
             System.exit(0);
         }
         new MainServer(port);
-
     }
 
     public ConnectionServer getConnectionServer() {

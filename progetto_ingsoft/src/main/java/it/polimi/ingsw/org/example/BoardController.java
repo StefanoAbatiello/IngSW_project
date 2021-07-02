@@ -97,7 +97,6 @@ public class BoardController implements GUIcontroller{
     private ArrayList<Integer> prodCards= new ArrayList<>();
     private boolean productionActive=false;
     private String output= "";
-    //TODO scelta leadout
     private ArrayList<String> leadOut= new ArrayList<>();
     private String lead1Id= "lead1";
     private String lead2Id= "lead2";
@@ -218,52 +217,212 @@ public class BoardController implements GUIcontroller{
     }
 
     public void uploadRedCrossPosition(int newPosition) {
-        final int shift = 35;
-        if(newPosition>oldRedCrossPosition || newPosition==0) {
-            if (newPosition == 0) {
+        switch (newPosition){
+            case 0:
                 croce.setLayoutX(46.0);
                 croce.setLayoutY(176.0);
-            } else if (newPosition > 0 && newPosition <= 2) {
-                croce.setLayoutX(croce.getLayoutX() + shift);
-            } else if (newPosition <= 4) {
-                croce.setLayoutY(croce.getLayoutY() - shift);
-            } else if (newPosition <= 9) {
-                croce.setLayoutX(croce.getLayoutX() + shift);
-            } else if (newPosition <= 11) {
-                croce.setLayoutY(croce.getLayoutY() + shift);
-            } else if (newPosition <= 16)
-                croce.setLayoutX(croce.getLayoutX() + shift);
-            else if (newPosition <= 18) {
-                croce.setLayoutY(croce.getLayoutY() + shift);
-            } else if (newPosition <= 24) {
-                croce.setLayoutX(croce.getLayoutX() + shift);
-            }
-            oldRedCrossPosition= newPosition;
+                break;
+            case 1:
+                croce.setLayoutX(81.0);
+                croce.setLayoutY(176.0);
+                break;
+            case 2:
+                croce.setLayoutX(116.0);
+                croce.setLayoutY(176.0);
+                break;
+            case 3:
+                croce.setLayoutX(116.0);
+                croce.setLayoutY(141.0);
+                break;
+            case 4:
+                croce.setLayoutX(116.0);
+                croce.setLayoutY(106.0);
+                break;
+            case 5:
+                croce.setLayoutX(151.0);
+                croce.setLayoutY(106.0);
+                break;
+            case 6:
+                croce.setLayoutX(186.0);
+                croce.setLayoutY(106.0);
+                break;
+            case 7:
+                croce.setLayoutX(221.0);
+                croce.setLayoutY(106.0);
+                break;
+            case 8:
+                croce.setLayoutX(256.0);
+                croce.setLayoutY(106.0);
+                break;
+            case 9:
+                croce.setLayoutX(291.0);
+                croce.setLayoutY(106.0);
+                break;
+            case 10:
+                croce.setLayoutX(291.0);
+                croce.setLayoutY(141.0);
+                break;
+            case 11:
+                croce.setLayoutX(291.0);
+                croce.setLayoutY(176.0);
+                break;
+            case 12:
+                croce.setLayoutX(326.0);
+                croce.setLayoutY(176.0);
+                break;
+            case 13:
+                croce.setLayoutX(361.0);
+                croce.setLayoutY(176.0);
+                break;
+            case 14:
+                croce.setLayoutX(396.0);
+                croce.setLayoutY(176.0);
+                break;
+            case 15:
+                croce.setLayoutX(431.0);
+                croce.setLayoutY(176.0);
+                break;
+            case 16:
+                croce.setLayoutX(466.0);
+                croce.setLayoutY(176.0);
+                break;
+            case 17:
+                croce.setLayoutX(466.0);
+                croce.setLayoutY(141.0);
+                break;
+            case 18:
+                croce.setLayoutX(466.0);
+                croce.setLayoutY(106.0);
+                break;
+            case 19:
+                croce.setLayoutX(501.0);
+                croce.setLayoutY(106.0);
+                break;
+            case 20:
+                croce.setLayoutX(536.0);
+                croce.setLayoutY(106.0);
+                break;
+            case 21:
+                croce.setLayoutX(571.0);
+                croce.setLayoutY(106.0);
+                break;
+            case 22:
+                croce.setLayoutX(606.0);
+                croce.setLayoutY(106.0);
+                break;
+            case 23:
+                croce.setLayoutX(641.0);
+                croce.setLayoutY(106.0);
+                break;
+            case 24:
+                croce.setLayoutX(676.0);
+                croce.setLayoutY(106.0);
+                break;
         }
     }
 
     public void uploadBlackCrossPosition(int newPosition) {
-        final int shift = 35;
-        if(newPosition>oldBlackCrossPosition || newPosition==0) {
-            if (newPosition == 0) {
+        switch (newPosition){
+            case 0:
                 blackCross.setLayoutX(46.0);
                 blackCross.setLayoutY(176.0);
-            } else if (newPosition > 0 && newPosition <= 2) {
-                blackCross.setLayoutX(blackCross.getLayoutX() + shift);
-            } else if (newPosition <= 4) {
-                blackCross.setLayoutY(blackCross.getLayoutY() - shift);
-            } else if (newPosition <= 9) {
-                blackCross.setLayoutX(blackCross.getLayoutX() + shift);
-            } else if (newPosition <= 11) {
-                blackCross.setLayoutY(blackCross.getLayoutY() + shift);
-            } else if (newPosition <= 16)
-                blackCross.setLayoutX(blackCross.getLayoutX() + shift);
-            else if (newPosition <= 18) {
-                blackCross.setLayoutY(blackCross.getLayoutY() + shift);
-            } else if (newPosition <= 24) {
-                blackCross.setLayoutX(blackCross.getLayoutX() + shift);
-            }
-            oldBlackCrossPosition= newPosition;
+                break;
+            case 1:
+                blackCross.setLayoutX(81.0);
+                blackCross.setLayoutY(176.0);
+                break;
+            case 2:
+                blackCross.setLayoutX(116.0);
+                blackCross.setLayoutY(176.0);
+                break;
+            case 3:
+                blackCross.setLayoutX(116.0);
+                blackCross.setLayoutY(141.0);
+                break;
+            case 4:
+                blackCross.setLayoutX(116.0);
+                blackCross.setLayoutY(106.0);
+                break;
+            case 5:
+                blackCross.setLayoutX(151.0);
+                blackCross.setLayoutY(106.0);
+                break;
+            case 6:
+                blackCross.setLayoutX(186.0);
+                blackCross.setLayoutY(106.0);
+                break;
+            case 7:
+                blackCross.setLayoutX(221.0);
+                blackCross.setLayoutY(106.0);
+                break;
+            case 8:
+                blackCross.setLayoutX(256.0);
+                blackCross.setLayoutY(106.0);
+                break;
+            case 9:
+                blackCross.setLayoutX(291.0);
+                blackCross.setLayoutY(106.0);
+                break;
+            case 10:
+                blackCross.setLayoutX(291.0);
+                blackCross.setLayoutY(141.0);
+                break;
+            case 11:
+                blackCross.setLayoutX(291.0);
+                blackCross.setLayoutY(176.0);
+                break;
+            case 12:
+                blackCross.setLayoutX(326.0);
+                blackCross.setLayoutY(176.0);
+                break;
+            case 13:
+                blackCross.setLayoutX(361.0);
+                blackCross.setLayoutY(176.0);
+                break;
+            case 14:
+                blackCross.setLayoutX(396.0);
+                blackCross.setLayoutY(176.0);
+                break;
+            case 15:
+                blackCross.setLayoutX(431.0);
+                blackCross.setLayoutY(176.0);
+                break;
+            case 16:
+                blackCross.setLayoutX(466.0);
+                blackCross.setLayoutY(176.0);
+                break;
+            case 17:
+                blackCross.setLayoutX(466.0);
+                blackCross.setLayoutY(141.0);
+                break;
+            case 18:
+                blackCross.setLayoutX(466.0);
+                blackCross.setLayoutY(106.0);
+                break;
+            case 19:
+                blackCross.setLayoutX(501.0);
+                blackCross.setLayoutY(106.0);
+                break;
+            case 20:
+                blackCross.setLayoutX(536.0);
+                blackCross.setLayoutY(106.0);
+                break;
+            case 21:
+                blackCross.setLayoutX(571.0);
+                blackCross.setLayoutY(106.0);
+                break;
+            case 22:
+                blackCross.setLayoutX(606.0);
+                blackCross.setLayoutY(106.0);
+                break;
+            case 23:
+                blackCross.setLayoutX(641.0);
+                blackCross.setLayoutY(106.0);
+                break;
+            case 24:
+                blackCross.setLayoutX(676.0);
+                blackCross.setLayoutY(106.0);
+                break;
         }
     }
 

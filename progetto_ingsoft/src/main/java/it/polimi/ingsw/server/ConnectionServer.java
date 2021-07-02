@@ -83,8 +83,6 @@ public class ConnectionServer implements Runnable{
         }
     }
 
-    //TODO classe di tutte le costanti
-
     /**
      * create the timer of pingMnager, create a serverSocket and prepares to accept clients
      */

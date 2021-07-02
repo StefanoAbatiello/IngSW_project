@@ -71,7 +71,7 @@ public class ClientHandler implements Runnable, Sender {
                 message = streamReader();
                 //System.out.println("ho ricevuto un messaggio da "+ server.getNameFromId().get(clientID));[Debug]
                 if(!pingHandler(message) && !playersNumberHandler(message) && !quitHandler(message)){
-                    if (!server.getLobbyFromClientID().containsKey(clientID) || server.getLobbyFromClientID().get(clientID).getStateOfGame()==GameState.WAITING || server.getLobbyFromClientID().get(clientID).getStateOfGame()==GameState.ENDED)
+                    if (!server.getLobbyFromClientID().containsKey(clientID) || server.getLobbyFromClientID().get(clientID).getStateOfGame()==GameState.WAITING)
                         send(new LobbyMessage("Action not valid now"));
                     else
                         server.getClientFromId().get(clientID).getLobby().actionHandler(message, clientID);

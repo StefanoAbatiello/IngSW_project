@@ -16,17 +16,17 @@ public abstract class  Game {
     /**
      * This attribute represent the first vatican zone and its state
      */
-    private boolean VC1active;
+    private boolean VC1active=true;
 
     /**
      * This attribute represent the second vatican zone and its state
      */
-    private boolean VC2active;
+    private boolean VC2active=true;
 
     /**
      * This attribute represent the third vatican zone and its state
      */
-    private boolean VC3active;
+    private boolean VC3active=true;
 
     public boolean setVC1active(boolean VC1active) {
         this.VC1active = VC1active;

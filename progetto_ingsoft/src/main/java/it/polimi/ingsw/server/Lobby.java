@@ -237,14 +237,6 @@ public class Lobby {
             }
         }
 
-        else if (input instanceof WinnerMessage){
-            removePlayer(server.getClientFromId().get(id));
-            if(((WinnerMessage) input).getMessage().equalsIgnoreCase("yes"))
-                server.findEmptyLobby(id);
-            else
-                server.disconnectClient(id);
-        }
-
         else if(!server.getClientFromId().get(id).equals(controller.getActualPlayerTurn()))
             server.getClientFromId().get(id).getClientHandler().send(new LobbyMessage("Wait for your turn!"));
     }

@@ -4,6 +4,7 @@ import it.polimi.ingsw.messages.ActiveLeadAction;
 import it.polimi.ingsw.messages.DiscardLeadAction;
 import it.polimi.ingsw.messages.*;
 import it.polimi.ingsw.messages.answerMessages.NumOfPlayersAnswer;
+import it.polimi.ingsw.messages.answerMessages.WareHouseChangeMessage;
 
 import java.util.*;
 
@@ -11,6 +12,7 @@ public class ClientInput implements Runnable {
 
     private final MainClient client;
     private Boolean active;
+
 
     public ClientInput(MainClient client) {
         this.client = client;
@@ -37,6 +39,7 @@ public class ClientInput implements Runnable {
     private void inputHandler(String input) {
 
         if (input.equalsIgnoreCase("QUIT")) {
+            client.send(new QuitMessage());
             client.disconnect();
         } else if (input.startsWith("NAME:")) {
             sendNickname(input.replace("NAME:", ""));
@@ -59,6 +62,9 @@ public class ClientInput implements Runnable {
                     "\"ActiveLead:[Card id]\"");
             System.out.println("# Discard leader card: " +
                     "\"DiscardLead:[Card id]\"");
+            System.out.println("# Reorganise warehouse: " +
+                    "\"ChangeDisposition: [first Resource] in shelf [Shelf num - 0 to 2], \" +\n" +
+                    "\"[second Resource] in shelf [Shelf num - 0 to 2]...\"");
             System.out.println("# Shows my personal board:" +
                     "\"ShowBoard\"");
             System.out.println("# Show market: " +
@@ -89,8 +95,52 @@ public class ClientInput implements Runnable {
             client.getViewCLI().showDevMatrix();
         } else if (input.equals("ENDTURN")) {
             client.send(new TurnChangeMessage());
-        } else
+        } else if (input.contains("CHANGEDISPOSITION")){
+            sendNewDisposition(input.replace("CHANGEDISPOSITION:",""));
+        }
             System.out.println("Input not valid, type again");
+    }
+
+    private void sendNewDisposition(String string) {
+        String[] commands;
+        if (string.contains(","))
+            commands = string.split(",");
+        else {
+            commands = new String[1];
+            commands[0] = string;
+        }
+        ArrayList<String>[] newWarehouse = new ArrayList[5];
+        for (int i = 0; i < 5; i++) {
+            newWarehouse[i] = new ArrayList<>();
+        }
+        for (String command : commands) {
+            if (command.contains("INSHELF")) {
+                String[] word = command.split("INSHELF");
+                try {
+                    int shelfNum = Integer.parseInt(word[1]);
+                    if ((word[0].equalsIgnoreCase("COIN") ||
+                            word[0].equalsIgnoreCase("SERVANT") ||
+                            word[0].equalsIgnoreCase("SHIELD") ||
+                            word[0].equalsIgnoreCase("STONE")) && shelfNum < 5 && shelfNum >= 0) {
+                        newWarehouse[shelfNum].add(word[0]);
+                    } else {
+                        System.out.println("Input not valid, please type again");
+                        return;
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Input not valid, please type again");
+                }
+            } else {
+                System.out.println("Input not valid, please type again");
+                return;
+            }
+        }
+        System.out.println("You want this disposition:");
+        for (int i=0;i<5;i++){
+            System.out.println("on shelf "+i);
+            System.out.println(newWarehouse[i]);
+        }
+        client.send(new ResourceInSupplyAction(newWarehouse));
     }
 
     /**
@@ -156,7 +206,7 @@ public class ClientInput implements Runnable {
             System.out.println("on shelf "+i);
             System.out.println(newWarehouse[i]);
         }
-        client.send(new ResourceInSupplyAction(newWarehouse));
+        client.send(new WareHouseDisposition(newWarehouse));
     }
 
     /**

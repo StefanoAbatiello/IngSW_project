@@ -119,4 +119,10 @@ public interface View {
      * @param message is the message
      */
     void lorenzoActionHandler(LorenzoActionMessage message);
+
+    /**
+     * this is the client handler of the change of the winner message
+     * @param message is the message
+     */
+    void winnerHandler(WinnerMessage message);
 }

@@ -295,11 +295,11 @@ public class Controller {
             int position=shelves.get(i);
             Resource resource=resources.get(i);
             Shelf shelf= player.getPersonalBoard().getWarehouseDepots().getShelves()[position];
-            if(((shelf.isShelfAvailability()) && (resources.get(i).equals(shelf.getResourceType()))) || shelf.getSlots().isEmpty()) {
+            if(((shelf.isShelfAvailability()) && (resource.equals(shelf.getResourceType()))) || shelf.getSlots().isEmpty()) {
                 player.getPersonalBoard().getWarehouseDepots().addInShelf(position, resource);
             }else {
                 player.getPersonalBoard().getWarehouseDepots().clear();
-                getHandlerFromPlayer(id).send(new GetInitialResourcesAction("You choose a not valid resource or shelf", game.playerInitialResources(lobby.getPositionFromClient().get(playerPos))));
+                getHandlerFromPlayer(id).send(new GetInitialResourcesAction("You choose a not valid resource or shelf", game.playerInitialResources(playerPos)));
                 return;
             }
         }
@@ -808,6 +808,7 @@ public class Controller {
     private void faithMarkerUpdateHandler(Player player) {
         sendFaithMarkerPosition(player);
         int popeMeeting=game.activePopeSpace(player);
+        System.out.println("popo meeting "+popeMeeting);
         if (popeMeeting>0 && popeMeeting<4) {
             for (Player p: game.getPlayers()) {
                 if (p.getPersonalBoard().getFaithMarker().isVaticanZone(popeMeeting)&&server.isClientOnline(p.getName()))
@@ -1060,6 +1061,7 @@ public class Controller {
             }
             System.out.println("fuori dal try");
             String message = game.draw();
+            System.out.println(message+"a");
             if (lobby.playersOnline() > 0) {
                 if (message.isEmpty()) {
                     lobby.sendAll(new LobbyMessage("Now it's the turn of " + server.getNameFromId().get(actualPlayerTurn.getID())));
@@ -1071,6 +1073,7 @@ public class Controller {
                     lobby.sendAll(new LobbyMessage(message + ", it's again your turn"));
                 }
             }
+            System.out.println("faccio il changeActualPlayerTurn");
             changeActualPlayerTurn();
         }
     }
@@ -1095,9 +1098,12 @@ public class Controller {
      * this method handles the end of the game sending to the Players the name of the winner
      */
     private void endGame() {
+        System.out.println("sono in endgame");
         lobby.setStateOfGame(GameState.ENDED);
         String winnerName=game.getWinner();
+        System.out.println("The winner is "+winnerName);
         lobby.sendAll(new WinnerMessage(winnerName+" is the winner!!"));
+        System.out.println("ho mandato il messaggio");
     }
 
     /**
@@ -1173,8 +1179,6 @@ public class Controller {
         turnUpdate();
     }
 
-    public void setActualPlayerTurn(VirtualClient client) {
-        this.actualPlayerTurn=client;
-    }
+
 }
 

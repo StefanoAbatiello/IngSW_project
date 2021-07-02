@@ -1,5 +1,6 @@
 package it.polimi.ingsw.org.example;
 
+import it.polimi.ingsw.messages.QuitMessage;
 import it.polimi.ingsw.messages.WinnerMessage;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,17 +15,17 @@ public class WinnerController implements GUIcontroller{
 
     private GUI gui;
 
+    public void setWinnerLabel(String string){
+        winnerLabel.setText(string);
+    }
+
     @Override
     public void setGui(GUI gui) {
         this.gui=gui;
     }
 
-    public void endGameAgain(ActionEvent actionEvent) {
-        gui.getMainClient().send(new WinnerMessage("yes"));
-    }
-
     public void endGameQuit(ActionEvent actionEvent) {
-        gui.getMainClient().send(new WinnerMessage("no"));
+        gui.getMainClient().send(new QuitMessage());
         gui.getMainClient().disconnect();
         gui.getStage().close();
     }

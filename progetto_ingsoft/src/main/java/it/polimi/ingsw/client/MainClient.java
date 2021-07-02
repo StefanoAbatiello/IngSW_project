@@ -194,6 +194,9 @@ public class MainClient implements Runnable, Sender {
         else if (input instanceof ShelfAbilityActiveMessage ){
             view.shelfAbilityActiveHandler((ShelfAbilityActiveMessage) input);
         }
+        else if(input instanceof WinnerMessage){
+            view.winnerHandler((WinnerMessage)input);
+        }
     }
 
     public void disconnect() {
