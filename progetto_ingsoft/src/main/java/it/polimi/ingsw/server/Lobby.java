@@ -184,6 +184,11 @@ public class Lobby {
                controller.checkPositionOfResources(((ResourceInSupplyAction)input).getWarehouse(),id);
             }
         }
+        else if(input instanceof WareHouseDisposition && server.getClientFromId().get(id).equals(controller.getActualPlayerTurn())){
+            System.out.println("ho ricevuto un new disposition");
+            if (stateOfGame==GameState.ONGOING)
+                controller.checkPositionOfResources(((WareHouseDisposition)input).getWarehouse(),id);
+        }
 
         //5-gestisco le produzioni scelte un giocatore
         else if (input instanceof ProductionAction && server.getClientFromId().get(id).equals(controller.getActualPlayerTurn())) {

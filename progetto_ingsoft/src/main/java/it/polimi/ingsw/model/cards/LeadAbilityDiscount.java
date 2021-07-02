@@ -10,7 +10,7 @@ public class LeadAbilityDiscount extends LeadAbility{
    }
     @Override
     public boolean activeAbility(Player p) {
-        if(!p.getDiscountAbility().isEmpty() &&!(p.getDiscountAbility().contains(this.abilityResource))) {
+        if(p.getDiscountAbility().isEmpty() || (!p.getDiscountAbility().isEmpty() && !(p.getDiscountAbility().contains(this.abilityResource)))) {
             p.getDiscountAbility().add(this.abilityResource);
             return true;
         }else
