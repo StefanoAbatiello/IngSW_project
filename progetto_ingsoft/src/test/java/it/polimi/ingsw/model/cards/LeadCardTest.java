@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class LeadCardTest {
 
     @Test
+    //it tests if the lead ability is the same as predicted after the parsing
     void getLeadCardAbility() throws IOException, ParseException {
         LeadDeck deck = new LeadDeck();
         ArrayList<String> color=new ArrayList<>();
@@ -28,6 +29,7 @@ class LeadCardTest {
     }
 
     @Test
+    //it tests the parser and if the resources parsed are right
     void getLeadCardRes() throws IOException, ParseException{
         LeadDeck deck = new LeadDeck();
         ArrayList<String> color=new ArrayList<>();
@@ -42,15 +44,9 @@ class LeadCardTest {
         assertNotEquals(Resource.COIN,card.getAbility().getAbilityResource());
     }
 
-    //TODO controller test
-    /*@Test
-    void getResExceptionThrowable() {
-        LeadDeck deck = new LeadDeck();
-        LeadCard wantedCard= deck.getLeadDeck().get(0);
-        assertThrows(NoSuchRequirementException.class, () -> wantedCard.getResources() );
-    }*/
 
     @Test
+    //it tests the parser if it works with the requirements
     void getResourceReqTrue() {
         HashMap<Integer, Resource> resReq= new HashMap<>();
         resReq.put(5,Resource.COIN);
@@ -64,6 +60,7 @@ class LeadCardTest {
     }
 
     @Test
+    //it tests the parser does not put wrong res required
     void getResourceReqFalse() {
         HashMap<Integer, Resource> resReq= new HashMap<>();
         resReq.put(5,Resource.COIN);
@@ -78,6 +75,7 @@ class LeadCardTest {
 
 
     @Test
+    // it tests if the parser puts the right dev card required
     void getDevCardReq() throws IOException, ParseException {
         LeadDeck deck = new LeadDeck();
         ArrayList<String> color=new ArrayList<>();
@@ -91,6 +89,7 @@ class LeadCardTest {
     }
 
     @Test
+    //it tests if the parser gives wrong res required
     void getDevCardReqWrong() throws IOException, ParseException {
         LeadDeck deck = new LeadDeck();
         ArrayList<String> color=new ArrayList<>();
@@ -108,6 +107,7 @@ class LeadCardTest {
     }
 
     @Test
+    //it tests if set active method works and the getter
     void isLeadActive() {
         ArrayList<String> color=new ArrayList<>();
         color.add("GREEN");
@@ -119,12 +119,4 @@ class LeadCardTest {
         assertTrue(card.isActive());
     }
 
-    /*@Test
-    //testo che parte throws
-    void setLeadActive(boolean leadActive) {
-    }
-
-    @Test
-    void useAbility() {
-    }*/
 }
