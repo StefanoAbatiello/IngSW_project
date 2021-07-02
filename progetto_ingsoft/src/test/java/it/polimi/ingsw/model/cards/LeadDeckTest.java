@@ -20,6 +20,7 @@ class LeadDeckTest {
 
     @Test
     @BeforeAll
+    //this test creates the deck
     void createDeck() throws IOException, ParseException, CardChosenNotValidException {
         LeadDeck deck=new LeadDeck();
         ArrayList<String> color=new ArrayList<>();
@@ -38,18 +39,19 @@ class LeadDeckTest {
     }
 
     @Test
+    //this test checks if the deck is shuffled correctly
     void shuffle() throws IOException, ParseException {
         LeadDeck deck=new LeadDeck();
         ArrayList<LeadCard> newDeck= deck.shuffle();
         assertEquals(deck.getLeadDeck().size(), newDeck.size());
         for(LeadCard card: deck.getLeadDeck())
             assertTrue (newDeck.contains(card));
-        //TODO ordine diverso
     }
 
 
 
     @Test
+    //this test checks if the card are correctly distributed to the player
     void giveToPlayer() throws playerLeadsNotEmptyException, IOException, ParseException {
         LeadDeck deck =new LeadDeck();
         deck.shuffle();
@@ -62,10 +64,9 @@ class LeadDeckTest {
         ArrayList<LeadCard> playerLeads = p.getLeadCards();
         assertEquals(leadCards,playerLeads);
     }
-        /*in entrata 4 carte, se giocatore ha array con stesse 4 carte, funziona, ritorna true
-    }*/
 
     @Test
+    //this test checks if the exception is correctly throw in distribution too many cards
     void cannotGiveToPlayerExc() throws playerLeadsNotEmptyException, IOException, ParseException {
         LeadDeck deck=new LeadDeck();
         deck.shuffle();
@@ -78,6 +79,7 @@ class LeadDeckTest {
     }
 
     @Test
+    //this test checks if the card distributed are all different
     void giveCardsToPlayersAllDifferent() throws playerLeadsNotEmptyException, IOException, ParseException {
         LeadDeck deck=new LeadDeck();
         Player p1= new Player("2");

@@ -12,6 +12,7 @@ class WhiteMarbleTest {
 
 
     @Test
+    //this test checks that without whitemarble abilities active the white marble does not generates resources
     void oneAbilityActive(){
         WhiteMarble marble=new WhiteMarble();
         Player p=new Player("0");
@@ -24,6 +25,7 @@ class WhiteMarbleTest {
     }
 
     @Test
+    //this test checks if with one whitemarble ability active the white generates the correct resource
     void noAbilityActive(){
         WhiteMarble marble=new WhiteMarble();
         Player p=new Player("0");
@@ -34,6 +36,7 @@ class WhiteMarbleTest {
     }
 
     @Test
+    //this test checks if with two whitemarble abilities active the white marble generates a choosable resource
     void twoAbilityActive(){
         WhiteMarble marble=new WhiteMarble();
         Player p=new Player("0");

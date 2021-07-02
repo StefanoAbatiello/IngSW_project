@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class LeadAbilityShelfTest {
 
     @Test
+        //this test check if the ability is activated correctly
     void activeAbility1() {
         Player p= new Player("pippo");
         LeadAbility shelfAb= new LeadAbilityShelf(Resource.STONE);

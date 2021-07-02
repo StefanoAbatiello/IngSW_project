@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class LeadCardTest {
 
     @Test
+    //this test
     void getLeadCardAbility() throws IOException, ParseException {
         LeadDeck deck = new LeadDeck();
         ArrayList<String> color=new ArrayList<>();
@@ -42,13 +43,6 @@ class LeadCardTest {
         assertNotEquals(Resource.COIN,card.getAbility().getAbilityResource());
     }
 
-    //TODO controller test
-    /*@Test
-    void getResExceptionThrowable() {
-        LeadDeck deck = new LeadDeck();
-        LeadCard wantedCard= deck.getLeadDeck().get(0);
-        assertThrows(NoSuchRequirementException.class, () -> wantedCard.getResources() );
-    }*/
 
     @Test
     void getResourceReqTrue() {
@@ -104,7 +98,6 @@ class LeadCardTest {
         wCardsReq.put(2,wrongColor);
         LeadCard card= new LeadCard(49, 2, cardsReq, leadAbility);
         assertEquals(cardsReq, card.getDevCardRequired());
-///TODO assertNotEquals
     }
 
     @Test
@@ -119,12 +112,5 @@ class LeadCardTest {
         assertTrue(card.isActive());
     }
 
-    /*@Test
-    //testo che parte throws
-    void setLeadActive(boolean leadActive) {
-    }
 
-    @Test
-    void useAbility() {
-    }*/
 }
