@@ -56,6 +56,28 @@ public abstract class  Game {
     }
 
     /**
+     * @param position is the player's position in turns order
+     * @return the number of Resources which the Player can take based on his position
+     */
+    public int playerInitialResources(int position) {
+        if (position==0)
+            return 0;
+        if (position==1 || position==2)
+            return 1;
+        return 2;
+    }
+
+    /**
+     * @param position is the player's position in turns order
+     * @return the number of Faith points which the Player can take based on his position
+     */
+    public int playerInitialFaithPoint(int position){
+        if(position==0||position==1)
+            return 0;
+        return 1;
+    }
+
+    /**
      * @param player is the player who activates the pope meeting
      * @return the number of the pope meeting activated(1, 2 or 3), otherwise return 0
      */
@@ -72,6 +94,8 @@ public abstract class  Game {
     public String draw() {
         return "";
     }
+
+    public abstract boolean checkAllPlayersChooseLeads();
 
     /**
      * @return a simplified version of the development cards that can be purchased

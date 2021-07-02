@@ -63,6 +63,19 @@ public class MultiPlayer extends Game {
         }
     }
 
+    /**
+     * @return true if all the Players in game have chosen their Leader cards
+     */
+    @Override
+    public boolean checkAllPlayersChooseLeads(){
+        //System.out.println("controllo se tutti hanno scelto le leads");[Debug]
+        for(Player player:players) {
+            if (!player.leaderCardAlreadyChosen())
+                return false;
+        }
+        //System.out.println("tutti i giocatori hanno già scelto le leads");[Debug]
+        return true;
+    }
 
     @Override
     public ArrayList<Player> getPlayers() {

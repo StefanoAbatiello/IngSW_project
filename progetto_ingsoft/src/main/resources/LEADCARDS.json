@@ -73,7 +73,7 @@
     "LEADCARD":{
       "ID": 56,
       "POINTS": 3,
-      "ABILITY": "DISCOUNT",
+      "ABILITY": "SHELF",
       "RESOURCE": "COIN",
       "RESOURCEREQ": {"NUM": 5, "KIND":"SHIELD"},
       "CARDREQ": {}

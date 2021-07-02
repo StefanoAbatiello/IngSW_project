@@ -134,17 +134,7 @@ public class Lobby {
                 int firstId, secondId;
                 firstId = ((ChosenLeadMessage) input).getChosenId().get(0);
                 secondId = ((ChosenLeadMessage) input).getChosenId().get(1);
-                if(controller.check2Leads(id, firstId, secondId)) {
-                    if (controller.checkAllPlayersChooseLeads()) {
-                        System.out.println("tutti hanno scelto le lead cards");
-                        if(positionFromClient.size()>1 && playersOnline()>1) {
-                            stateOfGame=GameState.PREPARATION2;
-                            for(VirtualClient client:clientFromPosition.values())
-                            controller.askInitialResources(client);
-                        }else
-                            controller.startGame();
-                    }
-                }
+                controller.check2Leads(id, firstId, secondId);
             }
         }
 
@@ -154,21 +144,7 @@ public class Lobby {
                 System.out.println("sto leggendo il InitialResourceMessage");
                 Map<Integer,String> resources=((InitialResourceMessage)input).getResource();
                 Map<Integer,Integer> shelves=((InitialResourceMessage)input).getShelfNum();
-                System.out.println("ho letto il messaggio");
-                try {
-                    for (int i=0;i<resources.size();i++)
-                        controller.checkInsertResourcePosition(id, shelves.get(i), Resource.valueOf(resources.get(i)));
-                    System.out.println("le risorse sono state depositate");
-                    server.getClientFromId().get(id).getClientHandler().send(new LobbyMessage("Resource put in the warehouse"));
-                    if(controller.checkInitialResources()){
-                        System.out.println("tutti i giocatori hanno scelto le risorse iniziali");
-                        controller.startGame();
-                    }
-                } catch (ResourceNotValidException e) {
-                    VirtualClient client =server.getClientFromId().get(id);
-                    server.getClientFromId().get(id).getClientHandler().send(new GetInitialResourcesAction("You choose a not valid resource or shelf", controller.playerInitialResources(positionFromClient.get(client))));
-                }
-
+                controller.checkInsertResourcePosition(id, shelves, resources);
             }
         }
 

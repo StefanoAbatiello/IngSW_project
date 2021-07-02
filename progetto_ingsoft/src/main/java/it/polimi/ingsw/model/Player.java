@@ -68,6 +68,13 @@ public class Player {
      */
     public void resetAction(){action=Action.NOTDONE;}
 
+    /**
+     * @return true if the Player has done an action in this turn yet
+     */
+    public boolean checkActionAlreadyDone(){
+        return action!=Action.NOTDONE;
+    }
+
     public ArrayList<Resource> getProductionAbility() {
         return productionAbility;
     }
@@ -88,6 +95,24 @@ public class Player {
            card.getAbility().activeAbility(this);
            card.setActive();
            return card.isActive();
+    }
+
+    /**
+     * @param card1 is the id of the first Leader card
+     * @param card2 is the id of the second Leader card
+     * @return true if the id chosen are valid(he holds the card chosen)
+     */
+    public boolean checkLeadsIdChosen(int card1, int card2) {
+        return leadCards.stream().anyMatch(leadCard -> leadCard.getId()==card1) &&
+                leadCards.stream().anyMatch(leadCard -> leadCard.getId()==card1) &&
+                card1!=card2;
+    }
+
+    /**
+     * @return true if he has only two Leader cards
+     */
+    public boolean leaderCardAlreadyChosen(){
+        return leadCards.size()==2;
     }
 
     public void setAction(Action newAction) {
