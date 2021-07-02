@@ -96,7 +96,6 @@ public class BoardController implements GUIcontroller{
 
     private ArrayList<Integer> prodCards= new ArrayList<>();
     private boolean productionActive=false;
-    private String[] personalProdIn= new String[2];
     private String output= "";
     //TODO scelta leadout
     private ArrayList<String> leadOut= new ArrayList<>();
@@ -117,6 +116,8 @@ public class BoardController implements GUIcontroller{
 
     private int oldRedCrossPosition=0;
     private int oldBlackCrossPosition=0;
+
+    private String[] personalInArray= new String[2];
 
 
 
@@ -370,6 +371,7 @@ public class BoardController implements GUIcontroller{
 
     public void chooseLeadOut(){
         disableAll(false,false,false,false);
+        viewDevs.setVisible(false);
         leadsBox.setVisible(false);
         chooseLeadOut.setVisible(true);
         leadOutLabel.setVisible(true);
@@ -383,37 +385,34 @@ public class BoardController implements GUIcontroller{
         String id= selectedItem.getText();
         System.out.println(id);
         leadOut.add(id);
-        endChoose.setVisible(true);
-    }
-
-    public void endChooseLeadOut(ActionEvent actionEvent){
-        endChoose.setVisible(false);
         disableAll(true,true,true,false);
         leadsBox.setVisible(true);
         production.setVisible(false);
         chooseLeadOut.setVisible(false);
         leadOutLabel.setVisible(false);
-        if(leadOut.get(leadOut.size()-1).equals("none")) {
+        if(leadOut.size()>1 && leadOut.get(leadOut.size()-1).equals("none")) {
             prodCards.remove(prodCards.size() - 1);
             leadOut.remove(leadOut.size()-1);
         }
     }
 
+
     public void insertIn1(Label label) {
         String id= label.getText();
         System.out.println(id);
-        if(id.equals("none"))
-            personalProdIn[0]=null;
+        if(!id.equals("none"))
+            personalInArray[0]=id;
         else
-            personalProdIn[0]=id;
+            personalInArray[0]=null;
     }
 
     public void insertIn2(Label label) {
         String id= label.getText();
         System.out.println(id);
-        if(id.equals("none"))
-            personalProdIn[1]=null;
-        personalProdIn[1]=id;
+        if(!id.equals("none"))
+            personalInArray[1]=id;
+        else
+            personalInArray[1]=null;
     }
 
     public void insertOut(Label label) {
@@ -427,22 +426,29 @@ public class BoardController implements GUIcontroller{
 
     public void sendProd(ActionEvent actionEvent){
         //array to arraylist for personal prod in
-        ArrayList<String> prodIn= new ArrayList<>();
-        prodIn.add(personalProdIn[0]);
-        prodIn.add(personalProdIn[1]);
         //TODO controllo cosa succede se mando tutto vuoto
+
+        ArrayList<String> personalProdIn=new ArrayList<>();
+        if(personalInArray[0]!=null && personalInArray[1]!=null) {
+            personalProdIn.add(personalInArray[0]);
+            personalProdIn.add(personalInArray[1]);
+        }
         System.out.println("prodCards: " + prodCards);
-        System.out.println("prodIn: "+ prodIn);
+        System.out.println("prodIn: "+ personalProdIn);
         System.out.println("output: "+ output);
         System.out.println("leadout: " + leadOut);
-        gui.getMainClient().send(new ProductionAction(prodCards, prodIn,output,leadOut));
-        backProd();
+        if(prodCards.isEmpty() && personalProdIn.isEmpty())
+            gui.getMainClient().send(new LobbyMessage("You have not chosen any input for the productions"));
+        else {
+            gui.getMainClient().send(new ProductionAction(prodCards, personalProdIn, output, leadOut));
+            backProd();
+        }
     }
 
     public void backProd(){
         prodCards= new ArrayList<>();
         productionActive=false;
-        personalProdIn= new String[2];
+        personalInArray= new String[2];
         output= "";
         disableAll(true,false,false,false);
         board.lookup("#"+card1ID).setDisable(true);
@@ -638,5 +644,40 @@ public class BoardController implements GUIcontroller{
                 uploadBlackCrossPosition(val);
             }else
                 blackCross.setVisible(false);
+    }
+
+    public void resetBoard() {
+        shelf1.setVisible(true);
+        shelf2.setVisible(true);
+        shelf3.setVisible(true);
+        croce.setVisible(true);
+        blackCross.setVisible(true);
+        buttonsVbox.setVisible(true);
+        in1.setVisible(false);
+        in2.setVisible(false);
+        out.setVisible(false);
+        board.lookup("#"+card1ID).setDisable(true);
+        board.lookup("#"+card1ID).setVisible(true);
+        board.lookup("#"+card2ID).setDisable(true);
+        board.lookup("#"+card2ID).setVisible(true);
+        board.lookup("#"+card3ID).setDisable(true);
+        board.lookup("#"+card3ID).setVisible(true);
+        viewBack.setVisible(false);
+        chooseLeadOut.setVisible(false);
+        endProd.setVisible(false);
+        leadOutLabel.setVisible(false);
+        allDevs.setVisible(false);
+        backDevs.setVisible(false);
+        backSupply.setVisible(false);
+        backProd.setVisible(false);
+        viewDevs.setVisible(true);
+        sShelf1.setVisible(true);
+        sShelf2.setVisible(true);
+        board.lookup("#"+lead1Id).setDisable(false);
+        board.lookup("#"+lead1Id).setVisible(true);
+        board.lookup("#"+lead2Id).setVisible(true);
+        board.lookup("#"+lead2Id).setDisable(false);
+        leadsBox.setVisible(true);
+
     }
 }

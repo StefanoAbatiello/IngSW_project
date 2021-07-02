@@ -197,10 +197,6 @@ public class Lobby {
 
                 } catch (ActionAlreadySetException e) {
                     controller.getActualPlayerTurn().getClientHandler().send(new LobbyMessage(e.getMessage()));
-                } catch (CardNotOwnedByPlayerOrNotActiveException e) {
-                    e.printStackTrace();
-                } catch (ResourceNotValidException e) {
-                    e.printStackTrace();
                 }
             }
         }

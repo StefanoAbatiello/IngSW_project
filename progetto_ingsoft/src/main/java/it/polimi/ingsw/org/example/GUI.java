@@ -159,6 +159,8 @@ public class GUI extends Application implements View {
             alert.setHeight(10);
             alert.setContentText(lobbyMessage.getMessage());
             alert.showAndWait();
+            BoardController boardController= (BoardController) getControllerFromName(BOARD);
+            boardController.resetBoard();
         });
 
     }

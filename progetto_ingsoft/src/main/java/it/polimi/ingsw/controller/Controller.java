@@ -489,13 +489,19 @@ public class Controller {
      * @throws ResourceNotValidException if the Resources chosen are not valid
      * @throws CardNotOwnedByPlayerOrNotActiveException if the Player has chosen a card not owned by him
      */
-    public boolean checkProduction(ArrayList<Integer> cardProd , ArrayList<String> personalProdIn, String personalProdOut, ArrayList<String> leadProdOut) throws ActionAlreadySetException, ResourceNotValidException, CardNotOwnedByPlayerOrNotActiveException {
+    public boolean checkProduction(ArrayList<Integer> cardProd , ArrayList<String> personalProdIn, String personalProdOut, ArrayList<String> leadProdOut) throws ActionAlreadySetException {
         Player player=getPlayerInTurn();
         if (player.checkActionAlreadyDone())
             throw new ActionAlreadySetException("The player has already gone through with an action in their turn");
         else if (checkOwnerCards(cardProd,player)) {
             System.err.println("check prod dopo checkOwner");
-            ArrayList<Resource> totalProdIn = takeAllProdIn(cardProd, stringArrayToResArray(personalProdIn), player);
+            ArrayList<Resource> totalProdIn = null;
+            try {
+                totalProdIn = takeAllProdIn(cardProd, stringArrayToResArray(personalProdIn), player);
+            } catch (ResourceNotValidException e) {
+                getHandlerFromPlayer(player.getName()).send(new LobbyMessage(e.getMessage()));
+                return false;
+            }
             System.err.println("presi tutti prodIn: "+totalProdIn);
             ArrayList<Resource> playersResources =new ArrayList<>(player.getWarehouseResources());
             System.err.println("preso warehouse");
@@ -506,7 +512,13 @@ public class Controller {
                 player.setAction(Action.ACTIVATEPRODUCTION);
                 player.getPersonalBoard().removeResources(totalProdIn);
                 System.err.println("ho rimosso risorse prodin");
-                ArrayList<Resource> totalProdOut = takeAllProdOut(cardProd, stringArrayToResArray(personalProdIn), personalProdOut, leadProdOut, player);
+                ArrayList<Resource> totalProdOut = null;
+                try {
+                    totalProdOut = takeAllProdOut(cardProd, stringArrayToResArray(personalProdIn), personalProdOut, leadProdOut, player);
+                } catch (ResourceNotValidException e) {
+                    getHandlerFromPlayer(player.getName()).send(new LobbyMessage(e.getMessage()));
+                    return false;
+                }
                 System.err.println("ho preso prodout");
                 player.getPersonalBoard().getStrongBox().addInStrongbox(totalProdOut);
                 System.err.println("gli ho messo prodout");
@@ -526,7 +538,7 @@ public class Controller {
      * @param player is the Player who wants to do this productions
      * @return an ArrayList containing all the Resources required to do the chosen production
      */
-    private ArrayList<Resource> takeAllProdIn( ArrayList<Integer> cardProd ,ArrayList<Resource> personalProdIn, Player player) {
+    private ArrayList<Resource> takeAllProdIn( ArrayList<Integer> cardProd ,ArrayList<Resource> personalProdIn, Player player) throws ResourceNotValidException {
         ArrayList<Resource> totalProdIn = new ArrayList<>();
         System.err.println("devo prendere dev giocatore");
         ArrayList<DevCard> prodDevs = new ArrayList<>(player.getPersonalBoard().getDevCardSlot().getDevCards());
@@ -548,8 +560,11 @@ public class Controller {
                 });
             }
         }
-            if (!personalProdIn.isEmpty())
+            if (!personalProdIn.isEmpty()) {
+                if (personalProdIn.size() == 1)
+                    throw new ResourceNotValidException("You need 2 resources as input for the personal production");
                 totalProdIn.addAll(personalProdIn);
+            }
 
         return totalProdIn;
     }
@@ -565,22 +580,30 @@ public class Controller {
     private ArrayList<Resource> takeAllProdOut(ArrayList<Integer> cardProd ,ArrayList<Resource> personalProdIn, String personalProdOut,ArrayList<String> leadProdOut, Player player) throws ResourceNotValidException{
         ArrayList<Resource> totalProdOut = new ArrayList<>();
         ArrayList<DevCard> prodDevs = new ArrayList<>(player.getPersonalBoard().getDevCardSlot().getDevCards());
-        prodDevs.removeIf(card->!cardProd.contains(card.getId()));
+        if(!prodDevs.isEmpty())
+            prodDevs.removeIf(card->!cardProd.contains(card.getId()));
         ArrayList<LeadCard> prodLeads = new ArrayList<>(player.getLeadCards());
-        prodLeads.removeIf(card->!cardProd.contains(card.getId())&&!(card.getAbility() instanceof LeadAbilityProduction)&&!card.isActive());
+        if(!prodLeads.isEmpty()) {
+            prodLeads.removeIf(card -> !cardProd.contains(card.getId()) && !(card.getAbility() instanceof LeadAbilityProduction) && !card.isActive());
+            System.err.println("prodLeads: " + prodLeads);
+        }
         if(!personalProdIn.isEmpty()) {
             if (!personalProdOut.equals(""))
                 try {
-                    totalProdOut.add(Resource.valueOf(personalProdOut));
+                    totalProdOut.add(Resource.valueOf(personalProdOut.toUpperCase()));
                 }catch (IllegalArgumentException e){
                     throw new ResourceNotValidException("Resource chosen for personal production not valid");
                 }
             else
                 throw new ResourceNotValidException("Resource chosen for personal production not valid");
-        }
+        }else
+            if(!personalProdOut.equals("")) {
+                throw new ResourceNotValidException("Resource chosen in input for personal production not valid");
+            }
         int numOfLead = prodLeads.size();
+        System.err.println("leadProdOut size: "+ leadProdOut.size());
         if(numOfLead ==leadProdOut.size()){
-            leadProdOut.forEach(resource -> totalProdOut.add(Resource.valueOf(resource)));
+            leadProdOut.forEach(resource -> totalProdOut.add(Resource.valueOf(resource.toUpperCase())));
             player.getPersonalBoard().getFaithMarker().updatePosition();
             faithMarkerUpdateHandler(player);
         }else
@@ -894,7 +917,7 @@ public class Controller {
                     player.getPersonalBoard().getSpecialShelves().add(i - 3, Optional.of(new SpecialShelf(resource)));
                     if (!newWarehouse[i].isEmpty()) {
                         int finalI = i;
-                        newWarehouse[i].forEach(res->player.getPersonalBoard().getSpecialShelves().get(finalI -3).get().addResources(Resource.valueOf(res)));
+                        newWarehouse[i].forEach(res->player.getPersonalBoard().getSpecialShelves().get(finalI -3).get().addResources(Resource.valueOf(res.toUpperCase())));
                     }
                 }
             }
